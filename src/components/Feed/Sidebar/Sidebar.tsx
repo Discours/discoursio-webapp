@@ -15,7 +15,7 @@ import styles from './Sidebar.module.scss'
 export const Sidebar = () => {
   const { t } = useLocalize()
   const { seen } = useSeen()
-  const { subscriptions } = useFollowing()
+  const { follows } = useFollowing()
   const { page } = useRouter()
   const { articlesByTopic, articlesByAuthor } = useArticlesStore()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
@@ -83,35 +83,9 @@ export const Sidebar = () => {
             </span>
           </a>
         </li>
-        <li>
-          <a
-            href={getPagePath(router, 'feedBookmarks')}
-            class={clsx({
-              [styles.selected]: page().route === 'feedBookmarks',
-            })}
-          >
-            <span class={styles.sidebarItemName}>
-              <Icon name="bookmark" class={styles.icon} />
-              {t('Bookmarks')}
-            </span>
-          </a>
-        </li>
-        <li>
-          <a
-            href={getPagePath(router, 'feedNotifications')}
-            class={clsx({
-              [styles.selected]: page().route === 'feedNotifications',
-            })}
-          >
-            <span class={styles.sidebarItemName}>
-              <Icon name="feed-notifications" class={styles.icon} />
-              {t('Notifications')}
-            </span>
-          </a>
-        </li>
       </ul>
 
-      <Show when={subscriptions.authors.length > 0 || subscriptions.topics.length > 0}>
+      <Show when={follows?.authors?.length > 0 || follows?.topics?.length > 0}>
         <h4
           classList={{ [styles.opened]: isSubscriptionsVisible() }}
           onClick={() => {
@@ -123,7 +97,7 @@ export const Sidebar = () => {
         </h4>
 
         <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>
-          <For each={subscriptions.authors}>
+          <For each={follows.authors}>
             {(a: Author) => (
               <li>
                 <a href={`/author/${a.slug}`} classList={{ [styles.unread]: checkAuthorIsSeen(a.slug) }}>
@@ -135,7 +109,7 @@ export const Sidebar = () => {
               </li>
             )}
           </For>
-          <For each={subscriptions.topics}>
+          <For each={follows.topics}>
             {(topic) => (
               <li>
                 <a

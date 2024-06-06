@@ -1,7 +1,7 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query UserSubscribersQuery($slug: String, $user: String, $author_id: Int) {
+  query UserFollowingCountersQuery($slug: String, $user: String, $author_id: Int) {
     get_author_followers(slug: $slug, user: $user, author_id: $author_id) {
       id
       slug

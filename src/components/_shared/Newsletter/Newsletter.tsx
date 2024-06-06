@@ -6,12 +6,12 @@ import { validateEmail } from '../../../utils/validateEmail'
 import { Button } from '../Button'
 import { Icon } from '../Icon'
 
-import styles from './Subscribe.module.scss'
+import styles from './Newsletter.module.scss'
 
 type Props = {
   variant?: 'mobileSubscription'
 }
-export const Subscribe = (props: Props) => {
+export const Newsletter = (props: Props) => {
   const { t } = useLocalize()
 
   const [title, setTitle] = createSignal('')

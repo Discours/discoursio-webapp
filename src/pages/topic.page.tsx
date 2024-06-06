@@ -37,24 +37,22 @@ export const TopicPage = (props: PageProps) => {
   })
 
   createEffect(
-    on(
-      () => slug(),
-      async () => {
+    on(slug, async (s) => {
+      if (s) {
         setIsLoaded(false)
         resetSortedArticles()
         await preload()
         setIsLoaded(true)
-      },
-      { defer: true },
-    ),
+      }
+    }),
   )
 
-  onCleanup(() => resetSortedArticles())
+  onCleanup(resetSortedArticles)
 
   const usePrerenderedData = props.topic?.slug === slug()
 
   return (
-    <PageLayout title={props.seo.title}>
+    <PageLayout title={props.seo?.title || props.topic?.title}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
           <TopicView

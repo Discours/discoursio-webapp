@@ -1,6 +1,6 @@
 import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
+import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
@@ -10,17 +10,17 @@ import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
 import { translit } from '../../../utils/ru2en'
 import { isCyrillic } from '../../../utils/translate'
-import { BadgeSubscribeButton } from '../../_shared/BadgeSubscribeButton'
 import { Button } from '../../_shared/Button'
 import { CheckButton } from '../../_shared/CheckButton'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
+import { FollowingButton } from '../../_shared/FollowingButton'
 import { Icon } from '../../_shared/Icon'
 import { Userpic } from '../Userpic'
 import styles from './AuthorBadge.module.scss'
 
 type Props = {
   author: Author
-  minimizeSubscribeButton?: boolean
+  minimize?: boolean
   showMessageButton?: boolean
   iconButtons?: boolean
   nameOnly?: boolean
@@ -32,19 +32,21 @@ type Props = {
 export const AuthorBadge = (props: Props) => {
   const { mediaMatches } = useMediaQuery()
   const { author, requireAuthentication } = useSession()
-  const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
+  const { follow, unfollow, follows, following } = useFollowing()
   const [isMobileView, setIsMobileView] = createSignal(false)
-  const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
-
-  createEffect(() => {
-    if (!(subscriptions && props.author)) return
-    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
-    setIsSubscribed(subscribed)
-  })
-
-  createEffect(() => {
-    setIsMobileView(!mediaMatches.sm)
-  })
+  const [isFollowed, setIsFollowed] = createSignal<boolean>(
+    follows?.authors?.some((authorEntity) => authorEntity.id === props.author?.id),
+  )
+  createEffect(() => setIsMobileView(!mediaMatches.sm))
+  createEffect(
+    on(
+      [() => follows?.authors, () => props.author, following],
+      ([followingAuthors, currentAuthor, _]) => {
+        setIsFollowed(followingAuthors?.some((followedAuthor) => followedAuthor.id === currentAuthor?.id))
+      },
+      { defer: true },
+    ),
+  )
 
   const { changeSearchParams } = useRouter()
   const { t, formatDate, lang } = useLocalize()
@@ -72,11 +74,10 @@ export const AuthorBadge = (props: Props) => {
   })
 
   const handleFollowClick = () => {
-    requireAuthentication(() => {
-      isSubscribed()
-        ? unfollow(FollowingEntity.Author, props.author.slug)
-        : follow(FollowingEntity.Author, props.author.slug)
-    }, 'subscribe')
+    requireAuthentication(async () => {
+      const handle = isFollowed() ? unfollow : follow
+      await handle(FollowingEntity.Author, props.author.slug)
+    }, 'follow')
   }
 
   return (
@@ -117,13 +118,13 @@ export const AuthorBadge = (props: Props) => {
             <Show when={props.author?.stat && !props.subscriptionsMode}>
               <div class={styles.bio}>
                 <Show when={props.author?.stat.shouts > 0}>
-                  <div>{t('PublicationsWithCount', { count: props.author.stat?.shouts ?? 0 })}</div>
+                  <div>{t('some posts', { count: props.author.stat?.shouts ?? 0 })}</div>
                 </Show>
                 <Show when={props.author?.stat.comments > 0}>
-                  <div>{t('CommentsWithCount', { count: props.author.stat?.comments ?? 0 })}</div>
+                  <div>{t('some comments', { count: props.author.stat?.comments ?? 0 })}</div>
                 </Show>
                 <Show when={props.author?.stat.followers > 0}>
-                  <div>{t('FollowersWithCount', { count: props.author.stat?.followers ?? 0 })}</div>
+                  <div>{t('some followers', { count: props.author.stat?.followers ?? 0 })}</div>
                 </Show>
               </div>
             </Show>
@@ -132,12 +133,10 @@ export const AuthorBadge = (props: Props) => {
       </div>
       <Show when={props.author.slug !== author()?.slug && !props.nameOnly}>
         <div class={styles.actions}>
-          <BadgeSubscribeButton
-            action={() => handleFollowClick()}
-            isSubscribed={isSubscribed()}
-            actionMessageType={
-              subscribeInAction()?.slug === props.author.slug ? subscribeInAction().type : undefined
-            }
+          <FollowingButton
+            action={handleFollowClick}
+            isFollowed={isFollowed()}
+            actionMessageType={following()?.slug === props.author.slug ? following().type : undefined}
           />
           <Show when={props.showMessageButton}>
             <Button

@@ -34,12 +34,14 @@ export const AudioUploader = (props: Props) => {
 
   const handleChangeIndex = (direction: 'up' | 'down', index: number) => {
     const media = [...props.audio]
-    if (direction === 'up' && index > 0) {
-      const copy = media.splice(index, 1)[0]
-      media.splice(index - 1, 0, copy)
-    } else if (direction === 'down' && index < media.length - 1) {
-      const copy = media.splice(index, 1)[0]
-      media.splice(index + 1, 0, copy)
+    if (media?.length > 0) {
+      if (direction === 'up' && index > 0) {
+        const copy = media.splice(index, 1)[0]
+        media.splice(index - 1, 0, copy)
+      } else if (direction === 'down' && index < media.length - 1) {
+        const copy = media.splice(index, 1)[0]
+        media.splice(index + 1, 0, copy)
+      }
     }
     props.onAudioSorted(media)
   }

@@ -12,10 +12,9 @@ import { LayoutType } from '../types'
 export const ExpoPage = (props: PageProps) => {
   const { t } = useLocalize()
   const { page } = useRouter()
-  const getLayout = createMemo<LayoutType>(() => page().params['layout'] as LayoutType)
-
-  const getTitle = () => {
-    switch (getLayout()) {
+  const layout = createMemo(() => page().params['layout'] as LayoutType)
+  const title = createMemo(() => {
+    switch (layout()) {
       case 'audio': {
         return t('Audio')
       }
@@ -32,22 +31,14 @@ export const ExpoPage = (props: PageProps) => {
         return t('Art')
       }
     }
-  }
+  })
 
-  createEffect(
-    on(
-      () => getLayout(),
-      () => {
-        document.title = getTitle()
-      },
-      { defer: true },
-    ),
-  )
+  createEffect(on(title, (t) => (document.title = t), { defer: true }))
 
   return (
-    <PageLayout withPadding={true} zeroBottomPadding={true} title={getTitle()}>
+    <PageLayout withPadding={true} zeroBottomPadding={true} title={title()}>
       <Topics />
-      <Expo shouts={props.expoShouts} layout={getLayout()} />
+      <Expo shouts={props.expoShouts} layout={layout()} />
     </PageLayout>
   )
 }

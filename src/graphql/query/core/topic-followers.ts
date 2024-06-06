@@ -1,14 +1,15 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query GetAuthorId($user: String!) {
-    get_author_id(user: $user) {
+  query TopicFollowersQuery($slug: String) {
+    get_topic_followers(slug: $slug) {
       id
       slug
       name
       bio
       about
       pic
+      # communities
       links
       created_at
       last_seen
@@ -18,8 +19,6 @@ export default gql`
         followers
         rating
         comments
-        rating_shouts
-        rating_comments
       }
     }
   }

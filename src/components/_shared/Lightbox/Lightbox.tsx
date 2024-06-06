@@ -129,8 +129,8 @@ export const Lightbox = (props: Props) => {
 
   createEffect(
     on(
-      () => zoomLevel(),
-      () => {
+      zoomLevel,
+      (_) => {
         clearTimeout(fadeTimer)
 
         fadeTimer = setTimeout(() => {

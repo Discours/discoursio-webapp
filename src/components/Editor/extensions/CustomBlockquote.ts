@@ -1,4 +1,4 @@
-import { Blockquote } from '@tiptap/extension-blockquote'
+import { Blockquote, BlockquoteOptions } from '@tiptap/extension-blockquote'
 
 export type QuoteTypes = 'quote' | 'punchline'
 
@@ -13,11 +13,13 @@ declare module '@tiptap/core' {
 
 export const CustomBlockquote = Blockquote.extend({
   name: 'blockquote',
-  defaultOptions: {
-    HTMLAttributes: {},
-  },
   group: 'block',
   content: 'block+',
+
+  addOptions(): BlockquoteOptions {
+    return {} as BlockquoteOptions
+  },
+
   addAttributes() {
     return {
       'data-float': {
@@ -34,14 +36,12 @@ export const CustomBlockquote = Blockquote.extend({
     return {
       toggleBlockquote:
         (type) =>
-        ({ commands }) => {
-          return commands.toggleWrap(this.name, { 'data-type': type })
-        },
+        ({ commands }) =>
+          commands.toggleWrap(this.name, { 'data-type': type }),
       setBlockQuoteFloat:
         (value) =>
-        ({ commands }) => {
-          return commands.updateAttributes(this.name, { 'data-float': value })
-        },
+        ({ commands }) =>
+          commands.updateAttributes(this.name, { 'data-float': value }),
     }
   },
 })

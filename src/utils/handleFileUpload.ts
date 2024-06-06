@@ -1,9 +1,9 @@
 import { UploadFile } from '@solid-primitives/upload'
 
 import { UploadedFile } from '../pages/types'
+import { coreApiUrl } from './config'
 
-const apiBaseUrl = 'https://core.discours.io'
-const apiUrl = `${apiBaseUrl}/upload`
+const apiUrl = `${coreApiUrl}/upload`
 
 export const handleFileUpload = async (uploadFile: UploadFile, token: string): Promise<UploadedFile> => {
   const formData = new FormData()

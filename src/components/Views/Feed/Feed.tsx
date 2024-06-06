@@ -20,6 +20,7 @@ import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { AuthorLink } from '../../Author/AuthorLink'
 import { ArticleCard } from '../../Feed/ArticleCard'
+import { Placeholder } from '../../Feed/Placeholder'
 import { Sidebar } from '../../Feed/Sidebar'
 import { Modal } from '../../Nav/Modal'
 import { DropDown } from '../../_shared/DropDown'
@@ -100,7 +101,7 @@ export const FeedView = (props: Props) => {
   const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
-  const { session } = useSession()
+  const { author, session } = useSession()
   const { loadReactionsBy } = useReactions()
   const { sortedArticles } = useArticlesStore()
   const { topTopics } = useTopics()
@@ -143,16 +144,20 @@ export const FeedView = (props: Props) => {
     Promise.all([loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
   })
 
-  createEffect(() => {
-    if (session()?.access_token && !unratedArticles()) {
-      loadUnratedArticles()
-    }
-  })
+  createEffect(
+    on(
+      [() => session(), unratedArticles],
+      ([s, seen]) => {
+        if (s?.access_token && !(seen?.length > 0)) loadUnratedArticles()
+      },
+      { defer: true },
+    ),
+  )
 
   createEffect(
     on(
-      () => page().route + searchParams().by + searchParams().period + searchParams().visibility,
-      () => {
+      [page, searchParams],
+      (_, _p) => {
         resetSortedArticles()
         loadMore()
       },
@@ -234,107 +239,113 @@ export const FeedView = (props: Props) => {
         </div>
 
         <div class="col-md-12 offset-xl-1">
-          <div class={styles.filtersContainer}>
-            <ul class={clsx('view-switcher', styles.feedFilter)}>
-              <li
-                class={clsx({
-                  'view-switcher__item--selected':
-                    searchParams().by === 'publish_date' || !searchParams().by,
-                })}
-              >
-                <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
-              </li>
-              {/*<li>*/}
-              {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
-              {/*</li>*/}
-              <li
-                class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'likes',
-                })}
-              >
-                <span class="link" onClick={() => changeSearchParams({ by: 'likes' })}>
-                  {t('Top rated')}
-                </span>
-              </li>
-              <li
-                class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'last_comment',
-                })}
-              >
-                <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
-                  {t('Most commented')}
-                </span>
-              </li>
-            </ul>
-            <div class={styles.dropdowns}>
-              <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
+          <Show when={!author() && page().route !== 'feed'}>
+            <Placeholder type={page().route} mode="feed" />
+          </Show>
+
+          <Show when={(author() || page().route === 'feed') && sortedArticles().length}>
+            <div class={styles.filtersContainer}>
+              <ul class={clsx('view-switcher', styles.feedFilter)}>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected':
+                      searchParams().by === 'publish_date' || !searchParams().by,
+                  })}
+                >
+                  <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
+                </li>
+                {/*<li>*/}
+                {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
+                {/*</li>*/}
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': searchParams().by === 'likes',
+                  })}
+                >
+                  <span class="link" onClick={() => changeSearchParams({ by: 'likes' })}>
+                    {t('Top rated')}
+                  </span>
+                </li>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': searchParams().by === 'last_comment',
+                  })}
+                >
+                  <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
+                    {t('Most commented')}
+                  </span>
+                </li>
+              </ul>
+              <div class={styles.dropdowns}>
+                <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
+                  <DropDown
+                    popupProps={{ horizontalAnchor: 'right' }}
+                    options={periods}
+                    currentOption={currentPeriod()}
+                    triggerCssClass={styles.periodSwitcher}
+                    onChange={(period: PeriodItem) => changeSearchParams({ period: period.value })}
+                  />
+                </Show>
                 <DropDown
                   popupProps={{ horizontalAnchor: 'right' }}
-                  options={periods}
-                  currentOption={currentPeriod()}
+                  options={visibilities}
+                  currentOption={currentVisibility()}
                   triggerCssClass={styles.periodSwitcher}
-                  onChange={(period: PeriodItem) => changeSearchParams({ period: period.value })}
+                  onChange={(visibility: VisibilityItem) =>
+                    changeSearchParams({ visibility: visibility.value })
+                  }
                 />
-              </Show>
-              <DropDown
-                popupProps={{ horizontalAnchor: 'right' }}
-                options={visibilities}
-                currentOption={currentVisibility()}
-                triggerCssClass={styles.periodSwitcher}
-                onChange={(visibility: VisibilityItem) =>
-                  changeSearchParams({ visibility: visibility.value })
-                }
-              />
+              </div>
             </div>
-          </div>
 
-          <Show when={!isLoading()} fallback={<Loading />}>
-            <Show when={sortedArticles().length > 0}>
-              <For each={sortedArticles().slice(0, 4)}>
-                {(article) => (
-                  <ArticleCard
-                    onShare={(shared) => handleShare(shared)}
-                    onInvite={() => showModal('inviteMembers')}
-                    article={article}
-                    settings={{ isFeedMode: true }}
-                    desktopCoverSize="M"
-                  />
-                )}
-              </For>
+            <Show when={!isLoading()} fallback={<Loading />}>
+              <Show when={sortedArticles().length > 0}>
+                <For each={sortedArticles().slice(0, 4)}>
+                  {(article) => (
+                    <ArticleCard
+                      onShare={(shared) => handleShare(shared)}
+                      onInvite={() => showModal('inviteMembers')}
+                      article={article}
+                      settings={{ isFeedMode: true }}
+                      desktopCoverSize="M"
+                    />
+                  )}
+                </For>
 
-              <div class={styles.asideSection}>
-                <div class={stylesBeside.besideColumnTitle}>
-                  <h4>{t('Popular authors')}</h4>
-                  <a href="/authors">
-                    {t('All authors')}
-                    <Icon name="arrow-right" class={stylesBeside.icon} />
-                  </a>
+                <div class={styles.asideSection}>
+                  <div class={stylesBeside.besideColumnTitle}>
+                    <h4>{t('Popular authors')}</h4>
+                    <a href="/authors">
+                      {t('All authors')}
+                      <Icon name="arrow-right" class={stylesBeside.icon} />
+                    </a>
+                  </div>
+
+                  <ul class={stylesBeside.besideColumn}>
+                    <For each={topAuthors().slice(0, 5)}>
+                      {(author) => (
+                        <li>
+                          <AuthorBadge author={author} />
+                        </li>
+                      )}
+                    </For>
+                  </ul>
                 </div>
 
-                <ul class={stylesBeside.besideColumn}>
-                  <For each={topAuthors().slice(0, 5)}>
-                    {(author) => (
-                      <li>
-                        <AuthorBadge author={author} />
-                      </li>
-                    )}
-                  </For>
-                </ul>
-              </div>
+                <For each={sortedArticles().slice(4)}>
+                  {(article) => (
+                    <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
+                  )}
+                </For>
+              </Show>
 
-              <For each={sortedArticles().slice(4)}>
-                {(article) => (
-                  <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
-                )}
-              </For>
-            </Show>
-
-            <Show when={isLoadMoreButtonVisible()}>
-              <p class="load-more-container">
-                <button class="button" onClick={loadMore}>
-                  {t('Load more')}
-                </button>
-              </p>
+              <Show when={isLoadMoreButtonVisible()}>
+                <p class="load-more-container">
+                  <button class="button" onClick={loadMore}>
+                    {t('Load more')}
+                  </button>
+                </p>
+              </Show>
             </Show>
           </Show>
         </div>

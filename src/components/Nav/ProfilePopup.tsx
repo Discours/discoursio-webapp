@@ -21,7 +21,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     <Popup {...props} horizontalAnchor="right" popupCssClass={styles.profilePopup}>
       <ul class="nodash">
         <li>
-          <a class={styles.action} href={getPagePath(router, 'author', { slug: author().slug })}>
+          <a class={styles.action} href={getPagePath(router, 'author', { slug: author()?.slug })}>
             <Icon name="profile" class={styles.icon} />
             {t('Profile')}
           </a>
@@ -35,7 +35,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
         <li>
           <a
             class={styles.action}
-            href={`${getPagePath(router, 'author', { slug: author().slug })}?m=following`}
+            href={`${getPagePath(router, 'author', { slug: author()?.slug })}?m=following`}
           >
             <Icon name="feed-all" class={styles.icon} />
             {t('Subscriptions')}
@@ -44,7 +44,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
         <li>
           <a
             class={styles.action}
-            href={`${getPagePath(router, 'authorComments', { slug: author().slug })}`}
+            href={`${getPagePath(router, 'authorComments', { slug: author()?.slug })}`}
           >
             <Icon name="comment" class={styles.icon} />
             {t('Comments')}

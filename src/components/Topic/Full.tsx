@@ -1,4 +1,4 @@
-import type { Topic } from '../../graphql/schema/core.gen'
+import type { Author, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal } from 'solid-js'
@@ -9,22 +9,25 @@ import { useSession } from '../../context/session'
 import { FollowingEntity } from '../../graphql/schema/core.gen'
 import { Button } from '../_shared/Button'
 
+import { FollowingCounters } from '../_shared/FollowingCounters/FollowingCounters'
+import { Icon } from '../_shared/Icon'
 import styles from './Full.module.scss'
 
 type Props = {
   topic: Topic
+  followers?: Author[]
+  authors?: Author[]
 }
 
 export const FullTopic = (props: Props) => {
   const { t } = useLocalize()
-  const { subscriptions, setFollowing } = useFollowing()
+  const { follows, changeFollowing } = useFollowing()
   const { requireAuthentication } = useSession()
   const [followed, setFollowed] = createSignal()
 
   createEffect(() => {
-    const subs = subscriptions
-    if (subs?.topics.length !== 0) {
-      const items = subs.topics || []
+    if (follows?.topics.length !== 0) {
+      const items = follows.topics || []
       setFollowed(items.some((x: Topic) => x?.slug === props.topic?.slug))
     }
   })
@@ -33,26 +36,46 @@ export const FullTopic = (props: Props) => {
     const really = !followed()
     setFollowed(really)
     requireAuthentication(() => {
-      setFollowing(FollowingEntity.Topic, props.topic.slug, really)
+      changeFollowing(FollowingEntity.Topic, props.topic.slug, really)
     }, 'follow')
   }
 
   return (
     <div class={clsx(styles.topicHeader, 'col-md-16 col-lg-12 offset-md-4 offset-lg-6')}>
       <h1>#{props.topic?.title}</h1>
-      <p innerHTML={props.topic?.body} />
+      <p class={styles.topicDescription} innerHTML={props.topic?.body} />
+
+      <div class={styles.topicDetails}>
+        <Show when={props.topic?.stat}>
+          <div class={styles.topicDetailsItem}>
+            <Icon name="feed-all" class={styles.topicDetailsIcon} />
+            {t('some posts', {
+              count: props.topic?.stat.shouts ?? 0,
+            })}
+          </div>
+        </Show>
+
+        <FollowingCounters
+          followers={props.followers}
+          followersAmount={props.topic?.stat?.followers}
+          authors={props.authors}
+          authorsAmount={props.topic?.stat?.authors || props.authors?.length || 0}
+        />
+      </div>
+
       <div class={clsx(styles.topicActions)}>
         <Button
           variant="primary"
           onClick={handleFollowClick}
           value={followed() ? t('Unfollow the topic') : t('Follow the topic')}
+          class={styles.followControl}
         />
-        <a class={styles.write} href={`/create/?topicId=${props.topic?.id}`}>
+        <a class={styles.writeControl} href={`/create/?topicId=${props.topic?.id}`}>
           {t('Write about the topic')}
         </a>
       </div>
       <Show when={props.topic?.pic}>
-        <img src={props.topic.pic} alt={props.topic?.title} />
+        <img src={props.topic?.pic} alt={props.topic?.title} />
       </Show>
     </div>
   )

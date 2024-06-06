@@ -1,4 +1,4 @@
-import { LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
+import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
@@ -33,6 +33,7 @@ interface Props {
   topic: Topic
   shouts: Shout[]
   topicSlug: string
+  followers?: Author[]
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 28
@@ -49,13 +50,30 @@ export const TopicView = (props: Props) => {
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
 
   const [topic, setTopic] = createSignal<Topic>()
+  createEffect(
+    on([() => props.topicSlug, topic, topicEntities], async ([slug, t, ttt]) => {
+      if (slug && !t && ttt) {
+        const current = ttt[slug]
+        console.debug(current)
+        setTopic(current)
+        await loadTopicFollowers()
+        await loadTopicAuthors()
+        await loadRandom()
+      }
+    }),
+  )
 
-  createEffect(() => {
-    const topics = topicEntities()
-    if (props.topicSlug && !topic() && topics) {
-      setTopic(topics[props.topicSlug])
-    }
-  })
+  const [followers, setFollowers] = createSignal<Author[]>(props.followers || [])
+  const loadTopicFollowers = async () => {
+    const flwrs = await apiClient.getTopicFollowers({ slug: props.topicSlug })
+    setFollowers(flwrs)
+  }
+  const [topicAuthors, setTopicAuthors] = createSignal<Author[]>([])
+  const loadTopicAuthors = async () => {
+    const by: AuthorsBy = { topic: props.topicSlug }
+    const authors = await apiClient.loadAuthorsBy({ by, limit: 10, offset: 0 })
+    setTopicAuthors(authors)
+  }
 
   const loadFavoriteTopArticles = async (topic: string) => {
     const options: LoadShoutsOptions = {
@@ -86,14 +104,6 @@ export const TopicView = (props: Props) => {
     loadFavoriteTopArticles(topic()?.slug)
     loadReactedTopMonthArticles(topic()?.slug)
   }
-
-  createEffect(
-    on(
-      () => topic(),
-      () => loadRandom(),
-      { defer: true },
-    ),
-  )
 
   const title = createMemo(
     () =>
@@ -158,7 +168,7 @@ export const TopicView = (props: Props) => {
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={title()} />
       <Meta name="twitter:description" content={description()} />
-      <FullTopic topic={topic()} />
+      <FullTopic topic={topic()} followers={followers()} authors={topicAuthors()} />
       <div class="wide-container">
         <div class={clsx(styles.groupControls, 'row group__controls')}>
           <div class="col-md-16">

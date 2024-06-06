@@ -1,6 +1,6 @@
 import type { PageProps } from './types'
 
-import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js'
 
 import { AuthorView, PRERENDERED_ARTICLES_COUNT } from '../components/Views/Author'
 import { Loading } from '../components/_shared/Loading'
@@ -20,38 +20,19 @@ export const AuthorPage = (props: PageProps) => {
     Boolean(props.authorShouts) && Boolean(props.author) && props.author.slug === slug(),
   )
 
-  const preload = () => {
-    return Promise.all([
-      loadShouts({
-        filters: { author: slug(), featured: false },
-        limit: PRERENDERED_ARTICLES_COUNT,
-      }),
-      loadAuthor({ slug: slug() }),
-    ])
-  }
-
-  onMount(async () => {
-    if (isLoaded()) {
-      return
-    }
-
-    resetSortedArticles()
-    await preload()
-
-    setIsLoaded(true)
-  })
-
   createEffect(
-    on(
-      () => slug(),
-      async () => {
+    on(slug, async (s) => {
+      if (s) {
         setIsLoaded(false)
         resetSortedArticles()
-        await preload()
+        await loadShouts({
+          filters: { author: s, featured: false },
+          limit: PRERENDERED_ARTICLES_COUNT,
+        })
+        await loadAuthor({ slug: s })
         setIsLoaded(true)
-      },
-      { defer: true },
-    ),
+      }
+    }),
   )
 
   onCleanup(() => resetSortedArticles())

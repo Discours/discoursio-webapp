@@ -9,7 +9,7 @@ import { hydrate } from 'solid-js/web'
 
 import { App } from '../components/App'
 import { initRouter } from '../stores/router'
-import { GLITCHTIP_DSN } from '../utils/config'
+import { reportDsn } from '../utils/config'
 import { resolveHydrationPromise } from '../utils/hydrationPromise'
 
 let layoutReady = false
@@ -22,7 +22,7 @@ export const render = async (pageContext: PageContextBuiltInClientWithClientRout
   initRouter(pathname, searchParams)
 
   SentryInit({
-    dsn: GLITCHTIP_DSN,
+    dsn: reportDsn,
     tracesSampleRate: 0.01,
     integrations: [replayIntegration()],
     // Session Replay

@@ -1,32 +1,30 @@
-import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
-
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
-
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { Meta, Title } from '../../../context/meta'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
+import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
+import { MODALS, hideModal } from '../../../stores/ui'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
 import { loadAuthor } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
+import { byCreated } from '../../../utils/sortby'
 import { splitToPages } from '../../../utils/splitToPages'
+import stylesArticle from '../../Article/Article.module.scss'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
 import { AuthorShoutsRating } from '../../Author/AuthorShoutsRating'
+import { Placeholder } from '../../Feed/Placeholder'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import { Loading } from '../../_shared/Loading'
-
-import { MODALS, hideModal } from '../../../stores/ui'
-import { byCreated } from '../../../utils/sortby'
-import stylesArticle from '../../Article/Article.module.scss'
 import styles from './Author.module.scss'
 
 type Props = {
@@ -34,71 +32,26 @@ type Props = {
   shouts?: Shout[]
   author?: Author
 }
+
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
-  const { followers: myFollowers } = useFollowing()
-  const { session } = useSession()
+  const { followers: myFollowers, follows: myFollows } = useFollowing()
+  const { author: me } = useSession()
   const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
   const { page: getPage, searchParams } = useRouter()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
-  const [author, setAuthor] = createSignal<Author>()
+  const [author, setAuthor] = createSignal<Author>(props.author)
   const [followers, setFollowers] = createSignal([])
-  const [following, setFollowing] = createSignal<Array<Author | Topic>>([]) // flat AuthorFollowsResult
+  const [following, changeFollowing] = createSignal<Array<Author | Topic>>([]) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const [commented, setCommented] = createSignal<Reaction[]>()
   const modal = MODALS[searchParams().m]
 
-  const [sessionChecked, setSessionChecked] = createSignal(false)
-  createEffect(() => {
-    if (
-      !sessionChecked() &&
-      props.authorSlug &&
-      session()?.user?.app_data?.profile?.slug === props.authorSlug
-    ) {
-      setSessionChecked(true)
-      const appdata = session()?.user.app_data
-      if (appdata) {
-        console.info('preloaded my own profile')
-        const { authors, profile, topics } = appdata
-        setFollowers(myFollowers)
-        setAuthor(profile)
-        setFollowing([...(authors || []), ...(topics || [])])
-      }
-    }
-  })
-
-  const bioContainerRef: { current: HTMLDivElement } = { current: null }
-  const bioWrapperRef: { current: HTMLDivElement } = { current: null }
-
-  const fetchData = async (slug: string) => {
-    if (author()?.stat.followers || author()?.stat.followers === (followers() || [])?.length) return
-    try {
-      const [subscriptionsResult, followersResult, authorResult] = await Promise.all([
-        apiClient.getAuthorFollows({ slug }),
-        apiClient.getAuthorFollowers({ slug }),
-        loadAuthor({ slug }),
-      ])
-      const { authors, topics } = subscriptionsResult
-      setAuthor(authorResult)
-      setFollowing([...(authors || []), ...(topics || [])])
-      setFollowers(followersResult || [])
-
-      console.info('[components.Author] data loaded')
-    } catch (error) {
-      console.error('[components.Author] fetch error', error)
-    }
-  }
-
-  const checkBioHeight = () => {
-    if (bioContainerRef.current) {
-      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapperRef.current.offsetHeight)
-    }
-  }
-
+  // пагинация загрузки ленты постов
   const loadMore = async () => {
     saveScrollPosition()
     const { hasMore } = await loadShouts({
@@ -110,34 +63,70 @@ export const AuthorView = (props: Props) => {
     restoreScrollPosition()
   }
 
+  // загружает профиль и подписки
+  const [isFetching, setIsFetching] = createSignal(false)
+  const fetchData = async (slug) => {
+    setIsFetching(true)
+    const authorResult = await loadAuthor({ slug })
+    setAuthor(authorResult)
+    console.info(`[Author] profile for @${slug} fetched`)
+
+    const followsResult = await apiClient.getAuthorFollows({ slug })
+    const { authors, topics } = followsResult
+    changeFollowing([...(authors || []), ...(topics || [])])
+    console.info(`[Author] follows for @${slug} fetched`)
+
+    const followersResult = await apiClient.getAuthorFollowers({ slug })
+    setFollowers(followersResult || [])
+    console.info(`[Author] followers for @${slug} fetched`)
+    setIsFetching(false)
+  }
+
+  // проверяет не собственный ли это профиль, иначе - загружает
+  createEffect(
+    on([() => me(), () => props.authorSlug], ([myProfile, slug]) => {
+      const my = slug && myProfile?.slug === slug
+      if (my) {
+        console.debug('[Author] my profile precached')
+        myProfile && setAuthor(myProfile)
+        setFollowers(myFollowers() || [])
+        changeFollowing([...(myFollows?.authors || []), ...(myFollows?.topics || [])])
+      } else if (slug && !isFetching()) {
+        fetchData(slug)
+      }
+    }),
+    { defer: true },
+  )
+
+  // догружает ленту и комментарии
+  createEffect(
+    on(author, async (profile) => {
+      if (!commented() && profile) {
+        await loadMore()
+
+        const ccc = await apiClient.getReactionsBy({
+          by: { comment: true, created_by: profile.id },
+        })
+        setCommented(ccc)
+      }
+    }),
+  )
+
+  const bioContainerRef: { current: HTMLDivElement } = { current: null }
+  const bioWrapperRef: { current: HTMLDivElement } = { current: null }
+  const checkBioHeight = () => {
+    if (bioContainerRef.current) {
+      setShowExpandBioControl(bioContainerRef.current.offsetHeight > bioWrapperRef.current.offsetHeight)
+    }
+  }
+
   onMount(() => {
     if (!modal) hideModal()
-    fetchData(props.authorSlug)
     checkBioHeight()
-    loadMore()
   })
 
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
-  )
-
-  const fetchComments = async (commenter: Author) => {
-    const data = await apiClient.getReactionsBy({
-      by: { comment: true, created_by: commenter.id },
-    })
-    setCommented(data)
-  }
-
-  const authorSlug = createMemo(() => author()?.slug)
-  createEffect(
-    on(
-      () => authorSlug(),
-      () => {
-        fetchData(authorSlug())
-        fetchComments(author())
-      },
-      { defer: true },
-    ),
   )
 
   const ogImage = createMemo(() =>
@@ -168,16 +157,12 @@ export const AuthorView = (props: Props) => {
         <Show when={author()} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
-              <AuthorCard author={author()} followers={followers() || []} following={following() || []} />
+              <AuthorCard author={author()} followers={followers() || []} flatFollows={following() || []} />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">
                 <ul class="view-switcher">
-                  <li
-                    classList={{
-                      'view-switcher__item--selected': getPage().route === 'author',
-                    }}
-                  >
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'author' }}>
                     <a
                       href={getPagePath(router, 'author', {
                         slug: props.authorSlug,
@@ -189,11 +174,7 @@ export const AuthorView = (props: Props) => {
                       <span class="view-switcher__counter">{author().stat.shouts}</span>
                     </Show>
                   </li>
-                  <li
-                    classList={{
-                      'view-switcher__item--selected': getPage().route === 'authorComments',
-                    }}
-                  >
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
                     <a
                       href={getPagePath(router, 'authorComments', {
                         slug: props.authorSlug,
@@ -205,11 +186,7 @@ export const AuthorView = (props: Props) => {
                       <span class="view-switcher__counter">{author().stat.comments}</span>
                     </Show>
                   </li>
-                  <li
-                    classList={{
-                      'view-switcher__item--selected': getPage().route === 'authorAbout',
-                    }}
-                  >
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
                     <a
                       onClick={() => checkBioHeight()}
                       href={getPagePath(router, 'authorAbout', {
@@ -260,6 +237,12 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'authorComments'}>
+          <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
+            <div class="wide-container">
+              <Placeholder type={getPage().route} mode="profile" />
+            </div>
+          </Show>
+
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -280,46 +263,47 @@ export const AuthorView = (props: Props) => {
           </div>
         </Match>
         <Match when={getPage().route === 'author'}>
-          <Show when={sortedArticles().length === 1}>
+          <Show when={me()?.slug === props.authorSlug && !me().stat?.shouts}>
+            <div class="wide-container">
+              <Placeholder type={getPage().route} mode="profile" />
+            </div>
+          </Show>
+
+          <Show when={sortedArticles().length > 0}>
             <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
-          </Show>
 
-          <Show when={sortedArticles().length === 2}>
-            <Row2 articles={sortedArticles()} isEqual={true} noauthor={true} nodate={true} />
-          </Show>
+            <Show when={sortedArticles().length > 1}>
+              <Switch>
+                <Match when={sortedArticles().length === 2}>
+                  <Row2 articles={sortedArticles()} isEqual={true} noauthor={true} nodate={true} />
+                </Match>
+                <Match when={sortedArticles().length === 3}>
+                  <Row3 articles={sortedArticles()} noauthor={true} nodate={true} />
+                </Match>
+                <Match when={sortedArticles().length > 3}>
+                  <For each={pages()}>
+                    {(page) => (
+                      <>
+                        <Row1 article={page[0]} noauthor={true} nodate={true} />
+                        <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
+                        <Row1 article={page[3]} noauthor={true} nodate={true} />
+                        <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
+                        <Row1 article={page[6]} noauthor={true} nodate={true} />
+                        <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
+                      </>
+                    )}
+                  </For>
+                </Match>
+              </Switch>
+            </Show>
 
-          <Show when={sortedArticles().length === 3}>
-            <Row3 articles={sortedArticles()} noauthor={true} nodate={true} />
-          </Show>
-
-          <Show when={sortedArticles().length > 3}>
-            <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noauthor={true} />
-            <Row1 article={sortedArticles()[3]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noauthor={true} />
-            <Row1 article={sortedArticles()[6]} noauthor={true} nodate={true} />
-            <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noauthor={true} />
-
-            <For each={pages()}>
-              {(page) => (
-                <>
-                  <Row1 article={page[0]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
-                  <Row1 article={page[3]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
-                  <Row1 article={page[6]} noauthor={true} nodate={true} />
-                  <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
-                </>
-              )}
-            </For>
-          </Show>
-
-          <Show when={isLoadMoreButtonVisible()}>
-            <p class="load-more-container">
-              <button class="button" onClick={loadMore}>
-                {t('Load more')}
-              </button>
-            </p>
+            <Show when={isLoadMoreButtonVisible()}>
+              <p class="load-more-container">
+                <button class="button" onClick={loadMore}>
+                  {t('Load more')}
+                </button>
+              </p>
+            </Show>
           </Show>
         </Match>
       </Switch>

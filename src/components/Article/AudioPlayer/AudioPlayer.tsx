@@ -31,16 +31,7 @@ export const AudioPlayer = (props: Props) => {
   const [isPlaying, setIsPlaying] = createSignal(false)
 
   const currentTack = createMemo(() => props.media[currentTrackIndex()])
-
-  createEffect(
-    on(
-      () => currentTrackIndex(),
-      () => {
-        setCurrentTrackDuration(0)
-      },
-      { defer: true },
-    ),
-  )
+  createEffect(on(currentTrackIndex, () => setCurrentTrackDuration(0), { defer: true }))
 
   const handlePlayMedia = async (trackIndex: number) => {
     setIsPlaying(!isPlaying() || trackIndex !== currentTrackIndex())

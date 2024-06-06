@@ -1,6 +1,5 @@
-import { Match, Switch, createEffect, on, onCleanup } from 'solid-js'
+import { createEffect, on, onCleanup } from 'solid-js'
 
-import { AuthGuard } from '../components/AuthGuard'
 import { Feed } from '../components/Views/Feed'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
@@ -25,34 +24,14 @@ const handleMyFeedLoadShouts = (options: LoadShoutsOptions) => {
 
 export const FeedPage = () => {
   const { t } = useLocalize()
-
-  onCleanup(() => resetSortedArticles())
-
   const { page } = useRouter()
-
-  createEffect(
-    on(
-      () => page().route,
-      () => {
-        resetSortedArticles()
-      },
-      { defer: true },
-    ),
-  )
+  createEffect(on(page, (_) => resetSortedArticles(), { defer: true }))
+  onCleanup(() => resetSortedArticles())
 
   return (
     <PageLayout title={t('Feed')}>
       <ReactionsProvider>
-        <Switch fallback={<Feed loadShouts={handleFeedLoadShouts} />}>
-          <Match when={page().route === 'feed'}>
-            <Feed loadShouts={handleFeedLoadShouts} />
-          </Match>
-          <Match when={page().route === 'feedMy'}>
-            <AuthGuard>
-              <Feed loadShouts={handleMyFeedLoadShouts} />
-            </AuthGuard>
-          </Match>
-        </Switch>
+        <Feed loadShouts={page().route === 'feedMy' ? handleMyFeedLoadShouts : handleFeedLoadShouts} />
       </ReactionsProvider>
     </PageLayout>
   )

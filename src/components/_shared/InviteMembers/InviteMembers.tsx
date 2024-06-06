@@ -66,7 +66,7 @@ export const InviteMembers = (props: Props) => {
 
   createEffect(
     on(
-      () => sortedAuthors(),
+      sortedAuthors,
       (currentAuthors) => {
         setAuthorsToInvite(currentAuthors.map((author) => ({ ...author, selected: false })))
       },

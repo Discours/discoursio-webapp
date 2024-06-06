@@ -7,7 +7,7 @@ import { useLocalize } from '../context/localize'
 import { useSession } from '../context/session'
 import { apiClient } from '../graphql/client/core'
 import { Shout } from '../graphql/schema/core.gen'
-import { router, useRouter } from '../stores/router'
+import { router } from '../stores/router'
 
 import { redirectPage } from '@nanostores/router'
 import { useSnackbar } from '../context/snackbar'
@@ -33,7 +33,6 @@ const getContentTypeTitle = (layout: LayoutType) => {
 export const EditPage = () => {
   const { t } = useLocalize()
   const { session } = useSession()
-  const { page } = useRouter()
   const snackbar = useSnackbar()
 
   const fail = async (error: string) => {
@@ -48,18 +47,21 @@ export const EditPage = () => {
 
   createEffect(
     on(
-      () => page(),
+      () => window?.location.pathname,
       (p) => {
-        if (p?.path) {
-          console.debug(p?.path)
-          const shoutId = p?.path.split('/').pop()
-          const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
-          console.debug(`editing shout ${shoutIdFromUrl}`)
-          if (shoutIdFromUrl) {
-            setShoutId(shoutIdFromUrl)
+        if (p) {
+          console.debug(p)
+          const shoutId = p.split('/').pop()
+          if (shoutId) {
+            const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
+            console.debug(`editing shout ${shoutIdFromUrl}`)
+            if (shoutIdFromUrl) {
+              setShoutId(shoutIdFromUrl)
+            }
           }
         }
       },
+      { defer: true },
     ),
   )
 

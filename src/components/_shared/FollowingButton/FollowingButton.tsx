@@ -2,35 +2,36 @@ import { clsx } from 'clsx'
 import { Show, createMemo } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
 import { Button } from '../Button'
-import stylesButton from '../Button/Button.module.scss'
 import { CheckButton } from '../CheckButton'
 import { Icon } from '../Icon'
-import styles from './BadgeDubscribeButton.module.scss'
+
+import stylesButton from '../Button/Button.module.scss'
+import styles from './FollowingButton.module.scss'
 
 type Props = {
   class?: string
-  isSubscribed: boolean
-  minimizeSubscribeButton?: boolean
+  isFollowed: boolean
+  minimize?: boolean
   action: () => void
   iconButtons?: boolean
-  actionMessageType?: 'subscribe' | 'unsubscribe'
+  actionMessageType?: 'follow' | 'unfollow'
 }
 
-export const BadgeSubscribeButton = (props: Props) => {
+export const FollowingButton = (props: Props) => {
   const { t } = useLocalize()
 
   const inActionText = createMemo(() => {
-    return props.actionMessageType === 'subscribe' ? t('Subscribing...') : t('Unsubscribing...')
+    return props.actionMessageType === 'follow' ? t('Following...') : t('Unfollowing...')
   })
 
   return (
     <div class={props.class}>
       <Show
-        when={!props.minimizeSubscribeButton}
-        fallback={<CheckButton text={t('Follow')} checked={props.isSubscribed} onClick={props.action} />}
+        when={!props.minimize}
+        fallback={<CheckButton text={t('Follow')} checked={props.isFollowed} onClick={props.action} />}
       >
         <Show
-          when={props.isSubscribed}
+          when={props.isFollowed}
           fallback={
             <Button
               variant={props.iconButtons ? 'secondary' : 'bordered'}
@@ -38,7 +39,7 @@ export const BadgeSubscribeButton = (props: Props) => {
               value={
                 <Show
                   when={props.iconButtons}
-                  fallback={props.actionMessageType ? inActionText() : t('Subscribe')}
+                  fallback={props.actionMessageType ? inActionText() : t('Follow')}
                 >
                   <Icon name="author-subscribe" class={stylesButton.icon} />
                 </Show>
@@ -47,7 +48,7 @@ export const BadgeSubscribeButton = (props: Props) => {
               isSubscribeButton={true}
               class={clsx(styles.actionButton, {
                 [styles.iconed]: props.iconButtons,
-                [stylesButton.subscribed]: props.isSubscribed,
+                [stylesButton.followed]: props.isFollowed,
               })}
             />
           }
@@ -76,7 +77,7 @@ export const BadgeSubscribeButton = (props: Props) => {
             isSubscribeButton={true}
             class={clsx(styles.actionButton, {
               [styles.iconed]: props.iconButtons,
-              [stylesButton.subscribed]: props.isSubscribed,
+              [stylesButton.followed]: props.isFollowed,
             })}
           />
         </Show>

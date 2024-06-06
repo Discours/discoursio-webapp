@@ -27,6 +27,7 @@ import { EditorSwiper } from '../../_shared/SolidSwiper'
 
 import { PublishSettings } from '../PublishSettings'
 
+import { Loading } from '../../_shared/Loading'
 import styles from './EditView.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
@@ -145,7 +146,7 @@ export const EditView = (props: Props) => {
 
   const handleMediaDelete = (index) => {
     const copy = [...mediaItems()]
-    copy.splice(index, 1)
+    if (copy?.length > 0) copy.splice(index, 1)
     handleInputChange('media', JSON.stringify(copy))
   }
 
@@ -403,7 +404,7 @@ export const EditView = (props: Props) => {
                 </Show>
               </div>
             </div>
-            <Show when={page().route === 'edit'}>
+            <Show when={page().route === 'edit' && form?.shoutId} fallback={<Loading />}>
               <Editor
                 shoutId={form.shoutId}
                 initialContent={form.body}

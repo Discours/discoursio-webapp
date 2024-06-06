@@ -11,7 +11,7 @@ import { useModalStore } from '../../../stores/ui'
 import { getDescription } from '../../../utils/meta'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Icon } from '../../_shared/Icon'
-import { Subscribe } from '../../_shared/Subscribe'
+import { Newsletter } from '../../_shared/Newsletter'
 import { AuthModal } from '../AuthModal'
 import { ConfirmModal } from '../ConfirmModal'
 import { HeaderAuth } from '../HeaderAuth'
@@ -301,7 +301,7 @@ export const Header = (props: Props) => {
                 </ul>
 
                 <h4>{t('Newsletter')}</h4>
-                <Subscribe variant={'mobileSubscription'} />
+                <Newsletter variant={'mobileSubscription'} />
 
                 <h4>{t('Language')}</h4>
                 <select

@@ -245,6 +245,7 @@ export const SessionProvider = (props: {
             console.warn('app_data is empty')
             if (s?.user) {
               try {
+                console.info('Loading author:', s?.user?.nickname)
                 const a = await loadAuthor({ slug: s?.user?.nickname })
                 addAuthors([a])
                 setAuthor(a)

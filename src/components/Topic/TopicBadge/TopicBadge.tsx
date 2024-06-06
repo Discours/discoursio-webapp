@@ -80,7 +80,7 @@ export const TopicBadge = (props: Props) => {
               when={props.topic.body}
               fallback={
                 <div class={styles.description}>
-                  {t('PublicationsWithCount', { count: props.topic?.stat?.shouts ?? 0 })}
+                  {t('some posts', { count: props.topic?.stat?.shouts ?? 0 })}
                 </div>
               }
             >

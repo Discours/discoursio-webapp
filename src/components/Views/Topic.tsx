@@ -51,23 +51,28 @@ export const TopicView = (props: Props) => {
 
   const [topic, setTopic] = createSignal<Topic>()
   createEffect(
-    on([() => props.topicSlug, topic, topicEntities], ([slug, t, ttt]) => {
+    on([() => props.topicSlug, topic, topicEntities], async ([slug, t, ttt]) => {
       if (slug && !t && ttt) {
-        console.debug(`${ttt.length} topics preloaded`)
         const current = ttt[slug]
         console.debug(current)
         setTopic(current)
-        loadTopicFollowers()
-        loadTopicAuthors()
-        loadRandom()
+        await loadTopicFollowers()
+        await loadTopicAuthors()
+        await loadRandom()
       }
     }),
   )
 
   const [followers, setFollowers] = createSignal<Author[]>(props.followers || [])
   const loadTopicFollowers = async () => {
-    const result = await apiClient.getTopicFollowers({ slug: props.topicSlug })
-    setFollowers(result)
+    const flwrs = await apiClient.getTopicFollowers({ slug: props.topicSlug })
+    setFollowers(flwrs)
+  }
+  const [topicAuthors, setTopicAuthors] = createSignal<Author[]>([])
+  const loadTopicAuthors = async () => {
+    const by: AuthorsBy = { topic: props.topicSlug }
+    const authors = await apiClient.loadAuthorsBy({ by, limit: 10, offset: 0 })
+    setTopicAuthors(authors)
   }
 
   const loadFavoriteTopArticles = async (topic: string) => {
@@ -93,12 +98,6 @@ export const TopicView = (props: Props) => {
     const result = await apiClient.getRandomTopShouts({ options })
 
     setReactedTopMonthArticles(result)
-  }
-  const [topicAuthors, setTopicAuthors] = createSignal<Author[]>([])
-  const loadTopicAuthors = async () => {
-    const by: AuthorsBy = { topic: props.topicSlug }
-    const result = await apiClient.loadAuthorsBy({ by })
-    setTopicAuthors(result)
   }
 
   const loadRandom = () => {

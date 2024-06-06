@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const baseHost = process.env.BASE_HOST || 'https://localhost:3000';
+const baseHost = process.env.BASE_HOST || 'https://localhost:3000'
 
 const pagesTitles = {
   '/': /Дискурс/,

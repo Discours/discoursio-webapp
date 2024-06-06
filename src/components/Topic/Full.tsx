@@ -49,7 +49,7 @@ export const FullTopic = (props: Props) => {
         <Show when={props.topic?.stat}>
           <div class={styles.topicDetailsItem}>
             <Icon name="feed-all" class={styles.topicDetailsIcon} />
-            {t('PublicationsWithCount', {
+            {t('some posts', {
               count: props.topic?.stat.shouts ?? 0,
             })}
           </div>

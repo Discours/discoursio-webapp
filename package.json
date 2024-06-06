@@ -136,7 +136,5 @@
     "y-prosemirror": "1.2.5",
     "yjs": "13.6.15"
   },
-  "trustedDependencies": [
-    "@biomejs/biome"
-  ]
+  "trustedDependencies": ["@biomejs/biome"]
 }

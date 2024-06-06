@@ -487,7 +487,7 @@ export const FullArticle = (props: Props) => {
 
               <Show when={props.article.stat?.viewed}>
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
-                  {t('viewsWithCount', { count: props.article.stat?.viewed })}
+                  {t('some views', { count: props.article.stat?.viewed })}
                 </div>
               </Show>
 

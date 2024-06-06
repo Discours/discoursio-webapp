@@ -99,16 +99,14 @@ export const TopicBadge = (props: Props) => {
 
       <Show when={!props.subscriptionsMode}>
         <div class={styles.stats}>
-          <span class={styles.statsItem}>{t('shoutsWithCount', { count: props.topic?.stat?.shouts })}</span>
-          <span class={styles.statsItem}>
-            {t('authorsWithCount', { count: props.topic?.stat?.authors })}
-          </span>
+          <span class={styles.statsItem}>{t('some shouts', { count: props.topic?.stat?.shouts })}</span>
+          <span class={styles.statsItem}>{t('some authors', { count: props.topic?.stat?.authors })}</span>
           <span class={styles.statsItem}>
             {t('some followers', { count: props.topic?.stat?.followers })}
           </span>
           <Show when={props.topic?.stat?.comments}>
             <span class={styles.statsItem}>
-              {t('CommentsWithCount', { count: props.topic?.stat?.comments ?? 0 })}
+              {t('some comments', { count: props.topic?.stat?.comments ?? 0 })}
             </span>
           </Show>
         </div>

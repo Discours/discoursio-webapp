@@ -50,13 +50,21 @@ export const TopicView = (props: Props) => {
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
 
   const [topic, setTopic] = createSignal<Topic>()
+  createEffect(
+    on(
+      [topic, topicEntities],
+      ([t, ttt]) => {
+        if (props.topicSlug && !t && ttt) {
+          setTopic(ttt[props.topicSlug])
+          loadTopicFollowers()
+          loadTopicAuthors()
+          loadRandom()
+        }
+      },
+      { defer: true },
+    ),
+  )
 
-  createEffect(() => {
-    const topics = topicEntities()
-    if (props.topicSlug && !topic() && topics) {
-      setTopic(topics[props.topicSlug])
-    }
-  })
   const [followers, setFollowers] = createSignal<Author[]>(props.followers || [])
   const loadTopicFollowers = async () => {
     const result = await apiClient.getTopicFollowers({ slug: props.topicSlug })
@@ -98,18 +106,6 @@ export const TopicView = (props: Props) => {
     loadFavoriteTopArticles(topic()?.slug)
     loadReactedTopMonthArticles(topic()?.slug)
   }
-
-  createEffect(
-    on(
-      () => topic()?.id,
-      (_) => {
-        loadTopicFollowers()
-        loadTopicAuthors()
-        loadRandom()
-      },
-      { defer: true },
-    ),
-  )
 
   const title = createMemo(
     () =>

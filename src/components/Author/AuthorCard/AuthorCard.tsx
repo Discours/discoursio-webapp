@@ -199,7 +199,7 @@ export const AuthorCard = (props: Props) => {
                 followers={props.followers}
                 followersAmount={props.author?.stat?.followers}
                 following={props.flatFollows}
-                followingAmount={props.author?.stat?.authors + props.author?.stat?.topics}
+                followingAmount={props.flatFollows.length}
               />
             </div>
           </Show>

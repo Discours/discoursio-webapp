@@ -51,18 +51,17 @@ export const TopicView = (props: Props) => {
 
   const [topic, setTopic] = createSignal<Topic>()
   createEffect(
-    on(
-      [topic, topicEntities],
-      ([t, ttt]) => {
-        if (props.topicSlug && !t && ttt) {
-          setTopic(ttt[props.topicSlug])
-          loadTopicFollowers()
-          loadTopicAuthors()
-          loadRandom()
-        }
-      },
-      { defer: true },
-    ),
+    on([() => props.topicSlug, topic, topicEntities], ([slug, t, ttt]) => {
+      if (slug && !t && ttt) {
+        console.debug(`${ttt.length} topics preloaded`)
+        const current = ttt[slug]
+        console.debug(current)
+        setTopic(current)
+        loadTopicFollowers()
+        loadTopicAuthors()
+        loadRandom()
+      }
+    }),
   )
 
   const [followers, setFollowers] = createSignal<Author[]>(props.followers || [])

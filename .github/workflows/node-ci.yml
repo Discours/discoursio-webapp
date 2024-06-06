@@ -10,6 +10,9 @@ jobs:
       - uses: actions/setup-node@v4
 
       - name: Install dependencies
+        run: npm i
+
+      - name: Install CI checks
         run: npm ci
 
       - name: Check types
@@ -24,19 +27,10 @@ jobs:
       - name: Test production build
         run: npm run build
 
-  e2e:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    if: github.event.deployment_status.state == 'success'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-
-      - name: Install dependencies
-        run: npm ci
       - name: Install Playwright
         run: npx playwright install --with-deps
+
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npm run e2e
         env:
           BASE_URL: ${{ github.event.deployment_status.target_url }}

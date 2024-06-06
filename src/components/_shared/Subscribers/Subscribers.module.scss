@@ -1,19 +1,8 @@
-.subscribersContainer {
-  display: flex;
-  flex-wrap: wrap;
-  font-size: 1.4rem;
-  margin-top: 1.5rem;
-
-  @include media-breakpoint-down(md) {
-    justify-content: center;
-  }
-}
-
 .subscribers {
   align-items: center;
   cursor: pointer;
   display: inline-flex;
-  margin: 0 2% 1rem;
+  margin: 0 1rem 0 0;
   vertical-align: top;
   border-bottom: unset !important;
 
@@ -44,7 +33,6 @@
 
   .subscribersCounter {
     font-weight: 500;
-    margin-left: 1rem;
   }
 
   &:hover {
@@ -54,4 +42,9 @@
       background: var(--background-color-invert);
     }
   }
+}
+
+.subscribersList {
+  display: flex;
+  margin-right: 0.6rem;
 }

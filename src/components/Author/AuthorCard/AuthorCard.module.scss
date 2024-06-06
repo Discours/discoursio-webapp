@@ -18,9 +18,8 @@
 
   .authorName {
     @include font-size(4rem);
-
     font-weight: 700;
-    margin-bottom: 0.2em;
+    margin-bottom: 1.2rem;
   }
 
   .authorAbout {
@@ -431,4 +430,17 @@
 
 .listWrapper {
   max-height: 70vh;
+}
+
+.subscribersContainer {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1.4rem;
+  gap: 1rem;
+  margin-top: 0;
+  white-space: nowrap;
+
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
 }

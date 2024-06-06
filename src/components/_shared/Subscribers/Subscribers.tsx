@@ -18,12 +18,14 @@ export const Subscribers = (props: Props) => {
   const { t } = useLocalize()
 
   return (
-    <div class={styles.subscribersContainer}>
+    <>
       <a href="?m=followers" class={styles.subscribers}>
         <Show when={props.followers && props.followers.length > 0}>
-          <For each={props.followers.slice(0, 3)}>
-            {(f) => <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />}
-          </For>
+          <div class={styles.subscribersList}>
+            <For each={props.followers.slice(0, 3)}>
+              {(f) => <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />}
+            </For>
+          </div>
         </Show>
         <div class={styles.subscribersCounter}>
           {t('SubscriberWithCount', {
@@ -34,19 +36,25 @@ export const Subscribers = (props: Props) => {
 
       <a href="?m=following" class={styles.subscribers}>
         <Show when={props.following && props.following.length > 0}>
-          <For each={props.following.slice(0, 3)}>
-            {(f) => {
-              if ('name' in f) {
-                return <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />
-              }
+          <div class={styles.subscribersList}>
+            <For each={props.following.slice(0, 3)}>
+              {(f) => {
+                if ('name' in f) {
+                  return (
+                    <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />
+                  )
+                }
 
-              if ('title' in f) {
-                return <Userpic size={'XS'} name={f.title} userpic={f.pic} class={styles.subscribersItem} />
-              }
+                if ('title' in f) {
+                  return (
+                    <Userpic size={'XS'} name={f.title} userpic={f.pic} class={styles.subscribersItem} />
+                  )
+                }
 
-              return null
-            }}
-          </For>
+                return null
+              }}
+            </For>
+          </div>
         </Show>
         <div class={styles.subscribersCounter}>
           {t('SubscriptionWithCount', {
@@ -54,6 +62,6 @@ export const Subscribers = (props: Props) => {
           })}
         </div>
       </a>
-    </div>
+    </>
   )
 }

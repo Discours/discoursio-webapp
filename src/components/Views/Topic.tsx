@@ -1,11 +1,4 @@
-import {
-  Author,
-  AuthorsBy,
-  LoadShoutsOptions,
-  QueryLoad_Authors_ByArgs,
-  Shout,
-  Topic,
-} from '../../graphql/schema/core.gen'
+import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'

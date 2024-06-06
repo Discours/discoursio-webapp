@@ -86,7 +86,7 @@ export const TableOfContents = (props: Props) => {
           <Show when={isVisible()}>
             <div class={styles.TableOfContentsContainerInner}>
               <div class={styles.TableOfContentsHeader}>
-                <p class={styles.TableOfContentsHeading}>{t('contents')}</p>
+                <p class={styles.TableOfContentsHeading}>{t('Contents')}</p>
               </div>
               <ul class={styles.TableOfContentsHeadingsList}>
                 <For each={headings()}>

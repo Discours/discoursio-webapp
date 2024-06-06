@@ -1,33 +1,30 @@
-import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
-
 import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
-
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { Meta, Title } from '../../../context/meta'
 import { useSession } from '../../../context/session'
 import { apiClient } from '../../../graphql/client/core'
+import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
 import { router, useRouter } from '../../../stores/router'
+import { MODALS, hideModal } from '../../../stores/ui'
 import { loadShouts, useArticlesStore } from '../../../stores/zine/articles'
 import { loadAuthor } from '../../../stores/zine/authors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { getDescription } from '../../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
+import { byCreated } from '../../../utils/sortby'
 import { splitToPages } from '../../../utils/splitToPages'
+import stylesArticle from '../../Article/Article.module.scss'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
 import { AuthorShoutsRating } from '../../Author/AuthorShoutsRating'
+import { Placeholder } from '../../Feed/Placeholder'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import { Loading } from '../../_shared/Loading'
-
-import { MODALS, hideModal } from '../../../stores/ui'
-import { byCreated } from '../../../utils/sortby'
-import stylesArticle from '../../Article/Article.module.scss'
-import { Placeholder } from '../../Feed/Placeholder'
 import styles from './Author.module.scss'
 
 type Props = {
@@ -35,6 +32,7 @@ type Props = {
   shouts?: Shout[]
   author?: Author
 }
+
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
@@ -164,11 +162,7 @@ export const AuthorView = (props: Props) => {
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">
                 <ul class="view-switcher">
-                  <li
-                    classList={{
-                      'view-switcher__item--selected': getPage().route === 'author',
-                    }}
-                  >
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'author' }}>
                     <a
                       href={getPagePath(router, 'author', {
                         slug: props.authorSlug,
@@ -180,11 +174,7 @@ export const AuthorView = (props: Props) => {
                       <span class="view-switcher__counter">{author().stat.shouts}</span>
                     </Show>
                   </li>
-                  <li
-                    classList={{
-                      'view-switcher__item--selected': getPage().route === 'authorComments',
-                    }}
-                  >
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorComments' }}>
                     <a
                       href={getPagePath(router, 'authorComments', {
                         slug: props.authorSlug,
@@ -196,11 +186,7 @@ export const AuthorView = (props: Props) => {
                       <span class="view-switcher__counter">{author().stat.comments}</span>
                     </Show>
                   </li>
-                  <li
-                    classList={{
-                      'view-switcher__item--selected': getPage().route === 'authorAbout',
-                    }}
-                  >
+                  <li classList={{ 'view-switcher__item--selected': getPage().route === 'authorAbout' }}>
                     <a
                       onClick={() => checkBioHeight()}
                       href={getPagePath(router, 'authorAbout', {
@@ -284,38 +270,31 @@ export const AuthorView = (props: Props) => {
           </Show>
 
           <Show when={sortedArticles().length > 0}>
-            <Show when={sortedArticles().length === 1}>
-              <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
-            </Show>
+            <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
 
-            <Show when={sortedArticles().length === 2}>
-              <Row2 articles={sortedArticles()} isEqual={true} noauthor={true} nodate={true} />
-            </Show>
-
-            <Show when={sortedArticles().length === 3}>
-              <Row3 articles={sortedArticles()} noauthor={true} nodate={true} />
-            </Show>
-
-            <Show when={sortedArticles().length > 3}>
-              <Row1 article={sortedArticles()[0]} noauthor={true} nodate={true} />
-              <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} noauthor={true} />
-              <Row1 article={sortedArticles()[3]} noauthor={true} nodate={true} />
-              <Row2 articles={sortedArticles().slice(4, 6)} isEqual={true} noauthor={true} />
-              <Row1 article={sortedArticles()[6]} noauthor={true} nodate={true} />
-              <Row2 articles={sortedArticles().slice(7, 9)} isEqual={true} noauthor={true} />
-
-              <For each={pages()}>
-                {(page) => (
-                  <>
-                    <Row1 article={page[0]} noauthor={true} nodate={true} />
-                    <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
-                    <Row1 article={page[3]} noauthor={true} nodate={true} />
-                    <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
-                    <Row1 article={page[6]} noauthor={true} nodate={true} />
-                    <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
-                  </>
-                )}
-              </For>
+            <Show when={sortedArticles().length > 1}>
+              <Switch>
+                <Match when={sortedArticles().length === 2}>
+                  <Row2 articles={sortedArticles()} isEqual={true} noauthor={true} nodate={true} />
+                </Match>
+                <Match when={sortedArticles().length === 3}>
+                  <Row3 articles={sortedArticles()} noauthor={true} nodate={true} />
+                </Match>
+                <Match when={sortedArticles().length > 3}>
+                  <For each={pages()}>
+                    {(page) => (
+                      <>
+                        <Row1 article={page[0]} noauthor={true} nodate={true} />
+                        <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
+                        <Row1 article={page[3]} noauthor={true} nodate={true} />
+                        <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
+                        <Row1 article={page[6]} noauthor={true} nodate={true} />
+                        <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
+                      </>
+                    )}
+                  </For>
+                </Match>
+              </Switch>
             </Show>
 
             <Show when={isLoadMoreButtonVisible()}>

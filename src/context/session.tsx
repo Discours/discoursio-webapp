@@ -32,7 +32,7 @@ import { inboxClient } from '../graphql/client/chat'
 import { apiClient } from '../graphql/client/core'
 import { useRouter } from '../stores/router'
 import { showModal } from '../stores/ui'
-import { addAuthors } from '../stores/zine/authors'
+import { addAuthors, loadAuthor } from '../stores/zine/authors'
 
 import { authApiUrl } from '../utils/config'
 import { useLocalize } from './localize'
@@ -203,7 +203,6 @@ export const SessionProvider = (props: {
     ssrLoadFrom: 'initial',
     initialValue: null,
   })
-  const author = createMemo(() => session()?.user?.app_data?.profile)
 
   const checkSessionIsExpired = () => {
     const expires_at_data = localStorage.getItem('expires_at')
@@ -225,38 +224,46 @@ export const SessionProvider = (props: {
 
   onCleanup(() => clearTimeout(minuteLater))
 
+  const [author, setAuthor] = createSignal<Author>()
   // when session is loaded
   createEffect(
     on(
-      session,
-      (s: AuthToken) => {
+      () => session(),
+      async (s: AuthToken) => {
         if (s) {
           const token = s?.access_token
-          if (token) {
-            if (!inboxClient.private) {
-              apiClient.connect(token)
-              inboxClient.connect(token)
-            }
-
-            try {
-              const profile = session()?.user?.app_data?.profile
-              if (profile?.id) addAuthors([profile])
-            } catch (e) {
-              console.error(e)
-            }
+          const profile = s?.user?.app_data?.profile
+          if (token && !inboxClient.private) {
+            apiClient.connect(token)
+            inboxClient.connect(token)
+          }
+          if (profile?.id) {
+            addAuthors([profile])
+            setAuthor(profile)
             setIsSessionLoaded(true)
           } else {
-            reset()
+            console.warn('app_data is empty')
+            if (s?.user) {
+              try {
+                const a = await loadAuthor({ slug: s?.user?.nickname })
+                addAuthors([a])
+                setAuthor(a)
+                s.user.app_data.profile = a
+              } catch (error) {
+                console.error('Error loading author:', error)
+              }
+            } else {
+              console.warn(s)
+              setSession(null)
+              setAuthor(null)
+              setIsSessionLoaded(true)
+            }
           }
         }
       },
       { defer: true },
     ),
   )
-  const reset = () => {
-    setIsSessionLoaded(true)
-    setSession(null)
-  }
 
   // initial effect
   onMount(() => {
@@ -311,7 +318,8 @@ export const SessionProvider = (props: {
   const signOut = async () => {
     const authResult: ApiResponse<GenericResponse> = await authorizer().logout()
     console.debug(authResult)
-    reset()
+    setSession(null)
+    setIsSessionLoaded(true)
     showSnackbar({ body: t("You've successfully logged out") })
     console.debug(session())
   }

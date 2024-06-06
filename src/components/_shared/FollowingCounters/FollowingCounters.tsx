@@ -5,7 +5,7 @@ import { useLocalize } from '../../../context/localize'
 import { Author, Topic } from '../../../graphql/schema/core.gen'
 import { Userpic } from '../../Author/Userpic'
 
-import styles from './Subscribers.module.scss'
+import styles from './FollowingCounters.module.scss'
 
 type Props = {
   followers?: Author[]
@@ -14,7 +14,7 @@ type Props = {
   followingAmount?: number
 }
 
-export const Subscribers = (props: Props) => {
+export const FollowingCounters = (props: Props) => {
   const { t } = useLocalize()
 
   return (

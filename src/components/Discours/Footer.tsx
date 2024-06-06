@@ -3,7 +3,7 @@ import { For, createMemo } from 'solid-js'
 
 import { useLocalize } from '../../context/localize'
 import { Icon } from '../_shared/Icon'
-import { Subscribe } from '../_shared/Subscribe'
+import { Newsletter } from '../_shared/Newsletter'
 
 import styles from './Footer.module.scss'
 
@@ -133,7 +133,7 @@ export const Footer = () => {
           <div class="col-md-6">
             <h5>{t('Subscription')}</h5>
             <p>{t('Join our maillist')}</p>
-            <Subscribe />
+            <Newsletter />
           </div>
         </div>
 

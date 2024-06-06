@@ -9,8 +9,8 @@ import { useSession } from '../../context/session'
 import { FollowingEntity } from '../../graphql/schema/core.gen'
 import { Button } from '../_shared/Button'
 
+import { FollowingCounters } from '../_shared/FollowingCounters'
 import { Icon } from '../_shared/Icon'
-import { Subscribers } from '../_shared/Subscribers'
 import styles from './Full.module.scss'
 
 type Props = {
@@ -55,7 +55,7 @@ export const FullTopic = (props: Props) => {
           </div>
         </Show>
 
-        <Subscribers
+        <FollowingCounters
           followers={props.followers}
           followersAmount={props.topic?.stat?.followers}
           following={props.authors}

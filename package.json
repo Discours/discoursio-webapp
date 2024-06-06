@@ -13,7 +13,6 @@
     "e2e": "npx playwright test --project=chromium",
     "fix": "npm run check:code:fix && stylelint **/*.{scss,css} --fix",
     "format": "npx @biomejs/biome format src/. --write",
-    "hygen": "HYGEN_TMPLS=gen hygen",
     "postinstall": "npm run codegen && npx patch-package",
     "check:code": "npx @biomejs/biome check src --log-kind=compact --verbose",
     "check:code:fix": "npx @biomejs/biome check . --apply",
@@ -137,5 +136,7 @@
     "y-prosemirror": "1.2.5",
     "yjs": "13.6.15"
   },
-  "trustedDependencies": ["@biomejs/biome"]
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }

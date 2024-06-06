@@ -1,15 +1,15 @@
 import { expect, test } from '@playwright/test'
 
-const baseHost = process.env.BASE_URL
+const baseHost = process.env.BASE_HOST || 'https://localhost:3000';
 
 const pagesTitles = {
   '/': /Дискурс/,
-  '/feed': /Дискурс/,
-  '/create': /Дискурс/,
-  '/about/donate': /Дискурс/,
-  '/authors': /Дискурс/,
-  '/topics': /Дискурс/,
-  '/inbox': /Дискурс/,
+  '/feed': /Лента/,
+  '/create': /Выберите тип публикации/,
+  '/about/help': /Поддержите Дискурс/,
+  '/authors': /Авторы/,
+  '/topics': /Темы и сюжеты/,
+  '/inbox': /Входящие/,
 }
 
 Object.keys(pagesTitles).forEach((res: string) => {

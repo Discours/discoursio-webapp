@@ -40,7 +40,7 @@ export const Sidebar = () => {
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-all" class={styles.icon} />
-              {t('All')}
+              {t('Common feed')}
             </span>
           </a>
         </li>

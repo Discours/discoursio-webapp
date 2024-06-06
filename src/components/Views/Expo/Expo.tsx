@@ -123,61 +123,61 @@ export const Expo = (props: Props) => {
     loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
     setArticlesEndPage((prev) => prev + LOAD_MORE_PAGE_SIZE)
   }
-
+  console.log(props.layout)
   return (
     <div class={styles.Expo}>
+      <div class="wide-container">
+        <ul class={clsx('view-switcher')}>
+          <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
+            <a href={getPagePath(router, 'expo', { layout: '' })}>
+              <span class={clsx('linkReplacement')}>{t('All')}</span>
+            </a>
+          </li>
+          <li class={clsx({ 'view-switcher__item--selected': props.layout === 'literature' })}>
+            <ConditionalWrapper
+              condition={props.layout !== 'literature'}
+              wrapper={(children) => (
+                <a href={getPagePath(router, 'expo', { layout: 'literature' })}>{children}</a>
+              )}
+            >
+              <span class={clsx('linkReplacement')}>{t('Literature')}</span>
+            </ConditionalWrapper>
+          </li>
+          <li class={clsx({ 'view-switcher__item--selected': props.layout === 'audio' })}>
+            <ConditionalWrapper
+              condition={props.layout !== 'audio'}
+              wrapper={(children) => (
+                <a href={getPagePath(router, 'expo', { layout: 'audio' })}>{children}</a>
+              )}
+            >
+              <span class={clsx('linkReplacement')}>{t('Music')}</span>
+            </ConditionalWrapper>
+          </li>
+          <li class={clsx({ 'view-switcher__item--selected': props.layout === 'image' })}>
+            <ConditionalWrapper
+              condition={props.layout !== 'image'}
+              wrapper={(children) => (
+                <a href={getPagePath(router, 'expo', { layout: 'image' })}>{children}</a>
+              )}
+            >
+              <span class={clsx('linkReplacement')}>{t('Gallery')}</span>
+            </ConditionalWrapper>
+          </li>
+          <li class={clsx({ 'view-switcher__item--selected': props.layout === 'video' })}>
+            <ConditionalWrapper
+              condition={props.layout !== 'video'}
+              wrapper={(children) => (
+                <a href={getPagePath(router, 'expo', { layout: 'video' })}>{children}</a>
+              )}
+            >
+              <span class={clsx('cursorPointer linkReplacement')}>{t('Video')}</span>
+            </ConditionalWrapper>
+          </li>
+        </ul>
+      </div>
+
       <Show when={expoShouts().length > 0} fallback={<Loading />}>
         <div class="wide-container">
-          <ul class={clsx('view-switcher')}>
-            <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
-              <ConditionalWrapper
-                condition={Boolean(props.layout)}
-                wrapper={(children) => <a href={getPagePath(router, 'expo', { layout: '' })}>{children}</a>}
-              >
-                <span class={clsx('linkReplacement')}>{t('All')}</span>
-              </ConditionalWrapper>
-            </li>
-            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'literature' })}>
-              <ConditionalWrapper
-                condition={props.layout !== 'literature'}
-                wrapper={(children) => (
-                  <a href={getPagePath(router, 'expo', { layout: 'literature' })}>{children}</a>
-                )}
-              >
-                <span class={clsx('linkReplacement')}>{t('Literature')}</span>
-              </ConditionalWrapper>
-            </li>
-            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'audio' })}>
-              <ConditionalWrapper
-                condition={props.layout !== 'audio'}
-                wrapper={(children) => (
-                  <a href={getPagePath(router, 'expo', { layout: 'audio' })}>{children}</a>
-                )}
-              >
-                <span class={clsx('linkReplacement')}>{t('Music')}</span>
-              </ConditionalWrapper>
-            </li>
-            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'image' })}>
-              <ConditionalWrapper
-                condition={props.layout !== 'image'}
-                wrapper={(children) => (
-                  <a href={getPagePath(router, 'expo', { layout: 'image' })}>{children}</a>
-                )}
-              >
-                <span class={clsx('linkReplacement')}>{t('Gallery')}</span>
-              </ConditionalWrapper>
-            </li>
-            <li class={clsx({ 'view-switcher__item--selected': props.layout === 'video' })}>
-              <ConditionalWrapper
-                condition={props.layout !== 'video'}
-                wrapper={(children) => (
-                  <a href={getPagePath(router, 'expo', { layout: 'video' })}>{children}</a>
-                )}
-              >
-                <span class={clsx('cursorPointer linkReplacement')}>{t('Video')}</span>
-              </ConditionalWrapper>
-            </li>
-          </ul>
           <div class="row">
             <For each={expoShouts()?.slice(0, LOAD_MORE_PAGE_SIZE)}>
               {(shout) => (

@@ -99,6 +99,7 @@ const getMainTopicTitle = (article: Shout, lng: string) => {
 
 const LAYOUT_ASPECT = {
   music: styles.aspectRatio1x1,
+  audio: styles.aspectRatio1x1,
   literature: styles.aspectRatio16x9,
   video: styles.aspectRatio16x9,
   image: styles.aspectRatio4x3,

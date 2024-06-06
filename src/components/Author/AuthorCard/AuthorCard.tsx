@@ -17,7 +17,7 @@ import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
-import { FollowingCounters } from '../../_shared/FollowingCounters'
+import { FollowingCounters } from '../../_shared/FollowingCounters/FollowingCounters'
 import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 import { AuthorBadge } from '../AuthorBadge'
 import { Userpic } from '../Userpic'
@@ -199,7 +199,7 @@ export const AuthorCard = (props: Props) => {
                 followers={props.followers}
                 followersAmount={props.author?.stat?.followers}
                 following={props.flatFollows}
-                followingAmount={props.author?.stat?.authors}
+                followingAmount={props.author?.stat?.authors + props.author?.stat?.topics}
               />
             </div>
           </Show>

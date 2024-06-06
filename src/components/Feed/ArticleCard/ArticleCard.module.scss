@@ -13,7 +13,10 @@
 
   &:hover {
     .shoutCardCover {
-      transform: scale(1.05);
+      img,
+      .placeholderCoverImage {
+        transform: scale(1.1);
+      }
     }
   }
 
@@ -110,7 +113,6 @@
   padding-bottom: 56.2%; // 16:9
   position: relative;
   transform-origin: 50% 50%;
-  transition: transform 1s ease-in-out;
 
   &.loading {
     background: rgb(0 0 0 / 20%);
@@ -123,9 +125,10 @@
     width: 100%;
   }
 
-  &:hover img {
-    /* TODO: small zoom on hover */
-    transform: scaleZ(1.1);
+  img,
+  .placeholderCoverImage {
+    transform: scale(1);
+    transition: transform 1s ease-in-out;
   }
 }
 

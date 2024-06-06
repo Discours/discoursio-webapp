@@ -13,7 +13,7 @@
     "e2e": "npx playwright test --project=webkit",
     "fix": "npm run check:code:fix && stylelint **/*.{scss,css} --fix",
     "format": "npx @biomejs/biome format src/. --write",
-    "postinstall": "npm run codegen && npx patch-package && npx playwright install webkit",
+    "postinstall": "npm run codegen && npx patch-package",
     "check:code": "npx @biomejs/biome check src --log-kind=compact --verbose",
     "check:code:fix": "npx @biomejs/biome check . --apply",
     "lint": "npm run lint:code && stylelint **/*.{scss,css}",

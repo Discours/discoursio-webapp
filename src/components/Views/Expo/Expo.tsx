@@ -123,18 +123,15 @@ export const Expo = (props: Props) => {
     loadMoreWithoutScrolling(LOAD_MORE_PAGE_SIZE)
     setArticlesEndPage((prev) => prev + LOAD_MORE_PAGE_SIZE)
   }
-
+  console.log(props.layout)
   return (
     <div class={styles.Expo}>
       <div class="wide-container">
         <ul class={clsx('view-switcher')}>
           <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
-            <ConditionalWrapper
-              condition={Boolean(props.layout)}
-              wrapper={(children) => <a href={getPagePath(router, 'expo', { layout: '' })}>{children}</a>}
-            >
+            <a href={getPagePath(router, 'expo', { layout: '' })}>
               <span class={clsx('linkReplacement')}>{t('All')}</span>
-            </ConditionalWrapper>
+            </a>
           </li>
           <li class={clsx({ 'view-switcher__item--selected': props.layout === 'literature' })}>
             <ConditionalWrapper

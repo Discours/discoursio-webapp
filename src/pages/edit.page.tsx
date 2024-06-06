@@ -61,6 +61,7 @@ export const EditPage = () => {
           }
         }
       },
+      { defer: true },
     ),
   )
 

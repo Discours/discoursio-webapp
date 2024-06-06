@@ -6,4 +6,4 @@ export const errorsReportingDsn =
 export const coreApiUrl = import.meta.env.PUBLIC_API_BASE || 'https://core.discours.io'
 export const chatApiUrl = import.meta.env.PUBLIC_CHAT_API || 'https://inbox.discours.io'
 export const authApiUrl = import.meta.env.PUBLIC_AUTH_API || 'https://auth.discours.io/graphql'
-export const sseUrl = import.meta.env.PUBLIC_REALTIME_EVENTS || 'https://presence.discours.io'
+export const sseUrl = import.meta.env.PUBLIC_REALTIME_EVENTS || 'https://connect.discours.io'

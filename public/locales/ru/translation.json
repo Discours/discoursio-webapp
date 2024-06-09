@@ -427,7 +427,7 @@
   "some followings": "{count, plural, =0 {нет подписок} one {{count} подписка} few {{count} подписки} other {{count} подписок}}",
   "Some new comments to your publication": "{commentsCount, plural, one {Новый комментарий} few {{commentsCount} новых комментария} other {{commentsCount} новых комментариев}} к вашей публикации",
   "Some new replies to your comment": "{commentsCount, plural, one {Новый ответ} few {{commentsCount} новых ответа} other {{commentsCount} новых ответов}} на ваш комментарий к публикации",
-  "some publications": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}",
+  "some posts": "{count, plural, =0 {нет публикаций} one {{count} публикация} few {{count} публикации} other {{count} публикаций}}",
   "some shouts": "{count} {count, plural, one {публикация} few {публикации}  other {публикаций}}",
   "some views": "{count} {count, plural, one {просмотр} few {просмотрa} other {просмотров}}",
   "Something went wrong, check email and password": "Что-то пошло не так. Проверьте адрес электронной почты и пароль",

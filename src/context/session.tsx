@@ -41,7 +41,7 @@ import { useSnackbar } from './snackbar'
 const defaultConfig: ConfigType = {
   authorizerURL: authApiUrl.replace('/graphql', ''),
   redirectURL: 'https://testing.discours.io',
-  clientID: '',
+  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
 }
 
 export type SessionContextType = {
@@ -77,7 +77,7 @@ const metaRes = {
   data: {
     meta: {
       version: 'latest',
-      // client_id: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
+      client_id: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
       is_google_login_enabled: true,
       is_facebook_login_enabled: true,
       is_github_login_enabled: true,

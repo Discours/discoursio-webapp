@@ -47,7 +47,7 @@ const getTagKey = (tag: TagDescription, properties: string[]) => {
   )
 
   // treat `property` as `name` for meta tags
-  if (Object.hasOwn(tagProps, 'name') || Object.hasOwn(tagProps, 'property')) {
+  if (tagProps.hasOwnProperty.call('name') || tagProps.hasOwnProperty.call('property')) {
     tagProps.name = tagProps.name || tagProps.property
     tagProps.property = undefined
   }

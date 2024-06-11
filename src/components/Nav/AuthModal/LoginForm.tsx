@@ -99,7 +99,8 @@ export const LoginForm = () => {
         console.warn('[signIn] errors: ', errors)
         errors.forEach((error) => {
           switch (error.message) {
-            case 'user has not signed up email & password': {
+            case 'user has not signed up email & password':
+            case 'bad user credentials': {
               setValidationErrors((prev) => ({
                 ...prev,
                 password: t('Something went wrong, check email and password'),

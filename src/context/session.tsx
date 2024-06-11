@@ -40,8 +40,8 @@ import { useSnackbar } from './snackbar'
 
 const defaultConfig: ConfigType = {
   authorizerURL: authApiUrl.replace('/graphql', ''),
-  redirectURL: 'https://testing.discours.io',
-  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
+  redirectURL: 'https://testing2.discours.io',
+  clientID: '545c8eb6-6e4e-40ba-9165-88da07e11881',
 }
 
 export type SessionContextType = {

@@ -77,7 +77,7 @@ const metaRes = {
   data: {
     meta: {
       version: 'latest',
-      client_id: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
+      client_id: '545c8eb6-6e4e-40ba-9165-88da07e11881',
       is_google_login_enabled: true,
       is_facebook_login_enabled: true,
       is_github_login_enabled: true,

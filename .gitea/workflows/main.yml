@@ -36,6 +36,7 @@ jobs:
         run: npm run e2e
         env:
           BASE_URL: ${{ github.event.deployment_status.target_url }}
+          DEBUG: pw:api
 
   email-templates:
     runs-on: ubuntu-latest

@@ -9,7 +9,7 @@ import { hydrate } from 'solid-js/web'
 
 import { App } from '../components/App'
 import { initRouter } from '../stores/router'
-import { reportDsn } from '../utils/config'
+// import { reportDsn } from '../utils/config'
 import { resolveHydrationPromise } from '../utils/hydrationPromise'
 
 let layoutReady = false

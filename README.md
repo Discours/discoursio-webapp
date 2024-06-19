@@ -46,4 +46,7 @@ Follow these steps:
 
 ## Additional Information
 
+If workers is no needed use:
+- `npx playwright test --project=webkit --workers 4`
+
 For more information on how to write tests using Playwright - [Playwright documentation](https://playwright.dev/docs/intro).

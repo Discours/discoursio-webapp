@@ -9,11 +9,11 @@
     "build": "vinxi build",
     "start": "vinxi start",
     "codegen": "graphql-codegen",
-    "deploy": "graphql-codegen && bun run typecheck && bun run build && vercel",
-    "e2e": "bunx playwright test --project=webkit",
-    "fix": "bunx @biomejs/biome check src/. --write && stylelint **/*.{scss,css} --fix",
-    "format": "bunx @biomejs/biome format src/. --write",
-    "postinstall": "bun run codegen && bunx patch-package",
+    "deploy": "graphql-codegen && npm run typecheck && npm run build && vercel",
+    "e2e": "npx playwright test --project=webkit",
+    "fix": "npx @biomejs/biome check src/. --write && stylelint **/*.{scss,css} --fix",
+    "format": "npx @biomejs/biome format src/. --write",
+    "postinstall": "npm run codegen && npx patch-package",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -118,7 +118,9 @@
     "protobufjs"
   ],
   "dependencies": {
-    "idb": "^8.0.0"
+    "form-data": "^4.0.0",
+    "idb": "^8.0.0",
+    "mailgun.js": "^10.2.1"
   },
   "engines": {
     "node": "20.x"

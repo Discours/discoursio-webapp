@@ -8,14 +8,14 @@ type Props = {
   children: JSX.Element
 }
 export const StaticPage = (props: Props) => {
-  const articleBodyElement: { current: HTMLElement } = { current: null }
+  let articleBodyElement: HTMLElement | null = null
 
   return (
     <PageLayout title={props.title}>
       <article
         class="wide-container container--static-page"
         id="articleBody"
-        ref={(el) => (articleBodyElement.current = el)}
+        ref={(el) => (articleBodyElement = el)}
       >
         <div class="row">
           <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">{props.children}</div>
@@ -24,7 +24,7 @@ export const StaticPage = (props: Props) => {
             <TableOfContents
               variant="article"
               parentSelector="#articleBody"
-              body={articleBodyElement.current.outerHTML}
+              body={(articleBodyElement as unknown as HTMLElement)?.outerHTML}
             />
           </div>
         </div>

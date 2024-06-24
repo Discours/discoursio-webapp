@@ -29,7 +29,7 @@ const GroupDialogAvatar = (props: Props) => {
             bordered={true}
             size="small"
             name={user.name}
-            url={user.pic}
+            url={user.pic || ''}
           />
         )}
       </For>

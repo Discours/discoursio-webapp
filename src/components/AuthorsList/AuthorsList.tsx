@@ -1,8 +1,10 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on } from 'solid-js'
+import { useAuthors } from '~/context/authors'
+import { useGraphQL } from '~/context/graphql'
+import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
+import { Author } from '~/graphql/schema/core.gen'
 import { useLocalize } from '../../context/localize'
-import { apiClient } from '../../graphql/client/core'
-import { setAuthorsByFollowers, setAuthorsByShouts, useAuthorsStore } from '../../stores/zine/authors'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
 import { Button } from '../_shared/Button'
@@ -19,26 +21,32 @@ const PAGE_SIZE = 20
 
 export const AuthorsList = (props: Props) => {
   const { t } = useLocalize()
-  const { authorsByShouts, authorsByFollowers } = useAuthorsStore()
+  const { addAuthors } = useAuthors()
+  const [authorsByShouts, setAuthorsByShouts] = createSignal<Author[]>()
+  const [authorsByFollowers, setAuthorsByFollowers] = createSignal<Author[]>()
   const [loading, setLoading] = createSignal(false)
   const [currentPage, setCurrentPage] = createSignal({ shouts: 0, followers: 0 })
   const [allLoaded, setAllLoaded] = createSignal(false)
+  const { query } = useGraphQL()
 
   const fetchAuthors = async (queryType: Props['query'], page: number) => {
     setLoading(true)
     const offset = PAGE_SIZE * page
-    const result = await apiClient.loadAuthorsBy({
+    const resp = await query(loadAuthorsByQuery, {
       by: { order: queryType },
       limit: PAGE_SIZE,
       offset,
     })
-
-    if (queryType === 'shouts') {
-      setAuthorsByShouts((prev) => [...prev, ...result])
-    } else {
-      setAuthorsByFollowers((prev) => [...prev, ...result])
+    const result = resp?.data?.load_authors_by
+    if ((result?.length || 0) > 0) {
+      addAuthors([...result])
+      if (queryType === 'shouts') {
+        setAuthorsByShouts((prev) => [...(prev || []), ...result])
+      } else if (queryType === 'followers') {
+        setAuthorsByFollowers((prev) => [...(prev || []), ...result])
+      }
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const loadMoreAuthors = () => {
@@ -52,8 +60,8 @@ export const AuthorsList = (props: Props) => {
     on(
       () => props.query,
       (query) => {
-        const authorsList = query === 'shouts' ? authorsByShouts() : authorsByFollowers()
-        if (authorsList.length === 0 && currentPage()[query] === 0) {
+        const al = query === 'shouts' ? authorsByShouts() : authorsByFollowers()
+        if (al?.length === 0 && currentPage()[query] === 0) {
           setCurrentPage((prev) => ({ ...prev, [query]: 0 }))
           fetchAuthors(query, 0).then(() => setCurrentPage((prev) => ({ ...prev, [query]: 1 })))
         }
@@ -88,7 +96,7 @@ export const AuthorsList = (props: Props) => {
       <div class="row">
         <div class="col-lg-20 col-xl-18">
           <div class={styles.action}>
-            <Show when={!loading() && authorsList().length > 0 && !allLoaded()}>
+            <Show when={!loading() && (authorsList()?.length || 0) > 0 && !allLoaded()}>
               <Button value={t('Load more')} onClick={loadMoreAuthors} />
             </Show>
             <Show when={loading() && !allLoaded()}>

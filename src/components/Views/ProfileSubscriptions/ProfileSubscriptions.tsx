@@ -1,10 +1,9 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on } from 'solid-js'
 
-import { useFollowing } from '../../../context/following'
+import { FollowsFilter, useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { Author, Topic } from '../../../graphql/schema/core.gen'
-import { FollowsFilter } from '../../../pages/types'
 import { dummyFilter } from '../../../utils/dummyFilter'
 import { isAuthor } from '../../../utils/isAuthor'
 import { AuthorBadge } from '../../Author/AuthorBadge'
@@ -36,7 +35,6 @@ export const ProfileSubscriptions = () => {
         setFiltered(flat)
       }
     }),
-    { defer: true },
   )
 
   createEffect(() => {

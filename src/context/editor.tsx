@@ -1,18 +1,17 @@
 import type { JSX } from 'solid-js'
 
-import { openPage } from '@nanostores/router'
+import { useMatch, useNavigate } from '@solidjs/router'
 import { Editor } from '@tiptap/core'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
-
-import { apiClient } from '../graphql/client/core'
+import { useSnackbar } from '~/context/ui'
+import { useFeed } from '../context/feed'
+import deleteShoutQuery from '../graphql/mutation/core/article-delete'
+import updateShoutQuery from '../graphql/mutation/core/article-update'
 import { Topic, TopicInput } from '../graphql/schema/core.gen'
-import { router, useRouter } from '../stores/router'
-import { addArticles } from '../stores/zine/articles'
 import { slugify } from '../utils/slugify'
-
+import { useGraphQL } from './graphql'
 import { useLocalize } from './localize'
-import { useSnackbar } from './snackbar'
 
 type WordCounter = {
   characters: number
@@ -39,7 +38,7 @@ type EditorContextType = {
   wordCounter: Accessor<WordCounter>
   form: ShoutForm
   formErrors: Record<keyof ShoutForm, string>
-  editorRef: { current: () => Editor | null }
+  editor: Accessor<Editor | undefined>
   saveShout: (form: ShoutForm) => Promise<void>
   saveDraft: (form: ShoutForm) => Promise<void>
   saveDraftToLocalStorage: (form: ShoutForm) => void
@@ -51,10 +50,10 @@ type EditorContextType = {
   countWords: (value: WordCounter) => void
   setForm: SetStoreFunction<ShoutForm>
   setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
-  setEditor: (editor: () => Editor) => void
+  setEditor: (editor: Editor) => void
 }
 
-const EditorContext = createContext<EditorContextType>()
+const EditorContext = createContext<EditorContextType>({ editor: () => new Editor() } as EditorContextType)
 
 export function useEditorContext() {
   return useContext(EditorContext)
@@ -81,10 +80,14 @@ const removeDraftFromLocalStorage = (shoutId: number) => {
 
 export const EditorProvider = (props: { children: JSX.Element }) => {
   const localize = useLocalize()
-  const { page } = useRouter()
+  const navigate = useNavigate()
+  const matchEdit = useMatch(() => '/edit')
+  const matchEditSettings = useMatch(() => '/editSettings')
+  const { mutation } = useGraphQL()
+  const { addFeed } = useFeed()
   const snackbar = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
-  const editorRef: { current: () => Editor | null } = { current: () => null }
+  const [editor, setEditor] = createSignal<Editor>()
   const [form, setForm] = createStore<ShoutForm>({
     body: '',
     slug: '',
@@ -98,7 +101,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     words: 0,
   })
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
-  const countWords = (value) => setWordCounter(value)
+  const countWords = (value: WordCounter) => setWordCounter(value)
   const validate = () => {
     if (!form.title) {
       setFormErrors('title', localize?.t('Please, set the article title') || '')
@@ -131,7 +134,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       console.error(formToUpdate)
       return { error: 'not enought data' }
     }
-    return await apiClient.updateArticle({
+    const resp = await mutation(updateShoutQuery, {
       shout_id: formToUpdate.shoutId,
       shout_input: {
         body: formToUpdate.body,
@@ -149,6 +152,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       },
       publish,
     })
+    return resp?.data?.update_shout
   }
 
   const saveShout = async (formToSave: ShoutForm) => {
@@ -156,11 +160,11 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       toggleEditorPanel()
     }
 
-    if (page()?.route === 'edit' && !validate()) {
+    if (matchEdit() && !validate()) {
       return
     }
 
-    if (page()?.route === 'editSettings' && !validateSettings()) {
+    if (matchEditSettings() && !validateSettings()) {
       return
     }
 
@@ -173,9 +177,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       removeDraftFromLocalStorage(formToSave.shoutId)
 
       if (shout?.published_at) {
-        openPage(router, 'article', { slug: shout.slug })
+        navigate(`/article/${shout.slug}`)
       } else {
-        openPage(router, 'drafts')
+        navigate('/drafts')
       }
     } catch (error) {
       console.error('[saveShout]', error)
@@ -192,21 +196,16 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const publishShout = async (formToPublish: ShoutForm) => {
-    const editorPanelVisible = isEditorPanelVisible()
-    const pageRoute = page()?.route
-
-    if (editorPanelVisible) {
+    if (isEditorPanelVisible()) {
       toggleEditorPanel()
     }
 
-    if (pageRoute === 'edit') {
-      if (!validate()) {
-        return
-      }
+    if (matchEdit()) {
+      if (!validate()) return
 
       const slug = slugify(form.title)
       setForm('slug', slug)
-      openPage(router, 'editSettings', { shoutId: form.shoutId.toString() })
+      navigate(`/edit/${form.shoutId}/settings`)
       const { error } = await updateShout(formToPublish, { publish: false })
       if (error) {
         snackbar?.showSnackbar({ type: 'error', body: localize?.t(error) || '' })
@@ -224,7 +223,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         snackbar?.showSnackbar({ type: 'error', body: localize?.t(error) || '' })
         return
       }
-      openPage(router, 'feed')
+      navigate('/feed')
     } catch (error) {
       console.error('[publishShout]', error)
       snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })
@@ -237,20 +236,21 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       return
     }
     try {
-      const { shout: newShout, error } = await apiClient.updateArticle({
-        shout_id,
-        publish: true,
-      })
-      if (error) {
-        console.error(error)
-        snackbar?.showSnackbar({ type: 'error', body: error })
-        return
-      }
-      if (newShout) {
-        addArticles([newShout])
-        openPage(router, 'feed')
-      } else {
-        console.error('[publishShoutById] no shout returned:', newShout)
+      const resp = await mutation(updateShoutQuery, { shout_id, publish: true }).toPromise()
+      const result = resp?.data?.update_shout
+      if (result) {
+        const { shout: newShout, error } = result
+        if (error) {
+          console.error(error)
+          snackbar?.showSnackbar({ type: 'error', body: error })
+          return
+        }
+        if (newShout) {
+          addFeed([newShout])
+          navigate('/feed')
+        } else {
+          console.error('[publishShoutById] no shout returned:', newShout)
+        }
       }
     } catch (error) {
       console.error('[publishShoutById]', error)
@@ -260,18 +260,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const deleteShout = async (shout_id: number) => {
     try {
-      await apiClient.deleteShout({
-        shout_id,
-      })
-      return true
+      const resp = await mutation(deleteShoutQuery, { shout_id }).toPromise()
+      return resp?.data?.delete_shout
     } catch {
       snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })
       return false
     }
-  }
-
-  const setEditor = (editor: () => Editor) => {
-    editorRef.current = editor
   }
 
   const actions = {
@@ -293,7 +287,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     ...actions,
     form,
     formErrors,
-    editorRef,
+    editor,
     isEditorPanelVisible,
     wordCounter,
   }

@@ -1,11 +1,11 @@
 import { clsx } from 'clsx'
 import { Show, createMemo, createSignal } from 'solid-js'
-
+import { useFeed } from '~/context/feed'
+import type { Author } from '~/graphql/schema/core.gen'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
 import { ReactionKind, Shout } from '../../graphql/schema/core.gen'
-import { loadShout } from '../../stores/zine/articles'
 import { Icon } from '../_shared/Icon'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
@@ -19,7 +19,9 @@ interface ShoutRatingControlProps {
 
 export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { t } = useLocalize()
-  const { author, requireAuthentication } = useSession()
+  const { loadShout } = useFeed()
+  const { requireAuthentication, session } = useSession()
+  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
   const [isLoading, setIsLoading] = createSignal(false)
 
@@ -49,7 +51,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         r.shout.id === props.shout.id &&
         !r.reply_to,
     )
-    return deleteReaction(reactionToDelete.id)
+    if (reactionToDelete) return deleteReaction(reactionToDelete.id)
   }
 
   const handleRatingChange = (isUpvote: boolean) => {
@@ -61,8 +63,10 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         await deleteShoutReaction(ReactionKind.Dislike)
       } else {
         await createReaction({
-          kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-          shout: props.shout.id,
+          reaction: {
+            kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
+            shout: props.shout.id,
+          },
         })
       }
 
@@ -83,7 +87,10 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         </Show>
       </button>
 
-      <Popup trigger={<span class={styles.ratingValue}>{props.shout.stat.rating}</span>} variant="tiny">
+      <Popup
+        trigger={<span class={styles.ratingValue}>{props.shout.stat?.rating || 0}</span>}
+        variant="tiny"
+      >
         <VotersList
           reactions={shoutRatingReactions()}
           fallbackMessage={t('This post has not been rated yet')}

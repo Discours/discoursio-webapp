@@ -1,15 +1,11 @@
 import type { Author, Community } from '../../../graphql/schema/core.gen'
 
-import { openPage, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
-
-import { useFollowing } from '../../../context/following'
+import { FollowsFilter, useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
-import { FollowsFilter } from '../../../pages/types'
-import { router, useRouter } from '../../../stores/router'
 import { isAuthor } from '../../../utils/isAuthor'
 import { translit } from '../../../utils/ru2en'
 import { isCyrillic } from '../../../utils/translate'
@@ -22,6 +18,7 @@ import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 import { AuthorBadge } from '../AuthorBadge'
 import { Userpic } from '../Userpic'
 
+import { useNavigate, useSearchParams } from '@solidjs/router'
 import stylesButton from '../../_shared/Button/Button.module.scss'
 import styles from './AuthorCard.module.scss'
 
@@ -30,9 +27,12 @@ type Props = {
   followers?: Author[]
   flatFollows?: Array<Author | Topic>
 }
+
 export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { author, isSessionLoaded, requireAuthentication } = useSession()
+  const navigate = useNavigate()
+  const { session, isSessionLoaded, requireAuthentication } = useSession()
+  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const [authorSubs, setAuthorSubs] = createSignal<Array<Author | Topic | Community>>([])
   const [followsFilter, setFollowsFilter] = createSignal<FollowsFilter>('all')
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
@@ -40,7 +40,7 @@ export const AuthorCard = (props: Props) => {
   const { follow, unfollow, follows, following } = useFollowing()
 
   onMount(() => {
-    setAuthorSubs(props.flatFollows)
+    setAuthorSubs(props.flatFollows || [])
   })
 
   createEffect(() => {
@@ -50,21 +50,20 @@ export const AuthorCard = (props: Props) => {
   })
 
   const name = createMemo(() => {
-    if (lang() !== 'ru' && isCyrillic(props.author.name)) {
+    if (lang() !== 'ru' && isCyrillic(props.author?.name || '')) {
       if (props.author.name === 'Дискурс') {
         return 'Discours'
       }
-      return translit(props.author.name)
+      return translit(props.author?.name || '')
     }
     return props.author.name
   })
 
-  // TODO: reimplement AuthorCard
-  const { changeSearchParams } = useRouter()
+  const [, changeSearchParams] = useSearchParams()
   const initChat = () => {
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      openPage(router, 'inbox')
+      navigate('/inbox')
       changeSearchParams({
         initChat: props.author?.id.toString(),
       })
@@ -95,7 +94,7 @@ export const AuthorCard = (props: Props) => {
 
   const followButtonText = createMemo(() => {
     if (following()?.slug === props.author.slug) {
-      return following().type === 'follow' ? t('Following...') : t('Unfollowing...')
+      return following()?.type === 'follow' ? t('Following...') : t('Unfollowing...')
     }
 
     if (isFollowed()) {
@@ -134,7 +133,7 @@ export const AuthorCard = (props: Props) => {
           <button type="button" onClick={() => setFollowsFilter('all')}>
             {t('All')}
           </button>
-          <span class="view-switcher__counter">{props.flatFollows.length}</span>
+          <span class="view-switcher__counter">{props.flatFollows?.length}</span>
         </li>
         <li
           class={clsx({
@@ -144,7 +143,7 @@ export const AuthorCard = (props: Props) => {
           <button type="button" onClick={() => setFollowsFilter('authors')}>
             {t('Authors')}
           </button>
-          <span class="view-switcher__counter">{props.flatFollows.filter((s) => 'name' in s).length}</span>
+          <span class="view-switcher__counter">{props.flatFollows?.filter((s) => 'name' in s).length}</span>
         </li>
         <li
           class={clsx({
@@ -154,7 +153,9 @@ export const AuthorCard = (props: Props) => {
           <button type="button" onClick={() => setFollowsFilter('topics')}>
             {t('Topics')}
           </button>
-          <span class="view-switcher__counter">{props.flatFollows.filter((s) => 'title' in s).length}</span>
+          <span class="view-switcher__counter">
+            {props.flatFollows?.filter((s) => 'title' in s).length}
+          </span>
         </li>
       </ul>
       <br />
@@ -181,8 +182,8 @@ export const AuthorCard = (props: Props) => {
       <div class="col-md-5">
         <Userpic
           size={'XL'}
-          name={props.author.name}
-          userpic={props.author.pic}
+          name={props.author.name || ''}
+          userpic={props.author.pic || ''}
           slug={props.author.slug}
           class={styles.circlewrap}
         />
@@ -191,15 +192,15 @@ export const AuthorCard = (props: Props) => {
         <div class={styles.authorDetailsWrapper}>
           <div class={styles.authorName}>{name()}</div>
           <Show when={props.author.bio}>
-            <div class={styles.authorAbout} innerHTML={props.author.bio} />
+            <div class={styles.authorAbout} innerHTML={props.author.bio || ''} />
           </Show>
-          <Show when={props.followers?.length > 0 || props.flatFollows?.length > 0}>
+          <Show when={(props.followers || [])?.length > 0 || (props.flatFollows || []).length > 0}>
             <div class={styles.subscribersContainer}>
               <FollowingCounters
                 followers={props.followers}
-                followersAmount={props.author?.stat?.followers}
+                followersAmount={props.author?.stat?.followers || 0}
                 following={props.flatFollows}
-                followingAmount={props.flatFollows.length}
+                followingAmount={props.flatFollows?.length || 0}
               />
             </div>
           </Show>
@@ -209,15 +210,15 @@ export const AuthorCard = (props: Props) => {
             <Show when={props.author.links && props.author.links.length > 0}>
               <div class={styles.authorSubscribeSocial}>
                 <For each={props.author.links}>
-                  {(link) => (
+                  {(link: string | null) => (
                     <a
                       class={styles.socialLink}
-                      href={link.startsWith('http') ? link : `https://${link}`}
+                      href={link?.startsWith('http') ? link : `https://${link}`}
                       target="_blank"
                       rel="nofollow noopener noreferrer"
                     >
                       <span class={styles.authorSubscribeSocialLabel}>
-                        {link.startsWith('http') ? link : `https://${link}`}
+                        {link?.startsWith('http') ? link : `https://${link}`}
                       </span>
                     </a>
                   )}
@@ -251,7 +252,7 @@ export const AuthorCard = (props: Props) => {
               <div class={styles.authorActions}>
                 <Button
                   variant="secondary"
-                  onClick={() => redirectPage(router, 'profileSettings')}
+                  onClick={() => navigate('/profile/settings')}
                   value={
                     <>
                       <span class={styles.authorActionsLabel}>{t('Edit profile')}</span>
@@ -260,9 +261,9 @@ export const AuthorCard = (props: Props) => {
                   }
                 />
                 <SharePopup
-                  title={props.author.name}
-                  description={props.author.bio}
-                  imageUrl={props.author.pic}
+                  title={props.author.name || ''}
+                  description={props.author.bio || ''}
+                  imageUrl={props.author.pic || ''}
                   shareUrl={getShareUrl({
                     pathname: `/author/${props.author.slug}`,
                   })}

@@ -1,12 +1,12 @@
-import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 
+import { A } from '@solidjs/router'
+import { useGraphQL } from '~/context/graphql'
+import getShoutsQuery from '~/graphql/query/core/articles-load-by'
+import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-top'
 import { useLocalize } from '../../../context/localize'
-import { apiClient } from '../../../graphql/client/core'
 import { LoadShoutsFilters, LoadShoutsOptions, Shout } from '../../../graphql/schema/core.gen'
-import { LayoutType } from '../../../pages/types'
-import { router } from '../../../stores/router'
 import { getUnixtime } from '../../../utils/getServerDate'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { ArticleCard } from '../../Feed/ArticleCard'
@@ -14,8 +14,9 @@ import { Button } from '../../_shared/Button'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Loading } from '../../_shared/Loading'
 import { ArticleCardSwiper } from '../../_shared/SolidSwiper/ArticleCardSwiper'
-
 import styles from './Expo.module.scss'
+
+export type LayoutType = 'music' | 'literature' | 'video' | 'article' | 'image'
 
 type Props = {
   shouts: Shout[]
@@ -27,6 +28,7 @@ const LOAD_MORE_PAGE_SIZE = 12
 
 export const Expo = (props: Props) => {
   const { t } = useLocalize()
+  const { query } = useGraphQL()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
@@ -56,11 +58,12 @@ export const Expo = (props: Props) => {
       ? { layouts: [props.layout] }
       : { layouts: ['audio', 'video', 'image', 'literature'] }
 
-    const newShouts = await apiClient.getShouts(options)
-    const hasMore = newShouts?.length !== options.limit + 1 && newShouts?.length !== 0
+    const resp = await query(getShoutsQuery, options).toPromise()
+    const result = resp?.data?.load_shouts || []
+    const hasMore = result.length !== options.limit + 1 && result.length !== 0
     setIsLoadMoreButtonVisible(hasMore)
 
-    setExpoShouts((prev) => [...prev, ...newShouts])
+    setExpoShouts((prev) => [...prev, ...result])
   }
 
   const loadMoreWithoutScrolling = async (count: number) => {
@@ -75,8 +78,8 @@ export const Expo = (props: Props) => {
       limit: 10,
       random_limit: 100,
     }
-    const result = await apiClient.getRandomTopShouts({ options })
-    setFavoriteTopArticles(result)
+    const resp = await query(getRandomTopShoutsQuery, { options }).toPromise()
+    setFavoriteTopArticles(resp?.data?.load_shouts_random_top || [])
   }
 
   const loadRandomTopMonthArticles = async () => {
@@ -89,8 +92,8 @@ export const Expo = (props: Props) => {
       random_limit: 10,
     }
 
-    const result = await apiClient.getRandomTopShouts({ options })
-    setReactedTopMonthArticles(result)
+    const resp = await query(getRandomTopShoutsQuery, { options }).toPromise()
+    setReactedTopMonthArticles(resp?.data?.load_shouts_random_top || [])
   }
 
   onMount(() => {
@@ -129,26 +132,22 @@ export const Expo = (props: Props) => {
       <div class="wide-container">
         <ul class={clsx('view-switcher')}>
           <li class={clsx({ 'view-switcher__item--selected': !props.layout })}>
-            <a href={getPagePath(router, 'expo', { layout: '' })}>
+            <A href={'/expo'}>
               <span class={clsx('linkReplacement')}>{t('All')}</span>
-            </a>
+            </A>
           </li>
           <li class={clsx({ 'view-switcher__item--selected': props.layout === 'literature' })}>
             <ConditionalWrapper
               condition={props.layout !== 'literature'}
-              wrapper={(children) => (
-                <a href={getPagePath(router, 'expo', { layout: 'literature' })}>{children}</a>
-              )}
+              wrapper={(children) => <A href={'/expo/literature'}>{children}</A>}
             >
               <span class={clsx('linkReplacement')}>{t('Literature')}</span>
             </ConditionalWrapper>
           </li>
-          <li class={clsx({ 'view-switcher__item--selected': props.layout === 'audio' })}>
+          <li class={clsx({ 'view-switcher__item--selected': props.layout === ('audio' as LayoutType) })}>
             <ConditionalWrapper
-              condition={props.layout !== 'audio'}
-              wrapper={(children) => (
-                <a href={getPagePath(router, 'expo', { layout: 'audio' })}>{children}</a>
-              )}
+              condition={props.layout !== ('audio' as LayoutType)}
+              wrapper={(children) => <A href={'/expo/audio'}>{children}</A>}
             >
               <span class={clsx('linkReplacement')}>{t('Music')}</span>
             </ConditionalWrapper>
@@ -156,9 +155,7 @@ export const Expo = (props: Props) => {
           <li class={clsx({ 'view-switcher__item--selected': props.layout === 'image' })}>
             <ConditionalWrapper
               condition={props.layout !== 'image'}
-              wrapper={(children) => (
-                <a href={getPagePath(router, 'expo', { layout: 'image' })}>{children}</a>
-              )}
+              wrapper={(children) => <A href={'/expo/image'}>{children}</A>}
             >
               <span class={clsx('linkReplacement')}>{t('Gallery')}</span>
             </ConditionalWrapper>
@@ -166,9 +163,7 @@ export const Expo = (props: Props) => {
           <li class={clsx({ 'view-switcher__item--selected': props.layout === 'video' })}>
             <ConditionalWrapper
               condition={props.layout !== 'video'}
-              wrapper={(children) => (
-                <a href={getPagePath(router, 'expo', { layout: 'video' })}>{children}</a>
-              )}
+              wrapper={(children) => <A href={'/expo/video'}>{children}</A>}
             >
               <span class={clsx('cursorPointer linkReplacement')}>{t('Video')}</span>
             </ConditionalWrapper>

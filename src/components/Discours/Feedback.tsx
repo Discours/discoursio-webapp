@@ -1,10 +1,10 @@
+import { useUI } from '~/context/ui'
 import { useLocalize } from '../../context/localize'
-import { hideModal } from '../../stores/ui'
 import { Button } from '../_shared/Button'
 
 export const Feedback = () => {
   const { t } = useLocalize()
-
+  const { hideModal } = useUI()
   const action = '/user/feedback'
   const method = 'post'
   let msgElement: HTMLTextAreaElement | undefined

@@ -20,7 +20,7 @@ type Props = {
 }
 
 export const ArticleCardSwiper = (props: Props) => {
-  const mainSwipeRef: { current: SwiperRef } = { current: null }
+  let mainSwipeRef: SwiperRef | null
 
   onMount(async () => {
     if (props.slides.length > 1) {
@@ -48,7 +48,7 @@ export const ArticleCardSwiper = (props: Props) => {
               <Show when={props.slides.length !== 2} fallback={<Row2 articles={props.slides} />}>
                 <div class={styles.holder}>
                   <swiper-container
-                    ref={(el) => (mainSwipeRef.current = el)}
+                    ref={(el) => (mainSwipeRef = el)}
                     centered-slides={true}
                     observer={true}
                     space-between={10}
@@ -86,13 +86,13 @@ export const ArticleCardSwiper = (props: Props) => {
                   </swiper-container>
                   <div
                     class={clsx(styles.navigation, styles.prev)}
-                    onClick={() => mainSwipeRef.current.swiper.slidePrev()}
+                    onClick={() => mainSwipeRef?.swiper.slidePrev()}
                   >
                     <Icon name="swiper-l-arr" class={styles.icon} />
                   </div>
                   <div
                     class={clsx(styles.navigation, styles.next)}
-                    onClick={() => mainSwipeRef.current.swiper.slideNext()}
+                    onClick={() => mainSwipeRef?.swiper.slideNext()}
                   >
                     <Icon name="swiper-r-arr" class={styles.icon} />
                   </div>

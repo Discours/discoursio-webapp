@@ -1,22 +1,21 @@
-import type { AuthModalMode, AuthModalSearchParams } from './types'
-
 import { clsx } from 'clsx'
 import { Component, Show, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
+import { useUI } from '~/context/ui'
+import type { AuthModalMode } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
-import { useRouter } from '../../../stores/router'
-import { hideModal } from '../../../stores/ui'
 import { isMobile } from '../../../utils/media-query'
-
 import { ChangePasswordForm } from './ChangePasswordForm'
 import { EmailConfirm } from './EmailConfirm'
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
+import { SendEmailConfirm } from './SendEmailConfirm'
 import { SendResetLinkForm } from './SendResetLinkForm'
 
+import { useSearchParams } from '@solidjs/router'
 import styles from './AuthModal.module.scss'
-import { SendEmailConfirm } from './SendEmailConfirm'
+import { AuthModalSearchParams } from './types'
 
 const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
   login: LoginForm,
@@ -28,30 +27,31 @@ const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
 }
 
 export const AuthModal = () => {
-  const rootRef: { current: HTMLDivElement } = { current: null }
+  let rootRef: HTMLDivElement | null
   const { t } = useLocalize()
-  const { searchParams } = useRouter<AuthModalSearchParams>()
-  const { source } = searchParams()
-
-  const mode = createMemo<AuthModalMode>(() => {
-    return AUTH_MODAL_MODES[searchParams().mode] ? searchParams().mode : 'login'
+  const [searchParams] = useSearchParams<AuthModalSearchParams>()
+  const { hideModal } = useUI()
+  const mode = createMemo(() => {
+    return (
+      AUTH_MODAL_MODES[searchParams?.mode as AuthModalMode] ? searchParams?.mode : 'login'
+    ) as AuthModalMode
   })
 
   createEffect((oldMode) => {
     if (oldMode !== mode() && !isMobile()) {
-      rootRef.current?.querySelector('input')?.focus()
+      rootRef?.querySelector('input')?.focus()
     }
   }, null)
 
   return (
     <div
-      ref={(el) => (rootRef.current = el)}
+      ref={(el) => (rootRef = el)}
       class={clsx(styles.view, {
-        row: !source,
+        row: !searchParams?.source,
         [styles.signUp]: mode() === 'register' || mode() === 'confirm-email',
       })}
     >
-      <Show when={!source}>
+      <Show when={!searchParams?.source}>
         <div class={clsx('col-md-12 d-none d-md-flex', styles.authImage)}>
           <div
             class={styles.authImageText}
@@ -84,10 +84,10 @@ export const AuthModal = () => {
       </Show>
       <div
         class={clsx(styles.auth, {
-          'col-md-12': !source,
+          'col-md-12': !searchParams?.source,
         })}
       >
-        <Dynamic component={AUTH_MODAL_MODES[mode()]} />
+        <Dynamic component={AUTH_MODAL_MODES[mode() as AuthModalMode]} />
       </div>
     </div>
   )

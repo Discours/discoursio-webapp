@@ -2,8 +2,8 @@ import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { debounce, throttle } from 'throttle-debounce'
 
+import { DEFAULT_HEADER_OFFSET } from '~/context/ui'
 import { useLocalize } from '../../context/localize'
-import { DEFAULT_HEADER_OFFSET } from '../../stores/router'
 import { isDesktop } from '../../utils/media-query'
 import { Icon } from '../_shared/Icon'
 
@@ -19,14 +19,15 @@ const isInViewport = (el: Element): boolean => {
   const rect = el.getBoundingClientRect()
   return rect.top <= DEFAULT_HEADER_OFFSET + 24 // default offset + 1.5em (default header margin-top)
 }
-const scrollToHeader = (element) => {
-  window.scrollTo({
-    behavior: 'smooth',
-    top:
-      element.getBoundingClientRect().top -
-      document.body.getBoundingClientRect().top -
-      DEFAULT_HEADER_OFFSET,
-  })
+const scrollToHeader = (element: HTMLElement) => {
+  if (window)
+    window.scrollTo({
+      behavior: 'smooth',
+      top:
+        element.getBoundingClientRect().top -
+        document.body.getBoundingClientRect().top -
+        DEFAULT_HEADER_OFFSET,
+    })
 }
 
 export const TableOfContents = (props: Props) => {
@@ -43,12 +44,15 @@ export const TableOfContents = (props: Props) => {
   setIsVisible(isDesktop())
 
   const updateHeadings = () => {
-    setHeadings(
-      // eslint-disable-next-line unicorn/prefer-spread
-      Array.from(
-        document.querySelector(props.parentSelector).querySelectorAll<HTMLElement>('h1, h2, h3, h4'),
-      ),
-    )
+    if (document) {
+      const parent = document.querySelector(props.parentSelector)
+      if (parent) {
+        setHeadings(
+          // eslint-disable-next-line unicorn/prefer-spread
+          Array.from(parent.querySelectorAll<HTMLElement>('h1, h2, h3, h4')),
+        )
+      }
+    }
     setAreHeadingsLoaded(true)
   }
 
@@ -98,7 +102,7 @@ export const TableOfContents = (props: Props) => {
                           [styles.TableOfContentsHeadingsItemH4]: h.nodeName === 'H4',
                           [styles.active]: index() === activeHeaderIndex(),
                         })}
-                        innerHTML={h.textContent}
+                        innerHTML={h.textContent || ''}
                         onClick={(e) => {
                           e.preventDefault()
                           scrollToHeader(h)

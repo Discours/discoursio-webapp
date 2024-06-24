@@ -1,12 +1,12 @@
 import { clsx } from 'clsx'
 import { createMemo } from 'solid-js'
 
+import { useFeed } from '~/context/feed'
+import { useSnackbar } from '~/context/ui'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
-import { useSnackbar } from '../../context/snackbar'
 import { Reaction, ReactionKind } from '../../graphql/schema/core.gen'
-import { loadShout } from '../../stores/zine/articles'
 import { Popup } from '../_shared/Popup'
 import { VotersList } from '../_shared/VotersList'
 
@@ -18,7 +18,9 @@ type Props = {
 
 export const CommentRatingControl = (props: Props) => {
   const { t } = useLocalize()
-  const { author } = useSession()
+  const { loadShout } = useFeed()
+  const { session } = useSession()
+  const uid = createMemo<number>(() => session()?.user?.app_data?.profile?.id || 0)
   const { showSnackbar } = useSnackbar()
   const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
 
@@ -26,13 +28,13 @@ export const CommentRatingControl = (props: Props) => {
     Object.values(reactionEntities).some(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === author()?.slug &&
+        r.created_by.id === uid() &&
         r.shout.id === props.comment.shout.id &&
         r.reply_to === props.comment.id,
     )
   const isUpvoted = createMemo(() => checkReaction(ReactionKind.Like))
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
-  const canVote = createMemo(() => author()?.slug !== props.comment.created_by.slug)
+  const canVote = createMemo(() => uid() !== props.comment.created_by.id)
 
   const commentRatingReactions = createMemo(() =>
     Object.values(reactionEntities).filter(
@@ -47,11 +49,11 @@ export const CommentRatingControl = (props: Props) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
         r.kind === reactionKind &&
-        r.created_by.slug === author()?.slug &&
+        r.created_by.id === uid() &&
         r.shout.id === props.comment.shout.id &&
         r.reply_to === props.comment.id,
     )
-    return deleteReaction(reactionToDelete.id)
+    if (reactionToDelete) return deleteReaction(reactionToDelete.id)
   }
 
   const handleRatingChange = async (isUpvote: boolean) => {
@@ -62,9 +64,11 @@ export const CommentRatingControl = (props: Props) => {
         await deleteCommentReaction(ReactionKind.Dislike)
       } else {
         await createReaction({
-          kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
-          shout: props.comment.shout.id,
-          reply_to: props.comment.id,
+          reaction: {
+            kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
+            shout: props.comment.shout.id,
+            reply_to: props.comment.id,
+          },
         })
       }
     } catch {
@@ -81,7 +85,7 @@ export const CommentRatingControl = (props: Props) => {
     <div class={styles.commentRating}>
       <button
         role="button"
-        disabled={!(canVote() && author())}
+        disabled={!(canVote() && uid())}
         onClick={() => handleRatingChange(true)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlUp, {
           [styles.voted]: isUpvoted(),
@@ -91,11 +95,11 @@ export const CommentRatingControl = (props: Props) => {
         trigger={
           <div
             class={clsx(styles.commentRatingValue, {
-              [styles.commentRatingPositive]: props.comment.stat.rating > 0,
-              [styles.commentRatingNegative]: props.comment.stat.rating < 0,
+              [styles.commentRatingPositive]: (props.comment?.stat?.rating || 0) > 0,
+              [styles.commentRatingNegative]: (props.comment?.stat?.rating || 0) < 0,
             })}
           >
-            {props.comment.stat.rating || 0}
+            {props.comment?.stat?.rating || 0}
           </div>
         }
         variant="tiny"
@@ -107,7 +111,7 @@ export const CommentRatingControl = (props: Props) => {
       </Popup>
       <button
         role="button"
-        disabled={!(canVote() && author())}
+        disabled={!(canVote() && uid())}
         onClick={() => handleRatingChange(false)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlDown, {
           [styles.voted]: isDownvoted(),

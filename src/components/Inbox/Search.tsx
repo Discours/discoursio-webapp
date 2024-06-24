@@ -10,11 +10,15 @@ type Props = {
 }
 
 const Search = (props: Props) => {
-  const [value, setValue] = createSignal<string>('')
-  const search = (event) => {
-    event.preventDefault()
-    setValue(event.target.value)
-    props.onChange(value)
+  // FIXME: this component does not use value, is it used?
+  const [_value, setValue] = createSignal<string>('')
+  const search = (event: (InputEvent | undefined) & { target: { value: string } }) => {
+    event?.preventDefault()
+    const v = event?.target?.value || ''
+    if (v) {
+      setValue(v)
+      props.onChange(() => v)
+    }
   }
   return (
     <div class={styles.Search}>

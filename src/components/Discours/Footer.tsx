@@ -147,13 +147,16 @@ export const Footer = () => {
           </div>
           <div class={clsx(styles.footerCopyrightSocial, 'col-md-6 col-lg-4')}>
             <For each={social}>
-              {(social) => (
-                <div class={clsx(styles.socialItem, styles[`socialItem${social.name}`])}>
-                  <a href={social.href}>
-                    <Icon name={`${social.name}-white`} class={styles.icon} />
-                  </a>
-                </div>
-              )}
+              {(social) => {
+                const styleKey = `socialItem${social.name}` as keyof typeof styles
+                return (
+                  <div class={clsx(styles.socialItem, styles[styleKey])}>
+                    <a href={social.href}>
+                      <Icon name={`${social.name}-white`} class={styles.icon} />
+                    </a>
+                  </div>
+                )
+              }}
             </For>
           </div>
         </div>

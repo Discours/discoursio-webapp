@@ -1,8 +1,5 @@
-import { getPagePath } from '@nanostores/router'
+import { A } from '@solidjs/router'
 import { clsx } from 'clsx'
-
-import { router } from '../../stores/router'
-
 import styles from './CardTopic.module.scss'
 
 type CardTopicProps = {
@@ -21,7 +18,7 @@ export const CardTopic = (props: CardTopicProps) => {
         [styles.shoutTopicFeedMode]: props.isFeedMode,
       })}
     >
-      <a href={getPagePath(router, 'topic', { slug: props.slug })}>{props.title}</a>
+      <A href={`/topic/${props.slug}`}>{props.title}</A>
     </div>
   )
 }

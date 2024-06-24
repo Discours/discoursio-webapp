@@ -23,12 +23,7 @@ export const Lightbox = (props: Props) => {
   const [translateX, setTranslateX] = createSignal(0)
   const [translateY, setTranslateY] = createSignal(0)
   const [transitionEnabled, setTransitionEnabled] = createSignal(false)
-
-  const lightboxRef: {
-    current: HTMLElement
-  } = {
-    current: null,
-  }
+  let lightboxRef: HTMLElement | null
 
   const handleSmoothAction = (action: () => void) => {
     setTransitionEnabled(true)
@@ -37,14 +32,14 @@ export const Lightbox = (props: Props) => {
   }
 
   const closeLightbox = () => {
-    lightboxRef.current?.classList.add(styles.fadeOut)
+    lightboxRef?.classList.add(styles.fadeOut)
 
     setTimeout(() => {
       props.onClose()
     }, 200)
   }
 
-  const zoomIn = (event) => {
+  const zoomIn = (event: MouseEvent & { currentTarget: HTMLButtonElement; target: Element }) => {
     event.stopPropagation()
 
     handleSmoothAction(() => {
@@ -52,7 +47,7 @@ export const Lightbox = (props: Props) => {
     })
   }
 
-  const zoomOut = (event) => {
+  const zoomOut = (event: MouseEvent & { currentTarget: HTMLButtonElement; target: Element }) => {
     event.stopPropagation()
 
     handleSmoothAction(() => {
@@ -65,7 +60,7 @@ export const Lightbox = (props: Props) => {
     setTranslateY(0)
   }
 
-  const zoomReset = (event) => {
+  const zoomReset = (event: MouseEvent & { currentTarget: HTMLButtonElement; target: Element }) => {
     event.stopPropagation()
 
     handleSmoothAction(() => {
@@ -74,7 +69,11 @@ export const Lightbox = (props: Props) => {
     })
   }
 
-  const handleMouseWheelZoom = (event) => {
+  const handleMouseWheelZoom = (event: {
+    preventDefault: () => void
+    stopPropagation: () => void
+    deltaY: number
+  }) => {
     event.preventDefault()
     event.stopPropagation()
 
@@ -148,7 +147,7 @@ export const Lightbox = (props: Props) => {
       class={clsx(styles.Lightbox, props.class)}
       onClick={closeLightbox}
       onWheel={(e) => e.preventDefault()}
-      ref={(el) => (lightboxRef.current = el)}
+      ref={(el) => (lightboxRef = el)}
     >
       <Show when={pictureScalePercentage()}>
         <div class={styles.scalePercentage}>{`${pictureScalePercentage()}%`}</div>

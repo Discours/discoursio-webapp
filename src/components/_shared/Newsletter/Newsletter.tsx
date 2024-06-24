@@ -1,7 +1,7 @@
 import { JSX, Show, createSignal } from 'solid-js'
 
+import { useSnackbar } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
-import { useSnackbar } from '../../../context/snackbar'
 import { validateEmail } from '../../../utils/validateEmail'
 import { Button } from '../Button'
 import { Icon } from '../Icon'
@@ -16,7 +16,7 @@ export const Newsletter = (props: Props) => {
 
   const [title, setTitle] = createSignal('')
   const [email, setEmail] = createSignal('')
-  const [emailError, setEmailError] = createSignal<string>(null)
+  const [emailError, setEmailError] = createSignal<string>('')
   const { showSnackbar } = useSnackbar()
 
   const validate = (): boolean => {
@@ -30,12 +30,12 @@ export const Newsletter = (props: Props) => {
       return false
     }
 
-    setEmailError(null)
+    setEmailError('')
     return true
   }
 
   const handleInput: JSX.ChangeEventHandlerUnion<HTMLInputElement, Event> = (event) => {
-    setEmailError(null)
+    setEmailError('')
     setEmail(event.target.value)
   }
 

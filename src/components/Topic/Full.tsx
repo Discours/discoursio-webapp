@@ -26,13 +26,13 @@ export const FullTopic = (props: Props) => {
   const [followed, setFollowed] = createSignal()
 
   createEffect(() => {
-    if (follows?.topics.length !== 0) {
+    if (follows?.topics?.length !== 0) {
       const items = follows.topics || []
       setFollowed(items.some((x: Topic) => x?.slug === props.topic?.slug))
     }
   })
 
-  const handleFollowClick = (_ev) => {
+  const handleFollowClick = (_ev?: MouseEvent | undefined) => {
     const really = !followed()
     setFollowed(really)
     requireAuthentication(() => {
@@ -43,14 +43,14 @@ export const FullTopic = (props: Props) => {
   return (
     <div class={clsx(styles.topicHeader, 'col-md-16 col-lg-12 offset-md-4 offset-lg-6')}>
       <h1>#{props.topic?.title}</h1>
-      <p class={styles.topicDescription} innerHTML={props.topic?.body} />
+      <p class={styles.topicDescription} innerHTML={props.topic?.body || ''} />
 
       <div class={styles.topicDetails}>
         <Show when={props.topic?.stat}>
           <div class={styles.topicDetailsItem}>
             <Icon name="feed-all" class={styles.topicDetailsIcon} />
             {t('some posts', {
-              count: props.topic?.stat.shouts ?? 0,
+              count: props.topic?.stat?.shouts ?? 0,
             })}
           </div>
         </Show>
@@ -75,7 +75,7 @@ export const FullTopic = (props: Props) => {
         </a>
       </div>
       <Show when={props.topic?.pic}>
-        <img src={props.topic?.pic} alt={props.topic?.title} />
+        <img src={props.topic?.pic || ''} alt={props.topic?.title || ''} />
       </Show>
     </div>
   )

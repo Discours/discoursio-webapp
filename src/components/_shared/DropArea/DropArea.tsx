@@ -1,24 +1,24 @@
-import type { FileTypeToUpload } from '../../../pages/types'
-
-import { createDropzone, createFileUploader } from '@solid-primitives/upload'
+import { UploadFile, createDropzone, createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { UploadedFile } from '../../../pages/types'
 import { handleFileUpload } from '../../../utils/handleFileUpload'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
 import { validateFiles } from '../../../utils/validateFile'
 
 import styles from './DropArea.module.scss'
 
-type Props = {
+type FileType = 'image' | 'file' | 'audio'
+
+interface Props {
   class?: string
   placeholder: string
   isMultiply: boolean
-  fileType: FileTypeToUpload
-  onUpload: (value: UploadedFile[]) => void
+  fileType: FileType
+  // biome-ignore lint/suspicious/noExplicitAny: json response
+  onUpload: (value: any[]) => void
   description?: string | JSX.Element
   isSquare?: boolean
 }
@@ -26,18 +26,22 @@ type Props = {
 export const DropArea = (props: Props) => {
   const { t } = useLocalize()
   const [dragActive, setDragActive] = createSignal(false)
-  const [dropAreaError, setDropAreaError] = createSignal<string>()
+  const [dropAreaError, setDropAreaError] = createSignal<string | undefined>()
   const [loading, setLoading] = createSignal(false)
   const { session } = useSession()
 
-  const runUpload = async (files) => {
+  /**
+   * Handle the file upload process
+   * @param files - Array of files to upload
+   */
+  const runUpload = async (files: UploadFile[]) => {
     try {
       setLoading(true)
 
-      const results: UploadedFile[] = []
+      const results = []
       for (const file of files) {
         const handler = props.fileType === 'image' ? handleImageUpload : handleFileUpload
-        const result = await handler(file, session()?.access_token)
+        const result = await handler(file, session()?.access_token as string)
         results.push(result)
       }
       props.onUpload(results)
@@ -49,8 +53,12 @@ export const DropArea = (props: Props) => {
     }
   }
 
-  const initUpload = async (selectedFiles) => {
-    if (!props.isMultiply && files.length > 1) {
+  /**
+   * Initialize the file upload process
+   * @param selectedFiles - Array of selected files
+   */
+  const initUpload = async (selectedFiles: UploadFile[]) => {
+    if (!props.isMultiply && selectedFiles.length > 1) {
       setDropAreaError(t('Many files, choose only one'))
       return
     }
@@ -59,11 +67,10 @@ export const DropArea = (props: Props) => {
       await runUpload(selectedFiles)
     } else {
       setDropAreaError(t('Invalid file type'))
-      return false
     }
   }
 
-  const { files, selectFiles } = createFileUploader({
+  const { selectFiles } = createFileUploader({
     multiple: true,
     accept: `${props.fileType}/*`,
   })
@@ -74,19 +81,25 @@ export const DropArea = (props: Props) => {
       await initUpload(droppedFiles())
     },
   })
-  const handleDrag = (event) => {
+
+  /**
+   * Handle drag events
+   * @param event - The drag event
+   */
+  const handleDrag = (event: DragEvent) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {
       setDragActive(true)
     } else if (event.type === 'dragleave') {
       setDragActive(false)
     }
   }
+
+  /**
+   * Handle click on drop field to select files
+   */
   const handleDropFieldClick = async () => {
     selectFiles((selectedFiles) => {
-      const filesArray = selectedFiles.map((file) => {
-        return file
-      })
-      initUpload(filesArray)
+      initUpload(selectedFiles)
     })
   }
 

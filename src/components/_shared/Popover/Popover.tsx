@@ -39,18 +39,19 @@ export const Popover = (props: Props) => {
 
   if (!props.disabled) {
     onMount(() => {
+      if (!anchor()) return
       showEvents.forEach((event) => {
-        anchor().addEventListener(event, handleMouseOver)
+        anchor()?.addEventListener(event, handleMouseOver)
       })
       hideEvents.forEach((event) => {
-        anchor().addEventListener(event, handleMouseOut)
+        anchor()?.addEventListener(event, handleMouseOut)
       })
       return () => {
         showEvents.forEach((event) => {
-          anchor().removeEventListener(event, handleMouseOver)
+          anchor()?.removeEventListener(event, handleMouseOver)
         })
         hideEvents.forEach((event) => {
-          anchor().removeEventListener(event, handleMouseOut)
+          anchor()?.removeEventListener(event, handleMouseOut)
         })
       }
     })

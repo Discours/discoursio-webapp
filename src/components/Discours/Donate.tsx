@@ -1,9 +1,8 @@
 import { clsx } from 'clsx'
 import { createSignal, onMount } from 'solid-js'
 
+import { useSnackbar, useUI } from '~/context/ui'
 import { useLocalize } from '../../context/localize'
-import { useSnackbar } from '../../context/snackbar'
-import { showModal } from '../../stores/ui'
 
 import styles from './Donate.module.scss'
 
@@ -12,6 +11,7 @@ type DWindow = Window & { cp: any }
 
 export const Donate = () => {
   const { t } = useLocalize()
+  const { showModal } = useUI()
   const once = ''
   const monthly = 'Monthly'
   const cpOptions = {
@@ -103,13 +103,15 @@ export const Donate = () => {
           },
         },
       },
-      (opts) => {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      (opts: any) => {
         // success
         // действие при успешной оплате
         console.debug('[donate] options', opts)
         showModal('thank')
       },
-      (reason: string, options) => {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      (reason: string, options: any) => {
         // fail
         // действие при неуспешной оплате
         console.debug('[donate] options', options)

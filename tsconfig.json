@@ -7,12 +7,19 @@
     // Enable top-level await and other modern ESM features.
     "target": "ESNext",
     "module": "ESNext",
-    // Enable node-style module resolution, for things like npm package imports.
-    "moduleResolution": "node",
-    // Enable JSON imports.
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "types": ["vinxi/types/client"],
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "isolatedModules": true,
-    "lib": ["es2023", "dom"]
+    "lib": ["DOM", "ESNext"],
+    "paths": {
+      "~/*": ["./src/*"],
+      "@/*": ["./public/*"]
+    }
   }
 }

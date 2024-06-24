@@ -1,8 +1,8 @@
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'
 
+import { MediaItem } from '~/types/mediaitem'
 import { useLocalize } from '../../../context/localize'
-import { MediaItem } from '../../../pages/types'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
 import { AudioPlayer } from '../../Article/AudioPlayer'
 import { DropArea } from '../../_shared/DropArea'
@@ -10,7 +10,7 @@ import { DropArea } from '../../_shared/DropArea'
 // import { Buffer } from 'node:buffer'
 import styles from './AudioUploader.module.scss'
 
-window.Buffer = Buffer
+if (window) window.Buffer = Buffer
 
 type Props = {
   class?: string
@@ -28,7 +28,11 @@ type Props = {
 export const AudioUploader = (props: Props) => {
   const { t } = useLocalize()
 
-  const handleMediaItemFieldChange = (index: number, field: keyof MediaItem, value) => {
+  const handleMediaItemFieldChange = (
+    index: number,
+    field: keyof MediaItem | string | symbol | number,
+    value: string,
+  ) => {
     props.onAudioChange(index, { ...props.audio[index], [field]: value })
   }
 

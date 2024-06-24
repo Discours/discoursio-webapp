@@ -28,11 +28,11 @@ export const Popup = (props: PopupProps) => {
     }
   })
 
-  const containerRef: { current: HTMLElement } = { current: null }
+  let containerRef: HTMLElement | undefined
   const closePopup = () => setIsVisible(false)
 
   useOutsideClickHandler({
-    containerRef,
+    containerRef: containerRef,
     predicate: () => isVisible(),
     handler: () => closePopup(),
   })
@@ -45,7 +45,7 @@ export const Popup = (props: PopupProps) => {
 
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
   return (
-    <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef.current = el)}>
+    <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef = el)}>
       <span class={styles.trigger} onClick={toggle}>
         {props.trigger}
       </span>

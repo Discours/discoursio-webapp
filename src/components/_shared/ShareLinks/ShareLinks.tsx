@@ -2,8 +2,8 @@ import { FACEBOOK, TELEGRAM, TWITTER, VK, createSocialShare } from '@solid-primi
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
+import { useSnackbar } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
-import { useSnackbar } from '../../../context/snackbar'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 
@@ -31,10 +31,10 @@ export const ShareLinks = (props: Props) => {
     description: props.description,
   }))
 
-  const handleShare = (network) => {
+  const handleShare = (network: string | undefined) => {
     share(network)
     if (props.variant === 'inModal') {
-      props.onShareClick()
+      props.onShareClick?.()
     }
   }
   const copyLink = async () => {
@@ -43,7 +43,7 @@ export const ShareLinks = (props: Props) => {
       setIsLinkCopied(true)
       setTimeout(() => {
         setIsLinkCopied(false)
-        props.onShareClick()
+        props.onShareClick?.()
       }, 3000)
     } else {
       showSnackbar({ body: t('Link copied') })
@@ -112,7 +112,7 @@ export const ShareLinks = (props: Props) => {
               <label for="link">{t('Copy link')}</label>
 
               <Popover content={t('Copy link')}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef: (el: HTMLElement) => void) => (
                   <div class={styles.copyButton} onClick={copyLink} ref={triggerRef}>
                     <Icon name="copy" class={clsx(styles.icon, popupStyles.icon)} />
                   </div>

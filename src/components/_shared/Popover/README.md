@@ -4,7 +4,7 @@
 import Popover from './Popover';
 
 <Popover content={'This is popover text'}>
-  {(triggerRef: (el) => void) => (
+  {(triggerRef: (el: HTMLElement) => void) => (
     <Button value="Hover me" ref={triggerRef} />
   )}
 </Popover>
@@ -15,7 +15,7 @@ import Popover from './Popover';
 import Popover from './Popover';
 
 <Popover content={'This is popover text'}>
-  {(triggerRef: (el) => void) => (
+  {(triggerRef: (el: HTMLElement) => void) => (
     <div ref={triggerRef}>Hover me</div>
   )}
 </Popover>

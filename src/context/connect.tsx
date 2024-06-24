@@ -1,12 +1,11 @@
 import type { Accessor, JSX } from 'solid-js'
-
 import type { Author, Reaction, Shout, Topic } from '../graphql/schema/core.gen'
 
-import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
+import { EventSource } from 'extended-eventsource'
 import { createContext, createEffect, createSignal, on, useContext } from 'solid-js'
 
+import { sseUrl } from '../config/config'
 import { Chat, Message } from '../graphql/schema/chat.gen'
-import { sseUrl } from '../utils/config'
 import { useSession } from './session'
 
 const RECONNECT_TIMES = 2
@@ -27,7 +26,7 @@ export interface ConnectContextType {
   connected: Accessor<boolean>
 }
 
-const ConnectContext = createContext<ConnectContextType>()
+const ConnectContext = createContext<ConnectContextType>({} as ConnectContextType)
 
 export const ConnectProvider = (props: { children: JSX.Element }) => {
   const [messageHandlers, setHandlers] = createSignal<MessageHandler[]>([])
@@ -48,43 +47,36 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
         if (!connected() && retried() <= RECONNECT_TIMES) {
           console.info('[context.connect] got token, init SSE connection')
           try {
-            await fetchEventSource(sseUrl, {
+            const eventSource = new EventSource(sseUrl, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: tkn,
               },
-              onmessage(event) {
-                const m: SSEMessage = JSON.parse(event.data || '{}')
-                console.log('[context.connect] Received message:', m)
-                messageHandlers().forEach((handler) => handler(m))
-              },
-              onopen: (response) => {
-                console.log('[context.connect] SSE connection opened', response)
-                if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
-                  setConnected(true)
-                  setRetried(0)
-                  return Promise.resolve()
-                }
-                return Promise.reject(`SSE: cannot connect to real-time updates: ${response.status}`)
-              },
-              onclose() {
-                console.log('[context.connect] SSE connection closed by server')
-                setConnected(false)
-                if (retried() < RECONNECT_TIMES) {
-                  setRetried((r) => r + 1)
-                } else throw Error('closed by server')
-              },
-              onerror(err) {
-                console.error('[context.connect] SSE connection error:', err)
-                setConnected(false)
-                if (retried() < RECONNECT_TIMES) {
-                  setRetried((r) => r + 1)
-                } else throw Error(err)
-              },
+              retry: 3000,
             })
+
+            eventSource.onopen = (ev) => {
+              console.log('[context.connect] SSE connection opened', ev)
+              setConnected(true)
+              setRetried(0)
+            }
+
+            eventSource.onmessage = (event: MessageEvent) => {
+              const m: SSEMessage = JSON.parse(event.data || '{}')
+              console.log('[context.connect] Received message:', m)
+              messageHandlers().forEach((handler) => handler(m))
+            }
+
+            eventSource.onerror = (error) => {
+              console.error('[context.connect] SSE connection error:', error)
+              setConnected(false)
+              if (retried() < RECONNECT_TIMES) {
+                setRetried((r) => r + 1)
+              } else throw Error('failed')
+            }
           } catch (error) {
-            console.error('[context.connect] SSE connection failed:', error)
+            console.error('[context.connect] SSE init failed:', error)
           }
         }
       },

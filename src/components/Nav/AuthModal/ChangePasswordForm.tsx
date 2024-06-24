@@ -1,15 +1,12 @@
-import type { AuthModalSearchParams } from './types'
-
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal } from 'solid-js'
 
+import { useUI } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { useRouter } from '../../../stores/router'
-import { hideModal } from '../../../stores/ui'
-
 import { PasswordField } from './PasswordField'
 
+import { useSearchParams } from '@solidjs/router'
 import styles from './AuthModal.module.scss'
 
 type FormFields = {
@@ -19,26 +16,26 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const ChangePasswordForm = () => {
-  const { searchParams, changeSearchParams } = useRouter<AuthModalSearchParams>()
+  const [searchParams, changeSearchParams] = useSearchParams<{ token?: string }>()
+  const { hideModal } = useUI()
   const { t } = useLocalize()
   const { changePassword } = useSession()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
-  const [newPassword, setNewPassword] = createSignal<string>()
-  const [passwordError, setPasswordError] = createSignal<string>()
+  const [newPassword, setNewPassword] = createSignal<string>('')
+  const [passwordError, setPasswordError] = createSignal<string>('')
   const [isSuccess, setIsSuccess] = createSignal(false)
-  const authFormRef: { current: HTMLFormElement } = { current: null }
+  let authFormRef: HTMLFormElement | undefined
 
   const handleSubmit = async (event: Event) => {
     event.preventDefault()
     setIsSubmitting(true)
-    if (newPassword()) {
-      changePassword(newPassword(), searchParams()?.token)
-      setTimeout(() => {
-        setIsSubmitting(false)
-        setIsSuccess(true)
-      }, 1000)
-    }
+    if (!newPassword()) return
+    if (searchParams?.token) changePassword(newPassword(), searchParams.token)
+    setTimeout(() => {
+      setIsSubmitting(false)
+      setIsSuccess(true)
+    }, 1000)
   }
 
   const handlePasswordInput = (value: string) => {
@@ -56,7 +53,7 @@ export const ChangePasswordForm = () => {
         <form
           onSubmit={handleSubmit}
           class={clsx(styles.authForm, styles.authFormForgetPassword)}
-          ref={(el) => (authFormRef.current = el)}
+          ref={(el) => (authFormRef = el)}
         >
           <div>
             <h4>{t('Enter a new password')}</h4>

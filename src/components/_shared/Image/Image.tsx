@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 
+import { Link } from '@solidjs/meta'
 import { splitProps } from 'solid-js'
-import { Link } from '../../../context/meta'
 
 import { getImageUrl } from '../../../utils/getImageUrl'
 
@@ -13,12 +13,12 @@ type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {
 export const Image = (props: Props) => {
   const [local, others] = splitProps(props, ['src', 'alt'])
 
-  const imageUrl = getImageUrl(local.src, { width: others.width })
+  const imageUrl = getImageUrl(local.src || '', { width: others.width })
 
   const imageSrcSet = [1, 2, 3]
     .map(
       (pixelDensity) =>
-        `${getImageUrl(local.src, { width: others.width * pixelDensity })} ${pixelDensity}x`,
+        `${getImageUrl(local.src || '', { width: others.width * pixelDensity })} ${pixelDensity}x`,
     )
     .join(', ')
   return (

@@ -52,7 +52,7 @@ export const PasswordField = (props: Props) => {
       return
     }
 
-    props.onInput(value)
+    props.onInput?.(value)
     if (!props.noValidate) {
       const errorValue = validatePassword(value)
       if (errorValue) {

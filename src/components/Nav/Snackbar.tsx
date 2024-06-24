@@ -2,7 +2,7 @@ import { clsx } from 'clsx'
 import { Show } from 'solid-js'
 import { Transition } from 'solid-transition-group'
 
-import { useSnackbar } from '../../context/snackbar'
+import { useSnackbar } from '~/context/ui'
 import { Icon } from '../_shared/Icon'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
@@ -24,12 +24,12 @@ export const Snackbar = () => {
           exitToClass={styles.exitTo}
           onExit={(_el, done) => setTimeout(() => done(), 300)}
         >
-          <Show when={snackbarMessage()}>
+          <Show when={snackbarMessage()?.body}>
             <div class={styles.content}>
               <Show when={snackbarMessage()?.type === 'success'}>
                 <Icon name="check-success" class={styles.icon} />
               </Show>
-              {snackbarMessage().body}
+              {snackbarMessage()?.body || ''}
             </div>
           </Show>
         </Transition>

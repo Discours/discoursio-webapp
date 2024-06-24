@@ -23,7 +23,7 @@ type BubbleMenuProps = {
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const { t } = useLocalize()
 
-  const isActive = (name: string, attributes?: unknown) =>
+  const isActive = (name: string, attributes?: Record<string, string | number>) =>
     createEditorTransaction(
       () => props.editor,
       (editor) => editor?.isActive(name, attributes),
@@ -71,7 +71,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
     setListBubbleOpen((prev) => !prev)
   }
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !props.editor.state.selection.empty) {
       event.preventDefault()
       setLinkEditorOpen(true)
@@ -89,9 +89,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     },
   )
 
-  const handleAddFootnote = (footnote) => {
+  const handleAddFootnote = (footnote: string) => {
     if (footNote()) {
-      props.editor.chain().focus().updateFootnote(footnote).run()
+      props.editor.chain().focus().updateFootnote({ value: footnote }).run()
     } else {
       props.editor.chain().focus().setFootnote({ value: footnote }).run()
     }
@@ -180,7 +180,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       <header>{t('Headers')}</header>
                       <div class={styles.actions}>
                         <Popover content={t('Header 1')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
@@ -197,7 +197,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           )}
                         </Popover>
                         <Popover content={t('Header 2')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
@@ -214,7 +214,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           )}
                         </Popover>
                         <Popover content={t('Header 3')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
@@ -234,7 +234,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       <header>{t('Quotes')}</header>
                       <div class={styles.actions}>
                         <Popover content={t('Quote')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
@@ -248,7 +248,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           )}
                         </Popover>
                         <Popover content={t('Punchline')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
@@ -265,7 +265,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       <header>{t('squib')}</header>
                       <div class={styles.actions}>
                         <Popover content={t('Incut')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
@@ -289,7 +289,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               </>
             </Show>
             <Popover content={t('Bold')}>
-              {(triggerRef: (el) => void) => (
+              {(triggerRef: (el: HTMLElement) => void) => (
                 <button
                   ref={triggerRef}
                   type="button"
@@ -303,7 +303,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               )}
             </Popover>
             <Popover content={t('Italic')}>
-              {(triggerRef: (el) => void) => (
+              {(triggerRef: (el: HTMLElement) => void) => (
                 <button
                   ref={triggerRef}
                   type="button"
@@ -319,7 +319,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
 
             <Show when={!props.isCommonMarkup}>
               <Popover content={t('Highlight')}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef: (el: HTMLElement) => void) => (
                   <button
                     ref={triggerRef}
                     type="button"
@@ -335,7 +335,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               <div class={styles.delimiter} />
             </Show>
             <Popover content={<div class={styles.noWrap}>{t('Add url')}</div>}>
-              {(triggerRef: (el) => void) => (
+              {(triggerRef: (el: HTMLElement) => void) => (
                 <button
                   ref={triggerRef}
                   type="button"
@@ -351,7 +351,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             <Show when={!props.isCommonMarkup}>
               <>
                 <Popover content={t('Insert footnote')}>
-                  {(triggerRef: (el) => void) => (
+                  {(triggerRef: (el: HTMLElement) => void) => (
                     <button
                       ref={triggerRef}
                       type="button"
@@ -381,7 +381,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       <header>{t('Lists')}</header>
                       <div class={styles.actions}>
                         <Popover content={t('Bullet list')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
@@ -398,7 +398,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           )}
                         </Popover>
                         <Popover content={t('Ordered list')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"

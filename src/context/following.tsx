@@ -1,54 +1,77 @@
-import { Accessor, JSX, createContext, createEffect, createSignal, on, useContext } from 'solid-js'
+import {
+  Accessor,
+  JSX,
+  createContext,
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  useContext,
+} from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import { apiClient } from '../graphql/client/core'
-import { Author, AuthorFollowsResult, FollowingEntity } from '../graphql/schema/core.gen'
-
+import followMutation from '~/graphql/mutation/core/follow'
+import unfollowMutation from '~/graphql/mutation/core/unfollow'
+import loadAuthorFollowers from '../graphql/query/core/author-followers'
+import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
+import { useGraphQL } from './graphql'
 import { useSession } from './session'
+
+export type FollowsFilter = 'all' | 'authors' | 'topics' | 'communities'
 
 type FollowingData = { slug: string; type: 'follow' | 'unfollow' }
 
 interface FollowingContextType {
   loading: Accessor<boolean>
-
   followers: Accessor<Author[]>
   setFollows: (follows: AuthorFollowsResult) => void
-
-  following: Accessor<FollowingData>
+  following: Accessor<FollowingData | undefined>
   changeFollowing: (what: FollowingEntity, slug: string, value: boolean) => void
-
   follows: AuthorFollowsResult
   loadFollows: () => void
-
   follow: (what: FollowingEntity, slug: string) => Promise<void>
   unfollow: (what: FollowingEntity, slug: string) => Promise<void>
 }
 
-const FollowingContext = createContext<FollowingContextType>()
+const FollowingContext = createContext<FollowingContextType>({} as FollowingContextType)
 
 export function useFollowing() {
   return useContext(FollowingContext)
 }
 
-const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
-  topics: [],
-  authors: [],
-  communities: [],
+interface AuthorFollowsResult {
+  authors?: Author[]
+  topics?: Topic[]
+  communities?: Community[]
 }
+
+const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
+  topics: [] as Topic[],
+  authors: [] as Author[],
+  communities: [] as Community[],
+}
+
+const defaultFollowing = { slug: '', type: 'follow' } as FollowingData
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [followers, setFollowers] = createSignal<Author[]>([])
+  const [followers, setFollowers] = createSignal<Author[]>([] as Author[])
   const [follows, setFollows] = createStore<AuthorFollowsResult>(EMPTY_SUBSCRIPTIONS)
-  const { author, session } = useSession()
+  const { session } = useSession()
+  const authorized = createMemo<boolean>(() => Boolean(session()?.access_token))
+  const { query, mutation } = useGraphQL()
 
   const fetchData = async () => {
     setLoading(true)
     try {
-      if (apiClient.private) {
+      if (session()?.access_token) {
         console.debug('[context.following] fetching subs data...')
-        const result = await apiClient.getAuthorFollows({ user: session()?.user.id })
-        setFollows(result || EMPTY_SUBSCRIPTIONS)
+        const result = await query(loadAuthorFollowers, { user: session()?.user?.id }).toPromise()
+        if (result) {
+          setFollows((_: AuthorFollowsResult) => {
+            return { ...EMPTY_SUBSCRIPTIONS, ...result } as AuthorFollowsResult
+          })
+        }
       }
     } catch (error) {
       console.warn('[context.following] cannot get subs', error)
@@ -57,12 +80,15 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const [following, setFollowing] = createSignal<FollowingData>()
+  const [following, setFollowing] = createSignal<FollowingData>(defaultFollowing)
+
   const follow = async (what: FollowingEntity, slug: string) => {
-    if (!author()) return
+    if (!authorized()) return
     setFollowing({ slug, type: 'follow' })
     try {
-      const result = await apiClient.follow({ what, slug })
+      const resp = await mutation(followMutation, { what, slug }).toPromise()
+      const result = resp?.data?.follow
+      if (!result) return
       setFollows((subs) => {
         if (result.authors) subs['authors'] = result.authors || []
         if (result.topics) subs['topics'] = result.topics || []
@@ -71,15 +97,17 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     } catch (error) {
       console.error(error)
     } finally {
-      setFollowing() // Сбрасываем состояние действия подписки.
+      setFollowing(defaultFollowing)
     }
   }
 
   const unfollow = async (what: FollowingEntity, slug: string) => {
-    if (!author()) return
+    if (!authorized()) return
     setFollowing({ slug: slug, type: 'unfollow' })
     try {
-      const result = await apiClient.unfollow({ what, slug })
+      const resp = await mutation(unfollowMutation, { what, slug }).toPromise()
+      const result = resp?.data?.unfollow
+      if (!result) return
       setFollows((subs) => {
         if (result.authors) subs['authors'] = result.authors || []
         if (result.topics) subs['topics'] = result.topics || []
@@ -88,13 +116,13 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     } catch (error) {
       console.error(error)
     } finally {
-      setFollowing()
+      setFollowing(defaultFollowing)
     }
   }
 
   createEffect(
     on(
-      () => session()?.user.app_data,
+      () => session?.()?.user?.app_data,
       (appdata) => {
         if (appdata) {
           const { authors, followers, topics } = appdata
@@ -107,19 +135,50 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   )
 
   const changeFollowing = (what: FollowingEntity, slug: string, value = true) => {
-    setFollows((fff) => {
-      const updatedSubs = { ...fff }
-      if (!updatedSubs[what]) updatedSubs[what] = []
-      if (value) {
-        const exists = updatedSubs[what]?.some((entity) => entity.slug === slug)
-        if (!exists) updatedSubs[what].push(slug)
-      } else {
-        updatedSubs[what] = (updatedSubs[what] || []).filter((x) => x !== slug)
+    setFollows((prevFollows: AuthorFollowsResult) => {
+      const updatedFollows = { ...prevFollows }
+      switch (what) {
+        case 'AUTHOR': {
+          if (value) {
+            if (!updatedFollows.authors?.some((author) => author.slug === slug)) {
+              updatedFollows.authors = [...(updatedFollows.authors || []), { slug } as Author]
+            }
+          } else {
+            updatedFollows.authors = updatedFollows.authors?.filter((author) => author.slug !== slug) || []
+          }
+          break
+        }
+        case 'TOPIC': {
+          if (value) {
+            if (!updatedFollows.topics?.some((topic) => topic.slug === slug)) {
+              updatedFollows.topics = [...(updatedFollows.topics || []), { slug } as Topic]
+            }
+          } else {
+            updatedFollows.topics = updatedFollows.topics?.filter((topic) => topic.slug !== slug) || []
+          }
+          break
+        }
+        case 'COMMUNITY': {
+          if (value) {
+            if (!updatedFollows.communities?.some((community) => community.slug === slug)) {
+              updatedFollows.communities = [...(updatedFollows.communities || []), { slug } as Community]
+            }
+          } else {
+            updatedFollows.communities =
+              updatedFollows.communities?.filter((community) => community.slug !== slug) || []
+          }
+          break
+        }
       }
-      return updatedSubs
+      return updatedFollows
     })
+
     try {
-      ;(value ? follow : unfollow)(what, slug)
+      if (value) {
+        follow(what, slug)
+      } else {
+        unfollow(what, slug)
+      }
     } catch (error) {
       console.error(error)
     } finally {

@@ -39,7 +39,7 @@ export const Beside = (props: Props) => {
                 class={clsx(
                   'col-lg-8',
                   styles[
-                    `besideRatingColumn${props.wrapper.charAt(0).toUpperCase() + props.wrapper.slice(1)}`
+                    `besideRatingColumn${props.wrapper?.charAt(0)?.toUpperCase() + props.wrapper.slice(1)}` as keyof typeof styles
                   ],
                 )}
               >

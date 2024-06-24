@@ -43,12 +43,12 @@ export const VideoPlayer = (props: Props) => {
     <div class={clsx(styles.VideoPlayer, props.class, { [styles.articleView]: props.articleView })}>
       <Show when={props.onVideoDelete}>
         <Popover content={t('Delete')}>
-          {(triggerRef: (el) => void) => (
+          {(triggerRef: (el: HTMLElement) => void) => (
             <Button
               ref={triggerRef}
               size="S"
               class={styles.deleteAction}
-              onClick={() => props.onVideoDelete()}
+              onClick={() => props.onVideoDelete?.()}
               value={<Icon class={styles.deleteIcon} name="delete" />}
             />
           )}

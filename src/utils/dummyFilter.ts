@@ -30,11 +30,11 @@ export const dummyFilter = <T extends Topic | Author>(
     if (slugMatches) return true
 
     if ('title' in item) {
-      return stringMatches(item.title, q, lang)
+      return stringMatches(item?.title || '', q, lang)
     }
 
     if (isAuthor(item)) {
-      return stringMatches(item.name, q, lang) || (item.bio && stringMatches(item.bio, q, lang))
+      return stringMatches(item?.name || '', q, lang) || (item.bio && stringMatches(item.bio, q, lang))
     }
 
     // If it does not match any of the 'slug', 'title', 'name' , 'bio' fields

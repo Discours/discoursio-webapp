@@ -4,7 +4,7 @@ import { Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { useFollowing } from '../../context/following'
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
-import { FollowingEntity, type Topic } from '../../graphql/schema/core.gen'
+import { Author, FollowingEntity, type Topic } from '../../graphql/schema/core.gen'
 import { capitalize } from '../../utils/capitalize'
 import { CardTopic } from '../Feed/CardTopic'
 import { CheckButton } from '../_shared/CheckButton'
@@ -35,14 +35,15 @@ export const TopicCard = (props: TopicProps) => {
   const title = createMemo(() =>
     capitalize(lang() === 'en' ? props.topic.slug.replaceAll('-', ' ') : props.topic.title || ''),
   )
-  const { author, requireAuthentication } = useSession()
+  const { session, requireAuthentication } = useSession()
+  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { follow, unfollow, follows } = useFollowing()
   const [isFollowed, setIsFollowed] = createSignal(false)
   createEffect(
     on([() => follows, () => props.topic], ([flws, tpc]) => {
       if (flws && tpc) {
         const followed = follows?.topics?.some((topics) => topics.id === props.topic?.id)
-        setIsFollowed(followed)
+        setIsFollowed(Boolean(followed))
       }
     }),
   )
@@ -83,13 +84,13 @@ export const TopicCard = (props: TopicProps) => {
           </Show>
 
           <Show when={props.isCardMode}>
-            <CardTopic title={props.topic.title} slug={props.topic.slug} class={styles.cardMode} />
+            <CardTopic title={props.topic?.title || ''} slug={props.topic.slug} class={styles.cardMode} />
           </Show>
 
           <Show when={props.topic.pic}>
             <div class={styles.topicAvatar}>
               <a href={`/topic/${props.topic.slug}`}>
-                <img src={props.topic.pic} alt={title()} />
+                <img src={props.topic?.pic || ''} alt={title()} />
               </a>
             </div>
           </Show>

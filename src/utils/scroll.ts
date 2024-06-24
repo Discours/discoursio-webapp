@@ -4,8 +4,10 @@ const scrollPosition = {
 }
 
 export const saveScrollPosition = () => {
-  scrollPosition.top = window.scrollY
-  scrollPosition.left = window.scrollX
+  if (window) {
+    scrollPosition.top = window.scrollY
+    scrollPosition.left = window.scrollX
+  }
 }
 
 export const restoreScrollPosition = () => {
@@ -18,7 +20,7 @@ export const restoreScrollPosition = () => {
 export const scrollHandler = (elemId: string, offset = -100) => {
   const anchor = document.querySelector(`#${elemId}`)
 
-  if (anchor) {
+  if (anchor && window) {
     window.scrollTo({
       top: anchor.getBoundingClientRect().top + offset,
       behavior: 'smooth',

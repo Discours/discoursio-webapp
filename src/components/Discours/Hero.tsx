@@ -1,14 +1,13 @@
+import { useUI } from '~/context/ui'
 import { useLocalize } from '../../context/localize'
-import { useRouter } from '../../stores/router'
-import { showModal } from '../../stores/ui'
-import type { AuthModalSearchParams } from '../Nav/AuthModal/types'
 
+import { useSearchParams } from '@solidjs/router'
 import styles from './Hero.module.scss'
 
 export default () => {
   const { t } = useLocalize()
-  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
-
+  const { showModal } = useUI()
+  const [, changeSearchParams] = useSearchParams()
   return (
     <div class={styles.aboutDiscours}>
       <div class="wide-container">

@@ -27,7 +27,7 @@ export const Figure = Node.create({
       'data-type': { default: null },
     }
   },
-
+  // @ts-ignore FIXME: why
   parseHTML() {
     return [
       {

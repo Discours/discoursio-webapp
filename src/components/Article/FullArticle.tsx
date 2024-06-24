@@ -1,19 +1,16 @@
-import type { Author, Shout, Topic } from '../../graphql/schema/core.gen'
-
-import { getPagePath } from '@nanostores/router'
 import { createPopper } from '@popperjs/core'
 import { clsx } from 'clsx'
-import { install } from 'ga-gtag'
+// import { install } from 'ga-gtag'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
-import { Link, Meta } from '../../context/meta'
 
+import { Link, Meta } from '@solidjs/meta'
+import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
+import { MediaItem } from '~/types/mediaitem'
 import { useLocalize } from '../../context/localize'
 import { useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
-import { MediaItem } from '../../pages/types'
-import { DEFAULT_HEADER_OFFSET, router, useRouter } from '../../stores/router'
-import { showModal } from '../../stores/ui'
+import type { Author, Maybe, Shout, Topic } from '../../graphql/schema/core.gen'
 import { capitalize } from '../../utils/capitalize'
 import { getImageUrl, getOpenGraphImageUrl } from '../../utils/getImageUrl'
 import { getDescription, getKeywords } from '../../utils/meta'
@@ -31,14 +28,14 @@ import { Popover } from '../_shared/Popover'
 import { ShareModal } from '../_shared/ShareModal'
 import { ImageSwiper } from '../_shared/SolidSwiper'
 import { VideoPlayer } from '../_shared/VideoPlayer'
-
 import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
 import { CommentsTree } from './CommentsTree'
 import { SharePopup, getShareUrl } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
 
-import { useSeen } from '../../context/seen'
+import { A, useSearchParams } from '@solidjs/router'
+import { useFeed } from '~/context/feed'
 import stylesHeader from '../Nav/Header/Header.module.scss'
 import styles from './Article.module.scss'
 
@@ -60,49 +57,52 @@ export type ArticlePageSearchParams = {
 
 const scrollTo = (el: HTMLElement) => {
   const { top } = el.getBoundingClientRect()
-  window.scrollTo({
-    top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
-    left: 0,
-    behavior: 'smooth',
-  })
+  if (window)
+    window.scrollTo({
+      top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
+      left: 0,
+      behavior: 'smooth',
+    })
 }
 
 const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
 
 export const FullArticle = (props: Props) => {
-  const { searchParams, changeSearchParams } = useRouter<ArticlePageSearchParams>()
+  const [searchParams, changeSearchParams] = useSearchParams<ArticlePageSearchParams>()
+  const { showModal } = useUI()
   const { loadReactionsBy } = useReactions()
   const [selectedImage, setSelectedImage] = createSignal('')
   const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const { t, formatDate, lang } = useLocalize()
-  const { author, session, requireAuthentication } = useSession()
-  const { addSeen } = useSeen()
+  const { session, requireAuthentication } = useSession()
+  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
+  const { addSeen } = useFeed()
 
-  const formattedDate = createMemo(() => formatDate(new Date(props.article.published_at * 1000)))
+  const formattedDate = createMemo(() => formatDate(new Date((props.article?.published_at || 0) * 1000)))
 
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
       (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
         props.article?.created_by?.id === author().id ||
-        session()?.user?.roles.includes('editor')),
+        session()?.user?.roles?.includes('editor')),
   )
 
   const mainTopic = createMemo(() => {
-    const mainTopicSlug = props.article.topics.length > 0 ? props.article.main_topic : null
-    const mt = props.article.topics.find((tpc: Topic) => tpc.slug === mainTopicSlug)
+    const mainTopicSlug = (props.article?.topics?.length || 0) > 0 ? props.article.main_topic : null
+    const mt = props.article.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
     if (mt) {
       mt.title = lang() === 'en' ? capitalize(mt.slug.replace(/-/, ' ')) : mt.title
       return mt
     }
-    return props.article.topics[0]
+    return props.article?.topics?.[0]
   })
 
-  const handleBookmarkButtonClick = (ev) => {
+  const handleBookmarkButtonClick = (ev: MouseEvent | undefined) => {
     requireAuthentication(() => {
       // TODO: implement bookmark clicked
-      ev.preventDefault()
+      ev?.preventDefault()
     }, 'bookmark')
   }
 
@@ -129,10 +129,11 @@ export const FullArticle = (props: Props) => {
 
     if (isServer) {
       const result: string[] = []
-      let match: RegExpMatchArray
+      let match: RegExpMatchArray | null
 
       while ((match = imgSrcRegExp.exec(body())) !== null) {
-        result.push(match[1])
+        if (match) result.push(match[1])
+        else break
       }
       return result
     }
@@ -150,14 +151,12 @@ export const FullArticle = (props: Props) => {
     }
   })
 
-  const commentsRef: {
-    current: HTMLDivElement
-  } = { current: null }
+  let commentsRef: HTMLDivElement | undefined
 
   createEffect(() => {
-    if (searchParams().commentId && isReactionsLoaded()) {
+    if (searchParams?.commentId && isReactionsLoaded()) {
       const commentElement = document.querySelector<HTMLElement>(
-        `[id='comment_${searchParams().commentId}']`,
+        `[id='comment_${searchParams?.commentId}']`,
       )
 
       if (commentElement) {
@@ -166,8 +165,8 @@ export const FullArticle = (props: Props) => {
     }
   })
 
-  const clickHandlers = []
-  const documentClickHandlers = []
+  const clickHandlers: { element: HTMLElement; handler: () => void }[] = []
+  const documentClickHandlers: ((e: MouseEvent) => void)[] = []
 
   createEffect(() => {
     if (!body()) {
@@ -185,7 +184,7 @@ export const FullArticle = (props: Props) => {
       tooltip.classList.add(styles.tooltip)
       const tooltipContent = document.createElement('div')
       tooltipContent.classList.add(styles.tooltipContent)
-      tooltipContent.innerHTML = element.dataset.originalTitle || element.dataset.value
+      tooltipContent.innerHTML = element.dataset.originalTitle || element.dataset.value || ''
 
       tooltip.append(tooltipContent)
 
@@ -229,7 +228,7 @@ export const FullArticle = (props: Props) => {
         popperInstance.update()
       }
 
-      const handleDocumentClick = (e) => {
+      const handleDocumentClick = (e: MouseEvent) => {
         if (isTooltipVisible && e.target !== element && e.target !== tooltip) {
           tooltip.style.visibility = 'hidden'
           isTooltipVisible = false
@@ -253,14 +252,15 @@ export const FullArticle = (props: Props) => {
     })
   })
 
-  const openLightbox = (image) => {
+  const openLightbox = (image: string) => {
     setSelectedImage(image)
   }
   const handleLightboxClose = () => {
-    setSelectedImage()
+    setSelectedImage('')
   }
 
-  const handleArticleBodyClick = (event) => {
+  // biome-ignore lint/suspicious/noExplicitAny: FIXME: typing
+  const handleArticleBodyClick = (event: any) => {
     if (event.target.tagName === 'IMG' && !event.target.dataset.disableLightbox) {
       const src = event.target.src
       openLightbox(getImageUrl(src))
@@ -268,12 +268,12 @@ export const FullArticle = (props: Props) => {
   }
 
   // Check iframes size
-  const articleContainer: { current: HTMLElement } = { current: null }
+  let articleContainer: HTMLElement | undefined
   const updateIframeSizes = () => {
-    if (!(articleContainer?.current && props.article.body)) return
-    const iframes = articleContainer?.current?.querySelectorAll('iframe')
+    if (!(articleContainer && props.article.body && window)) return
+    const iframes = articleContainer?.querySelectorAll('iframe')
     if (!iframes) return
-    const containerWidth = articleContainer.current?.offsetWidth
+    const containerWidth = articleContainer?.offsetWidth
     iframes.forEach((iframe) => {
       const style = window.getComputedStyle(iframe)
       const originalWidth = iframe.getAttribute('width') || style.width.replace('px', '')
@@ -302,7 +302,7 @@ export const FullArticle = (props: Props) => {
   )
 
   onMount(async () => {
-    install('G-LQ4B87H8C2')
+    // install('G-LQ4B87H8C2')
     await loadReactionsBy({ by: { shout: props.article.slug } })
     addSeen(props.article.slug)
     setIsReactionsLoaded(true)
@@ -312,15 +312,15 @@ export const FullArticle = (props: Props) => {
     onCleanup(() => window.removeEventListener('resize', updateIframeSizes))
 
     createEffect(() => {
-      if (props.scrollToComments) {
-        scrollTo(commentsRef.current)
+      if (props.scrollToComments && commentsRef) {
+        scrollTo(commentsRef)
       }
     })
 
     createEffect(() => {
-      if (searchParams()?.scrollTo === 'comments' && commentsRef.current) {
-        requestAnimationFrame(() => scrollTo(commentsRef.current))
-        changeSearchParams({ scrollTo: null })
+      if (searchParams?.scrollTo === 'comments' && commentsRef) {
+        requestAnimationFrame(() => commentsRef && scrollTo(commentsRef))
+        changeSearchParams({ scrollTo: undefined })
       }
     })
   })
@@ -329,7 +329,7 @@ export const FullArticle = (props: Props) => {
   const ogImage = getOpenGraphImageUrl(cover, {
     title: props.article.title,
     topic: mainTopic()?.title || '',
-    author: props.article?.authors[0]?.name || '',
+    author: props.article?.authors?.[0]?.name || '',
     width: 1200,
   })
 
@@ -338,7 +338,7 @@ export const FullArticle = (props: Props) => {
   const keywords = getKeywords(props.article)
   const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })
   const getAuthorName = (a: Author) => {
-    return lang() === 'en' && isCyrillic(a.name) ? capitalize(a.slug.replace(/-/, ' ')) : a.name
+    return lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replace(/-/, ' ')) : a.name
   }
   return (
     <>
@@ -357,7 +357,7 @@ export const FullArticle = (props: Props) => {
       <div class="wide-container">
         <div class="row position-relative">
           <article
-            ref={(el) => (articleContainer.current = el)}
+            ref={(el) => (articleContainer = el)}
             class={clsx('col-md-16 col-lg-14 col-xl-12 offset-md-5', styles.articleContent)}
             onClick={handleArticleBodyClick}
           >
@@ -365,7 +365,7 @@ export const FullArticle = (props: Props) => {
             <Show when={props.article.layout !== 'audio'}>
               <div class={styles.shoutHeader}>
                 <Show when={mainTopic()}>
-                  <CardTopic title={mainTopic().title} slug={mainTopic().slug} />
+                  <CardTopic title={mainTopic()?.title || ''} slug={mainTopic()?.slug || ''} />
                 </Show>
 
                 <h1>{props.article.title}</h1>
@@ -375,10 +375,10 @@ export const FullArticle = (props: Props) => {
 
                 <div class={styles.shoutAuthor}>
                   <For each={props.article.authors}>
-                    {(a: Author, index) => (
+                    {(a: Maybe<Author>, index: () => number) => (
                       <>
                         <Show when={index() > 0}>, </Show>
-                        <a href={getPagePath(router, 'author', { slug: a.slug })}>{getAuthorName(a)}</a>
+                        <A href={`/author/${a?.slug}`}>{a && getAuthorName(a)}</A>
                       </>
                     )}
                   </For>
@@ -391,21 +391,25 @@ export const FullArticle = (props: Props) => {
                   }
                 >
                   <figure class="img-align-column">
-                    <Image width={800} alt={props.article.cover_caption} src={props.article.cover} />
-                    <figcaption innerHTML={props.article.cover_caption} />
+                    <Image
+                      width={800}
+                      alt={props.article.cover_caption || ''}
+                      src={props.article.cover || ''}
+                    />
+                    <figcaption innerHTML={props.article.cover_caption || ''} />
                   </figure>
                 </Show>
               </div>
             </Show>
             <Show when={props.article.lead}>
-              <section class={styles.lead} innerHTML={props.article.lead} />
+              <section class={styles.lead} innerHTML={props.article.lead || ''} />
             </Show>
             <Show when={props.article.layout === 'audio'}>
               <AudioHeader
                 title={props.article.title}
-                cover={props.article.cover}
+                cover={props.article.cover || ''}
                 artistData={media()?.[0]}
-                topic={mainTopic()}
+                topic={mainTopic() as Topic}
               />
               <Show when={media().length > 0}>
                 <div class="media-items">
@@ -467,11 +471,11 @@ export const FullArticle = (props: Props) => {
               </div>
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef: (el: HTMLElement) => void) => (
                   <div
                     class={clsx(styles.shoutStatsItem)}
                     ref={triggerRef}
-                    onClick={() => scrollTo(commentsRef.current)}
+                    onClick={() => commentsRef && scrollTo(commentsRef)}
                   >
                     <Icon name="comment" class={styles.icon} />
                     <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
@@ -487,7 +491,7 @@ export const FullArticle = (props: Props) => {
 
               <Show when={props.article.stat?.viewed}>
                 <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
-                  {t('some views', { count: props.article.stat?.viewed })}
+                  {t('some views', { count: props.article.stat?.viewed || 0 })}
                 </div>
               </Show>
 
@@ -498,7 +502,7 @@ export const FullArticle = (props: Props) => {
               </div>
 
               <Popover content={t('Add to bookmarks')} disabled={isActionPopupActive()}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef: (el: HTMLElement) => void) => (
                   <div
                     class={clsx(styles.shoutStatsItem, styles.shoutStatsItemBookmarks)}
                     ref={triggerRef}
@@ -513,12 +517,12 @@ export const FullArticle = (props: Props) => {
               </Popover>
 
               <Popover content={t('Share')} disabled={isActionPopupActive()}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef: (el: HTMLElement) => void) => (
                   <div class={styles.shoutStatsItem} ref={triggerRef}>
                     <SharePopup
                       title={props.article.title}
                       description={description}
-                      imageUrl={props.article.cover}
+                      imageUrl={props.article.cover || ''}
                       shareUrl={shareUrl}
                       containerCssClass={stylesHeader.control}
                       onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
@@ -535,22 +539,19 @@ export const FullArticle = (props: Props) => {
 
               <Show when={canEdit()}>
                 <Popover content={t('Edit')}>
-                  {(triggerRef: (el) => void) => (
+                  {(triggerRef: (el: HTMLElement) => void) => (
                     <div class={styles.shoutStatsItem} ref={triggerRef}>
-                      <a
-                        href={getPagePath(router, 'edit', { shoutId: props.article?.id.toString() })}
-                        class={styles.shoutStatsItemInner}
-                      >
+                      <A href={`/edit/${props.article?.id}`} class={styles.shoutStatsItemInner}>
                         <Icon name="pencil-outline" class={styles.icon} />
                         <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
-                      </a>
+                      </A>
                     </div>
                   )}
                 </Popover>
               </Show>
 
               <FeedArticlePopup
-                canEdit={canEdit()}
+                canEdit={Boolean(canEdit())}
                 containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
                 onShareClick={() => showModal('share')}
                 onInviteClick={() => showModal('inviteMembers')}
@@ -575,14 +576,14 @@ export const FullArticle = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={props.article.topics.length}>
+            <Show when={props.article.topics?.length}>
               <div class={styles.topicsList}>
                 <For each={props.article.topics}>
                   {(topic) => (
                     <div class={styles.shoutTopic}>
-                      <a href={getPagePath(router, 'topic', { slug: topic.slug })}>
-                        {lang() === 'en' ? capitalize(topic.slug) : topic.title}
-                      </a>
+                      <A href={`/topic/${topic?.slug || ''}`}>
+                        {lang() === 'en' ? capitalize(topic?.slug || '') : topic?.title || ''}
+                      </A>
                     </div>
                   )}
                 </For>
@@ -590,23 +591,23 @@ export const FullArticle = (props: Props) => {
             </Show>
 
             <div class={styles.shoutAuthorsList}>
-              <Show when={props.article.authors.length > 1}>
+              <Show when={(props.article.authors?.length || 0) > 1}>
                 <h4>{t('Authors')}</h4>
               </Show>
               <For each={props.article.authors}>
-                {(a: Author) => (
+                {(a: Maybe<Author>) => (
                   <div class="col-xl-12">
-                    <AuthorBadge iconButtons={true} showMessageButton={true} author={a} />
+                    <AuthorBadge iconButtons={true} showMessageButton={true} author={a as Author} />
                   </div>
                 )}
               </For>
             </div>
-            <div id="comments" ref={(el) => (commentsRef.current = el)}>
+            <div id="comments" ref={(el) => (commentsRef = el)}>
               <Show when={isReactionsLoaded()}>
                 <CommentsTree
                   shoutId={props.article.id}
                   shoutSlug={props.article.slug}
-                  articleAuthors={props.article.authors}
+                  articleAuthors={props.article.authors as Author[]}
                 />
               </Show>
             </div>
@@ -622,7 +623,7 @@ export const FullArticle = (props: Props) => {
       <ShareModal
         title={props.article.title}
         description={description}
-        imageUrl={props.article.cover}
+        imageUrl={props.article.cover || ''}
         shareUrl={shareUrl}
       />
     </>

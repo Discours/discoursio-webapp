@@ -1,21 +1,17 @@
+import { clsx } from 'clsx'
 import type { JSX } from 'solid-js'
 import { Show, createMemo, createSignal } from 'solid-js'
-import type { AuthModalSearchParams } from './types'
 
-import { clsx } from 'clsx'
-
+import { useSearchParams } from '@solidjs/router'
+import { useUI } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { useRouter } from '../../../stores/router'
-import { hideModal } from '../../../stores/ui'
 import { validateEmail } from '../../../utils/validateEmail'
-
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'
 import { SocialProviders } from './SocialProviders'
 import { email, setEmail } from './sharedLogic'
 
-import { GenericResponse } from '@authorizerdev/authorizer-js'
 import styles from './AuthModal.module.scss'
 
 type EmailStatus = 'not verified' | 'verified' | 'registered' | ''
@@ -29,7 +25,8 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const RegisterForm = () => {
-  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
+  const [, changeSearchParams] = useSearchParams()
+  const { hideModal } = useUI()
   const { t } = useLocalize()
   const { signUp, isRegistered, resendVerifyEmail } = useSession()
   // FIXME: use submit error data or remove signal
@@ -42,7 +39,7 @@ export const RegisterForm = () => {
   const [passwordError, setPasswordError] = createSignal<string>()
   const [emailStatus, setEmailStatus] = createSignal<string>('')
 
-  const authFormRef: { current: HTMLFormElement } = { current: null }
+  let authFormRef: HTMLFormElement
 
   const handleNameInput = (newName: string) => {
     setFullName(newName)
@@ -81,11 +78,10 @@ export const RegisterForm = () => {
 
     const isValid = createMemo(() => Object.keys(newValidationErrors).length === 0)
 
-    if (!isValid()) {
-      authFormRef.current
+    if (!isValid() && authFormRef) {
+      authFormRef
         .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
-        .focus()
-
+        ?.focus()
       return
     }
     setIsSubmitting(true)
@@ -95,11 +91,10 @@ export const RegisterForm = () => {
         email: cleanEmail,
         password: password(),
         confirm_password: password(),
-        redirect_uri: window.location.origin,
+        redirect_uri: window?.location?.origin || '',
       }
-      const { errors } = await signUp(opts)
-      if (errors.length > 0) return
-      setIsSuccess(true)
+      const success = await signUp(opts)
+      setIsSuccess(success)
     } catch (error) {
       console.error(error)
     } finally {
@@ -107,12 +102,13 @@ export const RegisterForm = () => {
     }
   }
 
-  const handleResendLink = async (_ev) => {
-    const response: GenericResponse = await resendVerifyEmail({
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const handleResendLink = async (_ev: any) => {
+    const success: boolean = await resendVerifyEmail({
       email: email(),
       identifier: 'basic_signup',
     })
-    setIsSuccess(response?.message === 'Verification email has been sent. Please check your inbox')
+    setIsSuccess(success)
   }
 
   const handleCheckEmailStatus = (status: EmailStatus | string) => {
@@ -184,7 +180,7 @@ export const RegisterForm = () => {
   return (
     <>
       <Show when={!isSuccess()}>
-        <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
+        <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef = el)}>
           <div>
             <AuthModalHeader modalType="register" />
             <div

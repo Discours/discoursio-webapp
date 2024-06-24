@@ -10,7 +10,7 @@ type Props = {
   onClose: () => void
 }
 
-export const checkUrl = (url) => {
+export const checkUrl = (url: string) => {
   try {
     new URL(url)
     return url

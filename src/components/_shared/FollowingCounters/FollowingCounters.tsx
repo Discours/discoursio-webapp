@@ -24,8 +24,8 @@ const UserpicList = (props: { items: Array<Author | Topic> }) => (
       {(item) => (
         <Userpic
           size="XS"
-          name={'name' in item ? item.name : 'title' in item ? item.title : ''}
-          userpic={item.pic}
+          name={'name' in item ? item.name || '' : 'title' in item ? item.title || '' : ''}
+          userpic={item.pic || ''}
           class={styles.subscribersItem}
         />
       )}

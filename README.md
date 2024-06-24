@@ -1,20 +1,17 @@
 ## How to start
+
+Use Bun to manage packages.
+
 ```
-npm install
-npm start
+bun i
 ```
 
 ## Useful commands
 run checks
 ```
-npm run check
-```
-type checking with watch
-```
-npm run typecheck:watch
+bun run typecheck
 ```
 fix styles, imports, formatting and autofixable linting errors:
 ```
-npm run fix
-npm run format
+bun run fix
 ```

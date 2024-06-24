@@ -1,13 +1,12 @@
-import type { Topic } from '../../../graphql/schema/core.gen'
-
-import { getPagePath, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 
+import { useUI } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { ROUTES, router, useRouter } from '../../../stores/router'
-import { useModalStore } from '../../../stores/ui'
+import { useTopics } from '../../../context/topics'
+import type { Topic } from '../../../graphql/schema/core.gen'
+import { getRandomTopicsFromArray } from '../../../utils/getRandomTopicsFromArray'
 import { getDescription } from '../../../utils/meta'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Icon } from '../../_shared/Icon'
@@ -18,11 +17,9 @@ import { HeaderAuth } from '../HeaderAuth'
 import { Modal } from '../Modal'
 import { SearchModal } from '../SearchModal/SearchModal'
 import { Snackbar } from '../Snackbar'
-
 import { Link } from './Link'
 
-import { useTopics } from '../../../context/topics'
-import { getRandomTopicsFromArray } from '../../../utils/getRandomTopicsFromArray'
+import { A, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import styles from './Header.module.scss'
 
 type Props = {
@@ -38,18 +35,19 @@ type HeaderSearchParams = {
   source?: string
 }
 
-const handleSwitchLanguage = (event) => {
-  location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${event.target.value}`
+const handleSwitchLanguage = (value: string) => {
+  location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${value}`
 }
 
 export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { modal } = useModalStore()
-  const { page } = useRouter()
+  const { modal } = useUI()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams<HeaderSearchParams>()
   const { requireAuthentication } = useSession()
-  const { searchParams } = useRouter<HeaderSearchParams>()
-  const { sortedTopics: topics } = useTopics()
-  const [randomTopics, setRandomTopics] = createSignal([])
+  const { sortedTopics } = useTopics()
+  const topics = createMemo<Topic[]>(() => sortedTopics())
+  const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
@@ -70,23 +68,28 @@ export const Header = (props: Props) => {
 
   createEffect(() => {
     if (topics()?.length) {
-      setRandomTopics(getRandomTopicsFromArray(topics()))
+      const rt: Topic[] = getRandomTopicsFromArray(topics())
+      setRandomTopics(rt)
     }
   })
 
   createEffect(() => {
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
 
-    if (fixed() || modal() !== null) {
+    if ((window && fixed()) || modal() !== null) {
       windowScrollTop = window.scrollY
-      mainContent.style.marginTop = `-${windowScrollTop}px`
+      if (mainContent) {
+        mainContent.style.marginTop = `-${windowScrollTop}px`
+      }
     }
 
     document.body.classList.toggle('fixed', fixed() || modal() !== null)
     document.body.classList.toggle(styles.fixed, fixed() && !modal())
 
     if (!(fixed() || modal())) {
-      mainContent.style.marginTop = ''
+      if (mainContent) {
+        mainContent.style.marginTop = ''
+      }
       window.scrollTo(0, windowScrollTop)
     }
   })
@@ -106,27 +109,27 @@ export const Header = (props: Props) => {
     })
   })
 
-  const scrollToComments = (event, value) => {
-    event.preventDefault()
-    props.scrollToComments(value)
+  const scrollToComments = (event: MouseEvent | undefined, value: boolean) => {
+    event?.preventDefault()
+    props.scrollToComments?.(value)
   }
 
-  const handleBookmarkButtonClick = (ev) => {
+  const handleBookmarkButtonClick = (ev: MouseEvent | undefined) => {
     requireAuthentication(() => {
       // TODO: implement bookmark clicked
-      ev.preventDefault()
+      ev?.preventDefault()
     }, 'bookmark')
   }
 
-  const handleCreateButtonClick = (ev) => {
+  const handleCreateButtonClick = (ev: MouseEvent | undefined) => {
     requireAuthentication(() => {
-      ev.preventDefault()
+      ev?.preventDefault()
 
-      redirectPage(router, 'create')
+      navigate('/create')
     }, 'create')
   }
 
-  const toggleSubnavigation = (isShow, signal?) => {
+  const toggleSubnavigation = (isShow: boolean, signal?: (v: boolean) => void) => {
     clearTimer()
     setIsKnowledgeBaseVisible(false)
     setIsTopicsVisible(false)
@@ -144,18 +147,18 @@ export const Header = (props: Props) => {
     clearTimeout(timer)
   }
 
-  const hideSubnavigation = (_event, time = 500) => {
+  const hideSubnavigation = (time = 500) => {
     timer = setTimeout(() => {
       toggleSubnavigation(false)
     }, time)
   }
-
-  const handleToggleMenuByLink = (event: MouseEvent, route: keyof typeof ROUTES) => {
-    if (!fixed()) {
-      return
-    }
+  const loc = useLocation()
+  const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
     event.preventDefault()
-    if (page().route === route) {
+    console.debug(route)
+    console.debug(loc.pathname)
+    if (!fixed()) return
+    if (loc.pathname.startsWith(route) || loc.pathname.startsWith(`/${route}`)) {
       toggleFixed()
     }
   }
@@ -171,9 +174,9 @@ export const Header = (props: Props) => {
       }}
     >
       <Modal
-        variant={searchParams().source ? 'narrow' : 'wide'}
+        variant={searchParams?.source ? 'narrow' : 'wide'}
         name="auth"
-        allowClose={searchParams().source !== 'authguard'}
+        allowClose={searchParams?.source !== 'authguard'}
         noPadding={true}
       >
         <AuthModal />
@@ -195,9 +198,9 @@ export const Header = (props: Props) => {
             </div>
           </div>
           <div class={clsx('col-md-5 col-xl-4 col-auto', styles.mainLogo)}>
-            <a href={getPagePath(router, 'home')}>
+            <A href={'/'}>
               <img src="/logo.svg" alt={t('Discours')} />
-            </a>
+            </A>
           </div>
           <div class={clsx('col col-md-13 col-lg-12 offset-xl-1', styles.mainNavigationWrapper)}>
             <Show when={props.title}>
@@ -207,7 +210,7 @@ export const Header = (props: Props) => {
               <ul class="view-switcher">
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
-                  onMouseOut={() => hideSubnavigation}
+                  onMouseOut={() => hideSubnavigation()}
                   routeName="home"
                   active={isZineVisible()}
                   body={t('journal')}
@@ -215,7 +218,7 @@ export const Header = (props: Props) => {
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
-                  onMouseOut={() => hideSubnavigation}
+                  onMouseOut={() => hideSubnavigation()}
                   routeName="feed"
                   active={isFeedVisible()}
                   body={t('feed')}
@@ -230,15 +233,15 @@ export const Header = (props: Props) => {
                   onClick={(event) => handleToggleMenuByLink(event, 'topics')}
                 />
                 <Link
-                  onMouseOver={(event) => hideSubnavigation(event, 0)}
-                  onMouseOut={(event) => hideSubnavigation(event, 0)}
+                  onMouseOver={() => hideSubnavigation(0)}
+                  onMouseOut={() => hideSubnavigation(0)}
                   routeName="authors"
                   body={t('authors')}
                   onClick={(event) => handleToggleMenuByLink(event, 'authors')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
-                  onMouseOut={() => hideSubnavigation}
+                  onMouseOut={() => hideSubnavigation()}
                   routeName="guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}
@@ -306,7 +309,7 @@ export const Header = (props: Props) => {
                 <h4>{t('Language')}</h4>
                 <select
                   class={styles.languageSelectorMobile}
-                  onChange={handleSwitchLanguage}
+                  onChange={(ev) => handleSwitchLanguage(ev.target.value)}
                   value={lang()}
                 >
                   <option value="ru">🇷🇺 Русский</option>
@@ -339,10 +342,10 @@ export const Header = (props: Props) => {
               })}
             >
               <SharePopup
-                title={props.title}
-                imageUrl={props.cover}
+                title={props.title || ''}
+                imageUrl={props.cover || ''}
                 shareUrl={getShareUrl()}
-                description={getDescription(props.articleBody)}
+                description={getDescription(props.articleBody || '')}
                 onVisibilityChange={(isVisible) => {
                   setIsSharePopupVisible(isVisible)
                 }}
@@ -373,7 +376,7 @@ export const Header = (props: Props) => {
             class={clsx(styles.subnavigation, 'col')}
             classList={{ hidden: !isKnowledgeBaseVisible() }}
             onMouseOver={clearTimer}
-            onMouseOut={hideSubnavigation}
+            onMouseOut={() => hideSubnavigation()}
           >
             <ul class="nodash">
               <li>
@@ -407,7 +410,7 @@ export const Header = (props: Props) => {
             class={clsx(styles.subnavigation, 'col')}
             classList={{ hidden: !isZineVisible() }}
             onMouseOver={clearTimer}
-            onMouseOut={hideSubnavigation}
+            onMouseOut={() => hideSubnavigation()}
           >
             <ul class="nodash">
               <li class="item">
@@ -453,12 +456,12 @@ export const Header = (props: Props) => {
             class={clsx(styles.subnavigation, 'col')}
             classList={{ hidden: !isTopicsVisible() }}
             onMouseOver={clearTimer}
-            onMouseOut={hideSubnavigation}
+            onMouseOut={() => hideSubnavigation()}
           >
             <ul class="nodash">
               <Show when={randomTopics().length > 0}>
                 <For each={randomTopics()}>
-                  {(topic) => (
+                  {(topic: Topic) => (
                     <li class="item">
                       <a href={`/topic/${topic.slug}`}>
                         <span>#{tag(topic)}</span>
@@ -480,57 +483,57 @@ export const Header = (props: Props) => {
             class={clsx(styles.subnavigation, styles.subnavigationFeed, 'col')}
             classList={{ hidden: !isFeedVisible() }}
             onMouseOver={clearTimer}
-            onMouseOut={hideSubnavigation}
+            onMouseOut={() => hideSubnavigation()}
           >
             <ul class="nodash">
               <li>
-                <a href={getPagePath(router, 'feed')}>
+                <A href={'/feed'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-all" class={styles.icon} />
                     {t('All')}
                   </span>
-                </a>
+                </A>
               </li>
 
               <li>
-                <a href={getPagePath(router, 'feedMy')}>
+                <A href={'/feed/my'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-my" class={styles.icon} />
                     {t('My feed')}
                   </span>
-                </a>
+                </A>
               </li>
               <li>
-                <a href={getPagePath(router, 'feedCollaborations')}>
+                <A href={'/feed/collab'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-collaborate" class={styles.icon} />
                     {t('Participation')}
                   </span>
-                </a>
+                </A>
               </li>
               <li>
-                <a href={getPagePath(router, 'feedDiscussions')}>
+                <A href={'/feed/discussions'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-discussion" class={styles.icon} />
                     {t('Discussions')}
                   </span>
-                </a>
+                </A>
               </li>
               <li>
-                <a href={getPagePath(router, 'feedBookmarks')}>
+                <A href={'/feed/bookmark'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="bookmark" class={styles.icon} />
                     {t('Bookmarks')}
                   </span>
-                </a>
+                </A>
               </li>
               <li>
-                <a href={getPagePath(router, 'feedNotifications')}>
+                <A href={'/feed/notifications'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-notifications" class={styles.icon} />
                     {t('Notifications')}
                   </span>
-                </a>
+                </A>
               </li>
             </ul>
           </div>

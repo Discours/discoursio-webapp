@@ -3,8 +3,8 @@ import type { Shout } from '../../../graphql/schema/core.gen'
 import { For, Show, createResource, createSignal, onCleanup } from 'solid-js'
 import { debounce } from 'throttle-debounce'
 
-import { useLocalize } from '../../../context/localize'
-import { loadShoutsSearch } from '../../../stores/zine/articles'
+import { useFeed } from '~/context/feed'
+import { useLocalize } from '~/context/localize'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { byScore } from '../../../utils/sortby'
 import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
@@ -27,7 +27,7 @@ const getSearchCoincidences = ({ str, intersection }: { str: string; intersectio
   )}</span>`
 
 const prepareSearchResults = (list: Shout[], searchValue: string) =>
-  list.sort(byScore()).map((article, index) => ({
+  list.sort(byScore() as (a: Shout, b: Shout) => number).map((article, index) => ({
     ...article,
     id: index,
     title: article.title
@@ -46,12 +46,13 @@ const prepareSearchResults = (list: Shout[], searchValue: string) =>
 
 export const SearchModal = () => {
   const { t } = useLocalize()
+  const { loadShoutsSearch } = useFeed()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [inputValue, setInputValue] = createSignal('')
   const [isLoading, setIsLoading] = createSignal(false)
   const [offset, setOffset] = createSignal<number>(0)
   const [searchResultsList, { refetch: loadSearchResults, mutate: setSearchResultsList }] = createResource<
-    Shout[] | null
+    Shout[]
   >(
     async () => {
       setIsLoading(true)
@@ -68,7 +69,7 @@ export const SearchModal = () => {
     },
     {
       ssrLoadFrom: 'initial',
-      initialValue: null,
+      initialValue: [],
     },
   )
 
@@ -81,7 +82,7 @@ export const SearchModal = () => {
       await debouncedLoadMore()
     } else {
       setIsLoading(false)
-      setSearchResultsList(null)
+      setSearchResultsList([])
     }
   }
 
@@ -91,7 +92,7 @@ export const SearchModal = () => {
       await debouncedLoadMore()
     } else {
       setIsLoading(false)
-      setSearchResultsList(null)
+      setSearchResultsList([])
     }
     restoreScrollPosition()
     setIsLoading(false)
@@ -111,7 +112,7 @@ export const SearchModal = () => {
         class={styles.searchInput}
         onInput={handleQueryInput}
         onKeyDown={enterQuery}
-        ref={searchEl}
+        ref={(el: HTMLInputElement) => (searchEl = el)}
       />
 
       <Button

@@ -12,7 +12,8 @@ type Props = {
 }
 
 export const SearchField = (props: Props) => {
-  const handleInputChange = (event) => props.onChange(event.target.value.trim())
+  const handleInputChange = (event: { target: HTMLInputElement }) =>
+    props.onChange(event.target.value.trim())
   const { t } = useLocalize()
   return (
     <div class={clsx(styles.searchField, props.class, { [styles.bordered]: props.variant === 'bordered' })}>

@@ -1,22 +1,40 @@
 import { createLazyMemo } from '@solid-primitives/memo'
 import { openDB } from 'idb'
-import { Accessor, JSX, createContext, createMemo, createSignal, onMount, useContext } from 'solid-js'
-import { apiClient } from '../graphql/client/core'
+import {
+  Accessor,
+  JSX,
+  createContext,
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  onMount,
+  useContext,
+} from 'solid-js'
+import { loadTopics } from '~/lib/api'
+import { getRandomTopicsFromArray } from '~/utils/getRandomTopicsFromArray'
 import { Topic } from '../graphql/schema/core.gen'
-import { useRouter } from '../stores/router'
 import { byTopicStatDesc } from '../utils/sortby'
 
 type TopicsContextType = {
   topicEntities: Accessor<{ [topicSlug: string]: Topic }>
   sortedTopics: Accessor<Topic[]>
-  randomTopics: Accessor<Topic[]>
+  randomTopic: Accessor<Topic | undefined>
   topTopics: Accessor<Topic[]>
   setTopicsSort: (sortBy: string) => void
   addTopics: (topics: Topic[]) => void
   loadTopics: () => Promise<Topic[]>
 }
 
-const TopicsContext = createContext<TopicsContextType>()
+const TopicsContext = createContext<TopicsContextType>({
+  topicEntities: () => ({}) as Record<string, Topic>,
+  sortedTopics: () => [] as Topic[],
+  topTopics: () => [] as Topic[],
+  setTopicsSort: (_s: string) => undefined,
+  addTopics: (_ttt: Topic[]) => undefined,
+  loadTopics: async () => [] as Topic[],
+} as TopicsContextType)
+
 export function useTopics() {
   return useContext(TopicsContext)
 }
@@ -24,6 +42,8 @@ export function useTopics() {
 const DB_NAME = 'discourseAppDB'
 const DB_VERSION = 1
 const STORE_NAME = 'topics'
+const CACHE_LIFETIME = 24 * 60 * 60 * 1000 // один день в миллисекундах
+
 const setupIndexedDB = async () => {
   return await openDB(DB_NAME, DB_VERSION, {
     upgrade(db) {
@@ -34,30 +54,50 @@ const setupIndexedDB = async () => {
   })
 }
 
-const getTopicsFromIndexedDB = async (db) => {
-  const tx = db.transaction(STORE_NAME, 'readonly')
-  const store = tx.objectStore(STORE_NAME)
-  const topics = await store.getAll()
-  return { topics, timestamp: tx.done }
+const getTopicsFromIndexedDB = async (db: IDBDatabase) => {
+  if (db) {
+    return new Promise<{ topics: Topic[]; timestamp: number }>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readonly')
+      const store = tx.objectStore(STORE_NAME)
+      const request = store.getAll()
+
+      request.onsuccess = () => {
+        const topics = request.result || []
+        const timestamp =
+          (tx.objectStore(STORE_NAME).get('timestamp') as IDBRequest<{ value: number }>).result?.value || 0
+        resolve({ topics, timestamp })
+      }
+
+      request.onerror = () => {
+        console.error('Error fetching topics from IndexedDB')
+        reject()
+      }
+    })
+  }
+  return { topics: [], timestamp: 0 }
 }
 
-const saveTopicsToIndexedDB = async (db, topics) => {
-  const tx = db.transaction(STORE_NAME, 'readwrite')
-  const store = tx.objectStore(STORE_NAME)
-  for (const topic of topics) {
-    await store.put(topic)
+const saveTopicsToIndexedDB = async (db: IDBDatabase, topics: Topic[]) => {
+  if (db) {
+    const tx = (db as IDBDatabase).transaction(STORE_NAME, 'readwrite')
+    const store = tx.objectStore(STORE_NAME)
+    const timestamp = Date.now()
+
+    topics?.forEach(async (topic: Topic) => {
+      if (topic) await store.put(topic as Topic)
+    })
+    await store.put({ id: 'timestamp', value: timestamp })
+    // @ts-ignore
+    await tx.done
   }
-  await tx.done
 }
 
 export const TopicsProvider = (props: { children: JSX.Element }) => {
   const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: Topic }>({})
   const [sortAllBy, setSortAllBy] = createSignal<'shouts' | 'followers' | 'authors' | 'title'>('shouts')
-  const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
 
   const sortedTopics = createLazyMemo<Topic[]>(() => {
     const topics = Object.values(topicEntities())
-    const { changeSearchParams } = useRouter()
     switch (sortAllBy()) {
       case 'followers': {
         topics.sort(byTopicStatDesc('followers'))
@@ -72,12 +112,11 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
         break
       }
       case 'title': {
-        topics.sort((a, b) => a.title.localeCompare(b.title))
+        topics.sort((a, b) => (a?.title || '').localeCompare(b?.title || ''))
         break
       }
       default: {
         topics.sort(byTopicStatDesc('shouts'))
-        changeSearchParams({ by: 'shouts' })
       }
     }
 
@@ -108,35 +147,49 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
       }
     })
   }
+
   const [db, setDb] = createSignal()
-  const loadTopics = async () => {
-    const ttt = await apiClient.getAllTopics()
-    await saveTopicsToIndexedDB(db(), ttt)
-    return ttt
+
+  const loadAllTopics = async () => {
+    const topicsLoader = loadTopics()
+    const ttt = await topicsLoader()
+    if (db()) await saveTopicsToIndexedDB(db() as IDBDatabase, ttt as Topic[])
+    return ttt || []
   }
 
   onMount(async () => {
-    const db = await setupIndexedDB()
-    setDb(db)
-    let { topics, timestamp } = await getTopicsFromIndexedDB(db)
-
-    if (topics.length < 100 || Date.now() - timestamp > 3600000) {
-      const newTopics = await loadTopics()
-      await saveTopicsToIndexedDB(db, newTopics)
-      topics = newTopics
-    }
-    addTopics(topics)
-    setRandomTopics(topics)
+    setDb(await setupIndexedDB())
+    console.info('[context.topics] idb loaded')
   })
+
+  const [randomTopic, setRandomTopic] = createSignal<Topic>()
+  createEffect(
+    on(
+      db,
+      async (indexed) => {
+        if (indexed) {
+          const { topics: req, timestamp } = await getTopicsFromIndexedDB(indexed as IDBDatabase)
+          const now = Date.now()
+          const isCacheValid = now - timestamp < CACHE_LIFETIME
+
+          const topics = isCacheValid ? req : await loadAllTopics()
+          console.info(`[context.topics] got ${(topics as Topic[]).length || 0} topics`)
+          addTopics(topics as Topic[])
+          setRandomTopic(getRandomTopicsFromArray(topics || [], 1).pop())
+        }
+      },
+      { defer: true },
+    ),
+  )
 
   const value: TopicsContextType = {
     setTopicsSort: setSortAllBy,
     topicEntities,
     sortedTopics,
-    randomTopics,
+    randomTopic,
     topTopics,
     addTopics,
-    loadTopics,
+    loadTopics: loadAllTopics,
   }
 
   return <TopicsContext.Provider value={value}>{props.children}</TopicsContext.Provider>

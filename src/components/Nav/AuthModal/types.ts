@@ -1,18 +1,4 @@
-export type AuthModalMode =
-  | 'login'
-  | 'register'
-  | 'confirm-email'
-  | 'send-confirm-email'
-  | 'send-reset-link'
-  | 'change-password'
-export type AuthModalSource =
-  | 'discussions'
-  | 'vote'
-  | 'subscribe'
-  | 'bookmark'
-  | 'follow'
-  | 'create'
-  | 'authguard'
+import { AuthModalMode, AuthModalSource } from '~/context/ui'
 
 export type AuthModalSearchParams = {
   mode: AuthModalMode
@@ -28,3 +14,4 @@ export type ConfirmEmailSearchParams = {
 export type CreateChatSearchParams = {
   id: number
 }
+export type { AuthModalSource }

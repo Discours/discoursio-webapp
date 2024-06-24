@@ -1,10 +1,7 @@
-import { JSX, Show, createEffect } from 'solid-js'
-
+import { useSearchParams } from '@solidjs/router'
+import { JSX, Show, createEffect, createMemo, on } from 'solid-js'
+import { useUI } from '~/context/ui'
 import { useSession } from '../../context/session'
-import { RootSearchParams } from '../../pages/types'
-import { useRouter } from '../../stores/router'
-import { hideModal } from '../../stores/ui'
-import { AuthModalSearchParams } from '../Nav/AuthModal/types'
 
 type Props = {
   children: JSX.Element
@@ -12,30 +9,32 @@ type Props = {
 }
 
 export const AuthGuard = (props: Props) => {
-  const { author, isSessionLoaded } = useSession()
-  const { changeSearchParams } = useRouter<RootSearchParams & AuthModalSearchParams>()
+  const { session } = useSession()
+  const author = createMemo<number>(() => session()?.user?.app_data?.profile?.id || 0)
+  const [, changeSearchParams] = useSearchParams()
+  const { hideModal } = useUI()
 
-  createEffect(() => {
-    if (props.disabled) {
-      return
-    }
-    if (isSessionLoaded()) {
-      if (author()?.id) {
-        hideModal()
-      } else {
-        changeSearchParams(
-          {
-            source: 'authguard',
-            m: 'auth',
-          },
-          true,
-        )
-      }
-    } else {
-      // await loadSession()
-      console.warn('session is not loaded')
-    }
-  })
+  createEffect(
+    on(
+      [() => props.disabled, author],
+      ([disabled, a]) => {
+        if (disabled || !a) return
+        if (a) {
+          console.debug('[AuthGuard] profile is loaded')
+          hideModal()
+        } else {
+          changeSearchParams(
+            {
+              source: 'authguard',
+              m: 'auth',
+            },
+            { replace: true },
+          )
+        }
+      },
+      { defer: true },
+    ),
+  )
 
-  return <Show when={(isSessionLoaded() && author()?.id) || props.disabled}>{props.children}</Show>
+  return <Show when={author() || props.disabled}>{props.children}</Show>
 }

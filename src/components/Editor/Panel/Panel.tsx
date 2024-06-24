@@ -1,18 +1,18 @@
-import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
 
+import { useUI } from '~/context/ui'
 import { useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
-import { router } from '../../../stores/router'
-import { showModal } from '../../../stores/ui'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { Button } from '../../_shared/Button'
 import { DarkModeToggle } from '../../_shared/DarkModeToggle'
 import { Icon } from '../../_shared/Icon'
+
+import { A } from '@solidjs/router'
 import styles from './Panel.module.scss'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
@@ -23,10 +23,11 @@ type Props = {
 
 export const Panel = (props: Props) => {
   const { t } = useLocalize()
+  const { showModal } = useUI()
   const {
     isEditorPanelVisible,
     wordCounter,
-    editorRef,
+    editor,
     form,
     toggleEditorPanel,
     saveShout,
@@ -34,7 +35,7 @@ export const Panel = (props: Props) => {
     publishShout,
   } = useEditorContext()
 
-  const containerRef: { current: HTMLElement } = { current: null }
+  let containerRef: HTMLElement | undefined
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
   const [isTypographyFixed, setIsTypographyFixed] = createSignal(false)
 
@@ -59,16 +60,16 @@ export const Panel = (props: Props) => {
     }
   }
 
-  const html = useEditorHTML(() => editorRef.current())
+  const html = useEditorHTML(() => editor()) // FIXME: lost current() call
 
   const handleFixTypographyClick = () => {
-    editorRef.current().commands.setContent(typograf.execute(html()))
+    editor()?.commands.setContent(typograf.execute(html() || '')) // here too
     setIsTypographyFixed(true)
   }
 
   return (
     <aside
-      ref={(el) => (containerRef.current = el)}
+      ref={(el) => (containerRef = el)}
       class={clsx('col-md-6', styles.Panel, { [styles.hidden]: !isEditorPanelVisible() })}
     >
       <Button
@@ -98,13 +99,13 @@ export const Panel = (props: Props) => {
             </span>
           </p>
           <p>
-            <a
+            <A
               class={styles.link}
               onClick={() => toggleEditorPanel()}
-              href={getPagePath(router, 'editSettings', { shoutId: props.shoutId.toString() })}
+              href={`/edit/${props.shoutId}/settings`}
             >
               {t('Publication settings')}
-            </a>
+            </A>
           </p>
           <p>
             <span class={styles.link}>{t('Corrections history')}</span>

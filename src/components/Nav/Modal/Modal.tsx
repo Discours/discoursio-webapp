@@ -1,15 +1,12 @@
-import type { JSX } from 'solid-js'
-
-import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
+import type { JSX } from 'solid-js'
 import { Show, createEffect, createMemo, createSignal } from 'solid-js'
-
-import { useMediaQuery } from '../../../context/mediaQuery'
-import { router } from '../../../stores/router'
-import { hideModal, useModalStore } from '../../../stores/ui'
+import { useUI } from '~/context/ui'
 import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
 import { Icon } from '../../_shared/Icon'
 
+import { useNavigate } from '@solidjs/router'
+import { mediaMatches } from '~/utils/media-query'
 import styles from './Modal.module.scss'
 
 interface Props {
@@ -24,17 +21,17 @@ interface Props {
 }
 
 export const Modal = (props: Props) => {
-  const { modal } = useModalStore()
+  const { modal, hideModal } = useUI()
   const [visible, setVisible] = createSignal(false)
   const allowClose = createMemo(() => props.allowClose !== false)
   const [isMobileView, setIsMobileView] = createSignal(false)
-  const { mediaMatches } = useMediaQuery()
+  const navigate = useNavigate()
   const handleHide = () => {
     if (modal()) {
       if (allowClose()) {
         props.onClose?.()
       } else {
-        redirectPage(router, 'home')
+        navigate('/')
       }
     }
     hideModal()
@@ -55,7 +52,7 @@ export const Modal = (props: Props) => {
   return (
     <Show when={visible()}>
       <div
-        class={clsx(styles.backdrop, [styles[`modal-${props.name}`]], {
+        class={clsx(styles.backdrop, [styles[`modal-${props.name}` as keyof typeof styles]], {
           [styles.isMobile]: isMobileView(),
         })}
         onClick={handleHide}

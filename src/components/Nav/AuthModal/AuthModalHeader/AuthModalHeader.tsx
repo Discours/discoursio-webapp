@@ -1,9 +1,6 @@
+import { useSearchParams } from '@solidjs/router'
 import { Show } from 'solid-js'
-
 import { useLocalize } from '../../../../context/localize'
-import { useRouter } from '../../../../stores/router'
-import { AuthModalSearchParams } from '../types'
-
 import styles from './AuthModalHeader.module.scss'
 
 type Props = {
@@ -12,15 +9,14 @@ type Props = {
 
 export const AuthModalHeader = (props: Props) => {
   const { t } = useLocalize()
-  const { searchParams } = useRouter<AuthModalSearchParams>()
-  const { source } = searchParams()
+  const [searchParams] = useSearchParams<{ source: string }>()
 
   const generateModalTextsFromSource = (
     modalType: 'login' | 'register',
   ): { title: string; description: string } => {
     const title = modalType === 'login' ? 'Welcome to Discours' : 'Create account'
 
-    switch (source) {
+    switch (searchParams?.source) {
       case 'create': {
         return {
           title: t(`${title} to publish articles`),

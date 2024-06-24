@@ -1,23 +1,21 @@
-import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { Show, createEffect, createMemo, createSignal, lazy, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
+import { useSnackbar, useUI } from '~/context/ui'
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useTopics } from '../../../context/topics'
 import { Topic } from '../../../graphql/schema/core.gen'
-import { UploadedFile } from '../../../pages/types'
-import { router } from '../../../stores/router'
-import { hideModal, showModal } from '../../../stores/ui'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../Nav/Modal'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 
-import { useSnackbar } from '../../../context/snackbar'
+import { useNavigate } from '@solidjs/router'
+import { UploadedFile } from '~/types/upload'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import styles from './PublishSettings.module.scss'
 
@@ -63,7 +61,9 @@ const emptyConfig: FormConfig = {
 
 export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
-  const { author } = useSession()
+  const { showModal, hideModal } = useUI()
+  const navigate = useNavigate()
+  const { session } = useSession()
   const { sortedTopics } = useTopics()
   const { showSnackbar } = useSnackbar()
   const [topics, setTopics] = createSignal<Topic[]>(sortedTopics())
@@ -99,9 +99,9 @@ export const PublishSettings = (props: Props) => {
 
   const { formErrors, setForm, setFormErrors, saveShout, publishShout } = useEditorContext()
 
-  const handleUploadModalContentCloseSetCover = (image: UploadedFile) => {
+  const handleUploadModalContentCloseSetCover = (image: UploadedFile | undefined) => {
     hideModal()
-    setSettingsForm('coverImageUrl', image.url)
+    setSettingsForm('coverImageUrl', image?.url)
   }
   const handleDeleteCoverImage = () => {
     setSettingsForm('coverImageUrl', '')
@@ -112,7 +112,7 @@ export const PublishSettings = (props: Props) => {
       props.form.selectedTopics.length === 0 ||
       newSelectedTopics.every((topic: Topic) => topic.id !== props.form.mainTopic?.id)
     ) {
-      setSettingsForm((prev: Topic) => {
+      setSettingsForm((prev) => {
         return {
           ...prev,
           mainTopic: newSelectedTopics[0],
@@ -127,9 +127,7 @@ export const PublishSettings = (props: Props) => {
   }
 
   const handleBackClick = () => {
-    redirectPage(router, 'edit', {
-      shoutId: props.shoutId.toString(),
-    })
+    navigate(`/edit/${props.shoutId}`)
   }
   const handleCancelClick = () => {
     setSettingsForm(initialData())
@@ -183,11 +181,13 @@ export const PublishSettings = (props: Props) => {
                 </Show>
                 <div class={styles.text}>
                   <Show when={settingsForm.mainTopic}>
-                    <div class={styles.mainTopic}>{settingsForm.mainTopic.title}</div>
+                    <div class={styles.mainTopic}>{settingsForm.mainTopic?.title || ''}</div>
                   </Show>
                   <div class={styles.shoutCardTitle}>{settingsForm.title}</div>
                   <div class={styles.shoutCardSubtitle}>{settingsForm.subtitle || ''}</div>
-                  <div class={styles.shoutAuthor}>{author()?.name}</div>
+                  <div class={styles.shoutAuthor}>
+                    {session()?.user?.app_data?.profile?.name || t('Anonymous')}
+                  </div>
                 </div>
               </div>
             </div>
@@ -290,7 +290,11 @@ export const PublishSettings = (props: Props) => {
         </div>
       </div>
       <Modal variant="narrow" name="uploadCoverImage">
-        <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
+        <UploadModalContent
+          onClose={(value: UploadedFile | undefined) =>
+            handleUploadModalContentCloseSetCover(value as UploadedFile)
+          }
+        />
       </Modal>
     </form>
   )

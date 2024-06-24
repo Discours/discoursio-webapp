@@ -1,19 +1,18 @@
-import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { Show, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-
+import { useUI } from '~/context/ui'
+import type { Author } from '~/graphql/schema/core.gen'
 import { useEditorContext } from '../../context/editor'
 import { useLocalize } from '../../context/localize'
 import { useNotifications } from '../../context/notifications'
 import { useSession } from '../../context/session'
-import { router, useRouter } from '../../stores/router'
-import { showModal } from '../../stores/ui'
 import { Userpic } from '../Author/Userpic'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 
+import { A, useLocation } from '@solidjs/router'
 import { Popup } from '../_shared/Popup'
 import styles from './Header/Header.module.scss'
 import { ProfilePopup } from './ProfilePopup'
@@ -31,8 +30,9 @@ type IconedButtonProps = {
 const MD_WIDTH_BREAKPOINT = 992
 export const HeaderAuth = (props: Props) => {
   const { t } = useLocalize()
-  const { page } = useRouter()
-  const { session, author, isSessionLoaded } = useSession()
+  const { showModal } = useUI()
+  const { session, isSessionLoaded } = useSession()
+  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { unreadNotificationsCount, showNotificationsPanel } = useNotifications()
   const { form, toggleEditorPanel, publishShout } = useEditorContext()
 
@@ -46,8 +46,8 @@ export const HeaderAuth = (props: Props) => {
 
     showNotificationsPanel()
   }
-
-  const isEditorPage = createMemo(() => page().route === 'edit' || page().route === 'editSettings')
+  const loc = useLocation()
+  const isEditorPage = createMemo(() => loc?.pathname.startsWith('/edit'))
   const isNotificationsVisible = createMemo(() => session()?.access_token && !isEditorPage())
   const isSaveButtonVisible = createMemo(() => session()?.access_token && isEditorPage())
   const isCreatePostButtonVisible = createMemo(() => !isEditorPage())
@@ -96,7 +96,8 @@ export const HeaderAuth = (props: Props) => {
       </Show>
     )
   }
-
+  const matchInbox = createMemo(() => loc.pathname.endsWith('inbox'))
+  const matchProfile = createMemo(() => loc.pathname.endsWith(author()?.slug))
   return (
     <ShowOnlyOnClient>
       <Show when={isSessionLoaded()} keyed={true}>
@@ -110,11 +111,11 @@ export const HeaderAuth = (props: Props) => {
                   styles.userControlItemCreate,
                 )}
               >
-                <a href={getPagePath(router, 'create')}>
+                <A href={'/create'}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
                   <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
-                </a>
+                </A>
               </div>
             </Show>
 
@@ -132,12 +133,12 @@ export const HeaderAuth = (props: Props) => {
                 <div class={styles.button}>
                   <Icon
                     name="bell-white"
-                    counter={session() ? unreadNotificationsCount() || 0 : 1}
+                    counter={session() ? unreadNotificationsCount?.() || 0 : 1}
                     class={styles.icon}
                   />
                   <Icon
                     name="bell-white-hover"
-                    counter={session() ? unreadNotificationsCount() || 0 : 1}
+                    counter={session() ? unreadNotificationsCount?.() || 0 : 1}
                     class={clsx(styles.icon, styles.iconHover)}
                   />
                 </div>
@@ -223,11 +224,11 @@ export const HeaderAuth = (props: Props) => {
                   styles.userControlItemCreate,
                 )}
               >
-                <a href={getPagePath(router, 'create')}>
+                <A href={'/create'}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
                   <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
-                </a>
+                </A>
               </div>
             </Show>
 
@@ -252,12 +253,12 @@ export const HeaderAuth = (props: Props) => {
                     // styles.userControlItemInbox
                   )}
                 >
-                  <a href={getPagePath(router, 'inbox')}>
-                    <div classList={{ entered: page().path === '/inbox' }}>
+                  <A href={'/inbox'}>
+                    <div classList={{ entered: Boolean(matchInbox()) }}>
                       <Icon name="inbox-white" class={styles.icon} />
                       <Icon name="inbox-white-hover" class={clsx(styles.icon, styles.iconHover)} />
                     </div>
-                  </a>
+                  </A>
                 </div>
               </Show>
             </Show>
@@ -272,11 +273,11 @@ export const HeaderAuth = (props: Props) => {
               trigger={
                 <div class={clsx(styles.userControlItem, styles.userControlItemUserpic)}>
                   <button class={styles.button}>
-                    <div classList={{ entered: page().path === `/${author()?.slug}` }}>
+                    <div classList={{ entered: Boolean(matchProfile()) }}>
                       <Userpic
                         size={'L'}
-                        name={author()?.name}
-                        userpic={author()?.pic}
+                        name={author()?.name || ''}
+                        userpic={author()?.pic || ''}
                         class={styles.userpic}
                       />
                     </div>

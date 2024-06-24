@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal, on } from 'solid-js'
 
+import { mediaMatches } from '~/utils/media-query'
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
-import { useMediaQuery } from '../../../context/mediaQuery'
 import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
@@ -20,7 +20,6 @@ type Props = {
 
 export const TopicBadge = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { mediaMatches } = useMediaQuery()
   const [isMobileView, setIsMobileView] = createSignal(false)
   const { requireAuthentication } = useSession()
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
@@ -62,8 +61,8 @@ export const TopicBadge = (props: Props) => {
                 [styles.smallSize]: isMobileView(),
               })}
               style={
-                props.topic.pic && {
-                  'background-image': `url('${getImageUrl(props.topic.pic, { width: 40, height: 40 })}')`,
+                (props.topic?.pic || '') && {
+                  'background-image': `url('${getImageUrl(props.topic?.pic || '', { width: 40, height: 40 })}')`,
                 }
               }
             />
@@ -80,15 +79,15 @@ export const TopicBadge = (props: Props) => {
                 </div>
               }
             >
-              <div innerHTML={props.topic.body} class={clsx('text-truncate', styles.description)} />
+              <div innerHTML={props.topic?.body || ''} class={clsx('text-truncate', styles.description)} />
             </Show>
           </a>
         </div>
         <div class={styles.actions}>
           <FollowingButton
-            isFollowed={isFollowed()}
+            isFollowed={Boolean(isFollowed())}
             action={handleFollowClick}
-            actionMessageType={following()?.slug === props.topic.slug ? following().type : undefined}
+            actionMessageType={following()?.slug === props.topic.slug ? following()?.type : undefined}
           />
         </div>
       </div>

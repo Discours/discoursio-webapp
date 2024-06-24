@@ -1,14 +1,26 @@
+import { useMatch } from '@solidjs/router'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Accessor, Show, createMemo, createSignal, lazy, onCleanup, onMount } from 'solid-js'
+import {
+  Accessor,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  lazy,
+  on,
+  onCleanup,
+  onMount,
+} from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { debounce } from 'throttle-debounce'
-
+import { useGraphQL } from '~/context/graphql'
+import getMyShoutQuery from '~/graphql/query/core/article-my'
+import { LayoutType } from '~/types/common'
+import { MediaItem } from '~/types/mediaitem'
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import type { Shout, Topic } from '../../../graphql/schema/core.gen'
-import { LayoutType, MediaItem } from '../../../pages/types'
-import { useRouter } from '../../../stores/router'
 import { clone } from '../../../utils/clone'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { isDesktop } from '../../../utils/media-query'
@@ -22,12 +34,10 @@ import { TableOfContents } from '../../TableOfContents'
 import { DropArea } from '../../_shared/DropArea'
 import { Icon } from '../../_shared/Icon'
 import { InviteMembers } from '../../_shared/InviteMembers'
+import { Loading } from '../../_shared/Loading'
 import { Popover } from '../../_shared/Popover'
 import { EditorSwiper } from '../../_shared/SolidSwiper'
-
 import { PublishSettings } from '../PublishSettings'
-
-import { Loading } from '../../_shared/Loading'
 import styles from './EditView.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
@@ -45,8 +55,8 @@ export const EMPTY_TOPIC: Topic = {
 
 const AUTO_SAVE_DELAY = 3000
 
-const handleScrollTopButtonClick = (e) => {
-  e.preventDefault()
+const handleScrollTopButtonClick = (ev: MouseEvent | TouchEvent) => {
+  ev.preventDefault()
   window.scrollTo({
     top: 0,
     behavior: 'smooth',
@@ -56,7 +66,7 @@ const handleScrollTopButtonClick = (e) => {
 export const EditView = (props: Props) => {
   const { t } = useLocalize()
   const [isScrolled, setIsScrolled] = createSignal(false)
-  const { page } = useRouter()
+  const { query } = useGraphQL()
   const {
     form,
     formErrors,
@@ -66,45 +76,86 @@ export const EditView = (props: Props) => {
     saveDraftToLocalStorage,
     getDraftFromLocalStorage,
   } = useEditorContext()
-  const shoutTopics = props.shout.topics || []
-
-  const draft = getDraftFromLocalStorage(props.shout.id)
-
-  if (draft) {
-    const draftForm = Object.keys(draft).length !== 0 ? draft : { shoutId: props.shout.id }
-    setForm(draftForm)
-    console.debug('draft from localstorage: ', draftForm)
-  } else {
-    const draftForm = {
-      slug: props.shout.slug,
-      shoutId: props.shout.id,
-      title: props.shout.title,
-      lead: props.shout.lead,
-      description: props.shout.description,
-      subtitle: props.shout.subtitle,
-      selectedTopics: shoutTopics,
-      mainTopic: shoutTopics[0],
-      body: props.shout.body,
-      coverImageUrl: props.shout.cover,
-      media: props.shout.media,
-      layout: props.shout.layout,
-    }
-    setForm(draftForm)
-    console.debug('draft from props data: ', draftForm)
-  }
-
-  const subtitleInput: { current: HTMLTextAreaElement } = { current: null }
-
+  const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
+  const [draft, setDraft] = createSignal()
+  let subtitleInput: HTMLTextAreaElement | null
   const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))
   const [saving, setSaving] = createSignal(false)
   const [isSubtitleVisible, setIsSubtitleVisible] = createSignal(Boolean(form.subtitle))
   const [isLeadVisible, setIsLeadVisible] = createSignal(Boolean(form.lead))
+  const mediaItems: Accessor<MediaItem[]> = createMemo(() => JSON.parse(form.media || '[]'))
 
-  const mediaItems: Accessor<MediaItem[]> = createMemo(() => {
-    return JSON.parse(form.media || '[]')
-  })
+  createEffect(
+    on(
+      () => props.shout,
+      (shout) => {
+        if (shout) {
+          console.debug(`[EditView] shout is loaded: ${shout}`)
+          setShoutTopics((shout.topics as Topic[]) || [])
+          const stored = getDraftFromLocalStorage(shout.id)
+          if (stored) {
+            console.info(`[EditView] got stored shout: ${stored}`)
+            setDraft(stored)
+          } else {
+            if (!shout.slug) {
+              console.warn(`[EditView] shout has no slug! ${shout}`)
+            }
+            const draftForm = {
+              slug: shout.slug || '',
+              shoutId: shout.id || 0,
+              title: shout.title || '',
+              lead: shout.lead || '',
+              description: shout.description || '',
+              subtitle: shout.subtitle || '',
+              selectedTopics: (shoutTopics() || []) as Topic[],
+              mainTopic: shoutTopics()[0] || '',
+              body: shout.body || '',
+              coverImageUrl: shout.cover || '',
+              media: shout.media || '',
+              layout: shout.layout,
+            }
+            setForm((_) => draftForm)
+            console.debug('draft from props data: ', draftForm)
+          }
+        }
+      },
+      { defer: true },
+    ),
+  )
 
-  const [hasChanges, setHasChanges] = createSignal(false)
+  createEffect(
+    on(
+      draft,
+      (d) => {
+        if (d) {
+          const draftForm = Object.keys(d).length !== 0 ? d : { shoutId: props.shout.id }
+          setForm(draftForm)
+          console.debug('draft from localstorage: ', draftForm)
+        }
+      },
+      { defer: true },
+    ),
+  )
+
+  createEffect(
+    on(
+      () => props.shout?.id,
+      async (shoutId) => {
+        if (shoutId) {
+          const resp = await query(getMyShoutQuery, { shout_id: shoutId })
+          const result = resp?.data?.get_my_shout
+          if (result) {
+            console.debug('[EditView] getMyShout result: ', result)
+            const { shout: loadedShout, error } = result
+            setDraft(loadedShout)
+            console.debug('[EditView] loadedShout:', loadedShout)
+            console.log(error)
+          }
+        }
+      },
+      { defer: true },
+    ),
+  )
 
   onMount(() => {
     const handleScroll = () => {
@@ -116,7 +167,7 @@ export const EditView = (props: Props) => {
       window.removeEventListener('scroll', handleScroll)
     })
 
-    const handleBeforeUnload = (event) => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (!deepEqual(prevForm, form)) {
         event.returnValue = t(
           'There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?',
@@ -136,21 +187,21 @@ export const EditView = (props: Props) => {
     }
   }
 
-  const handleAddMedia = (data) => {
+  const handleAddMedia = (data: MediaItem[]) => {
     const newMedia = [...mediaItems(), ...data]
     handleInputChange('media', JSON.stringify(newMedia))
   }
-  const handleSortedMedia = (data) => {
+  const handleSortedMedia = (data: MediaItem[]) => {
     handleInputChange('media', JSON.stringify(data))
   }
 
-  const handleMediaDelete = (index) => {
+  const handleMediaDelete = (index: number) => {
     const copy = [...mediaItems()]
     if (copy?.length > 0) copy.splice(index, 1)
     handleInputChange('media', JSON.stringify(copy))
   }
 
-  const handleMediaChange = (index, value) => {
+  const handleMediaChange = (index: number, value: MediaItem) => {
     const updated = mediaItems().map((item, idx) => (idx === index ? value : item))
     handleInputChange('media', JSON.stringify(updated))
   }
@@ -161,7 +212,7 @@ export const EditView = (props: Props) => {
     genre: '',
   })
 
-  const handleBaseFieldsChange = (key, value) => {
+  const handleBaseFieldsChange = (key: string, value: string) => {
     if (mediaItems().length > 0) {
       const updated = mediaItems().map((media) => ({ ...media, [key]: value }))
       handleInputChange('media', JSON.stringify(updated))
@@ -183,7 +234,7 @@ export const EditView = (props: Props) => {
       }
     }
   }
-
+  const [hasChanges, setHasChanges] = createSignal(false)
   const autoSave = async () => {
     console.log('autoSave called')
     if (hasChanges()) {
@@ -199,7 +250,7 @@ export const EditView = (props: Props) => {
 
   const debouncedAutoSave = debounce(AUTO_SAVE_DELAY, autoSave)
 
-  const handleInputChange = (key, value) => {
+  const handleInputChange = (key: keyof ShoutForm, value: string) => {
     console.log(`[handleInputChange] ${key}: ${value}`)
     setForm(key, value)
     setHasChanges(true)
@@ -214,13 +265,15 @@ export const EditView = (props: Props) => {
 
   const showSubtitleInput = () => {
     setIsSubtitleVisible(true)
-    subtitleInput.current.focus()
+    subtitleInput?.focus()
   }
 
   const showLeadInput = () => {
     setIsLeadVisible(true)
   }
 
+  const matchEdit = useMatch(() => 'edit')
+  const matchEditSettings = useMatch(() => 'edit/:shoutId/settings')
   return (
     <>
       <div class={styles.container}>
@@ -246,7 +299,7 @@ export const EditView = (props: Props) => {
 
             <div class="row">
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
-                <Show when={page().route === 'edit'}>
+                <Show when={matchEdit() && props.shout}>
                   <div class={styles.headingActions}>
                     <Show when={!isSubtitleVisible() && props.shout.layout !== 'audio'}>
                       <div class={styles.action} onClick={showSubtitleInput}>
@@ -306,9 +359,7 @@ export const EditView = (props: Props) => {
                         <Show when={props.shout.layout !== 'audio'}>
                           <Show when={isSubtitleVisible()}>
                             <GrowingTextarea
-                              textAreaRef={(el) => {
-                                subtitleInput.current = el
-                              }}
+                              textAreaRef={(el) => (subtitleInput = el)}
                               allowEnterKey={false}
                               value={(value) => handleInputChange('subtitle', value || '')}
                               class={styles.subtitleInput}
@@ -352,17 +403,17 @@ export const EditView = (props: Props) => {
                           <div
                             class={styles.cover}
                             style={{
-                              'background-image': `url(${getImageUrl(form.coverImageUrl, {
+                              'background-image': `url(${getImageUrl(form.coverImageUrl || '', {
                                 width: 1600,
                               })})`,
                             }}
                           >
                             <Popover content={t('Delete cover')}>
-                              {(triggerRef: (el) => void) => (
+                              {(triggerRef: (_el: HTMLElement | null) => void) => (
                                 <div
                                   ref={triggerRef}
                                   class={styles.delete}
-                                  onClick={() => handleInputChange('coverImageUrl', null)}
+                                  onClick={() => handleInputChange('coverImageUrl', '')}
                                 >
                                   <Icon name="close-white" />
                                 </div>
@@ -378,7 +429,7 @@ export const EditView = (props: Props) => {
                         images={mediaItems()}
                         onImageChange={handleMediaChange}
                         onImageDelete={(index) => handleMediaDelete(index)}
-                        onImagesAdd={(value) => handleAddMedia(value)}
+                        onImagesAdd={(value: MediaItem[]) => handleAddMedia(value)}
                         onImagesSorted={(value) => handleSortedMedia(value)}
                       />
                     </Show>
@@ -404,7 +455,7 @@ export const EditView = (props: Props) => {
                 </Show>
               </div>
             </div>
-            <Show when={page().route === 'edit' && form?.shoutId} fallback={<Loading />}>
+            <Show when={matchEdit() && form?.shoutId} fallback={<Loading />}>
               <Editor
                 shoutId={form.shoutId}
                 initialContent={form.body}
@@ -414,10 +465,12 @@ export const EditView = (props: Props) => {
           </div>
         </form>
       </div>
-      <Show when={page().route === 'editSettings'}>
+      <Show when={matchEditSettings()}>
         <PublishSettings shoutId={props.shout.id} form={form} />
       </Show>
-      <Panel shoutId={props.shout.id} />
+      <Show when={props.shout}>
+        <Panel shoutId={props.shout.id} />
+      </Show>
 
       <Modal variant="medium" name="inviteCoauthors">
         <InviteMembers variant={'coauthors'} title={t('Invite experts')} />

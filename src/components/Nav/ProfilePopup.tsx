@@ -1,54 +1,48 @@
-import type { PopupProps } from '../_shared/Popup'
-
-import { getPagePath } from '@nanostores/router'
-
+import { clsx } from 'clsx'
+import { createMemo } from 'solid-js'
+import type { Author } from '~/graphql/schema/core.gen'
 import { useLocalize } from '../../context/localize'
 import { useSession } from '../../context/session'
-import { router } from '../../stores/router'
 import { Icon } from '../_shared/Icon'
+import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
 
-import { clsx } from 'clsx'
+import { A } from '@solidjs/router'
 import styles from '../_shared/Popup/Popup.module.scss'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>
 
 export const ProfilePopup = (props: ProfilePopupProps) => {
-  const { author, signOut } = useSession()
+  const { session, signOut } = useSession()
+  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { t } = useLocalize()
 
   return (
     <Popup {...props} horizontalAnchor="right" popupCssClass={styles.profilePopup}>
       <ul class="nodash">
         <li>
-          <a class={styles.action} href={getPagePath(router, 'author', { slug: author()?.slug })}>
+          <A class={styles.action} href={`/author/${author()?.slug || 'anonymous'}`}>
             <Icon name="profile" class={styles.icon} />
             {t('Profile')}
-          </a>
+          </A>
         </li>
         <li>
-          <a class={styles.action} href={getPagePath(router, 'drafts')}>
+          <A class={styles.action} href={'/drafts'}>
             <Icon name="pencil-outline" class={styles.icon} />
             {t('Drafts')}
-          </a>
+          </A>
         </li>
         <li>
-          <a
-            class={styles.action}
-            href={`${getPagePath(router, 'author', { slug: author()?.slug })}?m=following`}
-          >
+          <A class={styles.action} href={`/author/${author()?.slug}?m=following`}>
             <Icon name="feed-all" class={styles.icon} />
             {t('Subscriptions')}
-          </a>
+          </A>
         </li>
         <li>
-          <a
-            class={styles.action}
-            href={`${getPagePath(router, 'authorComments', { slug: author()?.slug })}`}
-          >
+          <A class={styles.action} href={`/author${author()?.slug}`}>
             <Icon name="comment" class={styles.icon} />
             {t('Comments')}
-          </a>
+          </A>
         </li>
         <li>
           <a class={styles.action} href="#">
@@ -57,10 +51,10 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           </a>
         </li>
         <li>
-          <a class={styles.action} href={getPagePath(router, 'profileSettings')}>
+          <A class={styles.action} href={'/profile/settings'}>
             <Icon name="settings" class={styles.icon} />
             {t('Settings')}
-          </a>
+          </A>
         </li>
         <li class={styles.topBorderItem}>
           <span class={clsx(styles.action, 'link')} onClick={() => signOut()}>

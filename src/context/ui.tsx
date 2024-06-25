@@ -164,7 +164,7 @@ export const UIProvider = (props: { children: JSX.Element }) => {
   }
 
   const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
-    console.log('[context.ui] showModal()', modalType)
+    // console.log('[context.ui] showModal()', modalType)
     if (modalSource) {
       setSearchParams({ source: modalSource })
     }
@@ -172,7 +172,7 @@ export const UIProvider = (props: { children: JSX.Element }) => {
   }
 
   const hideModal = () => {
-    console.log('[context.ui] hideModal()', modal())
+    // console.log('[context.ui] hideModal()', modal())
     setTimeout(() => setModal(null), 1) // NOTE: modal rerender fix
     setSearchParams({ source: undefined, m: undefined, mode: undefined })
   }
@@ -184,7 +184,7 @@ export const UIProvider = (props: { children: JSX.Element }) => {
       [modal, () => searchParams?.m || ''],
       ([m1, m2]) => {
         const m = m1 || m2 || ''
-        console.log('[context.ui] search params change', m)
+        m1 && console.log('[context.ui] search params change', m1)
         if (m) {
           showModal(m as ModalType)
         } else {

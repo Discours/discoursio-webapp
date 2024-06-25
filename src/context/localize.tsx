@@ -1,7 +1,6 @@
 import { useSearchParams } from '@solidjs/router'
 import type { Accessor, JSX } from 'solid-js'
-import { Show, createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
-
+import { Show, createContext, createEffect, createMemo, createSignal, on, onMount, useContext } from 'solid-js'
 import { TimeAgo, type i18n, i18next, i18nextInit } from '~/lib/i18next'
 
 i18nextInit()
@@ -24,27 +23,22 @@ const LocalizeContext = createContext<LocalizeContextType>({
 export function useLocalize() {
   return useContext(LocalizeContext)
 }
-
+type LocalizeSearchParams = {
+  lng?: Language
+}
 export const LocalizeProvider = (props: { children: JSX.Element }) => {
   const [lang, setLang] = createSignal<Language>(i18next.language === 'en' ? 'en' : 'ru')
-  const [searchParams, changeSearchParams] = useSearchParams<Record<string, string>>()
-  createEffect(() => {
-    if (!(searchParams?.lng || localStorage.getItem('lng'))) {
-      return
-    }
-    try {
-      const lng: Language = searchParams?.lng === 'en' ? 'en' : 'ru'
-
-      i18next.changeLanguage(lng)
-      setLang(lng)
-      if (searchParams?.lng) {
-        changeSearchParams({ lng }, { replace: true })
-      }
-      localStorage?.setItem('lng', lng)
-    } catch (e) {
-      console.warn(e)
-    }
+  const [searchParams, changeSearchParams] = useSearchParams<LocalizeSearchParams>()
+  // set lang effects
+  onMount(() => {
+    const lng = searchParams?.lng || localStorage?.getItem('lng') || 'ru'
+    setLang(lng as Language)
+    changeSearchParams({lng: undefined})
   })
+  createEffect(on(lang, (lng: Language) => {
+    localStorage.setItem('lng', lng || 'ru')
+    i18next.changeLanguage(lng || 'ru')
+  }))
 
   const formatTime = (date: Date, options: Intl.DateTimeFormatOptions = {}) => {
     const opts = Object.assign(

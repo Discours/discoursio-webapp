@@ -4,7 +4,7 @@ import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal } from 'solid-js'
 
-import { Footer } from '../Discours/Footer'
+import { FooterView } from '../Discours/Footer'
 import { Header } from '../Nav/Header'
 
 import '../../styles/app.scss'
@@ -26,7 +26,7 @@ type Props = {
 }
 
 export const PageLayout = (props: Props) => {
-  const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed
+  const isHeaderFixed = (props.isHeaderFixed === undefined) ? true : props.isHeaderFixed
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
 
   createEffect(() => {
@@ -56,7 +56,7 @@ export const PageLayout = (props: Props) => {
         {props.children}
       </main>
       <Show when={props.hideFooter !== true}>
-        <Footer />
+        <FooterView />
       </Show>
     </>
   )

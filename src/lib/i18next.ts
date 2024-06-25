@@ -2,11 +2,14 @@ import i18next, { type i18n } from 'i18next'
 import HttpApi from 'i18next-http-backend'
 import ICU from 'i18next-icu'
 import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
-import ru from 'javascript-time-ago/locale/ru'
+import enTime from 'javascript-time-ago/locale/en'
+import ruTime from 'javascript-time-ago/locale/ru'
+import en from './locales/en/translation.json'
+import ru from './locales/ru/translation.json'
 
-TimeAgo.addLocale(en)
-TimeAgo.addLocale(ru)
+
+TimeAgo.addLocale(enTime)
+TimeAgo.addLocale(ruTime)
 
 export const i18nextInit = async (lng = 'ru') => {
   if (!i18next.isInitialized) {
@@ -23,8 +26,8 @@ export const i18nextInit = async (lng = 'ru') => {
         load: 'languageOnly',
         initImmediate: false,
         resources: {
-          ru: { translation: await import('./locales/ru/translation.json') },
-          en: { translation: await import('./locales/en/translation.json') },
+          ru: { translation: ru },
+          en: { translation: en },
         },
       })
     // console.debug(i18next)

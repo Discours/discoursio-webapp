@@ -5,10 +5,12 @@ import sassDts from 'vite-plugin-sass-dts'
 const isVercel = Boolean(process?.env.VERCEL)
 const isBun = Boolean(process.env.BUN)
 export default defineConfig({
+  ssr: true,
   server: {
     preset: isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node',
     port: 3000,
   },
+  devOverlay: true,
   build: {
     chunkSizeWarningLimit: 1024,
     target: 'esnext',
@@ -33,7 +35,7 @@ export default defineConfig({
       preprocessorOptions: {
         scss: {
           additionalData: '@import "src/styles/imports";\n',
-          includePaths: ['public', 'src/styles']
+          includePaths: ['./public', './src/styles'],
         },
       },
     },

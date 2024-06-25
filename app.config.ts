@@ -6,7 +6,7 @@ const isVercel = Boolean(process?.env.VERCEL)
 
 export default defineConfig({
   server: {
-    preset: isVercel ? 'vercel' : 'bun',
+    preset: isVercel ? 'vercel_edge' : 'bun',
     port: 3000,
   },
   build: {

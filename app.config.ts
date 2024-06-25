@@ -3,10 +3,10 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
 
 const isVercel = Boolean(process?.env.VERCEL)
-
+const isBun = Boolean(process.env.BUN)
 export default defineConfig({
   server: {
-    preset: isVercel ? 'vercel_edge' : 'bun',
+    preset: isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node',
     port: 3000,
   },
   build: {

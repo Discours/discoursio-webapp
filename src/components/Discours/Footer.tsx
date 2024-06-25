@@ -121,7 +121,7 @@ export const Footer = () => {
                       <li>
                         {' '}
                         <a href={slug} {...rest}>
-                          {slug.startsWith('?') ? title : t(title)}
+                          {t(title)}
                         </a>{' '}
                       </li>
                     )}

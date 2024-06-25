@@ -183,13 +183,19 @@ export const UIProvider = (props: { children: JSX.Element }) => {
     setModal('')
   }
 
+  const [searchParams] = useSearchParams()
+
   createEffect(
     on(
-      modal,
-      (m) => {
-        if (m) showModal(m)
+      [modal, () => searchParams?.m || ''],
+      ([m1, m2]) => {
+        const m = m1 || m2 || ''
+        setModal((_) => m as ModalType)
+        if (m) {
+          showModal(m as ModalType)
+        }
       },
-      {},
+      { defer: true },
     ),
   )
 

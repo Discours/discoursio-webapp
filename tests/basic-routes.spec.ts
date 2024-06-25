@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 const baseHost = process.env.BASE_HOST || 'https://localhost:3000'
 
-const pagesTitles = {
+const pagesTitles: {[key:string]: RegExp } = {
   '/': /Дискурс/,
   '/feed': /Лента/,
   '/create': /Выберите тип публикации/,

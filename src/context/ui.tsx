@@ -127,7 +127,7 @@ type ConfirmMessage = {
 }
 
 type UIContextType = {
-  modal: Accessor<ModalType|null>
+  modal: Accessor<ModalType | null>
   showModal: (m: ModalType, source?: AuthModalSource) => void
   hideModal: () => void
   confirmMessage: Accessor<ConfirmMessage>
@@ -143,7 +143,7 @@ export function useUI() {
 
 export const UIProvider = (props: { children: JSX.Element }) => {
   const [, setSearchParams] = useSearchParams<Record<string, string>>()
-  const [modal, setModal] = createSignal<ModalType|null>(null)
+  const [modal, setModal] = createSignal<ModalType | null>(null)
   const [confirmMessage, setConfirmMessage] = createSignal<ConfirmMessage>({} as ConfirmMessage)
 
   let resolveFn: (value: boolean) => void
@@ -173,8 +173,8 @@ export const UIProvider = (props: { children: JSX.Element }) => {
 
   const hideModal = () => {
     console.log('[context.ui] hideModal()', modal())
-    setTimeout(() => setModal(null), 1)  // NOTE: modal rerender fix
-    setSearchParams({source: undefined, m: undefined, mode: undefined})
+    setTimeout(() => setModal(null), 1) // NOTE: modal rerender fix
+    setSearchParams({ source: undefined, m: undefined, mode: undefined })
   }
 
   const [searchParams] = useSearchParams()

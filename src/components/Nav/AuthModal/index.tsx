@@ -30,8 +30,8 @@ export type AuthModalSearchParams = {
 }
 
 const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
-  'login': LoginForm,
-  'register': RegisterForm,
+  login: LoginForm,
+  register: RegisterForm,
   'send-reset-link': SendResetLinkForm,
   'confirm-email': EmailConfirm,
   'send-confirm-email': SendEmailConfirm,

@@ -840,7 +840,7 @@ figure {
   }
 }
 
-#root {
+#app {
   display: flex;
   flex-direction: column;
   place-content: space-between space-between;
@@ -850,7 +850,6 @@ figure {
 .main-content {
   flex: 1 100%;
   min-height: 90vh;
-  padding-top: 80px;
   position: relative;
 
   @include media-breakpoint-up(lg) {

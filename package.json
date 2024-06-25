@@ -10,7 +10,8 @@
     "codegen": "graphql-codegen",
     "deploy": "graphql-codegen && npm run typecheck && vite build && vercel",
     "dev": "vite",
-    "e2e": "npx playwright test --project=webkit",
+    "e2e:tests": "npx playwright test --project=webkit",
+    "e2e:install": "npx playwright install webkit && npx playwright install-deps ",
     "fix": "npm run check:code:fix && stylelint **/*.{scss,css} --fix",
     "format": "npx @biomejs/biome format src/. --write",
     "postinstall": "npm run codegen && npx patch-package",
@@ -136,5 +137,7 @@
     "y-prosemirror": "1.2.5",
     "yjs": "13.6.15"
   },
-  "trustedDependencies": ["@biomejs/biome"]
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }

@@ -14,70 +14,70 @@ export const Footer = () => {
   const changeLangLink = createMemo(() => `?lng=${lang() === 'ru' ? 'en' : 'ru'}`)
   const links = createMemo(() => [
     {
-      header: 'About the project',
+      header: t('About the project'),
       items: [
         {
-          title: 'Discours Manifest',
+          title: t('Discours Manifest'),
           slug: '/about/manifest',
         },
         {
-          title: 'How it works',
+          title: t('How it works'),
           slug: '/about/guide',
         },
         {
-          title: 'Dogma',
+          title: t('Dogma'),
           slug: '/about/dogma',
         },
         {
-          title: 'Principles',
+          title: t('Principles'),
           slug: '/about/principles',
         },
         {
-          title: 'How to write an article',
+          title: t('How to write an article'),
           slug: '/how-to-write-a-good-article',
         },
       ],
     },
 
     {
-      header: 'Participating',
+      header: t('Participating'),
       items: [
         {
-          title: 'Suggest an idea',
+          title: t('Suggest an idea'),
           slug: '/connect',
         },
         {
-          title: 'Become an author',
+          title: t('Become an author'),
           slug: '/create',
         },
         {
-          title: 'Support Discours',
+          title: t('Support Discours'),
           slug: '/about/help',
         },
         {
-          title: 'Work with us',
+          title: t('Work with us'),
           slug: 'https://docs.google.com/forms/d/e/1FAIpQLSeNNvIzKlXElJtkPkYiXl-jQjlvsL9u4-kpnoRjz1O8Wo40xQ/viewform',
         },
       ],
     },
 
     {
-      header: 'Sections',
+      header: t('Sections'),
       items: [
         {
-          title: 'Authors',
+          title: t('Authors'),
           slug: '/authors',
         },
         {
-          title: 'Communities',
+          title: t('Communities'),
           slug: '/community',
         },
         {
-          title: 'Partners',
+          title: t('Partners'),
           slug: '/about/partners',
         },
         {
-          title: 'Special projects',
+          title: t('Special projects'),
           slug: '/about/projects',
         },
         {
@@ -114,14 +114,14 @@ export const Footer = () => {
           <For each={links()}>
             {({ header, items }) => (
               <div class="col-sm-8 col-md-6">
-                <h5>{t(header)}</h5>
+                <h5>{header}</h5>
                 <ul>
                   <For each={items}>
                     {({ slug, title, ...rest }) => (
                       <li>
                         {' '}
                         <a href={slug} {...rest}>
-                          {t(title)}
+                          {title}
                         </a>{' '}
                       </li>
                     )}

@@ -14,7 +14,7 @@ export const ShareModal = (props: Props) => {
   const { t } = useLocalize()
   const { hideModal } = useUI()
   return (
-    <Modal name="share" variant="medium" allowClose={true}>
+    <Modal name="share" variant="medium">
       <h2>{t('Share publication')}</h2>
       <ShareLinks
         variant="inModal"

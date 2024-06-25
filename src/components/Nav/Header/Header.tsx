@@ -155,8 +155,7 @@ export const Header = (props: Props) => {
   const loc = useLocation()
   const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
     event.preventDefault()
-    console.debug(route)
-    console.debug(loc.pathname)
+    console.debug(loc.pathname, route)
     if (!fixed()) return
     if (loc.pathname.startsWith(route) || loc.pathname.startsWith(`/${route}`)) {
       toggleFixed()
@@ -176,7 +175,7 @@ export const Header = (props: Props) => {
       <Modal
         variant={searchParams?.source ? 'narrow' : 'wide'}
         name="auth"
-        allowClose={searchParams?.source !== 'authguard'}
+        hideClose={Boolean(searchParams?.source === 'authguard')}
         noPadding={true}
       >
         <AuthModal />

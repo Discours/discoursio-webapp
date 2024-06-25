@@ -23,6 +23,10 @@ type InboxContextType = {
   sendMessage?: (args: MutationCreate_MessageArgs) => void
 }
 
+export type CreateChatSearchParams = {
+  inbox: number
+}
+
 const InboxContext = createContext<InboxContextType>({} as InboxContextType)
 
 export function useInbox() {

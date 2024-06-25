@@ -10,10 +10,15 @@ import { email, setEmail } from './sharedLogic'
 import { useSearchParams } from '@solidjs/router'
 import styles from './AuthModal.module.scss'
 
+export type ConfirmEmailSearchParams = {
+  access_token?: string
+  token?: string
+}
+
 export const EmailConfirm = () => {
   const { t } = useLocalize()
   const { hideModal } = useUI()
-  const [, changeSearchParams] = useSearchParams()
+  const [, changeSearchParams] = useSearchParams<ConfirmEmailSearchParams>()
   const { session, authError } = useSession()
   const [emailConfirmed, setEmailConfirmed] = createSignal(false)
 

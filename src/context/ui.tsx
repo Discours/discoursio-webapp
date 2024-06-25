@@ -70,14 +70,6 @@ export const SnackbarProvider = (props: { children: JSX.Element }) => {
   return <SnackbarContext.Provider value={value}>{props.children}</SnackbarContext.Provider>
 }
 
-export type AuthModalMode =
-  | 'login'
-  | 'register'
-  | 'confirm-email'
-  | 'send-confirm-email'
-  | 'send-reset-link'
-  | 'change-password'
-
 export type AuthModalSource =
   | 'discussions'
   | 'vote'
@@ -135,7 +127,7 @@ type ConfirmMessage = {
 }
 
 type UIContextType = {
-  modal: Accessor<string>
+  modal: Accessor<ModalType|null>
   showModal: (m: ModalType, source?: AuthModalSource) => void
   hideModal: () => void
   confirmMessage: Accessor<ConfirmMessage>
@@ -151,7 +143,7 @@ export function useUI() {
 
 export const UIProvider = (props: { children: JSX.Element }) => {
   const [, setSearchParams] = useSearchParams<Record<string, string>>()
-  const [modal, setModal] = createSignal<ModalType>('')
+  const [modal, setModal] = createSignal<ModalType|null>(null)
   const [confirmMessage, setConfirmMessage] = createSignal<ConfirmMessage>({} as ConfirmMessage)
 
   let resolveFn: (value: boolean) => void
@@ -172,6 +164,7 @@ export const UIProvider = (props: { children: JSX.Element }) => {
   }
 
   const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
+    console.log('[context.ui] showModal()', modalType)
     if (modalSource) {
       setSearchParams({ source: modalSource })
     }
@@ -179,8 +172,9 @@ export const UIProvider = (props: { children: JSX.Element }) => {
   }
 
   const hideModal = () => {
-    setSearchParams({}, { replace: true })
-    setModal('')
+    console.log('[context.ui] hideModal()', modal())
+    setTimeout(() => setModal(null), 1)  // NOTE: modal rerender fix
+    setSearchParams({source: undefined, m: undefined, mode: undefined})
   }
 
   const [searchParams] = useSearchParams()
@@ -190,12 +184,14 @@ export const UIProvider = (props: { children: JSX.Element }) => {
       [modal, () => searchParams?.m || ''],
       ([m1, m2]) => {
         const m = m1 || m2 || ''
-        setModal((_) => m as ModalType)
+        console.log('[context.ui] search params change', m)
         if (m) {
           showModal(m as ModalType)
+        } else {
+          setModal(null)
         }
       },
-      { defer: true },
+      {},
     ),
   )
 

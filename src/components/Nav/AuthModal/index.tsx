@@ -2,8 +2,7 @@ import { clsx } from 'clsx'
 import { Component, Show, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
-import { useUI } from '~/context/ui'
-import type { AuthModalMode } from '~/context/ui'
+import { AuthModalSource, useUI } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
 import { isMobile } from '../../../utils/media-query'
 import { ChangePasswordForm } from './ChangePasswordForm'
@@ -15,11 +14,24 @@ import { SendResetLinkForm } from './SendResetLinkForm'
 
 import { useSearchParams } from '@solidjs/router'
 import styles from './AuthModal.module.scss'
-import { AuthModalSearchParams } from './types'
+
+export type AuthModalMode =
+  | 'login'
+  | 'register'
+  | 'confirm-email'
+  | 'send-confirm-email'
+  | 'send-reset-link'
+  | 'change-password'
+
+export type AuthModalSearchParams = {
+  mode: AuthModalMode
+  source?: AuthModalSource
+  token?: string
+}
 
 const AUTH_MODAL_MODES: Record<AuthModalMode, Component> = {
-  login: LoginForm,
-  register: RegisterForm,
+  'login': LoginForm,
+  'register': RegisterForm,
   'send-reset-link': SendResetLinkForm,
   'confirm-email': EmailConfirm,
   'send-confirm-email': SendEmailConfirm,

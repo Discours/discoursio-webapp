@@ -69,7 +69,7 @@ export const loadShoutsSearch = (options: QueryLoad_Shouts_SearchArgs) => {
   const page = `${options.offset || 0}-${(options?.limit || 0) + (options.offset || 0)}`
   return cache(async () => {
     const resp = await defaultClient.query(loadShoutsSearchQuery, { ...options }).toPromise()
-    const result = resp?.data?.get_shout as Shout
+    const result = resp?.data?.load_shouts_search as Shout
     if (result) return result
   }, `search-${options.text}-${page}`)
 }

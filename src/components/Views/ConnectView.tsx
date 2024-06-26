@@ -4,9 +4,9 @@ import { useLocalize } from '~/context/localize'
 
 export const ConnectView = () => {
   const { t } = useLocalize()
-
   const [state, setState] = createSignal<'initial' | 'loading' | 'success' | 'error'>('initial')
-  let formRef: HTMLFormElement | null
+  let formRef: HTMLFormElement | null = null
+
   const handleFormSubmit = async (e: SubmitEvent) => {
     e.preventDefault()
     setState('loading')
@@ -14,51 +14,53 @@ export const ConnectView = () => {
     const postData = formRef
       ? Array.from(formRef.elements).reduce(
           (acc, element) => {
-            const formField = element as unknown as { name: string; value: string }
+            const formField = element as HTMLInputElement
             if (formField.name) {
               acc[formField.name] = formField.value
             }
-
             return acc
           },
-          {} as Record<string, string>,
+          {} as Record<string, string>
         )
       : {}
 
     const requestOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(postData),
+      body: JSON.stringify(postData)
     }
 
-    const result = await fetch('/api/feedback', requestOptions)
-
-    if (!result.ok) {
-      console.error('[handleFormSubmit]', result)
+    try {
+      const result = await fetch('/api/feedback', requestOptions)
+      if (!result.ok) {
+        console.error('[handleFormSubmit]', result)
+        setState('error')
+        return
+      }
+      setState('success')
+      window.scrollTo({
+        top: 0
+      })
+    } catch (error) {
+      console.error('[handleFormSubmit]', error)
       setState('error')
-      return
     }
-
-    setState('success')
-    window.scrollTo({
-      top: 0,
-    })
   }
 
   return (
     <article class="wide-container container--static-page">
       <div class="row">
         <div class="col-sm-20 col-md-16 col-lg-14 col-xl-12 offset-md-5">
-          <Show when={state() === 'loading' || state() === 'initial' || state() === 'error'}>
+          <Show when={state() !== 'success'}>
             <h1>
               <span class="wrapped">{t('Suggest an idea')}</span>
             </h1>
 
             <p>
               {t(
-                'Want to suggest, discuss or advise something? Share a topic or an idea?  Please send us a message!',
+                'Want to suggest, discuss or advise something? Share a topic or an idea?  Please send us a message!'
               )}
               {t('Specify your e-mail and we will reply.')}
             </p>
@@ -97,7 +99,10 @@ export const ConnectView = () => {
             <br />
             {t('Something went wrong, please try again')}
           </Show>
-          <Show when={state() === 'success'}>{t('Thank you for reaching us')}!</Show>
+          <Show when={state() === 'success'}>
+            <br />
+            {t('Thank you for reaching us')}!
+          </Show>
         </div>
       </div>
     </article>

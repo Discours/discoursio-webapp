@@ -91,7 +91,7 @@ export const PasswordField = (props: Props) => {
         <Show when={error()}>
           <div
             class={clsx(styles.registerPassword, styles.validationError, {
-              'form-message--error': props.setError,
+              'form-message--error': props.setError
             })}
           >
             {error()}

@@ -12,7 +12,7 @@ export const SendEmailConfirm = () => {
     <div
       style={{
         'align-items': 'center',
-        'justify-content': 'center',
+        'justify-content': 'center'
       }}
     >
       <div class={styles.text}>{t('Link sent, check your email')}</div>

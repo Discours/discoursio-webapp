@@ -31,7 +31,7 @@ export const TopicBadge = (props: Props) => {
         const followed = follows?.topics?.some((topics) => topics.id === props.topic?.id)
         setIsFollowed(followed)
       }
-    }),
+    })
   )
 
   const handleFollowClick = () => {
@@ -58,11 +58,11 @@ export const TopicBadge = (props: Props) => {
               href={`/topic/${props.topic.slug}`}
               class={clsx(styles.picture, {
                 [styles.withImage]: props.topic.pic,
-                [styles.smallSize]: isMobileView(),
+                [styles.smallSize]: isMobileView()
               })}
               style={
                 (props.topic?.pic || '') && {
-                  'background-image': `url('${getImageUrl(props.topic?.pic || '', { width: 40, height: 40 })}')`,
+                  'background-image': `url('${getImageUrl(props.topic?.pic || '', { width: 40, height: 40 })}')`
                 }
               }
             />

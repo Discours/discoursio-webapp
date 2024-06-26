@@ -10,13 +10,13 @@ export const renderUploadedImage = (editor: Editor, image: { url: string; origin
       content: [
         {
           type: 'image',
-          attrs: { src: image.url },
+          attrs: { src: image.url }
         },
         {
           type: 'figcaption',
-          content: [{ type: 'text', text: image.originalFilename }],
-        },
-      ],
+          content: [{ type: 'text', text: image.originalFilename }]
+        }
+      ]
     })
     .run()
 }

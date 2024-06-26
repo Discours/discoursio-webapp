@@ -47,8 +47,8 @@ export const ImageSwiper = (props: Props) => {
         mainSwipeRef?.swiper.update()
         thumbSwipeRef?.swiper.update()
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   onMount(async () => {
@@ -118,7 +118,7 @@ export const ImageSwiper = (props: Props) => {
                 direction={'horizontal'}
                 slides-per-group-auto={true}
                 hash-navigation={{
-                  watchState: true,
+                  watchState: true
                 }}
               >
                 <For each={props.images}>
@@ -129,7 +129,7 @@ export const ImageSwiper = (props: Props) => {
                       <div
                         class={clsx(styles.imageThumb)}
                         style={{
-                          'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`,
+                          'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`
                         }}
                       />
                     </swiper-slide>
@@ -138,7 +138,7 @@ export const ImageSwiper = (props: Props) => {
               </swiper-container>
               <div
                 class={clsx(styles.navigation, styles.thumbsNav, styles.prev, {
-                  [styles.disabled]: slideIndex() === 0,
+                  [styles.disabled]: slideIndex() === 0
                 })}
                 onClick={() => thumbSwipeRef?.swiper.slidePrev()}
               >
@@ -146,7 +146,7 @@ export const ImageSwiper = (props: Props) => {
               </div>
               <div
                 class={clsx(styles.navigation, styles.thumbsNav, styles.next, {
-                  [styles.disabled]: slideIndex() + 1 === props.images.length,
+                  [styles.disabled]: slideIndex() + 1 === props.images.length
                 })}
                 onClick={() => thumbSwipeRef?.swiper.slideNext()}
               >
@@ -176,7 +176,7 @@ export const ImageSwiper = (props: Props) => {
             </swiper-container>
             <div
               class={clsx(styles.navigation, styles.prev, {
-                [styles.disabled]: slideIndex() === 0,
+                [styles.disabled]: slideIndex() === 0
               })}
               onClick={() => mainSwipeRef?.swiper.slidePrev()}
             >
@@ -184,7 +184,7 @@ export const ImageSwiper = (props: Props) => {
             </div>
             <div
               class={clsx(styles.navigation, styles.next, {
-                [styles.disabled]: slideIndex() + 1 === props.images.length,
+                [styles.disabled]: slideIndex() + 1 === props.images.length
               })}
               onClick={() => mainSwipeRef?.swiper.slideNext()}
             >

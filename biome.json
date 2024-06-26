@@ -1,21 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
   "files": {
-    "include": [
-      "*.tsx",
-      "*.ts",
-      "*.js",
-      "*.json"
-    ],
-    "ignore": [
-      "./dist",
-      "./node_modules",
-      ".husky",
-      "docs",
-      "gen",
-      "*.gen.ts",
-      "*.d.ts"
-    ]
+    "include": ["*.tsx", "*.ts", "*.js", "*.json"],
+    "ignore": ["./dist", "./node_modules", ".husky", "docs", "gen", "*.gen.ts", "*.d.ts"]
   },
   "vcs": {
     "defaultBranch": "dev",
@@ -23,19 +10,13 @@
   },
   "organizeImports": {
     "enabled": true,
-    "ignore": [
-      "./api",
-      "./gen"
-    ]
+    "ignore": ["./api", "./gen"]
   },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 108,
-    "ignore": [
-      "./src/graphql/schema",
-      "./gen"
-    ]
+    "ignore": ["./src/graphql/schema", "./gen"]
   },
   "javascript": {
     "formatter": {
@@ -43,17 +24,12 @@
       "quoteStyle": "single",
       "enabled": true,
       "jsxQuoteStyle": "double",
-      "arrowParentheses": "always"
+      "arrowParentheses": "always",
+      "trailingCommas": "none"
     }
   },
   "linter": {
-    "ignore": [
-      "*.scss",
-      "*.md",
-      ".DS_Store",
-      "*.svg",
-      "*.d.ts"
-    ],
+    "ignore": ["*.scss", "*.md", ".DS_Store", "*.svg", "*.d.ts"],
     "enabled": true,
     "rules": {
       "all": true,
@@ -85,6 +61,7 @@
         "noBarrelFile": "off"
       },
       "style": {
+        "noNamespaceImport": "warn",
         "useBlockStatements": "off",
         "noImplicitBoolean": "off",
         "useNamingConvention": "off",

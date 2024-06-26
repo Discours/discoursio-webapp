@@ -49,22 +49,22 @@ export const HomeView = (props: HomeViewProps) => {
           const shoutsByTopicLoader = loadShouts({
             filters: { topic: topic.slug, featured: true },
             limit: 5,
-            offset: 0,
+            offset: 0
           })
           const shouts = await shoutsByTopicLoader()
           setRandomTopicArticles(shouts || [])
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(
       props.featuredShouts || [],
       SHOUTS_PER_PAGE + CLIENT_LOAD_ARTICLES_COUNT,
-      LOAD_MORE_PAGE_SIZE,
-    ),
+      LOAD_MORE_PAGE_SIZE
+    )
   )
 
   return (

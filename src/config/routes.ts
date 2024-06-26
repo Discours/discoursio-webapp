@@ -34,5 +34,5 @@ export const ROUTES = {
   profileSecurity: '/profile/security',
   profileSubscriptions: '/profile/subscriptions',
   fourOuFour: '/404',
-  article: '/:slug',
+  article: '/:slug'
 } as const

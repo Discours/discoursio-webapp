@@ -31,7 +31,7 @@ export const ImageCropper = (props: CropperProps) => {
         background: false,
         rotatable: false,
         autoCropArea: 1,
-        modal: true,
+        modal: true
       })
       return undefined
     })
@@ -59,7 +59,7 @@ export const ImageCropper = (props: CropperProps) => {
 
                 props.onSave({
                   ...props.uploadFile,
-                  file: formData.get('media'),
+                  file: formData.get('media')
                 })
               }) as BlobCallback)
           }}

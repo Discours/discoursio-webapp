@@ -51,7 +51,7 @@ export const Expo = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: getLoadShoutsFilters(),
       limit: count,
-      offset: expoShouts().length,
+      offset: expoShouts().length
     }
 
     options.filters = props.layout
@@ -76,7 +76,7 @@ export const Expo = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: { ...getLoadShoutsFilters(), featured: true },
       limit: 10,
-      random_limit: 100,
+      random_limit: 100
     }
     const resp = await query(getRandomTopShoutsQuery, { options }).toPromise()
     setFavoriteTopArticles(resp?.data?.load_shouts_random_top || [])
@@ -89,7 +89,7 @@ export const Expo = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: { ...getLoadShoutsFilters({ after }), reacted: true },
       limit: 10,
-      random_limit: 10,
+      random_limit: 10
     }
 
     const resp = await query(getRandomTopShoutsQuery, { options }).toPromise()
@@ -114,8 +114,8 @@ export const Expo = (props: Props) => {
         loadMore(PRERENDERED_ARTICLES_COUNT + LOAD_MORE_PAGE_SIZE)
         loadRandomTopArticles()
         loadRandomTopMonthArticles()
-      },
-    ),
+      }
+    )
   )
 
   onCleanup(() => {

@@ -3,7 +3,7 @@ import { Plugin, PluginKey } from '@tiptap/pm/state'
 
 function nodeEqualsType({
   types,
-  node,
+  node
 }: {
   // biome-ignore lint/suspicious/noExplicitAny: FIXME: any in editor extension
   types: any
@@ -30,7 +30,7 @@ export const TrailingNode = Extension.create<TrailingNodeOptions>({
   addOptions() {
     return {
       node: 'paragraph',
-      notAfter: ['paragraph'],
+      notAfter: ['paragraph']
     }
   },
 
@@ -69,9 +69,9 @@ export const TrailingNode = Extension.create<TrailingNodeOptions>({
             const lastNode = tr.doc.lastChild
 
             return !nodeEqualsType({ node: lastNode, types: disabledNodes })
-          },
-        },
-      }),
+          }
+        }
+      })
     ]
-  },
+  }
 })

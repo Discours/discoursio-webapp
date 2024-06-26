@@ -32,7 +32,7 @@ export const Panel = (props: Props) => {
     toggleEditorPanel,
     saveShout,
     saveDraft,
-    publishShout,
+    publishShout
   } = useEditorContext()
 
   let containerRef: HTMLElement | undefined
@@ -42,7 +42,7 @@ export const Panel = (props: Props) => {
   useOutsideClickHandler({
     containerRef,
     predicate: () => isEditorPanelVisible(),
-    handler: () => toggleEditorPanel(),
+    handler: () => toggleEditorPanel()
   })
 
   useEscKeyDownHandler(() => {

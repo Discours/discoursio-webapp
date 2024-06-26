@@ -12,7 +12,7 @@ import {
   MutationCreate_ReactionArgs,
   MutationUpdate_ReactionArgs,
   Reaction,
-  ReactionKind,
+  ReactionKind
 } from '../../../graphql/schema/core.gen'
 import { AuthorLink } from '../../Author/AuthorLink'
 import { Userpic } from '../../Author/Userpic'
@@ -54,7 +54,7 @@ export const Comment = (props: Props) => {
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
-      (props.comment?.created_by?.slug === author()?.slug || session()?.user?.roles?.includes('editor')),
+      (props.comment?.created_by?.slug === author()?.slug || session()?.user?.roles?.includes('editor'))
   )
 
   const body = createMemo(() => (editedBody() ? editedBody()?.trim() : props.comment.body?.trim() || ''))
@@ -66,7 +66,7 @@ export const Comment = (props: Props) => {
           confirmBody: t('Are you sure you want to delete this comment?'),
           confirmButtonLabel: t('Delete'),
           confirmButtonVariant: 'danger',
-          declineButtonVariant: 'primary',
+          declineButtonVariant: 'primary'
         })
 
         if (isConfirmed) {
@@ -80,7 +80,7 @@ export const Comment = (props: Props) => {
           await showSnackbar({
             type: notificationType,
             body: notificationMessage,
-            duration: 3,
+            duration: 3
           })
 
           if (!error && props.onDelete) {
@@ -102,8 +102,8 @@ export const Comment = (props: Props) => {
           kind: ReactionKind.Comment,
           reply_to: props.comment.id,
           body: value,
-          shout: props.comment.shout.id,
-        },
+          shout: props.comment.shout.id
+        }
       } as MutationCreate_ReactionArgs)
       setClearEditor(true)
       setIsReplyVisible(false)
@@ -126,8 +126,8 @@ export const Comment = (props: Props) => {
           id: props.comment.id || 0,
           kind: ReactionKind.Comment,
           body: value,
-          shout: props.comment.shout.id,
-        },
+          shout: props.comment.shout.id
+        }
       } as MutationUpdate_ReactionArgs)
       if (reaction) {
         setEditedBody(value)
@@ -144,7 +144,7 @@ export const Comment = (props: Props) => {
       id={`comment_${props.comment.id}`}
       class={clsx(styles.comment, props.class, {
         [styles.isNew]:
-          (props.lastSeen || Date.now()) > (props.comment.updated_at || props.comment.created_at),
+          (props.lastSeen || Date.now()) > (props.comment.updated_at || props.comment.created_at)
       })}
     >
       <Show when={!!body()}>
@@ -157,7 +157,7 @@ export const Comment = (props: Props) => {
                   name={props.comment.created_by.name || ''}
                   userpic={props.comment.created_by.pic || ''}
                   class={clsx({
-                    [styles.compactUserpic]: props.compact,
+                    [styles.compactUserpic]: props.compact
                   })}
                 />
                 <small>

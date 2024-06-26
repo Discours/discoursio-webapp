@@ -27,7 +27,7 @@ export const AuthorLink = (props: Props) => {
   return (
     <div
       class={clsx(styles.AuthorLink, props.class, styles[(props.size ?? 'M') as keyof Props['size']], {
-        [styles.authorLinkFloorImportant]: props.isFloorImportant,
+        [styles.authorLinkFloorImportant]: props.isFloorImportant
       })}
     >
       <a class={styles.link} href={`/author/${props.author.slug}`}>

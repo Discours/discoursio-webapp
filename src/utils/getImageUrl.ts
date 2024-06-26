@@ -5,7 +5,7 @@ const URL_CONFIG = {
   thumborUrl: `${thumborUrl}/unsafe/`,
   audioSubfolder: 'audio',
   imageSubfolder: 'image',
-  productionFolder: 'production/',
+  productionFolder: 'production/'
 }
 
 const AUDIO_EXTENSIONS = new Set(['wav', 'mp3', 'ogg', 'aif', 'flac'])
@@ -25,7 +25,7 @@ const buildSizePart = (width?: number, height?: number, includeSize = true): str
 
 export const getImageUrl = (
   src: string,
-  options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {},
+  options: { width?: number; height?: number; noSizeUrlPart?: boolean } = {}
 ): string => {
   if (!src.includes('discours.io') && src.includes('http')) {
     return src
@@ -46,11 +46,11 @@ export const getOpenGraphImageUrl = (
     author: string
     width?: number
     height?: number
-  },
+  }
 ): string => {
   const sizeUrlPart = buildSizePart(options.width, options.height)
   const filtersPart = `filters:discourstext('${encodeURIComponent(options.topic)}','${encodeURIComponent(
-    options.author,
+    options.author
   )}','${encodeURIComponent(options.title)}')/`
 
   if (src.startsWith(URL_CONFIG.thumborUrl)) {

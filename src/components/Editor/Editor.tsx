@@ -66,7 +66,7 @@ const allowedImageTypes = new Set([
   'image/png',
   'image/tiff',
   'image/webp',
-  'image/x-icon',
+  'image/x-icon'
 ])
 
 const yDocs: Record<string, Doc> = {}
@@ -91,7 +91,7 @@ export const EditorComponent = (props: Props) => {
       url: 'wss://hocuspocus.discours.io',
       name: docName,
       document: yDocs[docName],
-      token: session()?.access_token || '',
+      token: session()?.access_token || ''
     })
   }
 
@@ -120,7 +120,7 @@ export const EditorComponent = (props: Props) => {
         source: blob.toString(),
         name: file.name,
         size: file.size,
-        file,
+        file
       }
 
       showSnackbar({ body: t('Uploading image') })
@@ -135,13 +135,13 @@ export const EditorComponent = (props: Props) => {
           content: [
             {
               type: 'image',
-              attrs: { src: result.url },
+              attrs: { src: result.url }
             },
             {
               type: 'figcaption',
-              content: [{ type: 'text', text: result.originalFilename }],
-            },
-          ],
+              content: [{ type: 'text', text: result.originalFilename }]
+            }
+          ]
         })
         .run()
     } catch (error) {
@@ -158,7 +158,7 @@ export const EditorComponent = (props: Props) => {
           element: ee,
           editorProps: {
             attributes: {
-              class: 'articleEditor',
+              class: 'articleEditor'
             },
             transformPastedHTML(html) {
               return html.replaceAll(/<img.*?>/g, '')
@@ -166,7 +166,7 @@ export const EditorComponent = (props: Props) => {
             handlePaste: () => {
               handleClipboardPaste()
               return false
-            },
+            }
           },
           extensions: [
             Document,
@@ -181,34 +181,34 @@ export const EditorComponent = (props: Props) => {
             Strike,
             HorizontalRule.configure({
               HTMLAttributes: {
-                class: 'horizontalRule',
-              },
+                class: 'horizontalRule'
+              }
             }),
             Underline,
             Link.extend({
-              inclusive: false,
+              inclusive: false
             }).configure({
               autolink: true,
-              openOnClick: false,
+              openOnClick: false
             }),
             Heading.configure({
-              levels: [2, 3, 4],
+              levels: [2, 3, 4]
             }),
             BulletList,
             OrderedList,
             ListItem,
             Collaboration.configure({
-              document: yDocs[docName],
+              document: yDocs[docName]
             }),
             CollaborationCursor.configure({
               provider: providers[docName],
               user: {
                 name: author().name,
-                color: uniqolor(author().slug).color,
-              },
+                color: uniqolor(author().slug).color
+              }
             }),
             Placeholder.configure({
-              placeholder: t('Add a link or click plus to embed media'),
+              placeholder: t('Add a link or click plus to embed media')
             }),
             Focus,
             Gapcursor,
@@ -216,8 +216,8 @@ export const EditorComponent = (props: Props) => {
             Highlight.configure({
               multicolor: true,
               HTMLAttributes: {
-                class: 'highlight',
-              },
+                class: 'highlight'
+              }
             }),
             Image,
             Iframe,
@@ -253,8 +253,8 @@ export const EditorComponent = (props: Props) => {
                 onHide: () => {
                   const fe = freshEditor() as Editor
                   fe?.commands.focus()
-                },
-              },
+                }
+              }
             }),
             BubbleMenu.configure({
               pluginKey: 'blockquoteBubbleMenu',
@@ -262,7 +262,7 @@ export const EditorComponent = (props: Props) => {
               shouldShow: ({ editor: e, view, state }) => {
                 const { empty } = state.selection
                 return view.hasFocus() && !empty && e.isActive('blockquote')
-              },
+              }
             }),
             BubbleMenu.configure({
               pluginKey: 'figureBubbleMenu',
@@ -270,7 +270,7 @@ export const EditorComponent = (props: Props) => {
               shouldShow: ({ editor: e, view, state }) => {
                 const { empty } = state.selection
                 return view.hasFocus() && !empty && e.isActive('figure')
-              },
+              }
             }),
             BubbleMenu.configure({
               pluginKey: 'incutBubbleMenu',
@@ -278,7 +278,7 @@ export const EditorComponent = (props: Props) => {
               shouldShow: ({ editor: e, view, state }) => {
                 const { empty } = state.selection
                 return view.hasFocus() && !empty && e.isActive('figcaption')
-              },
+              }
             }),
             FloatingMenu.configure({
               element: floatingMenuRef,
@@ -290,10 +290,10 @@ export const EditorComponent = (props: Props) => {
                 if (!(isRootDepth && empty)) return false
 
                 return !(e.isActive('codeBlock') || e.isActive('heading'))
-              },
+              }
             }),
             TrailingNode,
-            Article,
+            Article
           ],
           onTransaction: ({ transaction }) => {
             if (transaction.docChanged) {
@@ -305,7 +305,7 @@ export const EditorComponent = (props: Props) => {
               }
             }
           },
-          content: initialContent,
+          content: initialContent
         }))
 
         if (freshEditor) {
@@ -317,7 +317,7 @@ export const EditorComponent = (props: Props) => {
           setEditor(freshEditor() as Editor)
         }
       }
-    }),
+    })
   )
 
   onCleanup(() => {

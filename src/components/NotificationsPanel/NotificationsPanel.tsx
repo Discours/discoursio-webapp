@@ -55,7 +55,7 @@ export const NotificationsPanel = (props: Props) => {
     loadedNotificationsCount,
     totalNotificationsCount,
     loadNotificationsGrouped,
-    markSeenAll,
+    markSeenAll
   } = useNotifications()
   const handleHide = () => {
     props.onClose()
@@ -66,7 +66,7 @@ export const NotificationsPanel = (props: Props) => {
   useOutsideClickHandler({
     containerRef: panelRef,
     predicate: () => props.isOpen,
-    handler: () => handleHide(),
+    handler: () => handleHide()
   })
 
   let windowScrollTop = 0
@@ -99,13 +99,13 @@ export const NotificationsPanel = (props: Props) => {
 
   const yesterdayNotifications = createMemo(() => {
     return sortedNotifications().filter((notification) =>
-      isYesterday(new Date(notification.updated_at * 1000)),
+      isYesterday(new Date(notification.updated_at * 1000))
     )
   })
 
   const earlierNotifications = createMemo(() => {
     return sortedNotifications().filter((notification) =>
-      isEarlier(new Date(notification.updated_at * 1000)),
+      isEarlier(new Date(notification.updated_at * 1000))
     )
   })
 
@@ -114,7 +114,7 @@ export const NotificationsPanel = (props: Props) => {
     await loadNotificationsGrouped({
       after: after() || hourAgo(),
       limit: PAGE_SIZE,
-      offset: loadedNotificationsCount(),
+      offset: loadedNotificationsCount()
     })
     if (loadedNotificationsCount() < totalNotificationsCount()) {
       const hasMore = (scrollContainerRef?.scrollHeight || 0) <= (scrollContainerRef?.offsetHeight || 0)
@@ -158,13 +158,13 @@ export const NotificationsPanel = (props: Props) => {
         await loadNextPage()
         setIsLoading(false)
       }
-    }),
+    })
   )
 
   return (
     <div
       class={clsx(styles.container, {
-        [styles.isOpened]: props.isOpen,
+        [styles.isOpened]: props.isOpen
       })}
     >
       <div ref={(el) => (panelRef = el)} class={styles.panel}>

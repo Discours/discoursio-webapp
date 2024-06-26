@@ -34,7 +34,7 @@ export const ProfileSubscriptions = () => {
       } else {
         setFiltered(flat)
       }
-    }),
+    })
   )
 
   createEffect(() => {
@@ -61,7 +61,7 @@ export const ProfileSubscriptions = () => {
                 <ul class="view-switcher">
                   <li
                     class={clsx({
-                      'view-switcher__item--selected': followsFilter() === 'all',
+                      'view-switcher__item--selected': followsFilter() === 'all'
                     })}
                   >
                     <button type="button" onClick={() => setFollowsFilter('all')}>
@@ -70,7 +70,7 @@ export const ProfileSubscriptions = () => {
                   </li>
                   <li
                     class={clsx({
-                      'view-switcher__item--selected': followsFilter() === 'authors',
+                      'view-switcher__item--selected': followsFilter() === 'authors'
                     })}
                   >
                     <button type="button" onClick={() => setFollowsFilter('authors')}>
@@ -79,7 +79,7 @@ export const ProfileSubscriptions = () => {
                   </li>
                   <li
                     class={clsx({
-                      'view-switcher__item--selected': followsFilter() === 'topics',
+                      'view-switcher__item--selected': followsFilter() === 'topics'
                     })}
                   >
                     <button type="button" onClick={() => setFollowsFilter('topics')}>

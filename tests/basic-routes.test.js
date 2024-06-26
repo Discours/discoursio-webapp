@@ -11,7 +11,7 @@ import { chromium } from 'playwright'
     'https://localhost:3000/about/donate',
     'https://localhost:3000/authors',
     'https://localhost:3000/topics',
-    'https://localhost:3000/inbox',
+    'https://localhost:3000/inbox'
   ]
 
   // Loop through the pages and visit each one

@@ -4,7 +4,7 @@ const removeFileExtension = (fileName: string) => {
 
 export const composeMediaItems = (
   value: { originalFilename?: string; url: string }[],
-  optionalParams = {},
+  optionalParams = {}
 ) => {
   return value.map((fileData) => {
     return {
@@ -12,7 +12,7 @@ export const composeMediaItems = (
       source: '',
       title: fileData.originalFilename ? removeFileExtension(fileData.originalFilename) : '',
       body: '',
-      ...optionalParams,
+      ...optionalParams
     }
   })
 }

@@ -10,7 +10,7 @@ import {
   lazy,
   on,
   onCleanup,
-  onMount,
+  onMount
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { debounce } from 'throttle-debounce'
@@ -50,7 +50,7 @@ type Props = {
 export const MAX_HEADER_LIMIT = 100
 export const EMPTY_TOPIC: Topic = {
   id: -1,
-  slug: '',
+  slug: ''
 }
 
 const AUTO_SAVE_DELAY = 3000
@@ -59,7 +59,7 @@ const handleScrollTopButtonClick = (ev: MouseEvent | TouchEvent) => {
   ev.preventDefault()
   window.scrollTo({
     top: 0,
-    behavior: 'smooth',
+    behavior: 'smooth'
   })
 }
 
@@ -74,7 +74,7 @@ export const EditView = (props: Props) => {
     setFormErrors,
     saveDraft,
     saveDraftToLocalStorage,
-    getDraftFromLocalStorage,
+    getDraftFromLocalStorage
   } = useEditorContext()
   const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
   const [draft, setDraft] = createSignal()
@@ -112,15 +112,15 @@ export const EditView = (props: Props) => {
               body: shout.body || '',
               coverImageUrl: shout.cover || '',
               media: shout.media || '',
-              layout: shout.layout,
+              layout: shout.layout
             }
             setForm((_) => draftForm)
             console.debug('draft from props data: ', draftForm)
           }
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   createEffect(
@@ -133,8 +133,8 @@ export const EditView = (props: Props) => {
           console.debug('draft from localstorage: ', draftForm)
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   createEffect(
@@ -153,8 +153,8 @@ export const EditView = (props: Props) => {
           }
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   onMount(() => {
@@ -170,7 +170,7 @@ export const EditView = (props: Props) => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (!deepEqual(prevForm, form)) {
         event.returnValue = t(
-          'There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?',
+          'There are unsaved changes in your publishing settings. Are you sure you want to leave the page without saving?'
         )
       }
     }
@@ -209,7 +209,7 @@ export const EditView = (props: Props) => {
   const [baseAudioFields, setBaseAudioFields] = createSignal({
     artist: '',
     date: '',
-    genre: '',
+    genre: ''
   })
 
   const handleBaseFieldsChange = (key: string, value: string) => {
@@ -281,7 +281,7 @@ export const EditView = (props: Props) => {
           <div class="wide-container">
             <button
               class={clsx(styles.scrollTopButton, {
-                [styles.visible]: isScrolled(),
+                [styles.visible]: isScrolled()
               })}
               onClick={handleScrollTopButtonClick}
             >
@@ -404,8 +404,8 @@ export const EditView = (props: Props) => {
                             class={styles.cover}
                             style={{
                               'background-image': `url(${getImageUrl(form.coverImageUrl || '', {
-                                width: 1600,
-                              })})`,
+                                width: 1600
+                              })})`
                             }}
                           >
                             <Popover content={t('Delete cover')}>

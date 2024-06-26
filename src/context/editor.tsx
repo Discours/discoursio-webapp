@@ -63,7 +63,7 @@ const topic2topicInput = (topic: Topic): TopicInput => {
   return {
     id: topic.id,
     slug: topic.slug,
-    title: topic.title,
+    title: topic.title
   }
 }
 
@@ -93,12 +93,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     slug: '',
     shoutId: 0,
     title: '',
-    selectedTopics: [],
+    selectedTopics: []
   })
   const [formErrors, setFormErrors] = createStore({} as Record<keyof ShoutForm, string>)
   const [wordCounter, setWordCounter] = createSignal<WordCounter>({
     characters: 0,
-    words: 0,
+    words: 0
   })
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
   const countWords = (value: WordCounter) => setWordCounter(value)
@@ -112,7 +112,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     if (form.layout === 'video' && !parsedMedia[0]) {
       snackbar?.showSnackbar({
         type: 'error',
-        body: localize?.t('Looks like you forgot to upload the video'),
+        body: localize?.t('Looks like you forgot to upload the video')
       })
       return false
     }
@@ -148,9 +148,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         lead: formToUpdate.lead,
         description: formToUpdate.description,
         cover: formToUpdate.coverImageUrl,
-        media: formToUpdate.media,
+        media: formToUpdate.media
       },
-      publish,
+      publish
     })
     return resp?.data?.update_shout
   }
@@ -280,7 +280,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     countWords,
     setForm,
     setFormErrors,
-    setEditor,
+    setEditor
   }
 
   const value: EditorContextType = {
@@ -289,7 +289,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     formErrors,
     editor,
     isEditorPanelVisible,
-    wordCounter,
+    wordCounter
   }
 
   return <EditorContext.Provider value={value}>{props.children}</EditorContext.Provider>

@@ -18,8 +18,8 @@ export const groupByName = (arr: Author[]) => {
       return acc
     },
     {
-      'A-Z': [],
-    },
+      'A-Z': []
+    }
   )
 }
 
@@ -36,7 +36,7 @@ export const groupByTitle = (arr: (Shout | Topic)[]) => {
       return acc
     },
     {
-      'A-Z': [],
-    },
+      'A-Z': []
+    }
   )
 }

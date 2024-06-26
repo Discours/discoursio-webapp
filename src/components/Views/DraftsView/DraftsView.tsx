@@ -35,8 +35,8 @@ export const DraftsView = () => {
           setLoading(false)
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const { publishShoutById, deleteShout } = useEditorContext()

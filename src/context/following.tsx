@@ -6,7 +6,7 @@ import {
   createMemo,
   createSignal,
   on,
-  useContext,
+  useContext
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
@@ -48,7 +48,7 @@ interface AuthorFollowsResult {
 const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
   topics: [] as Topic[],
   authors: [] as Author[],
-  communities: [] as Community[],
+  communities: [] as Community[]
 }
 
 const defaultFollowing = { slug: '', type: 'follow' } as FollowingData
@@ -130,8 +130,8 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
           setFollowers(followers)
           if (!authors) fetchData()
         }
-      },
-    ),
+      }
+    )
   )
 
   const changeFollowing = (what: FollowingEntity, slug: string, value = true) => {
@@ -195,7 +195,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     followers,
     loadFollows: fetchData,
     follow,
-    unfollow,
+    unfollow
   }
 
   return <FollowingContext.Provider value={value}>{props.children}</FollowingContext.Provider>

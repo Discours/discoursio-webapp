@@ -40,7 +40,7 @@ export const Beside = (props: Props) => {
                   'col-lg-8',
                   styles[
                     `besideRatingColumn${props.wrapper?.charAt(0)?.toUpperCase() + props.wrapper.slice(1)}` as keyof typeof styles
-                  ],
+                  ]
                 )}
               >
                 <Show when={!!props.title}>
@@ -64,7 +64,7 @@ export const Beside = (props: Props) => {
                 </Show>
                 <ul
                   class={clsx(styles.besideColumn, {
-                    [styles.besideColumnTopViewed]: props.wrapper === 'top-article',
+                    [styles.besideColumnTopViewed]: props.wrapper === 'top-article'
                   })}
                 >
                   <For each={[...props.values]}>

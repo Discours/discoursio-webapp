@@ -17,7 +17,7 @@ import {
   createTiptapEditor,
   useEditorHTML,
   useEditorIsEmpty,
-  useEditorIsFocused,
+  useEditorIsFocused
 } from 'solid-tiptap'
 
 import { UploadedFile } from '~/types/upload'
@@ -82,7 +82,7 @@ const SimplifiedEditor = (props: Props) => {
 
   const ImageFigure = Figure.extend({
     name: 'capturedImage',
-    content: 'figcaption image',
+    content: 'figcaption image'
   })
 
   createEffect(
@@ -94,8 +94,8 @@ const SimplifiedEditor = (props: Props) => {
             element: ee,
             editorProps: {
               attributes: {
-                class: styles.simplifiedEditorField,
-              },
+                class: styles.simplifiedEditorField
+              }
             },
             extensions: [
               Document,
@@ -104,18 +104,18 @@ const SimplifiedEditor = (props: Props) => {
               Bold,
               Italic,
               Link.extend({
-                inclusive: false,
+                inclusive: false
               }).configure({
                 autolink: true,
-                openOnClick: false,
+                openOnClick: false
               }),
               CharacterCount.configure({
-                limit: props.noLimits ? null : maxLength,
+                limit: props.noLimits ? null : maxLength
               }),
               Blockquote.configure({
                 HTMLAttributes: {
-                  class: styles.blockQuote,
-                },
+                  class: styles.blockQuote
+                }
               }),
               BubbleMenu.configure({
                 pluginKey: 'textBubbleMenu',
@@ -125,7 +125,7 @@ const SimplifiedEditor = (props: Props) => {
                   const { selection } = state
                   const { empty } = selection
                   return view.hasFocus() && !empty
-                },
+                }
               }),
               BubbleMenu.configure({
                 pluginKey: 'linkBubbleMenu',
@@ -136,27 +136,27 @@ const SimplifiedEditor = (props: Props) => {
                   return !empty && shouldShowLinkBubbleMenu()
                 },
                 tippyOptions: {
-                  placement: 'bottom',
-                },
+                  placement: 'bottom'
+                }
               }),
               ImageFigure,
               Image,
               Figcaption,
               Placeholder.configure({
                 emptyNodeClass: styles.emptyNode,
-                placeholder: props.placeholder,
-              }),
+                placeholder: props.placeholder
+              })
             ],
             autofocus: props.autoFocus,
-            content: props.initialContent || null,
+            content: props.initialContent || null
           }))
           const editorInstance = freshEditor()
           if (!editorInstance) return
           setEditor(editorInstance)
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const isEmpty = useEditorIsEmpty(() => editor())
@@ -167,7 +167,7 @@ const SimplifiedEditor = (props: Props) => {
       () => editor(),
       (ed) => {
         return ed?.isActive(name)
-      },
+      }
     )
 
   const html = useEditorHTML(() => editor())
@@ -186,13 +186,13 @@ const SimplifiedEditor = (props: Props) => {
         content: [
           {
             type: 'image',
-            attrs: { src: image.url },
+            attrs: { src: image.url }
           },
           {
             type: 'figcaption',
-            content: [{ type: 'text', text: image.originalFilename }],
-          },
-        ],
+            content: [{ type: 'text', text: image.originalFilename }]
+          }
+        ]
       })
       .run()
     hideModal()
@@ -259,7 +259,7 @@ const SimplifiedEditor = (props: Props) => {
 
   const maxHeightStyle = {
     overflow: 'auto',
-    'max-height': `${props.maxHeight}px`,
+    'max-height': `${props.maxHeight}px`
   }
 
   const handleShowLinkBubble = () => {
@@ -281,7 +281,7 @@ const SimplifiedEditor = (props: Props) => {
           [styles.minimal]: props.variant === 'minimal',
           [styles.bordered]: props.variant === 'bordered',
           [styles.isFocused]: isFocused() || !isEmpty(),
-          [styles.labelVisible]: props.label && counter() > 0,
+          [styles.labelVisible]: props.label && counter() > 0
         })}
       >
         <Show when={props.maxLength && editor()}>

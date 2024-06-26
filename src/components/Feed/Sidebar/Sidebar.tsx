@@ -34,7 +34,7 @@ export const Sidebar = () => {
           <A
             href={'feed'}
             class={clsx({
-              [styles.selected]: matchFeed(),
+              [styles.selected]: matchFeed()
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -47,7 +47,7 @@ export const Sidebar = () => {
           <A
             href={'/feed/my'}
             class={clsx({
-              [styles.selected]: matchFeedMy(),
+              [styles.selected]: matchFeedMy()
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -60,7 +60,7 @@ export const Sidebar = () => {
           <A
             href={'/feed/collabs'}
             class={clsx({
-              [styles.selected]: matchFeedCollabs(),
+              [styles.selected]: matchFeedCollabs()
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -73,7 +73,7 @@ export const Sidebar = () => {
           <a
             href={'/feed/discussions'}
             class={clsx({
-              [styles.selected]: matchFeedDiscussions(),
+              [styles.selected]: matchFeedDiscussions()
             })}
           >
             <span class={styles.sidebarItemName}>

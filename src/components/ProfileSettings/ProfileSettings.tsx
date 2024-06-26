@@ -11,7 +11,7 @@ import {
   lazy,
   on,
   onCleanup,
-  onMount,
+  onMount
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
@@ -123,7 +123,7 @@ export const ProfileSettings = () => {
     const isConfirmed = await showConfirm({
       confirmBody: t('Do you really want to reset all changes?'),
       confirmButtonVariant: 'primary',
-      declineButtonVariant: 'secondary',
+      declineButtonVariant: 'secondary'
     })
     if (isConfirmed) {
       setClearAbout(true)
@@ -165,7 +165,7 @@ export const ProfileSettings = () => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (!deepEqual(form, prevForm)) {
         event.returnValue = t(
-          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?',
+          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?'
         )
       }
     }
@@ -181,8 +181,8 @@ export const ProfileSettings = () => {
         if (Object.keys(prevForm).length > 0) {
           setIsFloatingPanelVisible(!deepEqual(form, prevForm))
         }
-      },
-    ),
+      }
+    )
   )
 
   const handleDeleteSocialLink = (link: string) => {
@@ -221,8 +221,8 @@ export const ProfileSettings = () => {
                               style={{
                                 'background-image': `url(${getImageUrl(form.pic || '', {
                                   width: 180,
-                                  height: 180,
-                                })})`,
+                                  height: 180
+                                })})`
                               }}
                             />
                             <div class={styles.controls}>
@@ -265,7 +265,7 @@ export const ProfileSettings = () => {
                     <h4>{t('Name')}</h4>
                     <p class="description">
                       {t(
-                        'Your name will appear on your profile page and as your signature in publications, comments and responses.',
+                        'Your name will appear on your profile page and as your signature in publications, comments and responses.'
                       )}
                     </p>
                     <div class="pretty-form__item">

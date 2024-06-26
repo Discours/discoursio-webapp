@@ -11,18 +11,18 @@ export default async (req, res) => {
     const response = await mg.lists.members.createMember('newsletter@discours.io', {
       address: email,
       subscribed: true,
-      upsert: 'yes',
+      upsert: 'yes'
     })
 
     return res.status(200).json({
       success: true,
       message: 'Email was added to newsletter list',
-      response: JSON.stringify(response),
+      response: JSON.stringify(response)
     })
   } catch (error) {
     return res.status(400).json({
       success: false,
-      message: error.message,
+      message: error.message
     })
   }
 }

@@ -26,7 +26,7 @@ export const PlayerHeader = (props: Props) => {
   useOutsideClickHandler({
     containerRef: volumeContainerRef,
     predicate: () => isVolumeBarOpened(),
-    handler: () => toggleVolumeBar(),
+    handler: () => toggleVolumeBar()
   })
 
   return (
@@ -38,7 +38,7 @@ export const PlayerHeader = (props: Props) => {
           onClick={props.onPlayMedia}
           class={clsx(
             styles.playButton,
-            props.isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay,
+            props.isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay
           )}
           aria-label="Play"
           data-playing="false"

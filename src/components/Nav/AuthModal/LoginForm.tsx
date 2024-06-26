@@ -58,7 +58,7 @@ export const LoginForm = () => {
       if (value === '' || !validateEmail(value)) {
         setValidationErrors((prev) => ({
           ...prev,
-          email: t('Invalid email'),
+          email: t('Invalid email')
         }))
         return false
       }
@@ -66,7 +66,7 @@ export const LoginForm = () => {
       if (value === '') {
         setValidationErrors((prev) => ({
           ...prev,
-          password: t('Please enter password'),
+          password: t('Please enter password')
         }))
         return false
       }
@@ -99,7 +99,7 @@ export const LoginForm = () => {
           case 'bad user credentials': {
             setValidationErrors((prev) => ({
               ...prev,
-              password: t('Something went wrong, check email and password'),
+              password: t('Something went wrong, check email and password')
             }))
             break
           }
@@ -119,7 +119,7 @@ export const LoginForm = () => {
                 <span class={'link'} onClick={handleSendLinkAgainClick}>
                   {t('Send link again')}
                 </span>
-              </div>,
+              </div>
             )
         }
       }
@@ -139,7 +139,7 @@ export const LoginForm = () => {
         <AuthModalHeader modalType="login" />
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email,
+            'pretty-form__item--error': validationErrors().email
           })}
         >
           <input
@@ -177,7 +177,7 @@ export const LoginForm = () => {
             class="link"
             onClick={() =>
               setSearchParams({
-                mode: 'send-reset-link',
+                mode: 'send-reset-link'
               })
             }
           >
@@ -194,7 +194,7 @@ export const LoginForm = () => {
             class={styles.authLink}
             onClick={() =>
               setSearchParams({
-                mode: 'register',
+                mode: 'register'
               })
             }
           >

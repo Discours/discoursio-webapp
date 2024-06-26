@@ -52,7 +52,7 @@ export const HeaderAuth = (props: Props) => {
   const isSaveButtonVisible = createMemo(() => session()?.access_token && isEditorPage())
   const isCreatePostButtonVisible = createMemo(() => !isEditorPage())
   const isAuthenticatedControlsVisible = createMemo(
-    () => session()?.access_token && session()?.user?.email_verified,
+    () => session()?.access_token && session()?.user?.email_verified
   )
 
   const handleBurgerButtonClick = () => {
@@ -108,7 +108,7 @@ export const HeaderAuth = (props: Props) => {
                 class={clsx(
                   styles.userControlItem,
                   styles.userControlItemVerbose,
-                  styles.userControlItemCreate,
+                  styles.userControlItemCreate
                 )}
               >
                 <A href={'/create'}>
@@ -191,7 +191,7 @@ export const HeaderAuth = (props: Props) => {
                 {renderIconedButton({
                   value: t('Publish'),
                   icon: 'publish',
-                  action: () => publishShout(form),
+                  action: () => publishShout(form)
                 })}
               </div>
 
@@ -199,7 +199,7 @@ export const HeaderAuth = (props: Props) => {
                 class={clsx(
                   styles.userControlItem,
                   styles.settingsControlContainer,
-                  styles.userControlItemVerbose,
+                  styles.userControlItemVerbose
                 )}
               >
                 <Popover content={t('Settings')}>
@@ -221,7 +221,7 @@ export const HeaderAuth = (props: Props) => {
                 class={clsx(
                   styles.userControlItem,
                   styles.userControlItemVerbose,
-                  styles.userControlItemCreate,
+                  styles.userControlItemCreate
                 )}
               >
                 <A href={'/create'}>
@@ -249,7 +249,7 @@ export const HeaderAuth = (props: Props) => {
               <Show when={!isSaveButtonVisible()}>
                 <div
                   class={clsx(
-                    styles.userControlItem,
+                    styles.userControlItem
                     // styles.userControlItemInbox
                   )}
                 >

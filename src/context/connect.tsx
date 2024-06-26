@@ -51,9 +51,9 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: tkn,
+                Authorization: tkn
               },
-              retry: 3000,
+              retry: 3000
             })
 
             eventSource.onopen = (ev) => {
@@ -79,8 +79,8 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
             console.error('[context.connect] SSE init failed:', error)
           }
         }
-      },
-    ),
+      }
+    )
   )
 
   const value: ConnectContextType = { addHandler, connected }

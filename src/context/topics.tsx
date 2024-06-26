@@ -9,7 +9,7 @@ import {
   createSignal,
   on,
   onMount,
-  useContext,
+  useContext
 } from 'solid-js'
 import { loadTopics } from '~/lib/api'
 import { getRandomTopicsFromArray } from '~/utils/getRandomTopicsFromArray'
@@ -32,7 +32,7 @@ const TopicsContext = createContext<TopicsContextType>({
   topTopics: () => [] as Topic[],
   setTopicsSort: (_s: string) => undefined,
   addTopics: (_ttt: Topic[]) => undefined,
-  loadTopics: async () => [] as Topic[],
+  loadTopics: async () => [] as Topic[]
 } as TopicsContextType)
 
 export function useTopics() {
@@ -50,7 +50,7 @@ const setupIndexedDB = async () => {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME, { keyPath: 'id' })
       }
-    },
+    }
   })
 }
 
@@ -137,13 +137,13 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
         acc[topic.slug] = topic
         return acc
       },
-      {} as Record<string, Topic>,
+      {} as Record<string, Topic>
     )
 
     setTopicEntities((prevTopicEntities) => {
       return {
         ...prevTopicEntities,
-        ...newTopicEntities,
+        ...newTopicEntities
       }
     })
   }
@@ -178,8 +178,8 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
           setRandomTopic(getRandomTopicsFromArray(topics || [], 1).pop())
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const value: TopicsContextType = {
@@ -189,7 +189,7 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
     randomTopic,
     topTopics,
     addTopics,
-    loadTopics: loadAllTopics,
+    loadTopics: loadAllTopics
   }
 
   return <TopicsContext.Provider value={value}>{props.children}</TopicsContext.Provider>

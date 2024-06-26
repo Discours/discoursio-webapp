@@ -50,8 +50,8 @@ export const ProfileProvider = (props: { children: JSX.Element }) => {
           }
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const submit = async (profile: ProfileInput) => {
@@ -71,7 +71,7 @@ export const ProfileProvider = (props: { children: JSX.Element }) => {
         bio: currentAuthor.bio,
         about: currentAuthor.about,
         pic: userpicUrl(currentAuthor.pic || ''),
-        links: currentAuthor.links,
+        links: currentAuthor.links
       })
     }
   })
@@ -95,7 +95,7 @@ export const ProfileProvider = (props: { children: JSX.Element }) => {
     form,
     submit,
     updateFormField,
-    setForm,
+    setForm
   }
 
   return <ProfileContext.Provider value={value}>{props.children}</ProfileContext.Provider>

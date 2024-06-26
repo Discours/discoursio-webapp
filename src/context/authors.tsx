@@ -6,7 +6,7 @@ import {
   createMemo,
   createSignal,
   on,
-  useContext,
+  useContext
 } from 'solid-js'
 import loadAuthorByQuery from '../graphql/query/core/author-by'
 import loadAuthorsAllQuery from '../graphql/query/core/authors-all'
@@ -24,7 +24,7 @@ export type SortFunction<Author> = (a: Author, b: Author) => number
 function filterAndSort<Author>(
   items: Author[],
   sortFunction: SortFunction<Author>,
-  filters: FilterFunction<Author>[] = [],
+  filters: FilterFunction<Author>[] = []
 ): Author[] {
   return items.filter((a: Author) => filters.every((filter) => filter(a))).sort(sortFunction)
 }
@@ -62,8 +62,8 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
           setAuthorsSorted([...filterAndSort(Object.values(authorsdict), sortfn)])
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const addAuthors = (newAuthors: Author[]) => {
@@ -105,8 +105,8 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
       slug: authorSlug,
       rating: articlesByAuthorMap[authorSlug].reduce(
         (acc: number, article: Shout) => acc + (article.stat?.rating || 0),
-        0,
-      ),
+        0
+      )
     }))
 
     // Определяем функцию сортировки по рейтингу
@@ -178,7 +178,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     loadAuthors,
     topAuthors,
     authorsByTopic,
-    setSortBy,
+    setSortBy
   }
 
   return <AuthorsContext.Provider value={contextValue}>{props.children}</AuthorsContext.Provider>

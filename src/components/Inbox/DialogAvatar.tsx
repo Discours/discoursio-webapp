@@ -27,13 +27,13 @@ const colors = [
   '#668cff',
   '#c34cfe',
   '#e699ff',
-  '#6633ff',
+  '#6633ff'
 ]
 
 const getById = (letter: string) =>
   colors[
     Math.abs(
-      Number(BigInt(((letter || '').toLowerCase()?.codePointAt(0) || 97) - 97) % BigInt(colors.length)),
+      Number(BigInt(((letter || '').toLowerCase()?.codePointAt(0) || 97) - 97) % BigInt(colors.length))
     )
   ]
 
@@ -48,7 +48,7 @@ const DialogAvatar = (props: Props) => {
       class={clsx(styles.DialogAvatar, props.class, {
         [styles.online]: props.online,
         [styles.bordered]: props.bordered,
-        [styles.small]: props.size === 'small',
+        [styles.small]: props.size === 'small'
       })}
       style={{ 'background-color': `${randomBg()}` }}
     >
@@ -62,7 +62,7 @@ const DialogAvatar = (props: Props) => {
                 ? getImageUrl(props.url || '', { width: 40, height: 40 })
                 : props.url
             }
-            )`,
+            )`
           }}
         />
       </Show>

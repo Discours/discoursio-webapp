@@ -14,7 +14,7 @@ export const ManifestPage = () => {
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Discours Manifest')
   const description = t(
-    'Manifest of samizdat: principles and mission of an open magazine with a horizontal editorial board',
+    'Manifest of samizdat: principles and mission of an open magazine with a horizontal editorial board'
   )
 
   return (

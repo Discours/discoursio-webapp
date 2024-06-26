@@ -92,7 +92,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
         const createdAt: number = message.created_at || Date.now() // Ensure createdAt is correctly typed
         setChats((prevChats) => [
           ...prevChats.filter((c: Chat) => c.id !== currentChat.id),
-          { ...currentChat, updated_at: createdAt },
+          { ...currentChat, updated_at: createdAt }
         ])
       }
     }
@@ -120,7 +120,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     loadRecipients: authorsSorted,
     getMessages,
     sendMessage,
-    setMessages,
+    setMessages
   }
 
   const value: InboxContextType = { chats, messages, ...actions }

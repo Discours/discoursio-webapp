@@ -75,7 +75,7 @@ export const ChangePasswordForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >

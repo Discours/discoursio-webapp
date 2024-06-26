@@ -65,7 +65,7 @@ export const TopicView = (props: Props) => {
         await loadTopicAuthors()
         loadRandom()
       }
-    }),
+    })
   )
 
   const [followers, setFollowers] = createSignal<Author[]>(props.followers || [])
@@ -84,7 +84,7 @@ export const TopicView = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: { featured: true, topic: topic },
       limit: 10,
-      random_limit: 100,
+      random_limit: 100
     }
     const resp = await query(getRandomTopShoutsQuery, { options }).toPromise()
     setFavoriteTopArticles(resp?.data?.l)
@@ -97,7 +97,7 @@ export const TopicView = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: { after: after, featured: true, topic: topic },
       limit: 10,
-      random_limit: 10,
+      random_limit: 10
     }
 
     const resp = await query(loadShoutsRandomQuery, { options }).toPromise()
@@ -117,8 +117,8 @@ export const TopicView = (props: Props) => {
         lang() === 'en'
           ? (topic() as Topic)?.slug.replace(/-/, ' ')
           : (topic() as Topic)?.title || (topic() as Topic)?.slug.replace(/-/, ' '),
-        true,
-      )}`,
+        true
+      )}`
   )
 
   const loadMore = async () => {
@@ -127,7 +127,7 @@ export const TopicView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: { topic: topic()?.slug },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedFeed().length, // FIXME: use feedByTopic
+      offset: sortedFeed().length // FIXME: use feedByTopic
     })
     setIsLoadMoreButtonVisible(hasMore)
 
@@ -150,7 +150,7 @@ export const TopicView = (props: Props) => {
   })
   */
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
+    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   const ogImage = () =>
@@ -181,14 +181,14 @@ export const TopicView = (props: Props) => {
             <ul class="view-switcher">
               <li
                 classList={{
-                  'view-switcher__item--selected': searchParams?.by === 'recent' || !searchParams?.by,
+                  'view-switcher__item--selected': searchParams?.by === 'recent' || !searchParams?.by
                 }}
               >
                 <button
                   type="button"
                   onClick={() =>
                     changeSearchParams({
-                      by: 'recent',
+                      by: 'recent'
                     })
                   }
                 >

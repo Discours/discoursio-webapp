@@ -34,7 +34,7 @@ export const CommentsTree = (props: Props) => {
   const { reactionEntities, createReaction, loadReactionsBy } = useReactions()
 
   const comments = createMemo(() =>
-    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT'),
+    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
   )
 
   const sortedComments = createMemo(() => {
@@ -80,8 +80,8 @@ export const CommentsTree = (props: Props) => {
         reaction: {
           kind: ReactionKind.Comment,
           body: value,
-          shout: props.shoutId,
-        },
+          shout: props.shoutId
+        }
       })
       setClearEditor(true)
       await loadReactionsBy({ by: { shout: props.shoutSlug } })

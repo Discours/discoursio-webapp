@@ -28,8 +28,8 @@ export const useOutsideClickHandler = (options: Options) => {
     onCleanup(() =>
       // biome-ignore lint/suspicious/noExplicitAny: outside clicker 2
       document.removeEventListener('click', handleClickOutside as (ev: MouseEvent) => any, {
-        capture: true,
-      }),
+        capture: true
+      })
     )
   })
 }

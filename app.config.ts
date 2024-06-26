@@ -8,12 +8,12 @@ export default defineConfig({
   ssr: true,
   server: {
     preset: isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node',
-    port: 3000,
+    port: 3000
   },
   devOverlay: true,
   build: {
     chunkSizeWarningLimit: 1024,
-    target: 'esnext',
+    target: 'esnext'
   },
   vite: {
     envPrefix: 'PUBLIC_',
@@ -22,12 +22,12 @@ export default defineConfig({
         include: ['path', 'stream', 'util'],
         exclude: ['http'],
         globals: {
-          Buffer: true,
+          Buffer: true
         },
         overrides: {
-          fs: 'memfs',
+          fs: 'memfs'
         },
-        protocolImports: true,
+        protocolImports: true
       }),
       sassDts()
     ],
@@ -35,13 +35,13 @@ export default defineConfig({
       preprocessorOptions: {
         scss: {
           additionalData: '@import "src/styles/imports";\n',
-          includePaths: ['./public', './src/styles'],
-        },
-      },
+          includePaths: ['./public', './src/styles']
+        }
+      }
     },
     build: {
       chunkSizeWarningLimit: 1024,
-      target: 'esnext',
+      target: 'esnext'
     }
   }
 } as SolidStartInlineConfig)

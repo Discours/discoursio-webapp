@@ -15,28 +15,28 @@ const fetchHomeTopData = async () => {
 
   const topCommentedLoader = loadShouts({
     filters: { featured: true },
-    limit,
+    limit
   })
 
   const topMonthLoader = loadShouts({
     filters: { featured: true },
-    limit,
+    limit
   })
 
   const topViewedLoader = loadShouts({
     filters: { featured: true },
-    limit,
+    limit
   })
 
   const topRatedLoader = loadShouts({
     filters: { featured: true },
-    limit,
+    limit
   })
   return {
     topCommentedShouts: await topCommentedLoader(),
     topMonthShouts: await topMonthLoader(),
     topRatedShouts: await topRatedLoader(),
-    topViewedShouts: await topViewedLoader(),
+    topViewedShouts: await topViewedLoader()
   } as Partial<HomeViewProps>
 }
 
@@ -45,10 +45,10 @@ export const route = {
     const limit = 20
     const featuredLoader = loadShouts({
       filters: { featured: true },
-      limit,
+      limit
     })
     return { ...(await fetchHomeTopData()), featuredShouts: await featuredLoader() }
-  },
+  }
 } satisfies RouteDefinition
 
 export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
@@ -61,7 +61,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
     const result = loadShouts({
       filters: { featured: true },
       limit,
-      offset,
+      offset
     })
     return result
   }
@@ -73,7 +73,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
     return {
       ...prev,
       ...props.data,
-      featuredShouts: featuredShouts || prev?.featuredShouts || props.data?.featuredShouts,
+      featuredShouts: featuredShouts || prev?.featuredShouts || props.data?.featuredShouts
     }
   })
 
@@ -97,8 +97,8 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
       (o: number) => {
         featuredLoader(o) // using fresh offset by itself
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
   return (
     <PageLayout withPadding={true} title={t('Discours')}>

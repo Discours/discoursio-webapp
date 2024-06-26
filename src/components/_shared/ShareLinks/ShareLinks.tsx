@@ -28,7 +28,7 @@ export const ShareLinks = (props: Props) => {
   const [share] = createSocialShare(() => ({
     title: props.title,
     url: props.shareUrl,
-    description: props.description,
+    description: props.description
   }))
 
   const handleShare = (network: string | undefined) => {

@@ -19,7 +19,7 @@ const handleCreate = async (layout: LayoutType) => {
   const shout = await apiClient.createArticle({ article: { layout: layout } })
   shout?.id &&
     redirectPage(router, 'edit', {
-      shoutId: shout?.id.toString(),
+      shoutId: shout?.id.toString()
     })
 }
 

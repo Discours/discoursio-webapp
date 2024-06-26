@@ -22,7 +22,7 @@ type Props = {
 export const TOPICS_PER_PAGE = 20
 export const ABC = {
   ru: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#',
-  en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#',
+  en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
 }
 
 export const AllTopics = (props: Props) => {
@@ -42,7 +42,7 @@ export const AllTopics = (props: Props) => {
         acc[letter].push(topic)
         return acc
       },
-      {} as { [letter: string]: Topic[] },
+      {} as { [letter: string]: Topic[] }
     )
   })
 
@@ -98,7 +98,7 @@ export const AllTopics = (props: Props) => {
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Themes and plots')
   const description = t(
-    'Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about',
+    'Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about'
   )
 
   return (

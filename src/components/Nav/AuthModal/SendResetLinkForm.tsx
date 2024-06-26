@@ -55,7 +55,7 @@ export const SendResetLinkForm = () => {
     try {
       const result = await forgotPassword({
         email: email(),
-        redirect_uri: window?.location?.origin || '',
+        redirect_uri: window?.location?.origin || ''
       })
       if (result) {
         setMessage(result || '')
@@ -91,7 +91,7 @@ export const SendResetLinkForm = () => {
         </Show>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email,
+            'pretty-form__item--error': validationErrors().email
           })}
         >
           <input
@@ -112,7 +112,7 @@ export const SendResetLinkForm = () => {
                 class={'link'}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'register',
+                    mode: 'register'
                   })
                 }
               >
@@ -140,7 +140,7 @@ export const SendResetLinkForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >

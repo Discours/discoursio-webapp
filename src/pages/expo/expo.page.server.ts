@@ -9,14 +9,14 @@ export const onBeforeRender = async (pageContext: PageContext) => {
 
   const expoShouts = await apiClient.getShouts({
     filters: { layouts: layout ? [layout] : ['audio', 'video', 'literature', 'image'] },
-    limit: PRERENDERED_ARTICLES_COUNT,
+    limit: PRERENDERED_ARTICLES_COUNT
   })
 
   const pageProps: PageProps = { expoShouts, seo: { title: '' } }
 
   return {
     pageContext: {
-      pageProps,
-    },
+      pageProps
+    }
   }
 }

@@ -31,7 +31,7 @@ export const AudioUploader = (props: Props) => {
   const handleMediaItemFieldChange = (
     index: number,
     field: keyof MediaItem | string | symbol | number,
-    value: string,
+    value: string
   ) => {
     props.onAudioChange(index, { ...props.audio[index], [field]: value })
   }

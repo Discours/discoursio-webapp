@@ -15,7 +15,7 @@ export const CardTopic = (props: CardTopicProps) => {
     <div
       class={clsx(styles.shoutTopic, props.class, {
         [styles.shoutTopicFloorImportant]: props.isFloorImportant,
-        [styles.shoutTopicFeedMode]: props.isFeedMode,
+        [styles.shoutTopicFeedMode]: props.isFeedMode
       })}
     >
       <A href={`/topic/${props.slug}`}>{props.title}</A>

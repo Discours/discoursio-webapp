@@ -89,12 +89,12 @@ export const FeedView = (props: Props) => {
   const periods: PeriodItem[] = [
     { value: 'week', title: t('This week') },
     monthPeriod,
-    { value: 'year', title: t('This year') },
+    { value: 'year', title: t('This year') }
   ]
 
   const visibilities: VisibilityItem[] = [
     { value: 'community', title: t('All') },
-    { value: 'featured', title: t('Published') },
+    { value: 'featured', title: t('Published') }
   ]
   const { query } = useGraphQL()
   const [searchParams, changeSearchParams] = useSearchParams<FeedSearchParams>()
@@ -152,8 +152,8 @@ export const FeedView = (props: Props) => {
       ([s, seen]) => {
         if (s?.access_token && !(seen?.length > 0)) loadUnratedArticles()
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   // TODO: declare some details
@@ -164,14 +164,14 @@ export const FeedView = (props: Props) => {
         setSearchResults([])
         loadMore()
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,
-      offset: sortedFeed()?.length || 0,
+      offset: sortedFeed()?.length || 0
     }
 
     if (searchParams?.by) {
@@ -185,7 +185,7 @@ export const FeedView = (props: Props) => {
     } else if (visibilityMode) {
       options.filters = {
         ...options.filters,
-        featured: visibilityMode === 'featured',
+        featured: visibilityMode === 'featured'
       }
     }
 
@@ -205,8 +205,8 @@ export const FeedView = (props: Props) => {
 
     loadReactionsBy({
       by: {
-        shouts: newShouts.map((s) => s.slug),
-      },
+        shouts: newShouts.map((s) => s.slug)
+      }
     })
 
     setIsLoadMoreButtonVisible(hasMore)
@@ -214,7 +214,7 @@ export const FeedView = (props: Props) => {
 
   const ogImage = getImageUrl('production/image/logo_image.png')
   const description = t(
-    'Independent media project about culture, science, art and society with horizontal editing',
+    'Independent media project about culture, science, art and society with horizontal editing'
   )
   const ogTitle = t('Feed')
 
@@ -252,7 +252,7 @@ export const FeedView = (props: Props) => {
                 <li
                   class={clsx({
                     'view-switcher__item--selected':
-                      searchParams?.by === 'publish_date' || !searchParams?.by,
+                      searchParams?.by === 'publish_date' || !searchParams?.by
                   })}
                 >
                   <A href={loc.pathname}>{t('Recent')}</A>
@@ -262,7 +262,7 @@ export const FeedView = (props: Props) => {
                 {/*</li>*/}
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': searchParams?.by === 'likes',
+                    'view-switcher__item--selected': searchParams?.by === 'likes'
                   })}
                 >
                   <span class="link" onClick={() => changeSearchParams({ by: 'likes' })}>
@@ -271,7 +271,7 @@ export const FeedView = (props: Props) => {
                 </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': searchParams?.by === 'last_comment',
+                    'view-switcher__item--selected': searchParams?.by === 'last_comment'
                   })}
                 >
                   <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>

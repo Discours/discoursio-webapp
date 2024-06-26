@@ -9,7 +9,7 @@ import {
   ResendVerifyEmailInput,
   SignupInput,
   UpdateProfileInput,
-  VerifyEmailInput,
+  VerifyEmailInput
 } from '@authorizerdev/authorizer-js'
 import { useSearchParams } from '@solidjs/router'
 import type { Accessor, JSX, Resource } from 'solid-js'
@@ -22,7 +22,7 @@ import {
   on,
   onCleanup,
   onMount,
-  useContext,
+  useContext
 } from 'solid-js'
 import { type AuthModalSource, useSnackbar, useUI } from '~/context/ui'
 import { authApiUrl } from '../config/config'
@@ -31,7 +31,7 @@ import { useLocalize } from './localize'
 const defaultConfig: ConfigType = {
   authorizerURL: authApiUrl.replace('/graphql', ''),
   redirectURL: 'https://testing.discours.io',
-  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
+  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24'
 }
 
 export type SessionContextType = {
@@ -43,7 +43,7 @@ export type SessionContextType = {
   setSession: (token: AuthToken) => void
   requireAuthentication: (
     callback: (() => Promise<void>) | (() => void),
-    modalSource: AuthModalSource,
+    modalSource: AuthModalSource
   ) => void
   signUp: (params: SignupInput) => Promise<boolean>
   signIn: (params: LoginInput) => Promise<boolean>
@@ -81,9 +81,9 @@ const metaRes = {
       is_strong_password_enabled: false,
       is_multi_factor_auth_enabled: true,
       is_mobile_basic_authentication_enabled: true,
-      is_phone_verification_enabled: false,
-    },
-  },
+      is_phone_verification_enabled: false
+    }
+  }
 }
 const SessionContext = createContext<SessionContextType>({} as SessionContextType)
 
@@ -139,13 +139,13 @@ export const SessionProvider = (props: {
       changeSearchParams({
         mode: 'confirm-email',
         m: 'auth',
-        access_token,
+        access_token
       })
     else if (token) {
       changeSearchParams({
         mode: 'change-password',
         m: 'auth',
-        token,
+        token
       })
     }
   })
@@ -187,7 +187,7 @@ export const SessionProvider = (props: {
 
   const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(sessionData, {
     ssrLoadFrom: 'initial',
-    initialValue: {} as AuthToken,
+    initialValue: {} as AuthToken
   })
 
   const checkSessionIsExpired = () => {
@@ -215,7 +215,7 @@ export const SessionProvider = (props: {
     setConfig({
       ...defaultConfig,
       ...metaRes,
-      redirectURL: window.location.origin,
+      redirectURL: window.location.origin
     })
     loadSession()
   })
@@ -224,7 +224,7 @@ export const SessionProvider = (props: {
   createEffect(
     on([() => props.onStateChangeCallback, session], ([_, ses]) => {
       ses?.user?.id && props.onStateChangeCallback(ses)
-    }),
+    })
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(noop)
@@ -250,7 +250,7 @@ export const SessionProvider = (props: {
   const authenticate = async (
     authFunction: (data: SignupInput) => Promise<ApiResponse<AuthToken | GenericResponse>>,
     // biome-ignore lint/suspicious/noExplicitAny: authorizer
-    params: any,
+    params: any
   ) => {
     const resp = await authFunction(params)
     console.debug('[context.session] authenticate:', resp)
@@ -307,7 +307,7 @@ export const SessionProvider = (props: {
     const resp = await authorizer().resetPassword({
       password,
       token,
-      confirm_password: password,
+      confirm_password: password
     })
     console.debug('[context.session] change password response:', resp)
   }
@@ -333,7 +333,7 @@ export const SessionProvider = (props: {
     console.debug('[context.session] calling is_registered for ', email)
     try {
       const response = await authorizer().graphqlQuery({
-        query: `query { is_registered(email: "${email}") { message }}`,
+        query: `query { is_registered(email: "${email}") { message }}`
       })
       return response?.data?.is_registered?.message
     } catch (error) {
@@ -374,7 +374,7 @@ export const SessionProvider = (props: {
     forgotPassword,
     changePassword,
     oauth,
-    isRegistered,
+    isRegistered
   }
   const value: SessionContextType = {
     authError,
@@ -382,7 +382,7 @@ export const SessionProvider = (props: {
     session,
     isSessionLoaded,
     ...actions,
-    resendVerifyEmail,
+    resendVerifyEmail
   }
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>

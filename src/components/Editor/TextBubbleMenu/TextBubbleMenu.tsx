@@ -26,7 +26,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const isActive = (name: string, attributes?: Record<string, string | number>) =>
     createEditorTransaction(
       () => props.editor,
-      (editor) => editor?.isActive(name, attributes),
+      (editor) => editor?.isActive(name, attributes)
     )
 
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
@@ -86,7 +86,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
       }
       const value = ed.getAttributes('footnote').value
       setFootNote(value)
-    },
+    }
   )
 
   const handleAddFootnote = (footnote: string) => {
@@ -168,7 +168,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   <button
                     type="button"
                     class={clsx(styles.bubbleMenuButton, {
-                      [styles.bubbleMenuButtonActive]: textSizeBubbleOpen(),
+                      [styles.bubbleMenuButtonActive]: textSizeBubbleOpen()
                     })}
                     onClick={toggleTextSizePopup}
                   >
@@ -185,7 +185,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isH1(),
+                                [styles.bubbleMenuButtonActive]: isH1()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleHeading({ level: 2 }).run()
@@ -202,7 +202,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isH2(),
+                                [styles.bubbleMenuButtonActive]: isH2()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleHeading({ level: 3 }).run()
@@ -219,7 +219,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isH3(),
+                                [styles.bubbleMenuButtonActive]: isH3()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleHeading({ level: 4 }).run()
@@ -239,7 +239,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isQuote(),
+                                [styles.bubbleMenuButtonActive]: isQuote()
                               })}
                               onClick={handleSetPunchline}
                             >
@@ -253,7 +253,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isPunchLine(),
+                                [styles.bubbleMenuButtonActive]: isPunchLine()
                               })}
                               onClick={handleSetQuote}
                             >
@@ -270,7 +270,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isIncut(),
+                                [styles.bubbleMenuButtonActive]: isIncut()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleArticle().run()
@@ -294,7 +294,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   ref={triggerRef}
                   type="button"
                   class={clsx(styles.bubbleMenuButton, {
-                    [styles.bubbleMenuButtonActive]: isBold(),
+                    [styles.bubbleMenuButtonActive]: isBold()
                   })}
                   onClick={() => props.editor.chain().focus().toggleBold().run()}
                 >
@@ -308,7 +308,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   ref={triggerRef}
                   type="button"
                   class={clsx(styles.bubbleMenuButton, {
-                    [styles.bubbleMenuButtonActive]: isItalic(),
+                    [styles.bubbleMenuButtonActive]: isItalic()
                   })}
                   onClick={() => props.editor.chain().focus().toggleItalic().run()}
                 >
@@ -324,7 +324,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                     ref={triggerRef}
                     type="button"
                     class={clsx(styles.bubbleMenuButton, {
-                      [styles.bubbleMenuButtonActive]: isHighlight(),
+                      [styles.bubbleMenuButtonActive]: isHighlight()
                     })}
                     onClick={() => props.editor.chain().focus().toggleHighlight({ color: '#f6e3a1' }).run()}
                   >
@@ -341,7 +341,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   type="button"
                   onClick={handleOpenLinkForm}
                   class={clsx(styles.bubbleMenuButton, {
-                    [styles.bubbleMenuButtonActive]: isLink(),
+                    [styles.bubbleMenuButtonActive]: isLink()
                   })}
                 >
                   <Icon name="editor-link" />
@@ -356,7 +356,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       ref={triggerRef}
                       type="button"
                       class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isFootnote(),
+                        [styles.bubbleMenuButtonActive]: isFootnote()
                       })}
                       onClick={handleOpenFootnoteEditor}
                     >
@@ -369,7 +369,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   <button
                     type="button"
                     class={clsx(styles.bubbleMenuButton, {
-                      [styles.bubbleMenuButtonActive]: listBubbleOpen(),
+                      [styles.bubbleMenuButtonActive]: listBubbleOpen()
                     })}
                     onClick={toggleListPopup}
                   >
@@ -386,7 +386,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBulletList(),
+                                [styles.bubbleMenuButtonActive]: isBulletList()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleBulletList().run()
@@ -403,7 +403,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isOrderedList(),
+                                [styles.bubbleMenuButtonActive]: isOrderedList()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleOrderedList().run()

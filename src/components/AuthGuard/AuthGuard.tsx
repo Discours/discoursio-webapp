@@ -26,14 +26,14 @@ export const AuthGuard = (props: Props) => {
           changeSearchParams(
             {
               source: 'authguard',
-              m: 'auth',
+              m: 'auth'
             },
-            { replace: true },
+            { replace: true }
           )
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   return <Show when={author() || props.disabled}>{props.children}</Show>

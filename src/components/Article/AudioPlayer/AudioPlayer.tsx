@@ -15,7 +15,7 @@ type Props = {
   onMediaItemFieldChange?: (
     index: number,
     field: keyof MediaItem | string | number | symbol,
-    value: string,
+    value: string
   ) => void
   onChangeMediaIndex?: (direction: 'up' | 'down', index: number) => void
 }
@@ -101,7 +101,7 @@ export const AudioPlayer = (props: Props) => {
   const handleMediaItemFieldChange = (
     index: number,
     field: keyof MediaItem | string | number | symbol,
-    value: string,
+    value: string
   ) => {
     props.onMediaItemFieldChange?.(index, field, value)
   }
@@ -135,7 +135,7 @@ export const AudioPlayer = (props: Props) => {
             <div
               class={styles.progressFilled}
               style={{
-                width: `${(currentTime() / currentTrackDuration()) * 100 || 0}%`,
+                width: `${(currentTime() / currentTrackDuration()) * 100 || 0}%`
               }}
             />
           </div>

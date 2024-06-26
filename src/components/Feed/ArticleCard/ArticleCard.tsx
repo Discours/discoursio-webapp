@@ -53,11 +53,11 @@ const desktopCoverImageWidths: Record<string, number> = {
   XS: 300,
   S: 400,
   M: 600,
-  L: 800,
+  L: 800
 }
 
 const getTitleAndSubtitle = (
-  article: Shout,
+  article: Shout
 ): {
   title: string
   subtitle: string
@@ -98,7 +98,7 @@ const LAYOUT_ASPECT: { [key: string]: string } = {
   audio: styles.aspectRatio1x1,
   literature: styles.aspectRatio16x9,
   video: styles.aspectRatio16x9,
-  image: styles.aspectRatio4x3,
+  image: styles.aspectRatio4x3
 }
 
 export const ArticleCard = (props: ArticleCardProps) => {
@@ -115,7 +115,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const formattedDate = createMemo<string>(() =>
-    props.article?.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
+    props.article?.published_at ? formatDate(new Date(props.article.published_at * 1000)) : ''
   )
 
   const canEdit = createMemo(
@@ -123,14 +123,14 @@ export const ArticleCard = (props: ArticleCardProps) => {
       Boolean(author()?.id) &&
       (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
         props.article?.created_by?.id === author().id ||
-        session()?.user?.roles?.includes('editor')),
+        session()?.user?.roles?.includes('editor'))
   )
   const navigate = useNavigate()
   const scrollToComments = (event: MouseEvent & { currentTarget: HTMLAnchorElement; target: Element }) => {
     event.preventDefault()
     navigate(`/article/${props.article.slug}`)
     changeSearchParams({
-      scrollTo: 'comments',
+      scrollTo: 'comments'
     })
   }
 
@@ -153,7 +153,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardSingle]: props.settings?.isSingle,
         [styles.shoutCardBeside]: props.settings?.isBeside,
         [styles.shoutCardNoImage]: !props.article.cover,
-        [aspectRatio()]: props.withAspectRatio,
+        [aspectRatio()]: props.withAspectRatio
       })}
     >
       {/* Cover Image */}
@@ -162,7 +162,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <div class={styles.shoutCardCoverContainer}>
           <div
             class={clsx(styles.shoutCardCover, {
-              [styles.loading]: props.article.cover && isCoverImageLoading(),
+              [styles.loading]: props.article.cover && isCoverImageLoading()
             })}
           >
             <Show
@@ -217,7 +217,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         {/* Title and Subtitle */}
         <div
           class={clsx(styles.shoutCardTitlesContainer, {
-            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode,
+            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
           <A href={`/article${props.article.slug}`}>
@@ -249,7 +249,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                       size={'XS'}
                       author={a as Author}
                       isFloorImportant={Boolean(
-                        props.settings?.isFloorImportant || props.settings?.isWithCover,
+                        props.settings?.isFloorImportant || props.settings?.isWithCover
                       )}
                     />
                   )}

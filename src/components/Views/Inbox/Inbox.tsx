@@ -9,7 +9,7 @@ import type {
   Chat,
   ChatMember,
   Message as MessageType,
-  MutationCreate_MessageArgs,
+  MutationCreate_MessageArgs
 } from '../../../graphql/schema/chat.gen'
 import type { Author } from '../../../graphql/schema/core.gen'
 import SimplifiedEditor from '../../Editor/SimplifiedEditor'
@@ -68,7 +68,7 @@ export const InboxView = (props: Props) => {
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     changeSearchParams({
-      chat: chat.id,
+      chat: chat.id
     })
     try {
       const mmm = await getMessages?.(chat.id)
@@ -80,7 +80,7 @@ export const InboxView = (props: Props) => {
     } finally {
       messagesContainerRef?.scroll({
         top: messagesContainerRef?.scrollHeight,
-        behavior: 'instant',
+        behavior: 'instant'
       })
     }
   }
@@ -89,7 +89,7 @@ export const InboxView = (props: Props) => {
     sendMessage?.({
       body: message,
       reply_to: messageToReply()?.id,
-      chat_id: currentDialog()?.id || '',
+      chat_id: currentDialog()?.id || ''
     } as MutationCreate_MessageArgs)
     setClear(true)
     setMessageToReply(null)
@@ -111,7 +111,7 @@ export const InboxView = (props: Props) => {
         await loadChats()
         changeSearchParams({
           initChat: undefined,
-          chat: newChat.chat.id,
+          chat: newChat.chat.id
         })
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
         await handleOpenChat(chatToOpen as Chat)
@@ -148,11 +148,11 @@ export const InboxView = (props: Props) => {
         if (messagesContainerRef) {
           messagesContainerRef?.scroll({
             top: messagesContainerRef.scrollHeight,
-            behavior: 'smooth',
+            behavior: 'smooth'
           })
         }
-      },
-    ),
+      }
+    )
   )
   const handleScrollMessageContainer = () => {
     if (
@@ -167,7 +167,7 @@ export const InboxView = (props: Props) => {
   const handleScrollToNew = () => {
     messagesContainerRef?.scroll({
       top: messagesContainerRef?.scrollHeight,
-      behavior: 'smooth',
+      behavior: 'smooth'
     })
     setIsScrollToNewVisible(false)
   }

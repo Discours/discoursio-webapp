@@ -67,7 +67,7 @@ export const AuthorView = (props: Props) => {
     const resp = await query(loadShoutsQuery, {
       filters: { author: props.authorSlug },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedFeed().length,
+      offset: sortedFeed().length
     })
     const hasMore = resp?.data?.load_shouts_by?.hasMore
     setIsLoadMoreButtonVisible(hasMore)
@@ -92,7 +92,7 @@ export const AuthorView = (props: Props) => {
         await loadAuthor(s)
         setIsFetching(false) // Сброс состояния загрузки после завершения
       }
-    }),
+    })
   )
   // 3 // after fetch loading following data
   createEffect(
@@ -112,8 +112,8 @@ export const AuthorView = (props: Props) => {
         console.info(`[Author] followers for @${slug()} fetched`)
         setIsFetching(false)
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   // догружает ленту и комментарии
@@ -125,14 +125,14 @@ export const AuthorView = (props: Props) => {
           await loadMore()
 
           const resp = await query(loadReactionsBy, {
-            by: { comment: true, created_by: profile.id },
+            by: { comment: true, created_by: profile.id }
           }).toPromise()
           const ccc = resp?.data?.load_reactions_by
           if (ccc) setCommented(ccc)
         }
-      },
+      }
       // { defer: true },
-    ),
+    )
   )
 
   let bioContainerRef: HTMLDivElement
@@ -149,13 +149,13 @@ export const AuthorView = (props: Props) => {
   })
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
+    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   const ogImage = createMemo(() =>
     author()?.pic
       ? getImageUrl(author()?.pic || '', { width: 1200 })
-      : getImageUrl('production/image/logo_image.png'),
+      : getImageUrl('production/image/logo_image.png')
   )
   const description = createMemo(() => getDescription(author()?.bio || ''))
   const handleDeleteComment = (id: number) => {

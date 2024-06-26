@@ -13,15 +13,15 @@ const graphqlClientCreate = (url: string, token = ''): Client => {
   const exchanges = [fetchExchange, cacheExchange]
   const options: ClientOptions = {
     url,
-    exchanges,
+    exchanges
   }
 
   if (token) {
     options.fetchOptions = () => ({
       headers: {
         'content-type': 'application/json',
-        authorization: token,
-      },
+        authorization: token
+      }
     })
   }
 
@@ -42,17 +42,17 @@ export const GraphQLClientProvider = (props: { children?: JSX.Element }) => {
           console.info('[context.graphql] authorized client')
           setClients(() => ({
             [coreApiUrl]: graphqlClientCreate(coreApiUrl, tkn),
-            [chatApiUrl]: graphqlClientCreate(chatApiUrl, tkn),
+            [chatApiUrl]: graphqlClientCreate(chatApiUrl, tkn)
           }))
         } else {
           console.info('[context.graphql] can fetch data')
           setClients(() => ({
-            [coreApiUrl]: defaultClient,
+            [coreApiUrl]: defaultClient
           }))
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   return <GraphQLClientContext.Provider value={clients()}>{props.children}</GraphQLClientContext.Provider>

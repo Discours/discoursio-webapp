@@ -41,7 +41,7 @@ export const TopicSelect = (props: TopicSelectProps) => {
 
   const filteredTopics = () => {
     return props.topics.filter((topic: Topic) =>
-      topic?.title?.toLowerCase().includes(searchTerm().toLowerCase()),
+      topic?.title?.toLowerCase().includes(searchTerm().toLowerCase())
     )
   }
 
@@ -52,7 +52,7 @@ export const TopicSelect = (props: TopicSelectProps) => {
           {(topic) => (
             <div
               class={clsx(styles.selectedTopic, {
-                [styles.mainTopic]: props.mainTopic?.slug === topic.slug,
+                [styles.mainTopic]: props.mainTopic?.slug === topic.slug
               })}
               onClick={() => handleMainTopicChange(topic)}
             >
@@ -76,8 +76,8 @@ export const TopicSelect = (props: TopicSelectProps) => {
                 <div
                   class={clsx(styles.option, {
                     [styles.disabled]: props.selectedTopics.some(
-                      (selectedTopic) => selectedTopic.slug === topic.slug,
-                    ),
+                      (selectedTopic) => selectedTopic.slug === topic.slug
+                    )
                   })}
                   onClick={() => handleChange(topic)}
                 >

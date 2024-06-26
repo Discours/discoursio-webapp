@@ -35,7 +35,7 @@ export const AuthorsList = (props: Props) => {
     const resp = await query(loadAuthorsByQuery, {
       by: { order: queryType },
       limit: PAGE_SIZE,
-      offset,
+      offset
     })
     const result = resp?.data?.load_authors_by
     if ((result?.length || 0) > 0) {
@@ -52,7 +52,7 @@ export const AuthorsList = (props: Props) => {
   const loadMoreAuthors = () => {
     const nextPage = currentPage()[props.query] + 1
     fetchAuthors(props.query, nextPage).then(() =>
-      setCurrentPage({ ...currentPage(), [props.query]: nextPage }),
+      setCurrentPage({ ...currentPage(), [props.query]: nextPage })
     )
   }
 
@@ -65,8 +65,8 @@ export const AuthorsList = (props: Props) => {
           setCurrentPage((prev) => ({ ...prev, [query]: 0 }))
           fetchAuthors(query, 0).then(() => setCurrentPage((prev) => ({ ...prev, [query]: 1 })))
         }
-      },
-    ),
+      }
+    )
   )
 
   const authorsList = () => (props.query === 'shouts' ? authorsByShouts() : authorsByFollowers())

@@ -7,7 +7,6 @@ import ruTime from 'javascript-time-ago/locale/ru'
 import en from './locales/en/translation.json'
 import ru from './locales/ru/translation.json'
 
-
 TimeAgo.addLocale(enTime)
 TimeAgo.addLocale(ruTime)
 
@@ -27,8 +26,8 @@ export const i18nextInit = async (lng = 'ru') => {
         initImmediate: false,
         resources: {
           ru: { translation: ru },
-          en: { translation: en },
-        },
+          en: { translation: en }
+        }
       })
     // console.debug(i18next)
   } else if (i18next.language !== lng) {

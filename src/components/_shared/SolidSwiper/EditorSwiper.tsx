@@ -66,8 +66,8 @@ export const EditorSwiper = (props: Props) => {
         mainSwipeRef?.swiper.update()
         thumbSwipeRef?.swiper.update()
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
   const handleDropAreaUpload = (value: UploadedFile[]) => {
     props.onImagesAdd?.(composeMediaItems(value))
@@ -86,7 +86,7 @@ export const EditorSwiper = (props: Props) => {
 
   const { selectFiles } = createFileUploader({
     multiple: true,
-    accept: 'image/*',
+    accept: 'image/*'
   })
 
   const initUpload = async (selectedFiles: UploadFile[]) => {
@@ -198,7 +198,7 @@ export const EditorSwiper = (props: Props) => {
             </swiper-container>
             <div
               class={clsx(styles.navigation, styles.prev, {
-                [styles.disabled]: slideIndex() === 0,
+                [styles.disabled]: slideIndex() === 0
               })}
               onClick={() => mainSwipeRef?.swiper.slidePrev()}
             >
@@ -206,7 +206,7 @@ export const EditorSwiper = (props: Props) => {
             </div>
             <div
               class={clsx(styles.navigation, styles.next, {
-                [styles.disabled]: slideIndex() + 1 === props.images.length,
+                [styles.disabled]: slideIndex() + 1 === props.images.length
               })}
               onClick={() => mainSwipeRef?.swiper.slideNext()}
             >
@@ -238,7 +238,7 @@ export const EditorSwiper = (props: Props) => {
                       <div
                         class={clsx(styles.imageThumb)}
                         style={{
-                          'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`,
+                          'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`
                         }}
                       >
                         <div class={styles.thumbAction}>
@@ -247,7 +247,7 @@ export const EditorSwiper = (props: Props) => {
                           </div>
                           <div
                             class={clsx(styles.action, {
-                              [styles.hidden]: index() === 0,
+                              [styles.hidden]: index() === 0
                             })}
                             onClick={() => handleChangeIndex('left', index())}
                           >
@@ -259,7 +259,7 @@ export const EditorSwiper = (props: Props) => {
                           </div>
                           <div
                             class={clsx(styles.action, {
-                              [styles.hidden]: index() === props.images.length - 1,
+                              [styles.hidden]: index() === props.images.length - 1
                             })}
                             onClick={() => handleChangeIndex('right', index())}
                           >
@@ -281,7 +281,7 @@ export const EditorSwiper = (props: Props) => {
               </swiper-container>
               <div
                 class={clsx(styles.navigation, styles.thumbsNav, styles.prev, {
-                  [styles.disabled]: slideIndex() === 0,
+                  [styles.disabled]: slideIndex() === 0
                 })}
                 onClick={() => thumbSwipeRef?.swiper.slidePrev()}
               >
@@ -289,7 +289,7 @@ export const EditorSwiper = (props: Props) => {
               </div>
               <div
                 class={clsx(styles.navigation, styles.thumbsNav, styles.next, {
-                  [styles.disabled]: slideIndex() + 1 === props.images.length,
+                  [styles.disabled]: slideIndex() + 1 === props.images.length
                 })}
                 onClick={() => thumbSwipeRef?.swiper.slideNext()}
               >

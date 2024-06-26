@@ -34,7 +34,7 @@ export const AuthorBadge = (props: Props) => {
   const { follow, unfollow, follows, following } = useFollowing()
   const [isMobileView, setIsMobileView] = createSignal(false)
   const [isFollowed, setIsFollowed] = createSignal<boolean>(
-    Boolean(follows?.authors?.some((authorEntity) => Boolean(authorEntity.id === props.author?.id))),
+    Boolean(follows?.authors?.some((authorEntity) => Boolean(authorEntity.id === props.author?.id)))
   )
   createEffect(() => setIsMobileView(!mediaMatches.sm))
   createEffect(
@@ -42,11 +42,11 @@ export const AuthorBadge = (props: Props) => {
       [() => follows?.authors, () => props.author, following],
       ([followingAuthors, currentAuthor, _]) => {
         setIsFollowed(
-          Boolean(followingAuthors?.some((followedAuthor) => followedAuthor.id === currentAuthor?.id)),
+          Boolean(followingAuthors?.some((followedAuthor) => followedAuthor.id === currentAuthor?.id))
         )
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const [, changeSearchParams] = useSearchParams()
@@ -58,7 +58,7 @@ export const AuthorBadge = (props: Props) => {
     requireAuthentication(() => {
       navigate('/inbox')
       changeSearchParams({
-        initChat: props.author?.id.toString(),
+        initChat: props.author?.id.toString()
       })
     }, 'discussions')
   }
@@ -108,7 +108,7 @@ export const AuthorBadge = (props: Props) => {
               fallback={
                 <div class={styles.bio}>
                   {t('Registered since {date}', {
-                    date: formatDate(new Date((props.author.created_at || 0) * 1000)),
+                    date: formatDate(new Date((props.author.created_at || 0) * 1000))
                   })}
                 </div>
               }

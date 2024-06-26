@@ -36,14 +36,14 @@ const data: PlaceholderData = {
     text: 'Placeholder feed',
     buttonLabelAuthor: 'Popular authors',
     buttonLabelFeed: 'Create own feed',
-    href: '/authors?by=followers',
+    href: '/authors?by=followers'
   },
   feedCollaborations: {
     image: 'placeholder-experts.webp',
     header: 'Find collaborators',
     text: 'Placeholder feedCollaborations',
     buttonLabel: 'Find co-authors',
-    href: '/authors?by=name',
+    href: '/authors?by=name'
   },
   feedDiscussions: {
     image: 'placeholder-discussions.webp',
@@ -51,7 +51,7 @@ const data: PlaceholderData = {
     text: 'Placeholder feedDiscussions',
     buttonLabelAuthor: 'Current discussions',
     buttonLabelFeed: 'Enter',
-    href: '/feed?by=last_comment',
+    href: '/feed?by=last_comment'
   },
   author: {
     image: 'placeholder-join.webp',
@@ -62,9 +62,9 @@ const data: PlaceholderData = {
     profileLinks: [
       {
         href: '/how-to-write-a-good-article',
-        label: 'How to write a good article',
-      },
-    ],
+        label: 'How to write a good article'
+      }
+    ]
   },
   authorComments: {
     image: 'placeholder-discussions.webp',
@@ -75,14 +75,14 @@ const data: PlaceholderData = {
     profileLinks: [
       {
         href: '/about/discussion-rules',
-        label: 'Discussion rules',
+        label: 'Discussion rules'
       },
       {
         href: '/about/discussion-rules#ban',
-        label: 'Block rules',
-      },
-    ],
-  },
+        label: 'Block rules'
+      }
+    ]
+  }
 }
 
 export const Placeholder = (props: PlaceholderProps) => {
@@ -96,7 +96,7 @@ export const Placeholder = (props: PlaceholderProps) => {
       class={clsx(
         styles.placeholder,
         styles[`placeholder--${props.type}` as keyof typeof styles],
-        styles[`placeholder--${props.mode}-mode` as keyof typeof styles],
+        styles[`placeholder--${props.mode}-mode` as keyof typeof styles]
       )}
     >
       <div class={styles.placeholderCover}>
@@ -128,7 +128,7 @@ export const Placeholder = (props: PlaceholderProps) => {
               {t(
                 session()?.access_token
                   ? placeholderData()?.buttonLabelAuthor || ''
-                  : placeholderData()?.buttonLabelFeed || '',
+                  : placeholderData()?.buttonLabelFeed || ''
               )}
             </a>
           }
@@ -137,7 +137,7 @@ export const Placeholder = (props: PlaceholderProps) => {
             {t(
               session()?.access_token
                 ? placeholderData()?.buttonLabelAuthor || ''
-                : placeholderData()?.buttonLabelFeed || '',
+                : placeholderData()?.buttonLabelFeed || ''
             )}
             <Show when={props.mode === 'profile'}>
               <Icon name="arrow-right-2" class={styles.icon} />

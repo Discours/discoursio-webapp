@@ -26,7 +26,7 @@ export const DropdownSelect = (props: Props) => {
 
   useOutsideClickHandler({
     predicate: () => isDropDownVisible(),
-    handler: () => setIsDropDownVisible(false),
+    handler: () => setIsDropDownVisible(false)
   })
 
   return (

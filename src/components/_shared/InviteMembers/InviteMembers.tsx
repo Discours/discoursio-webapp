@@ -28,16 +28,16 @@ export const InviteMembers = (props: Props) => {
   const roles = [
     {
       title: t('Editor'),
-      description: t('Can write and edit text directly, and accept or reject suggestions from others'),
+      description: t('Can write and edit text directly, and accept or reject suggestions from others')
     },
     {
       title: t('Co-author'),
-      description: t('Can make any changes, accept or reject suggestions, and share access with others'),
+      description: t('Can make any changes, accept or reject suggestions, and share access with others')
     },
     {
       title: t('Commentator'),
-      description: t('Can offer edits and comments, but cannot edit the post or share access with others'),
-    },
+      description: t('Can offer edits and comments, but cannot edit the post or share access with others')
+    }
   ]
 
   const { authorsSorted } = useAuthors()
@@ -71,14 +71,14 @@ export const InviteMembers = (props: Props) => {
       (currentAuthors) => {
         setAuthorsToInvite(currentAuthors.map((author) => ({ ...author, selected: false })))
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const handleInputChange = async (value: string) => {
     if (value.length > 1) {
       const match = authorsToInvite()?.filter((author) =>
-        author.name?.toLowerCase().includes(value.toLowerCase()),
+        author.name?.toLowerCase().includes(value.toLowerCase())
       )
       setSearchResultAuthors(match)
     } else {
@@ -139,7 +139,7 @@ export const InviteMembers = (props: Props) => {
             <h3>{t('Coming soon')}</h3>
             <p>
               {t(
-                'We are working on collaborative editing of articles and in the near future you will have an amazing opportunity - to create together with your colleagues',
+                'We are working on collaborative editing of articles and in the near future you will have an amazing opportunity - to create together with your colleagues'
               )}
             </p>
           </div>

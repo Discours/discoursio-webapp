@@ -5,12 +5,11 @@ import { Icon } from '../_shared/Icon'
 import { Newsletter } from '../_shared/Newsletter'
 import styles from './Footer.module.scss'
 
-
 const social = [
   { name: 'facebook', href: 'https://facebook.com/discoursio' },
   { name: 'vk', href: 'https://vk.com/discoursio' },
   { name: 'twitter', href: 'https://twitter.com/discours_io' },
-  { name: 'telegram', href: 'https://t.me/discoursio' },
+  { name: 'telegram', href: 'https://t.me/discoursio' }
 ]
 type FooterItem = {
   title: string
@@ -19,7 +18,7 @@ type FooterItem = {
 }
 export const FooterView = () => {
   const { t, lang } = useLocalize()
-  const [footerLinks, setFooterLinks] = createSignal<Array<{ header: string, items: FooterItem[]}>>([])
+  const [footerLinks, setFooterLinks] = createSignal<Array<{ header: string; items: FooterItem[] }>>([])
 
   onMount(() => {
     setFooterLinks([
@@ -30,8 +29,8 @@ export const FooterView = () => {
           { title: t('How it works'), slug: '/about/guide' },
           { title: t('Dogma'), slug: '/about/dogma' },
           { title: t('Principles'), slug: '/about/principles' },
-          { title: t('How to write an article'), slug: '/how-to-write-a-good-article' },
-        ],
+          { title: t('How to write an article'), slug: '/how-to-write-a-good-article' }
+        ]
       },
       {
         header: t('Participating'),
@@ -39,8 +38,11 @@ export const FooterView = () => {
           { title: t('Suggest an idea'), slug: '/connect' },
           { title: t('Become an author'), slug: '/create' },
           { title: t('Support Discours'), slug: '/about/help' },
-          { title: t('Work with us'), slug: 'https://docs.google.com/forms/d/e/1FAIpQLSeNNvIzKlXElJtkPkYiXl-jQjlvsL9u4-kpnoRjz1O8Wo40xQ/viewform' },
-        ],
+          {
+            title: t('Work with us'),
+            slug: 'https://docs.google.com/forms/d/e/1FAIpQLSeNNvIzKlXElJtkPkYiXl-jQjlvsL9u4-kpnoRjz1O8Wo40xQ/viewform'
+          }
+        ]
       },
       {
         header: t('Sections'),
@@ -49,14 +51,17 @@ export const FooterView = () => {
           { title: t('Communities'), slug: '/community' },
           { title: t('Partners'), slug: '/about/partners' },
           { title: t('Special projects'), slug: '/about/projects' },
-          { title: lang() === 'ru' ? 'English' : 'Русский', slug: `?lng=${lang() === 'ru' ? 'en' : 'ru'}`, rel: 'external' },
-        ],
-      },
+          {
+            title: lang() === 'ru' ? 'English' : 'Русский',
+            slug: `?lng=${lang() === 'ru' ? 'en' : 'ru'}`,
+            rel: 'external'
+          }
+        ]
+      }
     ])
   })
 
   return (
-
     <footer class={styles.discoursFooter}>
       <div class="wide-container">
         <div class="row">
@@ -89,7 +94,7 @@ export const FooterView = () => {
         <div class={clsx(styles.footerCopyright, 'row')}>
           <div class="col-md-18 col-lg-20">
             {t(
-              'Independant magazine with an open horizontal cooperation about culture, science and society',
+              'Independant magazine with an open horizontal cooperation about culture, science and society'
             )}
             . {t('Discours')} &copy; 2015&ndash;{new Date().getFullYear()}{' '}
             <a href="/about/terms-of-use">{t('Terms of use')}</a>
@@ -97,7 +102,12 @@ export const FooterView = () => {
           <div class={clsx(styles.footerCopyrightSocial, 'col-md-6 col-lg-4')}>
             <For each={social}>
               {(provider) => (
-                <div class={clsx(styles.socialItem, styles[`socialItem${provider.name}` as keyof typeof styles])}>
+                <div
+                  class={clsx(
+                    styles.socialItem,
+                    styles[`socialItem${provider.name}` as keyof typeof styles]
+                  )}
+                >
                   <a href={provider.href}>
                     <Icon name={`${provider.name}-white`} class={styles.icon} />
                   </a>

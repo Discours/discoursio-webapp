@@ -34,7 +34,7 @@ type NotificationsContextType = {
 export const PAGE_SIZE = 20
 const NotificationsContext = createContext<NotificationsContextType>({
   showNotificationsPanel: () => undefined,
-  hideNotificationsPanel: () => undefined,
+  hideNotificationsPanel: () => undefined
 } as NotificationsContextType)
 
 export function useNotifications() {
@@ -64,7 +64,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
           acc[group.thread] = group
           return acc
         },
-        {},
+        {}
       )
 
       setTotalNotificationsCount(total)
@@ -90,7 +90,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
         console.info('[context.notifications] event', data)
         loadNotificationsGrouped({
           after: after() || Date.now(),
-          limit: Math.max(PAGE_SIZE, loadedNotificationsCount()),
+          limit: Math.max(PAGE_SIZE, loadedNotificationsCount())
         })
       }
     })
@@ -133,7 +133,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     markSeenThread,
     markSeenAll,
     markSeen,
-    loadNotificationsGrouped,
+    loadNotificationsGrouped
   }
 
   const value: NotificationsContextType = {
@@ -143,7 +143,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
     unreadNotificationsCount,
     loadedNotificationsCount,
     totalNotificationsCount,
-    ...actions,
+    ...actions
   }
 
   const handleNotificationPanelClose = () => {

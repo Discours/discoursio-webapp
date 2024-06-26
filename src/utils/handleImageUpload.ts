@@ -7,7 +7,7 @@ export const handleImageUpload = async (uploadFile: UploadFile, token: string) =
   const response = await fetch(`${thumborUrl}/image`, {
     method: 'POST',
     body: formData,
-    headers: token ? { Authorization: token } : {},
+    headers: token ? { Authorization: token } : {}
   })
 
   const location = response.headers.get('Location')
@@ -35,6 +35,6 @@ export const handleImageUpload = async (uploadFile: UploadFile, token: string) =
 
   return {
     originalFilename,
-    url,
+    url
   }
 }

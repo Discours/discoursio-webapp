@@ -65,7 +65,7 @@ export const AuthorCard = (props: Props) => {
     requireAuthentication(() => {
       navigate('/inbox')
       changeSearchParams({
-        initChat: props.author?.id.toString(),
+        initChat: props.author?.id.toString()
       })
     }, 'discussions')
   }
@@ -127,7 +127,7 @@ export const AuthorCard = (props: Props) => {
       <ul class="view-switcher">
         <li
           class={clsx({
-            'view-switcher__item--selected': followsFilter() === 'all',
+            'view-switcher__item--selected': followsFilter() === 'all'
           })}
         >
           <button type="button" onClick={() => setFollowsFilter('all')}>
@@ -137,7 +137,7 @@ export const AuthorCard = (props: Props) => {
         </li>
         <li
           class={clsx({
-            'view-switcher__item--selected': followsFilter() === 'authors',
+            'view-switcher__item--selected': followsFilter() === 'authors'
           })}
         >
           <button type="button" onClick={() => setFollowsFilter('authors')}>
@@ -147,7 +147,7 @@ export const AuthorCard = (props: Props) => {
         </li>
         <li
           class={clsx({
-            'view-switcher__item--selected': followsFilter() === 'topics',
+            'view-switcher__item--selected': followsFilter() === 'topics'
           })}
         >
           <button type="button" onClick={() => setFollowsFilter('topics')}>
@@ -236,7 +236,7 @@ export const AuthorCard = (props: Props) => {
                       value={followButtonText()}
                       isSubscribeButton={true}
                       class={clsx({
-                        [stylesButton.followed]: isFollowed(),
+                        [stylesButton.followed]: isFollowed()
                       })}
                     />
                   </Show>
@@ -265,7 +265,7 @@ export const AuthorCard = (props: Props) => {
                   description={props.author.bio || ''}
                   imageUrl={props.author.pic || ''}
                   shareUrl={getShareUrl({
-                    pathname: `/author/${props.author.slug}`,
+                    pathname: `/author/${props.author.slug}`
                   })}
                   trigger={<Button variant="secondary" value={t('Share')} />}
                 />

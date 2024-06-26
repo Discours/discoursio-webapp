@@ -21,7 +21,7 @@ export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
       const value = isUpvote ? 1 : -1
       const _resp = await mutation(rateAuthorMutation, {
         rated_slug: props.author?.slug,
-        value,
+        value
       }).toPromise()
       setRating((r) => (r || 0) + value)
     }
@@ -32,7 +32,7 @@ export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
     <div
       class={clsx(styles.rating, props.class, {
         [styles.isUpvoted]: isUpvoted,
-        [styles.isDownvoted]: isDownvoted,
+        [styles.isDownvoted]: isDownvoted
       })}
     >
       <button

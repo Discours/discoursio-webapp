@@ -6,7 +6,7 @@ export const breakpoints = {
   md: '768px',
   lg: '992px',
   xl: '1200px',
-  xxl: '1400px',
+  xxl: '1400px'
 }
 export const isPortrait = createMediaQuery(`(max-width: ${breakpoints.sm})`)
 export const isMobile = createMediaQuery(`(max-width: ${breakpoints.md})`)

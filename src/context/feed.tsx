@@ -10,7 +10,7 @@ import {
   LoadShoutsOptions,
   QueryLoad_Shouts_SearchArgs,
   Shout,
-  Topic,
+  Topic
 } from '~/graphql/schema/core.gen'
 import { byStat } from '../utils/sortby'
 import { useGraphQL } from './graphql'
@@ -32,7 +32,7 @@ type FeedContextType = {
   loadShouts: (options: LoadShoutsOptions) => Promise<{ hasMore: boolean; newShouts: Shout[] }>
   loadMyFeed: (options: LoadShoutsOptions) => Promise<{ hasMore: boolean; newShouts: Shout[] }>
   loadShoutsSearch: (
-    options: QueryLoad_Shouts_SearchArgs,
+    options: QueryLoad_Shouts_SearchArgs
   ) => Promise<{ hasMore: boolean; newShouts: Shout[] }>
   resetSortedFeed: () => void
   loadTopMonthFeed: () => Promise<void>
@@ -53,7 +53,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
   const [feedByLayout, _setFeedByLayout] = createSignal<{ [layout: string]: Shout[] }>({})
   const { query } = useGraphQL()
   const [seen, setSeen] = makePersisted(createSignal<{ [slug: string]: number }>({}), {
-    name: 'discoursio-seen',
+    name: 'discoursio-seen'
   })
 
   const addSeen = async (slug: string) => {
@@ -75,7 +75,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
         })
         return acc
       },
-      {} as { [authorSlug: string]: Shout[] },
+      {} as { [authorSlug: string]: Shout[] }
     )
   })
 
@@ -91,7 +91,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
         })
         return acc
       },
-      {} as { [topicSlug: string]: Shout[] },
+      {} as { [topicSlug: string]: Shout[] }
     )
   })
 
@@ -120,12 +120,12 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
         }
         return acc
       },
-      {} as { [articleSlug: string]: Shout },
+      {} as { [articleSlug: string]: Shout }
     )
 
     setArticleEntities((prevArticleEntities) => ({
       ...prevArticleEntities,
-      ...newArticleEntities,
+      ...newArticleEntities
     }))
 
     setSortedFeed((prevSortedFeed) => [...prevSortedFeed, ...articles])
@@ -147,7 +147,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
 
   // Load shouts based on the provided options and update the articleEntities and sortedFeed state
   const loadShoutsBy = async (
-    options: LoadShoutsOptions,
+    options: LoadShoutsOptions
   ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
     const resp = await query(loadShoutsByQuery, { options }).toPromise()
     const result = resp?.data?.load_shouts_by || []
@@ -164,7 +164,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
 
   // Load the user's feed based on the provided options and update the articleEntities and sortedFeed state
   const loadMyFeed = async (
-    options: LoadShoutsOptions,
+    options: LoadShoutsOptions
   ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
     if (!options.limit) options.limit = 0
     options.limit += 1
@@ -183,7 +183,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
 
   // Load shouts based on the search query and update the articleEntities and sortedFeed state
   const loadShoutsSearch = async (
-    options: QueryLoad_Shouts_SearchArgs,
+    options: QueryLoad_Shouts_SearchArgs
   ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
     options.limit = options?.limit || 0 + 1
     const resp = await query(loadShoutsSearchQuery, options).toPromise()
@@ -211,10 +211,10 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
     const options: LoadShoutsOptions = {
       filters: {
         featured: true,
-        after,
+        after
       },
       order_by: 'likes_stat',
-      limit: 10,
+      limit: 10
     }
     const resp = await query(loadShoutsByQuery, options).toPromise()
     const result = resp?.data?.load_shouts_by || []
@@ -226,7 +226,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
     const options: LoadShoutsOptions = {
       filters: { featured: true },
       order_by: 'likes_stat',
-      limit: 10,
+      limit: 10
     }
     const resp = await query(loadShoutsByQuery, options).toPromise()
     const result = resp?.data?.load_shouts_by || []
@@ -255,7 +255,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
         loadTopMonthFeed,
         loadTopFeed,
         seen,
-        addSeen,
+        addSeen
       }}
     >
       {props.children}

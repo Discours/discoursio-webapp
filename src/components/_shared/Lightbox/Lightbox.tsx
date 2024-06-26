@@ -121,7 +121,7 @@ export const Lightbox = (props: Props) => {
   const lightboxStyle = createMemo(() => ({
     transform: `translate(${translateX()}px, ${translateY()}px) scale(${zoomLevel()})`,
     transition: transitionEnabled() ? `transform ${TRANSITION_SPEED}ms ease-in-out` : '',
-    cursor: 'grab',
+    cursor: 'grab'
   }))
 
   let fadeTimer: string | number | NodeJS.Timeout
@@ -138,8 +138,8 @@ export const Lightbox = (props: Props) => {
 
         setPictureScalePercentage(Math.round(zoomLevel() * 100))
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   return (

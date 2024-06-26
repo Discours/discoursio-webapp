@@ -61,8 +61,8 @@ export const EditPage = () => {
           }
         }
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   createEffect(
@@ -76,7 +76,7 @@ export const EditPage = () => {
         }
       }
     }),
-    { defer: true },
+    { defer: true }
   )
 
   const title = createMemo(() => {

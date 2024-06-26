@@ -24,7 +24,7 @@ type SnackbarContextType = {
 
 const SnackbarContext = createContext<SnackbarContextType>({
   snackbarMessage: () => undefined,
-  showSnackbar: async (_m: SnackbarMessage) => undefined,
+  showSnackbar: async (_m: SnackbarMessage) => undefined
 } as SnackbarContextType)
 
 export function useSnackbar() {
@@ -52,7 +52,7 @@ export const SnackbarProvider = (props: { children: JSX.Element }) => {
     const messageToShow = {
       type: message.type ?? 'success',
       body: message.body,
-      duration: message.duration ?? DEFAULT_DURATION,
+      duration: message.duration ?? DEFAULT_DURATION
     }
 
     messagesToShow.push(messageToShow)
@@ -115,7 +115,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   search: 'search',
   share: 'share',
   cropImage: 'cropImage',
-  '': '',
+  '': ''
 }
 
 type ConfirmMessage = {
@@ -191,8 +191,8 @@ export const UIProvider = (props: { children: JSX.Element }) => {
           setModal(null)
         }
       },
-      {},
-    ),
+      {}
+    )
   )
 
   const value: UIContextType = {
@@ -201,7 +201,7 @@ export const UIProvider = (props: { children: JSX.Element }) => {
     resolveConfirm,
     modal,
     showModal,
-    hideModal,
+    hideModal
   }
 
   return (

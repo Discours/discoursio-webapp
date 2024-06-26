@@ -46,13 +46,13 @@ export const UploadModalContent = (props: Props) => {
       const data = await fetch(value)
       const blob = await data.blob()
       const file = new File([blob], 'convertedFromUrl', {
-        type: data.headers.get('Content-Type') || undefined,
+        type: data.headers.get('Content-Type') || undefined
       })
       const fileToUpload: UploadFile = {
         source: blob.toString(),
         name: file.name,
         size: file.size,
-        file: file,
+        file: file
       }
       await runUpload(fileToUpload)
     } catch (error) {
@@ -76,7 +76,7 @@ export const UploadModalContent = (props: Props) => {
       } else {
         setDragError(t('Image format not supported'))
       }
-    },
+    }
   })
   const handleDrag = (event: MouseEvent) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {

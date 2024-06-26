@@ -10,8 +10,8 @@ export const handleFileUpload = async (uploadFile: UploadFile, token: string) =>
     method: 'POST',
     body: formData,
     headers: {
-      Authorization: token,
-    },
+      Authorization: token
+    }
   })
   return response.json()
 }

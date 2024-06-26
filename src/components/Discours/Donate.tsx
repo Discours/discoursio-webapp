@@ -17,7 +17,7 @@ export const Donate = () => {
   const cpOptions = {
     publicId: 'pk_0a37bab30ffc6b77b2f93d65f2aed',
     description: t('Help discours to grow'),
-    currency: 'RUB',
+    currency: 'RUB'
   }
 
   let amountSwitchElement: HTMLDivElement | undefined
@@ -45,8 +45,8 @@ export const Donate = () => {
             amount: amount() || 0, //сумма
             vat: 20, //ставка НДС
             method: 0, // тег-1214 признак способа расчета - признак способа расчета
-            object: 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
-          },
+            object: 0 // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+          }
         ],
         // taxationSystem: 0, //система налогообложения; необязательный, если у вас одна система налогообложения
         // email: 'user@example.com', //e-mail покупателя, если нужно отправить письмо с чеком
@@ -56,8 +56,8 @@ export const Donate = () => {
           electronic: amount(), // Сумма оплаты электронными деньгами
           advancePayment: 0, // Сумма из предоплаты (зачетом аванса) (2 знака после запятой)
           credit: 0, // Сумма постоплатой(в кредит) (2 знака после запятой)
-          provision: 0, // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
-        },
+          provision: 0 // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
+        }
       })
     } catch (error) {
       console.error(error)
@@ -98,10 +98,10 @@ export const Donate = () => {
             recurrent: {
               interval: period(), // local solid's signal
               period: 1, // internal widget's
-              CustomerReciept: customerReciept(), // чек для регулярных платежей
-            },
-          },
-        },
+              CustomerReciept: customerReciept() // чек для регулярных платежей
+            }
+          }
+        }
       },
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       (opts: any) => {
@@ -118,9 +118,9 @@ export const Donate = () => {
 
         showSnackbar({
           type: 'error',
-          body: reason,
+          body: reason
         })
-      },
+      }
     )
   }
 

@@ -91,7 +91,7 @@ export const RegisterForm = () => {
         email: cleanEmail,
         password: password(),
         confirm_password: password(),
-        redirect_uri: window?.location?.origin || '',
+        redirect_uri: window?.location?.origin || ''
       }
       const success = await signUp(opts)
       setIsSuccess(success)
@@ -106,7 +106,7 @@ export const RegisterForm = () => {
   const handleResendLink = async (_ev: any) => {
     const success: boolean = await resendVerifyEmail({
       email: email(),
-      identifier: 'basic_signup',
+      identifier: 'basic_signup'
     })
     setIsSuccess(success)
   }
@@ -123,7 +123,7 @@ export const RegisterForm = () => {
                 {t('resend confirmation link')}
               </span>
             </>
-          ),
+          )
         }))
         break
       }
@@ -137,7 +137,7 @@ export const RegisterForm = () => {
                 {t('enter')}
               </span>
             </>
-          ),
+          )
         }))
         break
       }
@@ -152,7 +152,7 @@ export const RegisterForm = () => {
                 {t('Set the new password')}
               </span>
             </>
-          ),
+          )
         }))
         break
       }
@@ -185,7 +185,7 @@ export const RegisterForm = () => {
             <AuthModalHeader modalType="register" />
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().fullName,
+                'pretty-form__item--error': validationErrors().fullName
               })}
             >
               <input
@@ -204,7 +204,7 @@ export const RegisterForm = () => {
 
             <div
               class={clsx('pretty-form__item', {
-                'pretty-form__item--error': validationErrors().email && !emailStatus(),
+                'pretty-form__item--error': validationErrors().email && !emailStatus()
               })}
             >
               <input
@@ -250,7 +250,7 @@ export const RegisterForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >

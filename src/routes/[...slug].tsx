@@ -1,5 +1,5 @@
 import { RouteSectionProps, createAsync } from '@solidjs/router'
-import { ErrorBoundary, Suspense, createMemo, createSignal, onMount } from 'solid-js'
+import { ErrorBoundary, Suspense, createMemo, createReaction, createSignal, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config/config'
@@ -17,10 +17,7 @@ const fetchShout = async (slug: string) => {
 }
 
 export const route = {
-  load: async ({ params }: RouteSectionProps<{ article: Shout }>) => {
-    const article = await fetchShout(params.slug)
-    return { article }
-  }
+  load: async ({ params }: RouteSectionProps<{ article: Shout }>) => await fetchShout(params.slug)
 }
 
 export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
@@ -31,12 +28,27 @@ export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
     () => `${article()?.authors?.[0]?.name || t('Discours')}: ${article()?.title || ''}`
   )
   onMount(async () => {
-    try {
-      await loadGAScript(gaIdentity)
-      initGA(gaIdentity)
-      console.debug('Google Analytics connected successfully')
-    } catch (error) {
-      console.warn('Failed to connect Google Analytics:', error)
+    if(gaIdentity) {
+      try {
+        console.info('[routes.slug] mounted, connecting ga...')
+        await loadGAScript(gaIdentity)
+        initGA(gaIdentity)
+        console.debug('Google Analytics connected successfully')
+      } catch (error) {
+        console.warn('Failed to connect Google Analytics:', error)
+      }
+    }
+  })
+
+  // docs: `a side effect that is run the first time the expression
+  // wrapped by the returned tracking function is notified of a change`
+  createReaction(() => {
+    if (article()) {
+      window.gtag?.('event', 'page_view', {
+        page_title: article()?.title,
+        page_location: window.location.href,
+        page_path: window.location.pathname,
+      })
     }
   })
   return (

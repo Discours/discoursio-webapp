@@ -9,7 +9,6 @@
     "build": "vinxi build",
     "start": "vinxi start",
     "codegen": "graphql-codegen",
-    "deploy": "graphql-codegen && npm run typecheck && npm run build && vercel",
     "e2e": "npx playwright test --project=webkit",
     "fix": "npx @biomejs/biome check src/. --write && stylelint **/*.{scss,css} --fix",
     "format": "npx @biomejs/biome format src/. --write",

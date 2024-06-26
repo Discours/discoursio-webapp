@@ -20,8 +20,8 @@ import {
 export const loadTopics = () =>
   cache(async () => {
     const resp = await defaultClient.query(loadTopicsQuery, {}).toPromise()
-    const result = resp?.data?.get_topics_all as Topic[]
-    if (result) return result
+    const result = resp?.data?.get_topics_all
+    if (result) return result as Topic[]
   }, 'topics')
 
 export const loadAuthors = (options: QueryLoad_Authors_ByArgs) => {
@@ -29,8 +29,8 @@ export const loadAuthors = (options: QueryLoad_Authors_ByArgs) => {
   const filter = new URLSearchParams(options.by as Record<string, string>)
   return cache(async () => {
     const resp = await defaultClient.query(loadAuthorsByQuery, { ...options }).toPromise()
-    const result = resp?.data?.load_shouts_by as Author[]
-    if (result) return result
+    const result = resp?.data?.load_shouts_by
+    if (result) return result as Author[]
   }, `authors-${filter}-${page}`)
 }
 
@@ -39,8 +39,8 @@ export const loadShouts = (options: LoadShoutsOptions) => {
   const filter = new URLSearchParams(options.filters as Record<string, string>)
   return cache(async () => {
     const resp = await defaultClient.query(loadShoutsByQuery, { options }).toPromise()
-    const result = resp?.data?.load_shouts_by as Shout[]
-    if (result) return result
+    const result = resp?.data?.load_shouts_by
+    if (result) return result as Shout[]
   }, `shouts-${filter}-${page}`)
 }
 
@@ -49,8 +49,8 @@ export const loadReactions = (options: QueryLoad_Reactions_ByArgs) => {
   const filter = new URLSearchParams(options.by as Record<string, string>)
   return cache(async () => {
     const resp = await defaultClient.query(loadReactionsByQuery, { ...options }).toPromise()
-    const result = resp?.data?.load_reactions_by as Reaction[]
-    if (result) return result
+    const result = resp?.data?.load_reactions_by
+    if (result) return result as Reaction[]
   }, `reactions-${filter}-${page}`)
 }
 
@@ -58,8 +58,8 @@ export const getShout = (options: QueryGet_ShoutArgs) => {
   return cache(
     async () => {
       const resp = await defaultClient.query(loadReactionsByQuery, { ...options }).toPromise()
-      const result = resp?.data?.get_shout as Shout
-      if (result) return result
+      const result = resp?.data?.get_shout
+      if (result) return result as Shout
     },
     `shout-${options?.slug || ''}`
   )
@@ -69,7 +69,7 @@ export const loadShoutsSearch = (options: QueryLoad_Shouts_SearchArgs) => {
   const page = `${options.offset || 0}-${(options?.limit || 0) + (options.offset || 0)}`
   return cache(async () => {
     const resp = await defaultClient.query(loadShoutsSearchQuery, { ...options }).toPromise()
-    const result = resp?.data?.load_shouts_search as Shout
-    if (result) return result
+    const result = resp?.data?.load_shouts_search
+    if (result) return result as Shout[]
   }, `search-${options.text}-${page}`)
 }

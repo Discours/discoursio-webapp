@@ -1,5 +1,5 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
-import { Suspense, createEffect} from 'solid-js'
+import { Suspense, createEffect } from 'solid-js'
 import { useTopics } from '~/context/topics'
 import { Topic } from '~/graphql/schema/core.gen'
 import { loadTopics } from '~/lib/api'
@@ -20,7 +20,7 @@ export default function AllTopicsPage(props: RouteSectionProps<{ topics: Topic[]
   const { t } = useLocalize()
   const topics = createAsync<Topic[]>(async () => props.data.topics || (await fetchData()) || [])
   const { addTopics } = useTopics()
-  createEffect(() => addTopics(topics()||[]))
+  createEffect(() => addTopics(topics() || []))
   return (
     <PageLayout withPadding={true} title={`${t('Discours')}:${t('All topics')}`}>
       <ReactionsProvider>

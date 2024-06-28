@@ -30,8 +30,8 @@ export const AllTopics = (props: Props) => {
   const alphabet = createMemo(() => ABC[lang()])
   const { setTopicsSort, sortedTopics } = useTopics()
   const topics = createMemo(() => sortedTopics() || props.topics)
-  const [searchParams, ] = useSearchParams<{ by?: string }>()
-  createEffect(on(() => searchParams?.by || 'shouts', setTopicsSort, {defer: true}))
+  const [searchParams] = useSearchParams<{ by?: string }>()
+  createEffect(on(() => searchParams?.by || 'shouts', setTopicsSort, { defer: true }))
   onMount(() => setTopicsSort('shouts'))
   // sorted derivative
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
@@ -66,7 +66,9 @@ export const AllTopics = (props: Props) => {
   // filter
   const [searchQuery, setSearchQuery] = createSignal('')
   const [filteredResults, setFilteredResults] = createSignal<Topic[]>([])
-  createEffect(() => setFilteredResults((_prev: Topic[]) => dummyFilter(topics(), searchQuery(), lang()) as Topic[]))
+  createEffect(() =>
+    setFilteredResults((_prev: Topic[]) => dummyFilter(topics(), searchQuery(), lang()) as Topic[])
+  )
 
   // subcomponent
   const AllTopicsHead = () => (

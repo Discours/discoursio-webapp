@@ -7,14 +7,13 @@ import { Loading } from './components/_shared/Loading'
 import { EditorProvider } from './context/editor'
 import { FeedProvider } from './context/feed'
 import { GraphQLClientProvider } from './context/graphql'
-import { LocalizeProvider, useLocalize } from './context/localize'
+import { LocalizeProvider } from './context/localize'
 import { SessionProvider } from './context/session'
 import { TopicsProvider } from './context/topics'
 import { UIProvider } from './context/ui' // snackbar included
 import '~/styles/app.scss'
 
 export const Providers = (props: { children?: JSX.Element }) => {
-  const { t } = useLocalize()
   return (
     <LocalizeProvider>
       <SessionProvider onStateChangeCallback={console.info}>

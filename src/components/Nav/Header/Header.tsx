@@ -155,11 +155,13 @@ export const Header = (props: Props) => {
   const loc = useLocation()
   const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
     event.preventDefault()
-    console.debug(loc.pathname, route)
+    // console.debug('[Header] toggle menu link from', loc.pathname)
+    // console.debug('to', route)
     if (!fixed()) return
     if (loc.pathname.startsWith(route) || loc.pathname.startsWith(`/${route}`)) {
       toggleFixed()
     }
+    navigate(route)
   }
   return (
     <header
@@ -213,7 +215,7 @@ export const Header = (props: Props) => {
                   routeName="home"
                   active={isZineVisible()}
                   body={t('journal')}
-                  onClick={(event) => handleToggleMenuByLink(event, 'home')}
+                  onClick={(event) => handleToggleMenuByLink(event, '/')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
@@ -221,7 +223,7 @@ export const Header = (props: Props) => {
                   routeName="feed"
                   active={isFeedVisible()}
                   body={t('feed')}
-                  onClick={(event) => handleToggleMenuByLink(event, 'feed')}
+                  onClick={(event) => handleToggleMenuByLink(event, '/feed')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
@@ -229,14 +231,14 @@ export const Header = (props: Props) => {
                   routeName="topics"
                   active={isTopicsVisible()}
                   body={t('topics')}
-                  onClick={(event) => handleToggleMenuByLink(event, 'topics')}
+                  onClick={(event) => handleToggleMenuByLink(event, '/topics')}
                 />
                 <Link
                   onMouseOver={() => hideSubnavigation(0)}
                   onMouseOut={() => hideSubnavigation(0)}
                   routeName="authors"
                   body={t('authors')}
-                  onClick={(event) => handleToggleMenuByLink(event, 'authors')}
+                  onClick={(event) => handleToggleMenuByLink(event, '/authors')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
@@ -244,7 +246,7 @@ export const Header = (props: Props) => {
                   routeName="guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}
-                  onClick={(event) => handleToggleMenuByLink(event, 'guide')}
+                  onClick={(event) => handleToggleMenuByLink(event, '/guide')}
                 />
               </ul>
 

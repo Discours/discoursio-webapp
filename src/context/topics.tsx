@@ -106,13 +106,15 @@ const saveTopicsToIndexedDB = async (db: IDBDatabase, topics: Topic[]) => {
     await tx.done
   }
 }
-
+export type TopicSort = 'shouts' | 'followers' | 'authors' | 'title' | ''
 export const TopicsProvider = (props: { children: JSX.Element }) => {
   const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: Topic }>({})
-  const [sortAllBy, setSortAllBy] = createSignal<'shouts' | 'followers' | 'authors' | 'title'>('shouts')
+  const [sortedTopics, setSortedTopics] = createSignal<Topic[]>([])
+  const [sortAllBy, setSortAllBy] = createSignal<TopicSort>('')
 
-  const sortedTopics = createLazyMemo<Topic[]>(() => {
+  createEffect(() => {
     const topics = Object.values(topicEntities())
+    console.debug('[context.topics] effect trig', topics)
     switch (sortAllBy()) {
       case 'followers': {
         topics.sort(byTopicStatDesc('followers'))
@@ -134,8 +136,7 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
         topics.sort(byTopicStatDesc('shouts'))
       }
     }
-
-    return topics
+    setSortedTopics(topics as Topic[])
   })
 
   const topTopics = createMemo(() => {
@@ -188,7 +189,7 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
           const isCacheValid = now - timestamp < CACHE_LIFETIME
 
           const topics = isCacheValid ? req : await loadAllTopics()
-          console.info(`[context.topics] got ${(topics as Topic[]).length || 0} topics`)
+          console.info(`[context.topics] got ${(topics as Topic[]).length || 0} topics from idb`)
           addTopics(topics as Topic[])
           setRandomTopic(getRandomTopicsFromArray(topics || [], 1).pop())
         }

@@ -281,9 +281,9 @@ export const SessionProvider = (props: {
 
   const updateProfile = async (params: UpdateProfileInput) => {
     const resp = await authenticate(authorizer().updateProfile, params as UpdateProfileInput)
-    console.debug('[context.session] updateProfile:', resp)
+    console.debug('[context.session] updateProfile response:', resp)
     if (resp?.data) {
-      console.debug(resp.data)
+      // console.debug('[context.session] response data ', resp.data)
       // FIXME: renew updated profile
       return true
     }
@@ -292,12 +292,12 @@ export const SessionProvider = (props: {
 
   const signOut = async () => {
     const authResult: ApiResponse<GenericResponse> = await authorizer().logout()
-    console.debug(authResult)
+    // console.debug('[context.session] sign out', authResult)
     if (authResult) {
       setSession({} as AuthToken)
       setIsSessionLoaded(true)
       showSnackbar({ body: t("You've successfully logged out") })
-      console.debug(session())
+      // console.debug(session())
       return true
     }
     return false

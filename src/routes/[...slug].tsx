@@ -33,9 +33,9 @@ export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
         console.info('[routes.slug] mounted, connecting ga...')
         await loadGAScript(gaIdentity)
         initGA(gaIdentity)
-        console.debug('Google Analytics connected successfully')
+        console.debug('[routes.slug] Google Analytics connected successfully')
       } catch (error) {
-        console.warn('Failed to connect Google Analytics:', error)
+        console.warn('[routes.slug] Failed to connect Google Analytics:', error)
       }
     }
   })

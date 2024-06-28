@@ -1,8 +1,9 @@
-import { clsx } from 'clsx'
-import { For, Show, createMemo, createSignal } from 'solid-js'
-
 import { Meta } from '@solidjs/meta'
 import { useSearchParams } from '@solidjs/router'
+import { clsx } from 'clsx'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+
+import { useTopics } from '~/context/topics'
 import { useLocalize } from '../../../context/localize'
 import type { Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
@@ -12,14 +13,13 @@ import { scrollHandler } from '../../../utils/scroll'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
-
 import styles from './AllTopics.module.scss'
 
 type Props = {
   topics: Topic[]
 }
 
-export const TOPICS_PER_PAGE = 20
+export const TOPICS_PER_PAGE = 50
 export const ABC = {
   ru: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#',
   en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
@@ -28,12 +28,14 @@ export const ABC = {
 export const AllTopics = (props: Props) => {
   const { t, lang } = useLocalize()
   const alphabet = createMemo(() => ABC[lang()])
-  const [searchParams] = useSearchParams<{ by?: string }>()
-  const sortedTopics = createMemo(() => props.topics)
-
+  const { setTopicsSort, sortedTopics } = useTopics()
+  const topics = createMemo(() => sortedTopics() || props.topics)
+  const [searchParams, ] = useSearchParams<{ by?: string }>()
+  createEffect(on(() => searchParams?.by || 'shouts', setTopicsSort, {defer: true}))
+  onMount(() => setTopicsSort('shouts'))
   // sorted derivative
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
-    return sortedTopics().reduce(
+    return topics().reduce(
       (acc, topic) => {
         let letter = lang() === 'en' ? topic.slug[0].toUpperCase() : (topic?.title?.[0] || '').toUpperCase()
         if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '#'
@@ -63,9 +65,8 @@ export const AllTopics = (props: Props) => {
 
   // filter
   const [searchQuery, setSearchQuery] = createSignal('')
-  const filteredResults = createMemo(() => {
-    return dummyFilter(sortedTopics(), searchQuery(), lang())
-  })
+  const [filteredResults, setFilteredResults] = createSignal<Topic[]>([])
+  createEffect(() => setFilteredResults((_prev: Topic[]) => dummyFilter(topics(), searchQuery(), lang()) as Topic[]))
 
   // subcomponent
   const AllTopicsHead = () => (
@@ -113,7 +114,7 @@ export const AllTopics = (props: Props) => {
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={ogTitle} />
       <Meta name="twitter:description" content={description} />
-      <Show when={Boolean(props.topics)} fallback={<Loading />}>
+      <Show when={Boolean(filteredResults())} fallback={<Loading />}>
         <div class="row">
           <div class="col-md-19 offset-md-5">
             <AllTopicsHead />

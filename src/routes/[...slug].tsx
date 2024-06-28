@@ -28,7 +28,7 @@ export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
     () => `${article()?.authors?.[0]?.name || t('Discours')}: ${article()?.title || ''}`
   )
   onMount(async () => {
-    if(gaIdentity) {
+    if (gaIdentity) {
       try {
         console.info('[routes.slug] mounted, connecting ga...')
         await loadGAScript(gaIdentity)
@@ -44,10 +44,11 @@ export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
   // wrapped by the returned tracking function is notified of a change`
   createReaction(() => {
     if (article()) {
+      console.debug('[routes.slug] article signal changed once')
       window.gtag?.('event', 'page_view', {
         page_title: article()?.title,
         page_location: window.location.href,
-        page_path: window.location.pathname,
+        page_path: window.location.pathname
       })
     }
   })

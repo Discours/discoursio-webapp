@@ -62,8 +62,8 @@ const getTitleAndSubtitle = (
   title: string
   subtitle: string
 } => {
-  let title = article.title
-  let subtitle: string = article.subtitle || ''
+  let title = article?.title || ''
+  let subtitle: string = article?.subtitle || ''
 
   if (!subtitle) {
     let titleParts = article.title?.split('. ') || []
@@ -220,7 +220,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <A href={`/article${props.article.slug}`}>
+          <A href={`/article${props.article?.slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer} innerHTML={title} />
@@ -229,7 +229,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
             <Show when={!props.settings?.nosubtitle && subtitle}>
               <div class={styles.shoutCardSubtitle}>
-                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle} />
+                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle || ''} />
               </div>
             </Show>
           </A>

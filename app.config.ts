@@ -4,6 +4,7 @@ import sassDts from 'vite-plugin-sass-dts'
 
 const isVercel = Boolean(process?.env.VERCEL)
 const isBun = Boolean(process.env.BUN)
+
 export default defineConfig({
   ssr: true,
   server: {

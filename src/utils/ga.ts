@@ -19,10 +19,12 @@ export const loadGAScript = (id: string) => {
 export const initGA = (id: string) => {
   const w = window as Window
   if (w) {
+    // @ts-ignore
     // biome-ignore lint/suspicious/noExplicitAny: ga-script
     w.dataLayer = (w.dataLayer as any) || []
     // biome-ignore lint/suspicious/noExplicitAny: ga-script
     function gtag(...args: any[]) {
+      // @ts-ignore
       w.dataLayer.push(args)
     }
     gtag('js', new Date())

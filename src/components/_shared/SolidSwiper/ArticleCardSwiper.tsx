@@ -23,7 +23,8 @@ export const ArticleCardSwiper = (props: Props) => {
   let mainSwipeRef: SwiperRef | null
 
   onMount(async () => {
-    if (props.slides.length > 1) {
+    if (props.slides?.length > 1) {
+      console.debug(props.slides)
       const { register } = await import('swiper/element/bundle')
       register()
       SwiperCore.use([Pagination, Navigation, Manipulation])
@@ -34,16 +35,16 @@ export const ArticleCardSwiper = (props: Props) => {
     <ShowOnlyOnClient>
       <div
         class={clsx({
-          [styles.Swiper]: props.slides.length > 1,
+          [styles.Swiper]: props.slides?.length > 1,
           [styles.articleMode]: true,
-          [styles.ArticleCardSwiper]: props.slides.length > 1
+          [styles.ArticleCardSwiper]: props.slides?.length > 1
         })}
       >
         <Show when={props.title}>
           <h2 class={styles.sliderTitle}>{props.title}</h2>
         </Show>
         <div class={styles.container}>
-          <Show when={props.slides.length > 0}>
+          <Show when={props.slides?.length > 0}>
             <Show when={props.slides.length !== 1} fallback={<Row1 article={props.slides[0]} />}>
               <Show when={props.slides.length !== 2} fallback={<Row2 articles={props.slides} />}>
                 <div class={styles.holder}>

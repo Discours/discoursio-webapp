@@ -3,7 +3,7 @@ import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { useAuthors } from '~/context/authors'
 import { useLocalize } from '../../context/localize'
 import { useTopics } from '../../context/topics'
-import { Shout, Topic } from '../../graphql/schema/core.gen'
+import { Author, Shout, Topic } from '../../graphql/schema/core.gen'
 import { capitalize } from '../../utils/capitalize'
 import { splitToPages } from '../../utils/splitToPages'
 import Banner from '../Discours/Banner'
@@ -38,7 +38,7 @@ export interface HomeViewProps {
 
 export const HomeView = (props: HomeViewProps) => {
   const { t } = useLocalize()
-  const { topAuthors } = useAuthors()
+  const { topAuthors, addAuthors } = useAuthors()
   const { topTopics, randomTopic } = useTopics()
   const [randomTopicArticles, setRandomTopicArticles] = createSignal<Shout[]>([])
   createEffect(
@@ -53,6 +53,9 @@ export const HomeView = (props: HomeViewProps) => {
           })
           const shouts = await shoutsByTopicLoader()
           setRandomTopicArticles(shouts || [])
+          shouts?.forEach((s: Shout) => addAuthors((s?.authors || []) as Author[]))
+          props.featuredShouts?.forEach((s: Shout) => addAuthors((s?.authors || []) as Author[]))
+          props.topRatedShouts?.forEach((s: Shout) => addAuthors((s?.authors || []) as Author[]))
         }
       },
       { defer: true }
@@ -84,7 +87,7 @@ export const HomeView = (props: HomeViewProps) => {
         <Beside
           beside={props.featuredShouts[9]}
           title={t('Top authors')}
-          values={topAuthors()}
+          values={topAuthors?.() || []}
           wrapper={'author'}
           nodate={true}
         />
@@ -96,7 +99,7 @@ export const HomeView = (props: HomeViewProps) => {
         <Row1 article={props.featuredShouts[16]} nodate={true} />
         <Row3 articles={props.featuredShouts.slice(17, 20)} nodate={true} />
         <Row3
-          articles={props.topCommentedShouts.slice(0, 3)}
+          articles={props.topCommentedShouts?.slice(0, 3) || []}
           header={<h2>{t('Top commented')}</h2>}
           nodate={true}
         />

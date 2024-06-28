@@ -6,11 +6,13 @@
   },
   "vcs": {
     "defaultBranch": "dev",
-    "useIgnoreFile": true
+    "useIgnoreFile": true,
+    "enabled": true,
+    "clientKind": "git"
   },
   "organizeImports": {
     "enabled": true,
-    "ignore": ["./api", "./gen"]
+    "ignore": ["./gen"]
   },
   "formatter": {
     "indentStyle": "space",

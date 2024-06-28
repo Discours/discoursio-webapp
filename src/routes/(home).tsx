@@ -1,7 +1,9 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
 import { Show, Suspense, createEffect, createSignal, on, onMount } from 'solid-js'
+import { LoadShoutsOptions } from '~/graphql/schema/core.gen'
 import { loadShouts } from '~/lib/api'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
+import { byStat } from '~/utils/sortby'
 import { HomeView, HomeViewProps } from '../components/Views/Home'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
@@ -11,32 +13,33 @@ import { ReactionsProvider } from '../context/reactions'
 export const SHOUTS_PER_PAGE = 20
 
 const fetchHomeTopData = async () => {
-  const limit = 20
-
   const topCommentedLoader = loadShouts({
     filters: { featured: true },
-    limit
+    order_by: 'comments_stat',
+    limit: 10
   })
 
-  const topMonthLoader = loadShouts({
-    filters: { featured: true },
-    limit
-  })
-
-  const topViewedLoader = loadShouts({
-    filters: { featured: true },
-    limit
-  })
+  const daysago = Date.now() - 30 * 24 * 60 * 60 * 1000
+  const after = Math.floor(daysago / 1000)
+  const options: LoadShoutsOptions = {
+    filters: {
+      featured: true,
+      after
+    },
+    order_by: 'likes_stat',
+    limit: 10
+  }
+  const topMonthLoader = loadShouts({ ...options })
 
   const topRatedLoader = loadShouts({
     filters: { featured: true },
-    limit
+    order_by: 'likes_stat',
+    limit: 10
   })
   return {
-    topCommentedShouts: await topCommentedLoader(),
-    topMonthShouts: await topMonthLoader(),
     topRatedShouts: await topRatedLoader(),
-    topViewedShouts: await topViewedLoader()
+    topMonthShouts: await topMonthLoader(),
+    topCommentedShouts: await topCommentedLoader()
   } as Partial<HomeViewProps>
 }
 
@@ -69,12 +72,19 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
   // async ssr-friendly router-level cached data source
   const data = createAsync(async (prev?: HomeViewProps) => {
     const featuredShoutsLoader = featuredLoader(featuredOffset())
-    const featuredShouts = await featuredShoutsLoader()
-    return {
+    const featuredShouts = [
+      ...(prev?.featuredShouts || []),
+      ...((await featuredShoutsLoader()) || props.data?.featuredShouts || [])
+    ]
+    const sortFn = byStat('viewed')
+    const topViewedShouts = featuredShouts?.sort(sortFn) || []
+    const result = {
       ...prev,
       ...props.data,
-      featuredShouts: featuredShouts || prev?.featuredShouts || props.data?.featuredShouts
+      topViewedShouts,
+      featuredShouts
     }
+    return result
   })
 
   const [canLoadMoreFeatured, setCanLoadMoreFeatured] = createSignal(false)

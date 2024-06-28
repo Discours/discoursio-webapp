@@ -1,5 +1,5 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
-import { Show, Suspense, createEffect, createSignal, on, onMount } from 'solid-js'
+import { Show, Suspense, createSignal, onMount } from 'solid-js'
 import { LoadShoutsOptions } from '~/graphql/schema/core.gen'
 import { loadShouts } from '~/lib/api'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
@@ -87,29 +87,19 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
     return result
   })
 
-  const [canLoadMoreFeatured, setCanLoadMoreFeatured] = createSignal(false)
+  const [canLoadMoreFeatured, setCanLoadMoreFeatured] = createSignal(true)
   const loadMoreFeatured = async () => {
     saveScrollPosition()
     const before = data()?.featuredShouts.length || 0
     featuredLoader(featuredOffset())
-    const after = data()?.featuredShouts.length || 0
-    setCanLoadMoreFeatured((_) => before !== after)
     setFeaturedOffset((o: number) => o + limit)
+    const after = data()?.featuredShouts.length || 0
+    setTimeout(() => setCanLoadMoreFeatured((_) => before !== after), 1)
     restoreScrollPosition()
   }
 
-  onMount(loadMoreFeatured)
+  onMount(async () => await loadMoreFeatured())
 
-  // Re-run the loader whenever the featured offset changes
-  createEffect(
-    on(
-      featuredOffset,
-      (o: number) => {
-        featuredLoader(o) // using fresh offset by itself
-      },
-      { defer: true }
-    )
-  )
   return (
     <PageLayout withPadding={true} title={t('Discours')}>
       <ReactionsProvider>

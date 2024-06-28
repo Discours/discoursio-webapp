@@ -24,9 +24,7 @@ export const Providers = (props: { children?: JSX.Element }) => {
                 <Meta name="viewport" content="width=device-width, initial-scale=1" />
                 <UIProvider>
                   <EditorProvider>
-                    <Suspense fallback={<Loading />}>
-                      {props.children}
-                    </Suspense>
+                    <Suspense fallback={<Loading />}>{props.children}</Suspense>
                   </EditorProvider>
                 </UIProvider>
               </MetaProvider>

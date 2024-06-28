@@ -6,9 +6,9 @@ import {
   createContext,
   createEffect,
   createMemo,
+  createReaction,
   createSignal,
   on,
-  onMount,
   useContext
 } from 'solid-js'
 import { loadTopics } from '~/lib/api'
@@ -45,13 +45,28 @@ const STORE_NAME = 'topics'
 const CACHE_LIFETIME = 24 * 60 * 60 * 1000 // один день в миллисекундах
 
 const setupIndexedDB = async () => {
-  return await openDB(DB_NAME, DB_VERSION, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id' })
+  if (!('indexedDB' in window)) {
+    console.error("This browser doesn't support IndexedDB")
+    return
+  }
+
+  try {
+    const db = await openDB(DB_NAME, DB_VERSION, {
+      upgrade(db, oldVersion, newVersion, _transaction) {
+        console.log(`Upgrading database from version ${oldVersion} to ${newVersion}`)
+        if (db.objectStoreNames.contains(STORE_NAME)) {
+          console.log(`Object store ${STORE_NAME} already exists`)
+        } else {
+          console.log(`Creating object store: ${STORE_NAME}`)
+          db.createObjectStore(STORE_NAME, { keyPath: 'id' })
+        }
       }
-    }
-  })
+    })
+    console.log('Database opened successfully:', db)
+    return db
+  } catch (e) {
+    console.error('Failed to open IndexedDB:', e)
+  }
 }
 
 const getTopicsFromIndexedDB = async (db: IDBDatabase) => {
@@ -157,7 +172,7 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
     return ttt || []
   }
 
-  onMount(async () => {
+  createReaction(async () => {
     setDb(await setupIndexedDB())
     console.info('[context.topics] idb loaded')
   })

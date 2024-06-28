@@ -87,7 +87,7 @@ export const TopicBadge = (props: Props) => {
           <FollowingButton
             isFollowed={Boolean(isFollowed())}
             action={handleFollowClick}
-            actionMessageType={following()?.slug === props.topic.slug ? following()?.type : undefined}
+            actionMessageType={following?.()?.slug === props.topic.slug ? following()?.type : undefined}
           />
         </div>
       </div>

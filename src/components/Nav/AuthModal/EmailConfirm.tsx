@@ -1,18 +1,24 @@
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal } from 'solid-js'
 
+import { useUI } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { useRouter } from '../../../stores/router'
-import { hideModal } from '../../../stores/ui'
 
 import { email, setEmail } from './sharedLogic'
 
+import { useSearchParams } from '@solidjs/router'
 import styles from './AuthModal.module.scss'
+
+export type ConfirmEmailSearchParams = {
+  access_token?: string
+  token?: string
+}
 
 export const EmailConfirm = () => {
   const { t } = useLocalize()
-  const { changeSearchParams } = useRouter()
+  const { hideModal } = useUI()
+  const [, changeSearchParams] = useSearchParams<ConfirmEmailSearchParams>()
   const { session, authError } = useSession()
   const [emailConfirmed, setEmailConfirmed] = createSignal(false)
 
@@ -24,7 +30,7 @@ export const EmailConfirm = () => {
       setEmail(email.toLowerCase())
       if (isVerified) setEmailConfirmed(isVerified)
       if (authError()) {
-        changeSearchParams({}, true)
+        changeSearchParams({}, { replace: true })
       }
     }
 

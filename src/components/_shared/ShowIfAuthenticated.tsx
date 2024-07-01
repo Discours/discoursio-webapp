@@ -10,10 +10,10 @@ type ShowIfAuthenticatedProps = {
 }
 
 export const ShowIfAuthenticated = (props: ShowIfAuthenticatedProps) => {
-  const { author } = useSession()
+  const { session } = useSession()
 
   return (
-    <Show when={author()} fallback={props.fallback}>
+    <Show when={session()?.access_token} fallback={props.fallback}>
       {props.children}
     </Show>
   )

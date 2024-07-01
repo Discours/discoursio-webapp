@@ -24,8 +24,8 @@ export const VotersList = (props: Props) => {
               <li class={styles.item}>
                 <div class={styles.user}>
                   <Userpic
-                    name={reaction.created_by.name}
-                    userpic={reaction.created_by.pic}
+                    name={reaction.created_by.name || ''}
+                    userpic={reaction.created_by.pic || ''}
                     class={styles.userpic}
                   />
                   <a href={`/author/${reaction.created_by.slug}`}>{reaction.created_by.name || ''}</a>

@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/((?!assets/).*)",
-      "destination": "/api/edge-ssr.js"
-    }
-  ]
-}

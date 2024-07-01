@@ -2,7 +2,7 @@ import { gql } from '@urql/core'
 
 export default gql`
   query AuthorsAllQuery($by: AuthorsBy!, $limit: Int, $offset: Int) {
-    load_authors_by(by: $by, limit: $limit, offset: $offset) {
+    get_authors_nostat(by: $by, limit: $limit, offset: $offset) {
       id
       slug
       name

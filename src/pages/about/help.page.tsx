@@ -11,7 +11,7 @@ export const HelpPage = () => {
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Support Discours')
   const description = t(
-    'Contribute to free samizdat. Support Discours - an independent non-profit publication that works only for you. Become a pillar of the open newsroom',
+    'Contribute to free samizdat. Support Discours - an independent non-profit publication that works only for you. Become a pillar of the open newsroom'
   )
 
   return (

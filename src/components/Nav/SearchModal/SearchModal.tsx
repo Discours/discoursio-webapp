@@ -3,8 +3,8 @@ import type { Shout } from '../../../graphql/schema/core.gen'
 import { For, Show, createResource, createSignal, onCleanup } from 'solid-js'
 import { debounce } from 'throttle-debounce'
 
-import { useLocalize } from '../../../context/localize'
-import { loadShoutsSearch } from '../../../stores/zine/articles'
+import { useFeed } from '~/context/feed'
+import { useLocalize } from '~/context/localize'
 import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
 import { byScore } from '../../../utils/sortby'
 import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
@@ -23,35 +23,36 @@ import styles from './SearchModal.module.scss'
 const getSearchCoincidences = ({ str, intersection }: { str: string; intersection: string }) =>
   `<span>${str.replaceAll(
     new RegExp(intersection, 'gi'),
-    (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`,
+    (casePreservedMatch) => `<span class="blackModeIntersection">${casePreservedMatch}</span>`
   )}</span>`
 
 const prepareSearchResults = (list: Shout[], searchValue: string) =>
-  list.sort(byScore()).map((article, index) => ({
+  list.sort(byScore() as (a: Shout, b: Shout) => number).map((article, index) => ({
     ...article,
     id: index,
     title: article.title
       ? getSearchCoincidences({
           str: article.title,
-          intersection: searchValue,
+          intersection: searchValue
         })
       : '',
     subtitle: article.subtitle
       ? getSearchCoincidences({
           str: article.subtitle,
-          intersection: searchValue,
+          intersection: searchValue
         })
-      : '',
+      : ''
   }))
 
 export const SearchModal = () => {
   const { t } = useLocalize()
+  const { loadShoutsSearch } = useFeed()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [inputValue, setInputValue] = createSignal('')
   const [isLoading, setIsLoading] = createSignal(false)
   const [offset, setOffset] = createSignal<number>(0)
   const [searchResultsList, { refetch: loadSearchResults, mutate: setSearchResultsList }] = createResource<
-    Shout[] | null
+    Shout[]
   >(
     async () => {
       setIsLoading(true)
@@ -59,7 +60,7 @@ export const SearchModal = () => {
       const { hasMore, newShouts } = await loadShoutsSearch({
         limit: FEED_PAGE_SIZE,
         text: inputValue(),
-        offset: offset(),
+        offset: offset()
       })
       setIsLoading(false)
       setOffset(newShouts.length)
@@ -68,8 +69,8 @@ export const SearchModal = () => {
     },
     {
       ssrLoadFrom: 'initial',
-      initialValue: null,
-    },
+      initialValue: []
+    }
   )
 
   let searchEl: HTMLInputElement
@@ -81,7 +82,7 @@ export const SearchModal = () => {
       await debouncedLoadMore()
     } else {
       setIsLoading(false)
-      setSearchResultsList(null)
+      setSearchResultsList([])
     }
   }
 
@@ -91,7 +92,7 @@ export const SearchModal = () => {
       await debouncedLoadMore()
     } else {
       setIsLoading(false)
-      setSearchResultsList(null)
+      setSearchResultsList([])
     }
     restoreScrollPosition()
     setIsLoading(false)
@@ -111,7 +112,7 @@ export const SearchModal = () => {
         class={styles.searchInput}
         onInput={handleQueryInput}
         onKeyDown={enterQuery}
-        ref={searchEl}
+        ref={(el: HTMLInputElement) => (searchEl = el)}
       />
 
       <Button
@@ -123,7 +124,7 @@ export const SearchModal = () => {
       <p
         class={styles.searchDescription}
         innerHTML={t(
-          'To find publications, art, comments, authors and topics of interest to you, just start typing your query',
+          'To find publications, art, comments, authors and topics of interest to you, just start typing your query'
         )}
       />
 
@@ -137,7 +138,7 @@ export const SearchModal = () => {
                   settings={{
                     isFloorImportant: true,
                     isSingle: true,
-                    nodate: true,
+                    nodate: true
                   }}
                 />
               </div>

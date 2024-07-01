@@ -24,33 +24,33 @@ export const Iframe = Node.create<IframeOptions>({
     return {
       allowFullscreen: true,
       HTMLAttributes: {
-        class: 'iframe-wrapper',
-      },
+        class: 'iframe-wrapper'
+      }
     }
   },
 
   addAttributes() {
     return {
       src: {
-        default: null,
+        default: null
       },
       frameborder: {
-        default: 0,
+        default: 0
       },
       allowfullscreen: {
         default: this.options.allowFullscreen,
-        parseHTML: () => this.options.allowFullscreen,
+        parseHTML: () => this.options.allowFullscreen
       },
       width: { default: null },
-      height: { default: null },
+      height: { default: null }
     }
   },
 
   parseHTML() {
     return [
       {
-        tag: 'iframe',
-      },
+        tag: 'iframe'
+      }
     ]
   },
 
@@ -69,7 +69,7 @@ export const Iframe = Node.create<IframeOptions>({
             tr.replaceRangeWith(selection.from, selection.to, node)
           }
           return true
-        },
+        }
     }
-  },
+  }
 })

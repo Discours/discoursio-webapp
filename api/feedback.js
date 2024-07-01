@@ -1,10 +1,8 @@
-const formData = require('form-data')
-const Mailgun = require('mailgun.js')
+import FormData from 'form-data'
+import Mailgun from 'mailgun.js'
 
-const mailgun = new Mailgun(formData)
-
-const { MAILGUN_API_KEY, MAILGUN_DOMAIN } = process.env
-const mg = mailgun.client({ username: 'discoursio', key: MAILGUN_API_KEY })
+const mailgun = new Mailgun(FormData)
+const mg = mailgun.client({ username: 'discoursio', key: process.env.MAILGUN_API_KEY })
 
 export default async function handler(req, res) {
   const { contact, subject, message } = req.body
@@ -15,11 +13,11 @@ export default async function handler(req, res) {
     from: 'Discours Feedback Robot <robot@discours.io>',
     to: 'welcome@discours.io',
     subject,
-    text,
+    text
   }
 
   try {
-    const response = await mg.messages.create(MAILGUN_DOMAIN, data)
+    const response = await mg.messages.create('discours.io', data)
     console.log('Email sent successfully!', response)
     res.status(200).json({ result: 'great success' })
   } catch (error) {

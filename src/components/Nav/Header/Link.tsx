@@ -1,9 +1,10 @@
-import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 
-import { ROUTES, router, useRouter } from '../../../stores/router'
+import { ROUTES } from '../../../config/routes'
 import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 
+import { A, useMatch } from '@solidjs/router'
+import { createMemo } from 'solid-js'
 import styles from './Header.module.scss'
 
 type Props = {
@@ -16,16 +17,13 @@ type Props = {
 }
 
 export const Link = (props: Props) => {
-  const { page } = useRouter()
-  const isSelected = page()?.route === props.routeName
+  const matchRoute = useMatch(() => props.routeName || '')
+  const isSelected = createMemo(() => Boolean(matchRoute()))
   return (
-    <li
-      onClick={props.onClick}
-      classList={{ 'view-switcher__item--selected': page()?.route === props.routeName }}
-    >
+    <li onClick={props.onClick} classList={{ 'view-switcher__item--selected': isSelected() }}>
       <ConditionalWrapper
         condition={!isSelected && Boolean(props.routeName)}
-        wrapper={(children) => <a href={getPagePath(router, props.routeName)}>{children}</a>}
+        wrapper={(children) => <A href={props.routeName || ''}>{children}</A>}
       >
         <span
           class={clsx('cursorPointer linkReplacement', { [styles.mainNavigationItemActive]: props.active })}

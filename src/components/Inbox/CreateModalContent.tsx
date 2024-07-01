@@ -1,11 +1,9 @@
-import type { Author } from '../../graphql/schema/core.gen'
-
 import { For, createEffect, createSignal } from 'solid-js'
 
+import { useUI } from '~/context/ui'
 import { useInbox } from '../../context/inbox'
 import { useLocalize } from '../../context/localize'
-import { hideModal } from '../../stores/ui'
-
+import type { Author } from '../../graphql/schema/core.gen'
 import InviteUser from './InviteUser'
 
 import styles from './CreateModalContent.module.scss'
@@ -17,6 +15,7 @@ type Props = {
 
 const CreateModalContent = (props: Props) => {
   const { t } = useLocalize()
+  const { hideModal } = useUI()
   const inviteUsers: inviteUser[] = props.users.map((user) => ({ ...user, selected: false }))
   const [chatTitle, setChatTitle] = createSignal<string>('')
   const [usersId, setUsersId] = createSignal<number[]>([])
@@ -45,13 +44,13 @@ const CreateModalContent = (props: Props) => {
   })
 
   const handleSetTheme = () => {
-    setChatTitle(textInput.value.length > 0 && textInput.value)
+    setChatTitle((_) => (textInput.value.length > 0 && textInput.value) || '')
   }
 
-  const handleClick = (user) => {
+  const handleClick = (user: inviteUser) => {
     setCollectionToInvite((userCollection) => {
       return userCollection.map((clickedUser) =>
-        user.id === clickedUser.id ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser,
+        user.id === clickedUser.id ? { ...clickedUser, selected: !clickedUser.selected } : clickedUser
       )
     })
   }
@@ -72,7 +71,7 @@ const CreateModalContent = (props: Props) => {
       <h4>{t('Create Chat')}</h4>
       {usersId().length > 1 && (
         <input
-          ref={textInput}
+          ref={(el) => (textInput = el)}
           onInput={handleSetTheme}
           type="text"
           required={true}

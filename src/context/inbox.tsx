@@ -1,17 +1,20 @@
 import type { Accessor, JSX } from 'solid-js'
-import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
-
 import { createContext, createSignal, useContext } from 'solid-js'
-
-import { inboxClient } from '../graphql/client/chat'
+import { chatApiUrl } from '~/config/config'
+import { useGraphQL } from '~/context/graphql'
+import createChatMutation from '~/graphql/mutation/chat/chat-create'
+import createMessageMutation from '~/graphql/mutation/chat/chat-message-create'
+import loadChatMessagesQuery from '~/graphql/query/chat/chat-messages-load-by'
+import loadChatsQuery from '~/graphql/query/chat/chats-load'
+import { useAuthors } from '../context/authors'
+import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
 import { Author } from '../graphql/schema/core.gen'
-import { useAuthorsStore } from '../stores/zine/authors'
-
 import { SSEMessage, useConnect } from './connect'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
   messages?: Accessor<Message[]>
+  setMessages: (mmm: Message[]) => void
   createChat: (members: number[], title: string) => Promise<{ chat: Chat }>
   loadChats: () => Promise<Chat[]>
   loadRecipients: () => Author[]
@@ -20,7 +23,11 @@ type InboxContextType = {
   sendMessage?: (args: MutationCreate_MessageArgs) => void
 }
 
-const InboxContext = createContext<InboxContextType>()
+export type CreateChatSearchParams = {
+  inbox: number
+}
+
+const InboxContext = createContext<InboxContextType>({} as InboxContextType)
 
 export function useInbox() {
   return useContext(InboxContext)
@@ -29,7 +36,8 @@ export function useInbox() {
 export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
-  const { sortedAuthors } = useAuthorsStore()
+  const { authorsSorted } = useAuthors()
+  const { query, mutation } = useGraphQL(chatApiUrl)
 
   const handleMessage = (sseMessage: SSEMessage) => {
     // handling all action types: create update delete join left seen
@@ -48,24 +56,16 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   addHandler(handleMessage)
 
   const loadMessages = async (by: MessagesBy, limit = 50, offset = 0): Promise<Message[]> => {
-    if (inboxClient.private) {
-      const msgs = await inboxClient.loadChatMessages({ by, limit, offset })
-      setMessages((mmm) => [...new Set([...mmm, ...msgs])])
-      return msgs || []
-    }
-    return []
+    const resp = await query(loadChatMessagesQuery, { by, limit, offset })
+    const result = resp?.data?.load_chat_messages || []
+    setMessages((mmm) => [...new Set([...mmm, ...result])])
+    return result
   }
   const loadChats = async () => {
-    try {
-      if (inboxClient.private) {
-        const newChats = await inboxClient.loadChats({ limit: 50, offset: 0 })
-        setChats(newChats)
-        return newChats
-      }
-    } catch (error) {
-      console.log('[loadChats] error:', error)
-    }
-    return []
+    const resp = await query(loadChatsQuery, { limit: 50, offset: 0 }).toPromise()
+    const result = resp?.data?.load_chats || []
+    setChats(result)
+    return result
   }
 
   const getMessages = async (chatId: string) => {
@@ -81,25 +81,30 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   }
 
   const sendMessage = async (args: MutationCreate_MessageArgs) => {
-    try {
-      if (inboxClient.private) {
-        const message = await inboxClient.createMessage(args)
-        setMessages((prev) => [...prev, message])
-        const currentChat = chats().find((chat) => chat.id === args.chat_id)
-        setChats((prev) => [
-          ...prev.filter((c) => c.id !== currentChat.id),
-          { ...currentChat, updated_at: message.created_at },
+    const resp = await mutation(createMessageMutation, args).toPromise()
+    const result = resp?.data?.create_message
+    if (result) {
+      const { message, error } = result
+      if (error) console.warn(error)
+      setMessages((prev) => [...prev, message])
+      const currentChat = chats().find((chat: Chat) => chat.id === args.chat_id)
+      if (currentChat) {
+        const createdAt: number = message.created_at || Date.now() // Ensure createdAt is correctly typed
+        setChats((prevChats) => [
+          ...prevChats.filter((c: Chat) => c.id !== currentChat.id),
+          { ...currentChat, updated_at: createdAt }
         ])
       }
-    } catch (error) {
-      console.error('Error sending message:', error)
     }
   }
 
   const createChat = async (members: number[], title: string) => {
     try {
-      if (inboxClient.private) {
-        const chat = await inboxClient.createChat({ members, title })
+      const resp = await mutation(createChatMutation, { members, title }).toPromise()
+      const result = resp?.data?.create_chat
+      if (result) {
+        const { chat, error } = result
+        if (error) console.warn(error)
         setChats((prevChats) => [chat, ...prevChats])
         return chat
       }
@@ -112,9 +117,10 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
     createChat,
     loadChats,
     loadMessages,
-    loadRecipients: sortedAuthors,
+    loadRecipients: authorsSorted,
     getMessages,
     sendMessage,
+    setMessages
   }
 
   const value: InboxContextType = { chats, messages, ...actions }

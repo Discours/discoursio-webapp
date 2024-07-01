@@ -48,7 +48,7 @@ export const FollowingButton = (props: Props) => {
               isSubscribeButton={true}
               class={clsx(styles.actionButton, {
                 [styles.iconed]: props.iconButtons,
-                [stylesButton.followed]: props.isFollowed,
+                [stylesButton.followed]: props.isFollowed
               })}
             />
           }
@@ -77,7 +77,7 @@ export const FollowingButton = (props: Props) => {
             isSubscribeButton={true}
             class={clsx(styles.actionButton, {
               [styles.iconed]: props.iconButtons,
-              [stylesButton.followed]: props.isFollowed,
+              [stylesButton.followed]: props.isFollowed
             })}
           />
         </Show>

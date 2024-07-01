@@ -12,8 +12,8 @@ export const Span = Mark.create({
             return { class: dom.getAttribute('class') }
           }
           return false
-        },
-      },
+        }
+      }
     ]
   },
 
@@ -24,8 +24,8 @@ export const Span = Mark.create({
   addAttributes() {
     return {
       class: {
-        default: null,
-      },
+        default: null
+      }
     }
-  },
+  }
 })

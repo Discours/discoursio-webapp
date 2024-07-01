@@ -19,16 +19,16 @@ export const Popover = (props: Props) => {
       {
         name: 'offset',
         options: {
-          offset: [0, 8],
-        },
+          offset: [0, 8]
+        }
       },
       {
         name: 'flip',
         options: {
-          fallbackPlacements: ['top', 'bottom'],
-        },
-      },
-    ],
+          fallbackPlacements: ['top', 'bottom']
+        }
+      }
+    ]
   })
 
   const showEvents = ['mouseenter', 'focus']
@@ -39,18 +39,19 @@ export const Popover = (props: Props) => {
 
   if (!props.disabled) {
     onMount(() => {
+      if (!anchor()) return
       showEvents.forEach((event) => {
-        anchor().addEventListener(event, handleMouseOver)
+        anchor()?.addEventListener(event, handleMouseOver)
       })
       hideEvents.forEach((event) => {
-        anchor().addEventListener(event, handleMouseOut)
+        anchor()?.addEventListener(event, handleMouseOut)
       })
       return () => {
         showEvents.forEach((event) => {
-          anchor().removeEventListener(event, handleMouseOver)
+          anchor()?.removeEventListener(event, handleMouseOver)
         })
         hideEvents.forEach((event) => {
-          anchor().removeEventListener(event, handleMouseOut)
+          anchor()?.removeEventListener(event, handleMouseOut)
         })
       }
     })

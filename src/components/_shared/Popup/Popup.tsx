@@ -28,13 +28,13 @@ export const Popup = (props: PopupProps) => {
     }
   })
 
-  const containerRef: { current: HTMLElement } = { current: null }
+  let containerRef: HTMLElement | undefined
   const closePopup = () => setIsVisible(false)
 
   useOutsideClickHandler({
-    containerRef,
+    containerRef: containerRef,
     predicate: () => isVisible(),
-    handler: () => closePopup(),
+    handler: () => closePopup()
   })
 
   createEffect(() => {
@@ -45,7 +45,7 @@ export const Popup = (props: PopupProps) => {
 
   const toggle = () => setIsVisible((oldVisible) => !oldVisible)
   return (
-    <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef.current = el)}>
+    <span class={clsx(styles.container, props.containerCssClass)} ref={(el) => (containerRef = el)}>
       <span class={styles.trigger} onClick={toggle}>
         {props.trigger}
       </span>
@@ -54,7 +54,7 @@ export const Popup = (props: PopupProps) => {
           class={clsx(styles.popup, props.popupCssClass, {
             [styles.horizontalAnchorCenter]: horizontalAnchor === 'center',
             [styles.horizontalAnchorRight]: horizontalAnchor === 'right',
-            [styles.tiny]: props.variant === 'tiny',
+            [styles.tiny]: props.variant === 'tiny'
           })}
         >
           {props.children}

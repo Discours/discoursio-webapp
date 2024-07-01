@@ -1,25 +1,20 @@
-import type { Author } from '../../../graphql/schema/core.gen'
-
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, createSignal } from 'solid-js'
-import { Meta } from '../../../context/meta'
+import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
 
+import { type SortFunction, useAuthors } from '../../../context/authors'
 import { useLocalize } from '../../../context/localize'
-import { useRouter } from '../../../stores/router'
-import { useAuthorsStore } from '../../../stores/zine/authors'
+import type { Author } from '../../../graphql/schema/core.gen'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { scrollHandler } from '../../../utils/scroll'
 import { authorLetterReduce, translateAuthor } from '../../../utils/translate'
-
 import { AuthorsList } from '../../AuthorsList'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
 
+import { useSearchParams } from '@solidjs/router'
+import { byFirstChar, byStat } from '~/utils/sortby'
 import styles from './AllAuthors.module.scss'
-
-type AllAuthorsPageSearchParams = {
-  by: '' | 'name' | 'shouts' | 'followers'
-}
 
 type Props = {
   authors: Author[]
@@ -33,31 +28,37 @@ export const AllAuthors = (props: Props) => {
   const [searchQuery, setSearchQuery] = createSignal('')
   const ALPHABET =
     lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ@']
-  const { searchParams } = useRouter<AllAuthorsPageSearchParams>()
-  const { sortedAuthors } = useAuthorsStore({
-    authors: props.authors,
-    sortBy: searchParams().by || 'name',
-  })
+  const [searchParams] = useSearchParams<{ by?: string }>()
+  const { authorsSorted, addAuthors, setSortBy } = useAuthors()
 
+  onMount(() => {
+    addAuthors([...props.authors])
+    const sortStat: string = searchParams?.by || 'name'
+    const sortfn = sortStat
+      ? (byStat(sortStat) as SortFunction<Author>)
+      : (byFirstChar as SortFunction<Author>)
+    setSortBy(sortfn)
+  })
   const filteredAuthors = createMemo(() => {
     const query = searchQuery().toLowerCase()
-    return sortedAuthors().filter((author) => {
+    return authorsSorted().filter((author: Author) => {
       // Предполагаем, что у автора есть свойство name
-      return author.name.toLowerCase().includes(query)
+      return author?.name?.toLowerCase().includes(query)
     })
   })
 
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
     return filteredAuthors().reduce(
       (acc, author) => authorLetterReduce(acc, author, lang()),
-      {} as { [letter: string]: Author[] },
+      {} as { [letter: string]: Author[] }
     )
   })
 
   const sortedKeys = createMemo<string[]>(() => {
     const keys = Object.keys(byLetterFiltered())
     keys.sort()
-    keys.push(keys.shift())
+    const fk = keys.shift() || ''
+    fk && keys.push(fk)
     return keys
   })
 
@@ -86,26 +87,26 @@ export const AllAuthors = (props: Props) => {
               <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
                 <li
                   class={clsx({
-                    ['view-switcher__item--selected']: !searchParams().by || searchParams().by === 'shouts',
+                    ['view-switcher__item--selected']: !searchParams?.by || searchParams?.by === 'shouts'
                   })}
                 >
                   <a href="/authors?by=shouts">{t('By shouts')}</a>
                 </li>
                 <li
                   class={clsx({
-                    ['view-switcher__item--selected']: searchParams().by === 'followers',
+                    ['view-switcher__item--selected']: searchParams?.by === 'followers'
                   })}
                 >
                   <a href="/authors?by=followers">{t('By popularity')}</a>
                 </li>
                 <li
                   class={clsx({
-                    ['view-switcher__item--selected']: searchParams().by === 'name',
+                    ['view-switcher__item--selected']: searchParams?.by === 'name'
                   })}
                 >
                   <a href="/authors?by=name">{t('By name')}</a>
                 </li>
-                <Show when={searchParams().by === 'name'}>
+                <Show when={searchParams?.by === 'name'}>
                   <li class="view-switcher__search">
                     <SearchField onChange={(value) => setSearchQuery(value)} />
                   </li>
@@ -114,7 +115,7 @@ export const AllAuthors = (props: Props) => {
             </div>
           </div>
 
-          <Show when={searchParams().by === 'name'}>
+          <Show when={searchParams?.by === 'name'}>
             <div class="row">
               <div class="col-lg-20 col-xl-18">
                 <ul class={clsx('nodash', styles.alphabet)}>
@@ -151,8 +152,8 @@ export const AllAuthors = (props: Props) => {
                               <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                 <div class="topic-title">
                                   <a href={`/author/${author.slug}`}>{translateAuthor(author, lang())}</a>
-                                  <Show when={author.stat}>
-                                    <span class={styles.articlesCounter}>{author.stat.shouts}</span>
+                                  <Show when={author.stat?.shouts || 0}>
+                                    <span class={styles.articlesCounter}>{author.stat?.shouts || 0}</span>
                                   </Show>
                                 </div>
                               </div>
@@ -166,11 +167,11 @@ export const AllAuthors = (props: Props) => {
               )}
             </For>
           </Show>
-          <Show when={searchParams().by !== 'name' && props.isLoaded}>
+          <Show when={searchParams?.by !== 'name' && props.isLoaded}>
             <AuthorsList
-              allAuthorsLength={sortedAuthors()?.length}
+              allAuthorsLength={authorsSorted()?.length || 0}
               searchQuery={searchQuery()}
-              query={searchParams().by === 'followers' ? 'followers' : 'shouts'}
+              query={searchParams?.by === 'followers' ? 'followers' : 'shouts'}
             />
           </Show>
         </div>

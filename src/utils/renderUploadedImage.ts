@@ -1,9 +1,6 @@
 import { Editor } from '@tiptap/core'
 
-import { UploadedFile } from '../pages/types'
-import { hideModal } from '../stores/ui'
-
-export const renderUploadedImage = (editor: Editor, image: UploadedFile) => {
+export const renderUploadedImage = (editor: Editor, image: { url: string; originalFilename?: string }) => {
   editor
     .chain()
     .focus()
@@ -13,14 +10,13 @@ export const renderUploadedImage = (editor: Editor, image: UploadedFile) => {
       content: [
         {
           type: 'image',
-          attrs: { src: image.url },
+          attrs: { src: image.url }
         },
         {
           type: 'figcaption',
-          content: [{ type: 'text', text: image.originalFilename }],
-        },
-      ],
+          content: [{ type: 'text', text: image.originalFilename }]
+        }
+      ]
     })
     .run()
-  hideModal()
 }

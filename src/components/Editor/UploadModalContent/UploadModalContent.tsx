@@ -2,9 +2,10 @@ import { UploadFile, createDropzone, createFileUploader } from '@solid-primitive
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
+import { useUI } from '~/context/ui'
+import { UploadedFile } from '~/types/upload'
 import { useLocalize } from '../../../context/localize'
-import { UploadedFile } from '../../../pages/types'
-import { hideModal } from '../../../stores/ui'
+import { useSession } from '../../../context/session'
 import { handleImageUpload } from '../../../utils/handleImageUpload'
 import { verifyImg } from '../../../utils/verifyImg'
 import { Button } from '../../_shared/Button'
@@ -12,7 +13,6 @@ import { Icon } from '../../_shared/Icon'
 import { Loading } from '../../_shared/Loading'
 import { InlineForm } from '../InlineForm'
 
-import { useSession } from '../../../context/session'
 import styles from './UploadModalContent.module.scss'
 
 type Props = {
@@ -21,6 +21,7 @@ type Props = {
 
 export const UploadModalContent = (props: Props) => {
   const { t } = useLocalize()
+  const { hideModal } = useUI()
   const [isUploading, setIsUploading] = createSignal(false)
   const [uploadError, setUploadError] = createSignal<string | undefined>()
   const [dragActive, setDragActive] = createSignal(false)
@@ -30,7 +31,7 @@ export const UploadModalContent = (props: Props) => {
   const runUpload = async (file: UploadFile) => {
     try {
       setIsUploading(true)
-      const result = await handleImageUpload(file, session()?.access_token)
+      const result = await handleImageUpload(file, session()?.access_token || '')
       props.onClose(result)
       setIsUploading(false)
     } catch (error) {
@@ -44,12 +45,14 @@ export const UploadModalContent = (props: Props) => {
     try {
       const data = await fetch(value)
       const blob = await data.blob()
-      const file = new File([blob], 'convertedFromUrl', { type: data.headers.get('Content-Type') })
+      const file = new File([blob], 'convertedFromUrl', {
+        type: data.headers.get('Content-Type') || undefined
+      })
       const fileToUpload: UploadFile = {
         source: blob.toString(),
         name: file.name,
         size: file.size,
-        file: file,
+        file: file
       }
       await runUpload(fileToUpload)
     } catch (error) {
@@ -73,7 +76,7 @@ export const UploadModalContent = (props: Props) => {
       } else {
         setDragError(t('Image format not supported'))
       }
-    },
+    }
   })
   const handleDrag = (event: MouseEvent) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {

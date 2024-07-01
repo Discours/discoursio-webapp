@@ -1,17 +1,18 @@
-import type { i18n } from 'i18next'
+import { useSearchParams } from '@solidjs/router'
 import type { Accessor, JSX } from 'solid-js'
+import {
+  Show,
+  createContext,
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  onMount,
+  useContext
+} from 'solid-js'
+import { TimeAgo, type i18n, i18next, i18nextInit } from '~/lib/i18next'
 
-import i18next, { changeLanguage, t } from 'i18next'
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
-import ru from 'javascript-time-ago/locale/ru'
-import Cookie from 'js-cookie'
-import { Show, createContext, createEffect, createMemo, createSignal, useContext } from 'solid-js'
-
-import { useRouter } from '../stores/router'
-
-TimeAgo.addLocale(en)
-TimeAgo.addLocale(ru)
+i18nextInit()
 
 type LocalizeContextType = {
   t: i18n['t']
@@ -24,39 +25,40 @@ type LocalizeContextType = {
 
 export type Language = 'ru' | 'en'
 
-const LocalizeContext = createContext<LocalizeContextType>()
+const LocalizeContext = createContext<LocalizeContextType>({
+  t: (s: string) => s
+} as LocalizeContextType)
 
 export function useLocalize() {
   return useContext(LocalizeContext)
 }
-
+type LocalizeSearchParams = {
+  lng?: Language
+}
 export const LocalizeProvider = (props: { children: JSX.Element }) => {
   const [lang, setLang] = createSignal<Language>(i18next.language === 'en' ? 'en' : 'ru')
-  const { searchParams, changeSearchParams } = useRouter<{
-    lng: string
-  }>()
-
-  createEffect(() => {
-    if (!searchParams().lng) {
-      return
-    }
-
-    const lng: Language = searchParams().lng === 'en' ? 'en' : 'ru'
-
-    changeLanguage(lng)
-    setLang(lng)
-    Cookie.set('lng', lng)
-    changeSearchParams({ lng: null }, true)
+  const [searchParams, changeSearchParams] = useSearchParams<LocalizeSearchParams>()
+  // set lang effects
+  onMount(() => {
+    const lng = searchParams?.lng || localStorage?.getItem('lng') || 'ru'
+    setLang(lng as Language)
+    changeSearchParams({ lng: undefined })
   })
+  createEffect(
+    on(lang, (lng: Language) => {
+      localStorage.setItem('lng', lng || 'ru')
+      i18next.changeLanguage(lng || 'ru')
+    })
+  )
 
   const formatTime = (date: Date, options: Intl.DateTimeFormatOptions = {}) => {
     const opts = Object.assign(
       {},
       {
         hour: '2-digit',
-        minute: '2-digit',
+        minute: '2-digit'
       },
-      options,
+      options
     )
 
     return date.toLocaleTimeString(lang(), opts)
@@ -68,24 +70,26 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
       {
         month: 'long',
         day: 'numeric',
-        year: 'numeric',
+        year: 'numeric'
       },
-      options,
+      options
     )
 
-    let result = date.toLocaleDateString(lang(), opts)
-    if (lang() === 'ru') {
-      result = result.replace(' г.', '').replace('г.', '')
-    }
-
-    return result
+    return date.toLocaleDateString(lang(), opts)
   }
 
   const timeAgo = createMemo(() => new TimeAgo(lang()))
 
   const formatTimeAgo = (date: Date) => timeAgo().format(date)
 
-  const value: LocalizeContextType = { t, lang, setLang, formatTime, formatDate, formatTimeAgo }
+  const value: LocalizeContextType = {
+    t: i18next.t,
+    lang,
+    setLang,
+    formatTime,
+    formatDate,
+    formatTimeAgo
+  }
 
   return (
     <LocalizeContext.Provider value={value}>

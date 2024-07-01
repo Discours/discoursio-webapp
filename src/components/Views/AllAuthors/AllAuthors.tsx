@@ -41,7 +41,7 @@ export const AllAuthors = (props: Props) => {
   })
   const filteredAuthors = createMemo(() => {
     const query = searchQuery().toLowerCase()
-    return authorsSorted().filter((author: Author) => {
+    return authorsSorted?.().filter((author: Author) => {
       // Предполагаем, что у автора есть свойство name
       return author?.name?.toLowerCase().includes(query)
     })
@@ -62,22 +62,22 @@ export const AllAuthors = (props: Props) => {
     return keys
   })
 
-  const ogImage = getImageUrl('production/image/logo_image.png')
-  const ogTitle = t('Authors')
-  const description = t('List of authors of the open editorial community')
+  const ogImage = createMemo(() => getImageUrl('production/image/logo_image.png'))
+  const ogTitle = createMemo(() => t('Authors'))
+  const description = createMemo(() => t('List of authors of the open editorial community'))
 
   return (
     <div class={clsx(styles.allAuthorsPage, 'wide-container')}>
-      <Meta name="descprition" content={description} />
+      <Meta name="descprition" content={description()} />
       <Meta name="keywords" content={t('keywords')} />
       <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="twitter:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
+      <Meta name="og:title" content={ogTitle()} />
+      <Meta name="og:image" content={ogImage()} />
+      <Meta name="twitter:image" content={ogImage()} />
+      <Meta name="og:description" content={description()} />
       <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
+      <Meta name="twitter:title" content={ogTitle()} />
+      <Meta name="twitter:description" content={description()} />
       <Show when={props.isLoaded} fallback={<Loading />}>
         <div class="offset-md-5">
           <div class="row">

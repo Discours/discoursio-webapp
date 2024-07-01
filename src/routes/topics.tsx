@@ -25,7 +25,7 @@ export default function AllTopicsPage(props: RouteSectionProps<{ topics: Topic[]
     <PageLayout withPadding={true} title={`${t('Discours')}:${t('All topics')}`}>
       <ReactionsProvider>
         <Suspense fallback={<Loading />}>
-          <AllTopics topics={topics() || []} />
+          <AllTopics topics={topics() as Topic[]} />
         </Suspense>
       </ReactionsProvider>
     </PageLayout>

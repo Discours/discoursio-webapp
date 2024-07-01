@@ -17,7 +17,6 @@ import { HeaderAuth } from '../HeaderAuth'
 import { Modal } from '../Modal'
 import { SearchModal } from '../SearchModal/SearchModal'
 import { Snackbar } from '../Snackbar'
-import { Link } from './Link'
 
 import { A, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import styles from './Header.module.scss'
@@ -209,58 +208,64 @@ export const Header = (props: Props) => {
             </Show>
             <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
               <ul class="view-switcher">
-                <Link
+                <A
                   onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
                   onMouseOut={() => hideSubnavigation()}
-                  routeName="home"
-                  active={isZineVisible()}
-                  body={t('journal')}
+                  href="/"
+                  hidden={!isZineVisible()}
                   onClick={(event) => handleToggleMenuByLink(event, '/')}
-                />
-                <Link
+                >
+                  {t('journal')}
+                </A>
+                <A
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
                   onMouseOut={() => hideSubnavigation()}
-                  routeName="feed"
-                  active={isFeedVisible()}
-                  body={t('feed')}
+                  href="/feed"
+                  hidden={!isFeedVisible()}
                   onClick={(event) => handleToggleMenuByLink(event, '/feed')}
-                />
-                <Link
+                >
+                  {t('feed')}
+                </A>
+
+                <A
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
                   onMouseOut={() => hideSubnavigation}
-                  routeName="topics"
-                  active={isTopicsVisible()}
-                  body={t('topics')}
+                  href="/topics"
+                  hidden={!isTopicsVisible()}
                   onClick={(event) => handleToggleMenuByLink(event, '/topics')}
-                />
-                <Link
+                >
+                  {t('topics')}
+                </A>
+                <A
                   onMouseOver={() => hideSubnavigation(0)}
                   onMouseOut={() => hideSubnavigation(0)}
-                  routeName="authors"
-                  body={t('authors')}
+                  href="/authors"
                   onClick={(event) => handleToggleMenuByLink(event, '/authors')}
-                />
-                <Link
+                >
+                  {t('authors')}
+                </A>
+                <A
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
                   onMouseOut={() => hideSubnavigation()}
-                  routeName="guide"
-                  body={t('Knowledge base')}
-                  active={isKnowledgeBaseVisible()}
+                  href="/guide"
+                  hidden={!isKnowledgeBaseVisible()}
                   onClick={(event) => handleToggleMenuByLink(event, '/guide')}
-                />
+                >
+                  {t('Knowledge base')}
+                </A>
               </ul>
 
               <div class={styles.mainNavigationMobile}>
                 <h4>{t('Participating')}</h4>
                 <ul class="view-switcher">
                   <li>
-                    <a href="/create">{t('Create post')}</a>
+                    <A href="/create">{t('Create post')}</A>
                   </li>
                   <li>
-                    <a href="/connect">{t('Suggest an idea')}</a>
+                    <A href="/connect">{t('Suggest an idea')}</A>
                   </li>
                   <li>
-                    <a href="/about/help">{t('Support the project')}</a>
+                    <A href="/about/help">{t('Support the project')}</A>
                   </li>
                 </ul>
 
@@ -318,9 +323,9 @@ export const Header = (props: Props) => {
                 </select>
 
                 <div class={styles.mainNavigationAdditionalLinks}>
-                  <a href="/about/dogma">{t('Dogma')}</a>
-                  <a href="/about/discussion-rules" innerHTML={t('Discussion rules')} />
-                  <a href="/about/principles">{t('Principles')}</a>
+                  <A href="/about/dogma">{t('Dogma')}</A>
+                  <A href="/about/discussion-rules">{t('Discussion rules')}</A>
+                  <A href="/about/principles">{t('Principles')}</A>
                 </div>
 
                 <p
@@ -399,10 +404,10 @@ export const Header = (props: Props) => {
                 <a href="/about/help">{t('How to help')}</a>
               </li>
               <li class={styles.rightItem}>
-                <a href="/connect">
+                <A href="/connect">
                   {t('Suggest an idea')}
                   <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
-                </a>
+                </A>
               </li>
             </ul>
           </div>
@@ -415,40 +420,40 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li class="item">
-                <a href="/expo">{t('Art')}</a>
+                <A href="/expo">{t('Art')}</A>
               </li>
               <li class="item">
-                <a href="/podcasts">{t('Podcasts')}</a>
+                <A href="/podcasts">{t('Podcasts')}</A>
               </li>
               <li class="item">
-                <a href="/about/projects">{t('Special Projects')}</a>
+                <A href="/about/projects">{t('Special Projects')}</A>
               </li>
               <li>
-                <a href="/topic/interview">#{t('Interview')}</a>
+                <A href="/topic/interview">#{t('Interview')}</A>
               </li>
               <li>
-                <a href="/topic/reportage">#{t('Reports')}</a>
+                <A href="/topic/reportage">#{t('Reports')}</A>
               </li>
               <li>
-                <a href="/topic/empiric">#{t('Experience')}</a>
+                <A href="/topic/empiric">#{t('Experience')}</A>
               </li>
               <li>
-                <a href="/topic/society">#{t('Society')}</a>
+                <A href="/topic/society">#{t('Society')}</A>
               </li>
               <li>
-                <a href="/topic/culture">#{t('Culture')}</a>
+                <A href="/topic/culture">#{t('Culture')}</A>
               </li>
               <li>
-                <a href="/topic/theory">#{t('Theory')}</a>
+                <A href="/topic/theory">#{t('Theory')}</A>
               </li>
               <li>
-                <a href="/topic/poetry">#{t('Poetry')}</a>
+                <A href="/topic/poetry">#{t('Poetry')}</A>
               </li>
               <li class={styles.rightItem}>
-                <a href="/topics">
+                <A href="/topics">
                   {t('All topics')}
                   <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
-                </a>
+                </A>
               </li>
             </ul>
           </div>
@@ -464,17 +469,17 @@ export const Header = (props: Props) => {
                 <For each={randomTopics()}>
                   {(topic: Topic) => (
                     <li class="item">
-                      <a href={`/topic/${topic.slug}`}>
+                      <A href={`/topic/${topic.slug}`}>
                         <span>#{tag(topic)}</span>
-                      </a>
+                      </A>
                     </li>
                   )}
                 </For>
                 <li class={styles.rightItem}>
-                  <a href="/topics">
+                  <A href="/topics">
                     {t('All topics')}
                     <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
-                  </a>
+                  </A>
                 </li>
               </Show>
             </ul>

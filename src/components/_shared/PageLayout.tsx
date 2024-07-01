@@ -1,10 +1,10 @@
 import type { JSX } from 'solid-js'
 
+import { Title } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal } from 'solid-js'
-import { Title } from '../../context/meta'
 
-import { Footer } from '../Discours/Footer'
+import { FooterView } from '../Discours/Footer'
 import { Header } from '../Nav/Header'
 
 import '../../styles/app.scss'
@@ -49,14 +49,14 @@ export const PageLayout = (props: Props) => {
       <main
         class={clsx('main-content', {
           [styles.withPadding]: props.withPadding,
-          [styles.zeroBottomPadding]: props.zeroBottomPadding,
+          [styles.zeroBottomPadding]: props.zeroBottomPadding
         })}
         classList={{ 'main-content--no-padding': !isHeaderFixed }}
       >
         {props.children}
       </main>
       <Show when={props.hideFooter !== true}>
-        <Footer />
+        <FooterView />
       </Show>
     </>
   )

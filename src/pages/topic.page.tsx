@@ -14,7 +14,7 @@ export const TopicPage = (props: PageProps) => {
   const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(
-    Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug(),
+    Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug()
   )
 
   const preload = () =>
@@ -22,8 +22,8 @@ export const TopicPage = (props: PageProps) => {
       loadShouts({
         filters: { topic: slug(), featured: true },
         limit: PRERENDERED_ARTICLES_COUNT,
-        offset: 0,
-      }),
+        offset: 0
+      })
     ])
 
   onMount(async () => {
@@ -44,7 +44,7 @@ export const TopicPage = (props: PageProps) => {
         await preload()
         setIsLoaded(true)
       }
-    }),
+    })
   )
 
   onCleanup(resetSortedArticles)

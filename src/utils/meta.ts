@@ -21,5 +21,5 @@ export const getDescription = (body: string): string => {
 }
 
 export const getKeywords = (shout: Shout): string => {
-  return shout.topics.map((topic) => topic.title).join(', ')
+  return (shout.topics || [])?.map((topic) => topic?.title).join(', ')
 }

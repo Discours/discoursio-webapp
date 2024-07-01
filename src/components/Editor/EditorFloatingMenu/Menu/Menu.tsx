@@ -19,21 +19,21 @@ export const Menu = (props: Props) => {
   return (
     <div class={styles.Menu}>
       <Popover content={t('Add image')}>
-        {(triggerRef: (el) => void) => (
+        {(triggerRef: (el: HTMLElement) => void) => (
           <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('image')}>
             <Icon class={styles.icon} name="editor-image" />
           </button>
         )}
       </Popover>
       <Popover content={t('Add an embed widget')}>
-        {(triggerRef: (el) => void) => (
+        {(triggerRef: (el: HTMLElement) => void) => (
           <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('embed')}>
             <Icon class={styles.icon} name="editor-embed" />
           </button>
         )}
       </Popover>
       <Popover content={t('Add rule')}>
-        {(triggerRef: (el) => void) => (
+        {(triggerRef: (el: HTMLElement) => void) => (
           <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('horizontal-rule')}>
             <Icon class={styles.icon} name="editor-horizontal-rule" />
           </button>

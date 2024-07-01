@@ -48,7 +48,7 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
             {props.currentOption.title}{' '}
             <Chevron
               class={clsx(styles.chevron, {
-                [styles.rotate]: isPopupVisible(),
+                [styles.rotate]: isPopupVisible()
               })}
             />
           </div>
@@ -63,7 +63,7 @@ export const DropDown = <TOption extends Option = Option>(props: Props<TOption>)
               <li>
                 <button
                   class={clsx(popupStyles.action, {
-                    [styles.active]: props.currentOption.value === option.value,
+                    [styles.active]: props.currentOption.value === option.value
                   })}
                   onClick={() => props.onChange(option)}
                 >

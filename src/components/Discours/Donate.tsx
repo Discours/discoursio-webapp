@@ -1,9 +1,8 @@
 import { clsx } from 'clsx'
 import { createSignal, onMount } from 'solid-js'
 
+import { useSnackbar, useUI } from '~/context/ui'
 import { useLocalize } from '../../context/localize'
-import { useSnackbar } from '../../context/snackbar'
-import { showModal } from '../../stores/ui'
 
 import styles from './Donate.module.scss'
 
@@ -12,12 +11,13 @@ type DWindow = Window & { cp: any }
 
 export const Donate = () => {
   const { t } = useLocalize()
+  const { showModal } = useUI()
   const once = ''
   const monthly = 'Monthly'
   const cpOptions = {
     publicId: 'pk_0a37bab30ffc6b77b2f93d65f2aed',
     description: t('Help discours to grow'),
-    currency: 'RUB',
+    currency: 'RUB'
   }
 
   let amountSwitchElement: HTMLDivElement | undefined
@@ -45,8 +45,8 @@ export const Donate = () => {
             amount: amount() || 0, //сумма
             vat: 20, //ставка НДС
             method: 0, // тег-1214 признак способа расчета - признак способа расчета
-            object: 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
-          },
+            object: 0 // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+          }
         ],
         // taxationSystem: 0, //система налогообложения; необязательный, если у вас одна система налогообложения
         // email: 'user@example.com', //e-mail покупателя, если нужно отправить письмо с чеком
@@ -56,8 +56,8 @@ export const Donate = () => {
           electronic: amount(), // Сумма оплаты электронными деньгами
           advancePayment: 0, // Сумма из предоплаты (зачетом аванса) (2 знака после запятой)
           credit: 0, // Сумма постоплатой(в кредит) (2 знака после запятой)
-          provision: 0, // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
-        },
+          provision: 0 // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после запятой)
+        }
       })
     } catch (error) {
       console.error(error)
@@ -98,27 +98,29 @@ export const Donate = () => {
             recurrent: {
               interval: period(), // local solid's signal
               period: 1, // internal widget's
-              CustomerReciept: customerReciept(), // чек для регулярных платежей
-            },
-          },
-        },
+              CustomerReciept: customerReciept() // чек для регулярных платежей
+            }
+          }
+        }
       },
-      (opts) => {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      (opts: any) => {
         // success
         // действие при успешной оплате
         console.debug('[donate] options', opts)
         showModal('thank')
       },
-      (reason: string, options) => {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      (reason: string, options: any) => {
         // fail
         // действие при неуспешной оплате
         console.debug('[donate] options', options)
 
         showSnackbar({
           type: 'error',
-          body: reason,
+          body: reason
         })
-      },
+      }
     )
   }
 

@@ -1,13 +1,14 @@
 import type { Editor } from '@tiptap/core'
 
+import { UploadedFile } from '~/types/upload'
 import { useLocalize } from '../../../context/localize'
-import { UploadedFile } from '../../../pages/types'
 import { renderUploadedImage } from '../../../utils/renderUploadedImage'
 import { Modal } from '../../Nav/Modal'
 import { Icon } from '../../_shared/Icon'
 import { Popover } from '../../_shared/Popover'
 import { UploadModalContent } from '../UploadModalContent'
 
+import { useUI } from '~/context/ui'
 import styles from './BubbleMenu.module.scss'
 
 type Props = {
@@ -17,15 +18,17 @@ type Props = {
 
 export const FigureBubbleMenu = (props: Props) => {
   const { t } = useLocalize()
+  const { hideModal } = useUI()
 
   const handleUpload = (image: UploadedFile) => {
     renderUploadedImage(props.editor, image)
+    hideModal()
   }
 
   return (
     <div ref={props.ref} class={styles.BubbleMenu}>
       <Popover content={t('Alignment left')}>
-        {(triggerRef: (el) => void) => (
+        {(triggerRef: (el: HTMLElement) => void) => (
           <button
             ref={triggerRef}
             type="button"
@@ -37,7 +40,7 @@ export const FigureBubbleMenu = (props: Props) => {
         )}
       </Popover>
       <Popover content={t('Alignment center')}>
-        {(triggerRef: (el) => void) => (
+        {(triggerRef: (el: HTMLElement) => void) => (
           <button
             ref={triggerRef}
             type="button"
@@ -49,7 +52,7 @@ export const FigureBubbleMenu = (props: Props) => {
         )}
       </Popover>
       <Popover content={t('Alignment right')}>
-        {(triggerRef: (el) => void) => (
+        {(triggerRef: (el: HTMLElement) => void) => (
           <button
             ref={triggerRef}
             type="button"
@@ -70,7 +73,7 @@ export const FigureBubbleMenu = (props: Props) => {
       </button>
       <div class={styles.delimiter} />
       <Popover content={t('Add image')}>
-        {(triggerRef: (el) => void) => (
+        {(triggerRef: (el: HTMLElement) => void) => (
           <button type="button" ref={triggerRef} class={styles.bubbleMenuButton}>
             <Icon name="editor-image-add" />
           </button>
@@ -80,7 +83,7 @@ export const FigureBubbleMenu = (props: Props) => {
       <Modal variant="narrow" name="uploadImage">
         <UploadModalContent
           onClose={(value) => {
-            handleUpload(value)
+            handleUpload(value as UploadedFile)
           }}
         />
       </Modal>

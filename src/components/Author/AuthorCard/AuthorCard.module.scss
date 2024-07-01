@@ -175,7 +175,7 @@
     width: 24px;
 
     &::before {
-      background-image: url(/icons/user-link-default.svg);
+      background-image: url('/icons/user-link-default.svg');
       background-repeat: no-repeat;
       background-position: 50% 50%;
       background-size: contain;
@@ -209,7 +209,7 @@
 
     &[href*='facebook.com/'] {
       &::before {
-        background-image: url(/icons/user-link-facebook.svg);
+        background-image: url('/icons/user-link-facebook.svg');
       }
 
       &:hover {
@@ -221,7 +221,7 @@
 
     &[href*='twitter.com/'] {
       &::before {
-        background-image: url(/icons/user-link-twitter.svg);
+        background-image: url('/icons/user-link-twitter.svg');
       }
 
       &:hover {
@@ -234,7 +234,7 @@
     &[href*='telegram.com/'],
     &[href*='t.me/'] {
       &::before {
-        background-image: url(/icons/user-link-telegram.svg);
+        background-image: url('/icons/user-link-telegram.svg');
       }
 
       &:hover {
@@ -247,7 +247,7 @@
     &[href*='vk.cc/'],
     &[href*='vk.com/'] {
       &::before {
-        background-image: url(/icons/user-link-vk.svg);
+        background-image: url('/icons/user-link-vk.svg');
       }
 
       &:hover {
@@ -259,7 +259,7 @@
 
     &[href*='tumblr.com/'] {
       &::before {
-        background-image: url(/icons/user-link-tumblr.svg);
+        background-image: url('/icons/user-link-tumblr.svg');
       }
 
       &:hover {
@@ -271,7 +271,7 @@
 
     &[href*='instagram.com/'] {
       &::before {
-        background-image: url(/icons/user-link-instagram.svg);
+        background-image: url('/icons/user-link-instagram.svg');
       }
 
       &:hover {
@@ -283,7 +283,7 @@
 
     &[href*='behance.net/'] {
       &::before {
-        background-image: url(/icons/user-link-behance.svg);
+        background-image: url('/icons/user-link-behance.svg');
       }
 
       &:hover {
@@ -295,7 +295,7 @@
 
     &[href*='dribbble.com/'] {
       &::before {
-        background-image: url(/icons/user-link-dribbble.svg);
+        background-image: url('/icons/user-link-dribbble.svg');
       }
 
       &:hover {
@@ -307,7 +307,7 @@
 
     &[href*='github.com/'] {
       &::before {
-        background-image: url(/icons/user-link-github.svg);
+        background-image: url('/icons/user-link-github.svg');
       }
 
       &:hover {
@@ -319,7 +319,7 @@
 
     &[href*='linkedin.com/'] {
       &::before {
-        background-image: url(/icons/user-link-linkedin.svg);
+        background-image: url('/icons/user-link-linkedin.svg');
       }
 
       &:hover {
@@ -331,7 +331,7 @@
 
     &[href*='medium.com/'] {
       &::before {
-        background-image: url(/icons/user-link-medium.svg);
+        background-image: url('/icons/user-link-medium.svg');
       }
 
       &:hover {
@@ -343,7 +343,7 @@
 
     &[href*='ok.ru/'] {
       &::before {
-        background-image: url(/icons/user-link-ok.svg);
+        background-image: url('/icons/user-link-ok.svg');
       }
 
       &:hover {
@@ -355,7 +355,7 @@
 
     &[href*='pinterest.com/'] {
       &::before {
-        background-image: url(/icons/user-link-pinterest.svg);
+        background-image: url('/icons/user-link-pinterest.svg');
       }
 
       &:hover {
@@ -367,7 +367,7 @@
 
     &[href*='reddit.com/'] {
       &::before {
-        background-image: url(/icons/user-link-reddit.svg);
+        background-image: url('/icons/user-link-reddit.svg');
       }
 
       &:hover {
@@ -379,7 +379,7 @@
 
     &[href*='tiktok.com/'] {
       &::before {
-        background-image: url(/icons/user-link-tiktok.svg);
+        background-image: url('/icons/user-link-tiktok.svg');
       }
 
       &:hover {
@@ -392,7 +392,7 @@
     &[href*='youtube.com/'],
     &[href*='youtu.be/'] {
       &::before {
-        background-image: url(/icons/user-link-youtube.svg);
+        background-image: url('/icons/user-link-youtube.svg');
       }
 
       &:hover {
@@ -404,7 +404,7 @@
 
     &[href*='dzen.ru/'] {
       &::before {
-        background-image: url(/icons/user-link-dzen.svg);
+        background-image: url('/icons/user-link-dzen.svg');
       }
 
       &:hover {

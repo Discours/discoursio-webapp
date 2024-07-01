@@ -1,15 +1,13 @@
-import { getPagePath, openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { For, Show } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useNotifications } from '../../../context/notifications'
-import { NotificationGroup as Group } from '../../../graphql/schema/core.gen'
-import { router, useRouter } from '../../../stores/router'
-import { ArticlePageSearchParams } from '../../Article/FullArticle'
+import { Author, NotificationGroup as Group } from '../../../graphql/schema/core.gen'
 import { GroupAvatar } from '../../_shared/GroupAvatar'
 import { TimeAgo } from '../../_shared/TimeAgo'
 
+import { A, useNavigate, useSearchParams } from '@solidjs/router'
 import styles from './NotificationView.module.scss'
 
 type NotificationGroupProps = {
@@ -44,14 +42,15 @@ const threadCaption = (threadId: string) =>
 
 export const NotificationGroup = (props: NotificationGroupProps) => {
   const { t, formatTime, formatDate } = useLocalize()
-  const { changeSearchParams } = useRouter<ArticlePageSearchParams>()
+  const navigate = useNavigate()
+  const [, changeSearchParams] = useSearchParams()
   const { hideNotificationsPanel, markSeenThread } = useNotifications()
   const handleClick = (threadId: string) => {
     props.onClick()
 
     markSeenThread(threadId)
     const [slug, commentId] = threadId.split('::')
-    openPage(router, 'article', { slug })
+    navigate(`/article/${slug}`)
     if (commentId) changeSearchParams({ commentId })
   }
 
@@ -65,25 +64,22 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
       <For each={props.notifications}>
         {(n: Group, _index) => (
           <>
-            {t(threadCaption(n.thread), { commentsCount: n.reactions.length })}{' '}
+            {t(threadCaption(n.thread), { commentsCount: n.reactions?.length || 0 })}{' '}
             <div
               class={clsx(styles.NotificationView, props.class, { [styles.seen]: n.seen })}
               onClick={(_) => handleClick(n.thread)}
             >
               <div class={styles.userpic}>
-                <GroupAvatar authors={n.authors} />
+                <GroupAvatar authors={n.authors as Author[]} />
               </div>
               <div>
-                <a href={getPagePath(router, 'article', { slug: n.shout.slug })} onClick={handleLinkClick}>
-                  {getTitle(n.shout.title)}
-                </a>{' '}
+                <A href={`/article/${n.shout?.slug || ''}`} onClick={handleLinkClick}>
+                  {getTitle(n.shout?.title || '')}
+                </A>{' '}
                 {t('from')}{' '}
-                <a
-                  href={getPagePath(router, 'author', { slug: n.authors[0].slug })}
-                  onClick={handleLinkClick}
-                >
-                  {n.authors[0].name}
-                </a>{' '}
+                <A href={`/author/${n.authors?.[0]?.slug || ''}`} onClick={handleLinkClick}>
+                  {n.authors?.[0]?.name || ''}
+                </A>{' '}
               </div>
 
               <div class={styles.timeContainer}>

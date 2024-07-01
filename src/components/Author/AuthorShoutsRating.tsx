@@ -11,12 +11,12 @@ interface AuthorShoutsRating {
 }
 
 export const AuthorShoutsRating = (props: AuthorShoutsRating) => {
-  const isUpvoted = createMemo(() => props.author?.stat?.rating_shouts > 0)
+  const isUpvoted = createMemo(() => (props.author?.stat?.rating_shouts || 0) > 0)
   return (
     <div
       class={clsx(styles.rating, props.class, {
         [styles.isUpvoted]: isUpvoted(),
-        [styles.isDownvoted]: !isUpvoted(),
+        [styles.isDownvoted]: !isUpvoted()
       })}
     >
       <span class={styles.ratingValue}>{props.author?.stat?.rating_shouts}</span>

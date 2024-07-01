@@ -1,4 +1,4 @@
-import type { Chat } from '../../graphql/schema/chat.gen'
+import type { Chat, ChatMember } from '../../graphql/schema/chat.gen'
 
 import DialogCard from './DialogCard'
 
@@ -11,7 +11,7 @@ type DialogHeader = {
 const DialogHeader = (props: DialogHeader) => {
   return (
     <header class={styles.DialogHeader}>
-      <DialogCard isChatHeader={true} members={props.chat.members} ownId={props.ownId} />
+      <DialogCard isChatHeader={true} members={props.chat.members as ChatMember[]} ownId={props.ownId} />
     </header>
   )
 }

@@ -1,12 +1,12 @@
-import { useConfirm } from '../../../context/confirm'
 import { useLocalize } from '../../../context/localize'
+import { useUI } from '../../../context/ui'
 import { Button } from '../../_shared/Button'
 
 import styles from './ConfirmModal.module.scss'
 
 export const ConfirmModal = () => {
   const { t } = useLocalize()
-  const { confirmMessage, resolveConfirm } = useConfirm()
+  const { confirmMessage, resolveConfirm } = useUI()
 
   return (
     <div class={styles.confirmModal}>

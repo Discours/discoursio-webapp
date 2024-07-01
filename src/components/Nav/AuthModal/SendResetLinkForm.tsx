@@ -1,15 +1,12 @@
-import type { AuthModalSearchParams } from './types'
-
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { useRouter } from '../../../stores/router'
 import { validateEmail } from '../../../utils/validateEmail'
-
 import { email, setEmail } from './sharedLogic'
 
+import { useSearchParams } from '@solidjs/router'
 import styles from './AuthModal.module.scss'
 
 type FormFields = {
@@ -19,7 +16,7 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string | JSX.Element>>
 
 export const SendResetLinkForm = () => {
-  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
+  const [, changeSearchParams] = useSearchParams()
   const { t } = useLocalize()
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
@@ -29,7 +26,7 @@ export const SendResetLinkForm = () => {
   const [isSubmitting, setIsSubmitting] = createSignal(false)
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   const [isUserNotFound, setIsUserNotFound] = createSignal(false)
-  const authFormRef: { current: HTMLFormElement } = { current: null }
+  let authFormRef: HTMLFormElement
   const [message, setMessage] = createSignal<string>('')
 
   const handleSubmit = async (event: Event) => {
@@ -47,29 +44,25 @@ export const SendResetLinkForm = () => {
     const isValid = Object.keys(newValidationErrors).length === 0
 
     if (!isValid) {
-      authFormRef.current
-        .querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
-        .focus()
+      authFormRef
+        ?.querySelector<HTMLInputElement>(`input[name="${Object.keys(newValidationErrors)[0]}"]`)
+        ?.focus()
 
       return
     }
 
     setIsSubmitting(true)
     try {
-      const { data, errors } = await forgotPassword({
+      const result = await forgotPassword({
         email: email(),
-        redirect_uri: window.location.origin,
+        redirect_uri: window?.location?.origin || ''
       })
-      console.debug('[SendResetLinkForm] authorizer response:', data)
-      if (
-        errors?.some(
-          (error) =>
-            error.message.includes('bad user credentials') || error.message.includes('user not found'),
-        )
-      ) {
-        setIsUserNotFound(true)
+      if (result) {
+        setMessage(result || '')
+      } else {
+        console.warn('[SendResetLinkForm] forgot password mutation failed')
+        setIsUserNotFound(false)
       }
-      if (data.message) setMessage(data.message)
     } catch (error) {
       console.error(error)
     } finally {
@@ -87,7 +80,7 @@ export const SendResetLinkForm = () => {
     <form
       onSubmit={handleSubmit}
       class={clsx(styles.authForm, styles.authFormForgetPassword)}
-      ref={(el) => (authFormRef.current = el)}
+      ref={(el) => (authFormRef = el)}
     >
       <div>
         <h4>{t('Forgot password?')}</h4>
@@ -98,7 +91,7 @@ export const SendResetLinkForm = () => {
         </Show>
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email,
+            'pretty-form__item--error': validationErrors().email
           })}
         >
           <input
@@ -119,7 +112,7 @@ export const SendResetLinkForm = () => {
                 class={'link'}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'register',
+                    mode: 'register'
                   })
                 }
               >
@@ -147,7 +140,7 @@ export const SendResetLinkForm = () => {
                 class={styles.authLink}
                 onClick={() =>
                   changeSearchParams({
-                    mode: 'login',
+                    mode: 'login'
                   })
                 }
               >

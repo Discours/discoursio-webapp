@@ -1,79 +1,76 @@
-import type { Topic } from '../../../graphql/schema/core.gen'
-
+import { Meta } from '@solidjs/meta'
+import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+
+import { useTopics } from '~/context/topics'
 import { useLocalize } from '../../../context/localize'
-import { Meta } from '../../../context/meta'
-import { useTopics } from '../../../context/topics'
-import { useRouter } from '../../../stores/router'
+import type { Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { dummyFilter } from '../../../utils/dummyFilter'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { scrollHandler } from '../../../utils/scroll'
+import { TopicBadge } from '../../Topic/TopicBadge'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
-
-import { TopicBadge } from '../../Topic/TopicBadge'
 import styles from './AllTopics.module.scss'
-
-type AllTopicsPageSearchParams = {
-  by: 'shouts' | 'authors' | 'title' | ''
-}
 
 type Props = {
   topics: Topic[]
-  isLoaded: boolean
 }
 
-export const PAGE_SIZE = 20
+export const TOPICS_PER_PAGE = 50
+export const ABC = {
+  ru: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#',
+  en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
+}
 
 export const AllTopics = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { searchParams, changeSearchParams } = useRouter<AllTopicsPageSearchParams>()
-  const [limit, setLimit] = createSignal(PAGE_SIZE)
-  const ALPHABET =
-    lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ#']
-  const { sortedTopics, setTopicsSort } = useTopics()
-
-  createEffect(() => {
-    if (!searchParams().by) {
-      changeSearchParams({
-        by: 'shouts',
-      })
-    }
-  })
-
-  createEffect(() => {
-    setTopicsSort(searchParams().by || 'shouts')
-  })
-
+  const alphabet = createMemo(() => ABC[lang()])
+  const { setTopicsSort, sortedTopics } = useTopics()
+  const topics = createMemo(() => sortedTopics() || props.topics)
+  const [searchParams] = useSearchParams<{ by?: string }>()
+  createEffect(on(() => searchParams?.by || 'shouts', setTopicsSort, { defer: true }))
+  onMount(() => setTopicsSort('shouts'))
+  // sorted derivative
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
-    return sortedTopics().reduce(
+    return topics().reduce(
       (acc, topic) => {
-        let letter = lang() === 'en' ? topic.slug[0].toUpperCase() : topic.title[0].toUpperCase()
+        let letter = lang() === 'en' ? topic.slug[0].toUpperCase() : (topic?.title?.[0] || '').toUpperCase()
         if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '#'
         if (/[^A-z]/.test(letter) && lang() === 'en') letter = '#'
         if (!acc[letter]) acc[letter] = []
         acc[letter].push(topic)
         return acc
       },
-      {} as { [letter: string]: Topic[] },
+      {} as { [letter: string]: Topic[] }
     )
   })
 
+  // helper memo
   const sortedKeys = createMemo<string[]>(() => {
     const keys = Object.keys(byLetter())
-    keys.sort()
-    keys.push(keys.shift())
+    if (keys) {
+      keys.sort()
+      const firstKey: string = keys.shift() || ''
+      keys.push(firstKey)
+    }
     return keys
   })
 
-  const showMore = () => setLimit((oldLimit) => oldLimit + PAGE_SIZE)
-  const [searchQuery, setSearchQuery] = createSignal('')
-  const filteredResults = createMemo(() => {
-    return dummyFilter(sortedTopics(), searchQuery(), lang())
-  })
+  // limit/offset based pagination aka 'show more' logic
+  const [limit, setLimit] = createSignal(TOPICS_PER_PAGE)
+  const showMore = () => setLimit((oldLimit) => oldLimit + TOPICS_PER_PAGE)
 
+  // filter
+  const [searchQuery, setSearchQuery] = createSignal('')
+  const [filteredResults, setFilteredResults] = createSignal<Topic[]>([])
+  createEffect(() =>
+    setFilteredResults((_prev: Topic[]) => dummyFilter(topics(), searchQuery(), lang()) as Topic[])
+  )
+
+  // subcomponent
   const AllTopicsHead = () => (
     <div class="row">
       <div class="col-lg-18 col-xl-15">
@@ -81,16 +78,16 @@ export const AllTopics = (props: Props) => {
         <p>{t('Subscribe what you like to tune your personal feed')}</p>
 
         <ul class="view-switcher">
-          <li classList={{ 'view-switcher__item--selected': searchParams().by === 'shouts' }}>
+          <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'shouts' }}>
             <a href="/topics?by=shouts">{t('By shouts')}</a>
           </li>
-          <li classList={{ 'view-switcher__item--selected': searchParams().by === 'authors' }}>
+          <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'authors' }}>
             <a href="/topics?by=authors">{t('By authors')}</a>
           </li>
-          <li classList={{ 'view-switcher__item--selected': searchParams().by === 'title' }}>
+          <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'title' }}>
             <a href="/topics?by=title">{t('By title')}</a>
           </li>
-          <Show when={searchParams().by !== 'title'}>
+          <Show when={searchParams?.by !== 'title'}>
             <li class="view-switcher__search">
               <SearchField onChange={(value) => setSearchQuery(value)} />
             </li>
@@ -100,10 +97,11 @@ export const AllTopics = (props: Props) => {
     </div>
   )
 
+  // meta
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Themes and plots')
   const description = t(
-    'Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about',
+    'Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about'
   )
 
   return (
@@ -118,16 +116,16 @@ export const AllTopics = (props: Props) => {
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={ogTitle} />
       <Meta name="twitter:description" content={description} />
-      <Show when={props.isLoaded} fallback={<Loading />}>
+      <Show when={Boolean(filteredResults())} fallback={<Loading />}>
         <div class="row">
           <div class="col-md-19 offset-md-5">
             <AllTopicsHead />
 
             <Show when={filteredResults().length > 0}>
-              <Show when={searchParams().by === 'title'}>
+              <Show when={searchParams?.by === 'title'}>
                 <div class="col-lg-18 col-xl-15">
                   <ul class={clsx('nodash', styles.alphabet)}>
-                    <For each={ALPHABET}>
+                    <For each={Array.from(alphabet())}>
                       {(letter, index) => (
                         <li>
                           <Show when={letter in byLetter()} fallback={letter}>
@@ -150,7 +148,7 @@ export const AllTopics = (props: Props) => {
                 <For each={sortedKeys()}>
                   {(letter) => (
                     <div class={clsx(styles.group, 'group')}>
-                      <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
+                      <h2 id={`letter-${alphabet().indexOf(letter)}`}>{letter}</h2>
                       <div class="row">
                         <div class="col-lg-20">
                           <div class="row">
@@ -162,7 +160,7 @@ export const AllTopics = (props: Props) => {
                                       ? capitalize(topic.slug.replaceAll('-', ' '))
                                       : topic.title}
                                   </a>
-                                  <span class={styles.articlesCounter}>{topic.stat.shouts}</span>
+                                  <span class={styles.articlesCounter}>{topic.stat?.shouts || 0}</span>
                                 </div>
                               )}
                             </For>
@@ -174,7 +172,7 @@ export const AllTopics = (props: Props) => {
                 </For>
               </Show>
 
-              <Show when={searchParams().by && searchParams().by !== 'title'}>
+              <Show when={searchParams?.by && searchParams?.by !== 'title'}>
                 <div class="row">
                   <div class="col-lg-18 col-xl-15 py-4">
                     <For each={filteredResults().slice(0, limit())}>
@@ -188,7 +186,7 @@ export const AllTopics = (props: Props) => {
                 </div>
               </Show>
 
-              <Show when={filteredResults().length > limit() && searchParams().by !== 'title'}>
+              <Show when={filteredResults().length > limit() && searchParams?.by !== 'title'}>
                 <div class={clsx(styles.loadMoreContainer, 'col-24 col-md-20 col-lg-14 offset-md-2')}>
                   <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
                     {t('Load more')}

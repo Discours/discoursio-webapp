@@ -19,7 +19,7 @@ export const ArticlePage = (props: PageProps) => {
   const slug = createMemo(() => page().params['slug'] as string)
 
   const { articleEntities } = useArticlesStore({
-    shouts,
+    shouts
   })
 
   const article = createMemo<Shout>(() => articleEntities()[slug()])
@@ -36,14 +36,6 @@ export const ArticlePage = (props: PageProps) => {
     }
   })
 
-  onMount(() => {
-    try {
-      // document.body.appendChild(script)
-      console.debug('TODO: connect ga')
-    } catch (error) {
-      console.warn(error)
-    }
-  })
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
 
   return (

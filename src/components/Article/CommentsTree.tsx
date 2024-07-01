@@ -11,7 +11,8 @@ import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 
 import { Comment } from './Comment'
 
-import { useSeen } from '../../context/seen'
+import { SortFunction } from '~/context/authors'
+import { useFeed } from '../../context/feed'
 import styles from './Article.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
@@ -23,7 +24,7 @@ type Props = {
 }
 
 export const CommentsTree = (props: Props) => {
-  const { author } = useSession()
+  const { session } = useSession()
   const { t } = useLocalize()
   const [commentsOrder, setCommentsOrder] = createSignal<ReactionSort>(ReactionSort.Newest)
   const [onlyNew, setOnlyNew] = createSignal(false)
@@ -33,7 +34,7 @@ export const CommentsTree = (props: Props) => {
   const { reactionEntities, createReaction, loadReactionsBy } = useReactions()
 
   const comments = createMemo(() =>
-    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT'),
+    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
   )
 
   const sortedComments = createMemo(() => {
@@ -45,11 +46,11 @@ export const CommentsTree = (props: Props) => {
     }
 
     if (commentsOrder() === ReactionSort.Like) {
-      newSortedComments = newSortedComments.sort(byStat('rating'))
+      newSortedComments = newSortedComments.sort(byStat('rating') as SortFunction<Reaction>)
     }
     return newSortedComments
   })
-  const { seen } = useSeen()
+  const { seen } = useFeed()
   const shoutLastSeen = createMemo(() => seen()[props.shoutSlug] ?? 0)
   const currentDate = new Date()
   const setCookie = () => localStorage.setItem(`${props.shoutSlug}`, `${currentDate}`)
@@ -59,7 +60,10 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     } else if (currentDate.getTime() > shoutLastSeen()) {
       const newComments = comments().filter((c) => {
-        if (c.reply_to || c.created_by.slug === author()?.slug) {
+        if (
+          (session()?.user?.app_data?.profile?.id && c.reply_to) ||
+          c.created_by.id === session()?.user?.app_data?.profile?.id
+        ) {
           return
         }
         return (c.updated_at || c.created_at) > shoutLastSeen()
@@ -73,9 +77,11 @@ export const CommentsTree = (props: Props) => {
     setPosting(true)
     try {
       await createReaction({
-        kind: ReactionKind.Comment,
-        body: value,
-        shout: props.shoutId,
+        reaction: {
+          kind: ReactionKind.Comment,
+          body: value,
+          shout: props.shoutId
+        }
       })
       setClearEditor(true)
       await loadReactionsBy({ by: { shout: props.shoutSlug } })
@@ -128,9 +134,7 @@ export const CommentsTree = (props: Props) => {
           {(reaction) => (
             <Comment
               sortedComments={sortedComments()}
-              isArticleAuthor={Boolean(
-                props.articleAuthors.some((a) => a?.slug === reaction.created_by.slug),
-              )}
+              isArticleAuthor={Boolean(props.articleAuthors.some((a) => a?.id === reaction.created_by.id))}
               comment={reaction}
               clickedReply={(id) => setClickedReplyId(id)}
               clickedReplyId={clickedReplyId()}

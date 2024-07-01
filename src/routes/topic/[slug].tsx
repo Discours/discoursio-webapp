@@ -11,7 +11,6 @@ import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { loadShouts } from '~/lib/api'
 import { SHOUTS_PER_PAGE } from '../(home)'
 
-
 const fetchTopicShouts = async (slug: string) => {
   const opts: LoadShoutsOptions = { filters: { topic: slug }, limit: SHOUTS_PER_PAGE }
   const shoutsLoader = loadShouts(opts)
@@ -23,7 +22,9 @@ export const route = {
 }
 
 export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
-  const articles = createAsync(async () => props.data.articles || (await fetchTopicShouts(props.params.slug)) || [])
+  const articles = createAsync(
+    async () => props.data.articles || (await fetchTopicShouts(props.params.slug)) || []
+  )
   const { topicEntities } = useTopics()
   const { t } = useLocalize()
   const topic = createMemo(() => topicEntities?.()[props.params.slug])
@@ -52,7 +53,11 @@ export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
           cover={topic()?.pic || ''}
         >
           <ReactionsProvider>
-            <TopicView topic={topic() as Topic} topicSlug={props.params.slug} shouts={articles() as Shout[]}/>
+            <TopicView
+              topic={topic() as Topic}
+              topicSlug={props.params.slug}
+              shouts={articles() as Shout[]}
+            />
           </ReactionsProvider>
         </PageLayout>
       </Suspense>

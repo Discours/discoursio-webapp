@@ -6,7 +6,24 @@ export default gql`
       error
       authors {
         id
+        name
         slug
+        pic
+        bio
+        stat {
+          followers
+          shouts
+          comments
+        }
+      }
+      topics {
+        body
+        slug
+        stat {
+          shouts
+          authors
+          followers
+        }
       }
     }
   }

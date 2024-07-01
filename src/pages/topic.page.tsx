@@ -14,7 +14,7 @@ export const TopicPage = (props: PageProps) => {
   const slug = createMemo(() => page().params['slug'] as string)
 
   const [isLoaded, setIsLoaded] = createSignal(
-    Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug(),
+    Boolean(props.topicShouts) && Boolean(props.topic) && props.topic.slug === slug()
   )
 
   const preload = () =>
@@ -22,8 +22,8 @@ export const TopicPage = (props: PageProps) => {
       loadShouts({
         filters: { topic: slug(), featured: true },
         limit: PRERENDERED_ARTICLES_COUNT,
-        offset: 0,
-      }),
+        offset: 0
+      })
     ])
 
   onMount(async () => {
@@ -37,24 +37,22 @@ export const TopicPage = (props: PageProps) => {
   })
 
   createEffect(
-    on(
-      () => slug(),
-      async () => {
+    on(slug, async (s) => {
+      if (s) {
         setIsLoaded(false)
         resetSortedArticles()
         await preload()
         setIsLoaded(true)
-      },
-      { defer: true },
-    ),
+      }
+    })
   )
 
-  onCleanup(() => resetSortedArticles())
+  onCleanup(resetSortedArticles)
 
   const usePrerenderedData = props.topic?.slug === slug()
 
   return (
-    <PageLayout title={props.seo.title}>
+    <PageLayout title={props.seo?.title || props.topic?.title}>
       <ReactionsProvider>
         <Show when={isLoaded()} fallback={<Loading />}>
           <TopicView

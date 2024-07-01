@@ -20,18 +20,18 @@ type Props = {
 export const AuthorLink = (props: Props) => {
   const { lang } = useLocalize()
   const name = createMemo(() => {
-    return lang() === 'en' && isCyrillic(props.author.name)
-      ? translit(capitalize(props.author.name))
+    return lang() === 'en' && isCyrillic(props.author.name || '')
+      ? translit(capitalize(props.author.name || ''))
       : props.author.name
   })
   return (
     <div
-      class={clsx(styles.AuthorLink, props.class, styles[props.size ?? 'M'], {
-        [styles.authorLinkFloorImportant]: props.isFloorImportant,
+      class={clsx(styles.AuthorLink, props.class, styles[(props.size ?? 'M') as keyof Props['size']], {
+        [styles.authorLinkFloorImportant]: props.isFloorImportant
       })}
     >
       <a class={styles.link} href={`/author/${props.author.slug}`}>
-        <Userpic size={props.size ?? 'M'} name={name()} userpic={props.author.pic} />
+        <Userpic size={props.size ?? 'M'} name={name() || ''} userpic={props.author.pic || ''} />
         <div class={styles.name}>{name()}</div>
       </a>
     </div>

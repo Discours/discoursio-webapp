@@ -52,7 +52,7 @@ export const PasswordField = (props: Props) => {
       return
     }
 
-    props.onInput(value)
+    props.onInput?.(value)
     if (!props.noValidate) {
       const errorValue = validatePassword(value)
       if (errorValue) {
@@ -63,18 +63,8 @@ export const PasswordField = (props: Props) => {
     }
   }
 
-  createEffect(
-    on(
-      () => error(),
-      () => {
-        props.errorMessage?.(error())
-      },
-      { defer: true },
-    ),
-  )
-  createEffect(() => {
-    setError(props.setError)
-  })
+  createEffect(on(error, (er) => er && props.errorMessage?.(er), { defer: true }))
+  createEffect(() => setError(props.setError))
 
   return (
     <div class={clsx(styles.PassportField, props.class)}>
@@ -101,7 +91,7 @@ export const PasswordField = (props: Props) => {
         <Show when={error()}>
           <div
             class={clsx(styles.registerPassword, styles.validationError, {
-              'form-message--error': props.setError,
+              'form-message--error': props.setError
             })}
           >
             {error()}

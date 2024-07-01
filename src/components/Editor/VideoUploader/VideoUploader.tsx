@@ -1,15 +1,14 @@
-import type { MediaItem } from '../../../pages/types'
-
 import { createDropzone } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import { For, Show, createSignal } from 'solid-js'
 
+import { useSnackbar } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
-import { useSnackbar } from '../../../context/snackbar'
 import { composeMediaItems } from '../../../utils/composeMediaItems'
 import { validateUrl } from '../../../utils/validateUrl'
 import { VideoPlayer } from '../../_shared/VideoPlayer'
 
+import { MediaItem } from '~/types/mediaitem'
 import styles from './VideoUploader.module.scss'
 
 type Props = {
@@ -23,14 +22,8 @@ export const VideoUploader = (props: Props) => {
   const [dragActive, setDragActive] = createSignal(false)
   const [error, setError] = createSignal<string>()
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
-
   const { showSnackbar } = useSnackbar()
-
-  const urlInput: {
-    current: HTMLInputElement
-  } = {
-    current: null,
-  }
+  let urlInput: HTMLInputElement | undefined
 
   const { setRef: dropzoneRef, files: droppedFiles } = createDropzone({
     onDrop: async () => {
@@ -40,15 +33,15 @@ export const VideoUploader = (props: Props) => {
       } else if (droppedFiles()[0].file.type.startsWith('video/')) {
         await showSnackbar({
           body: t(
-            'This functionality is currently not available, we would like to work on this issue. Use the download link.',
-          ),
+            'This functionality is currently not available, we would like to work on this issue. Use the download link.'
+          )
         })
       } else {
         setError(t('Video format not supported'))
       }
-    },
+    }
   })
-  const handleDrag = (event) => {
+  const handleDrag = (event: DragEvent) => {
     if (event.type === 'dragenter' || event.type === 'dragover') {
       setDragActive(true)
       setError()
@@ -85,8 +78,8 @@ export const VideoUploader = (props: Props) => {
           onClick={() =>
             showSnackbar({
               body: t(
-                'This functionality is currently not available, we would like to work on this issue. Use the download link.',
-              ),
+                'This functionality is currently not available, we would like to work on this issue. Use the download link.'
+              )
             })
           }
           ref={dropzoneRef}
@@ -100,7 +93,7 @@ export const VideoUploader = (props: Props) => {
         <div class={styles.inputHolder}>
           <input
             class={clsx(styles.urlInput, { [styles.hasError]: incorrectUrl() })}
-            ref={(el) => (urlInput.current = el)}
+            ref={(el) => (urlInput = el)}
             type="text"
             placeholder={t('Insert video link')}
             onChange={(event) => handleUrlInput(event.currentTarget.value)}

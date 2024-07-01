@@ -1,16 +1,18 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
   "files": {
     "include": ["*.tsx", "*.ts", "*.js", "*.json"],
     "ignore": ["./dist", "./node_modules", ".husky", "docs", "gen", "*.gen.ts", "*.d.ts"]
   },
   "vcs": {
     "defaultBranch": "dev",
-    "useIgnoreFile": true
+    "useIgnoreFile": true,
+    "enabled": true,
+    "clientKind": "git"
   },
   "organizeImports": {
     "enabled": true,
-    "ignore": ["./api", "./gen"]
+    "ignore": ["./gen"]
   },
   "formatter": {
     "indentStyle": "space",
@@ -22,10 +24,10 @@
     "formatter": {
       "semicolons": "asNeeded",
       "quoteStyle": "single",
-      "trailingComma": "all",
       "enabled": true,
       "jsxQuoteStyle": "double",
-      "arrowParentheses": "always"
+      "arrowParentheses": "always",
+      "trailingCommas": "none"
     }
   },
   "linter": {
@@ -61,6 +63,7 @@
         "noBarrelFile": "off"
       },
       "style": {
+        "noNamespaceImport": "warn",
         "useBlockStatements": "off",
         "noImplicitBoolean": "off",
         "useNamingConvention": "off",

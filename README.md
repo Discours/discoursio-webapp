@@ -1,7 +1,9 @@
 ## How to start
+
+Use Bun to manage packages.
+
 ```
-npm install
-npm start
+bun i
 ```
 
 ## Useful commands
@@ -9,23 +11,9 @@ npm start
 run checks with your favorite package manager: npm, yarn, pnpm or bun
 
 ```
-npm run check
+bun run typecheck
 ```
-
 fix styles, imports, formatting and autofixable linting errors:
-
 ```
-npm run fix
-```
-
-## Code generation
-
-generate new SolidJS component:
-```
-npm run hygen component new NewComponentName
-```
-
-generate new SolidJS context:
-```
-npm run hygen context new NewContextName
+bun run fix
 ```

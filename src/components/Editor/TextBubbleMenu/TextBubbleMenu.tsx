@@ -23,10 +23,10 @@ type BubbleMenuProps = {
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const { t } = useLocalize()
 
-  const isActive = (name: string, attributes?: unknown) =>
+  const isActive = (name: string, attributes?: Record<string, string | number>) =>
     createEditorTransaction(
       () => props.editor,
-      (editor) => editor?.isActive(name, attributes),
+      (editor) => editor?.isActive(name, attributes)
     )
 
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
@@ -71,7 +71,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
     }
     setListBubbleOpen((prev) => !prev)
   }
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !props.editor.state.selection.empty) {
       event.preventDefault()
       setLinkEditorOpen(true)
@@ -86,12 +86,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
       }
       const value = ed.getAttributes('footnote').value
       setFootNote(value)
-    },
+    }
   )
 
-  const handleAddFootnote = (footnote) => {
+  const handleAddFootnote = (footnote: string) => {
     if (footNote()) {
-      props.editor.chain().focus().updateFootnote(footnote).run()
+      props.editor.chain().focus().updateFootnote({ value: footnote }).run()
     } else {
       props.editor.chain().focus().setFootnote({ value: footnote }).run()
     }
@@ -168,7 +168,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   <button
                     type="button"
                     class={clsx(styles.bubbleMenuButton, {
-                      [styles.bubbleMenuButtonActive]: textSizeBubbleOpen(),
+                      [styles.bubbleMenuButtonActive]: textSizeBubbleOpen()
                     })}
                     onClick={toggleTextSizePopup}
                   >
@@ -180,12 +180,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       <header>{t('Headers')}</header>
                       <div class={styles.actions}>
                         <Popover content={t('Header 1')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isH1(),
+                                [styles.bubbleMenuButtonActive]: isH1()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleHeading({ level: 2 }).run()
@@ -197,12 +197,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           )}
                         </Popover>
                         <Popover content={t('Header 2')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isH2(),
+                                [styles.bubbleMenuButtonActive]: isH2()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleHeading({ level: 3 }).run()
@@ -214,12 +214,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           )}
                         </Popover>
                         <Popover content={t('Header 3')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isH3(),
+                                [styles.bubbleMenuButtonActive]: isH3()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleHeading({ level: 4 }).run()
@@ -234,12 +234,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       <header>{t('Quotes')}</header>
                       <div class={styles.actions}>
                         <Popover content={t('Quote')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isQuote(),
+                                [styles.bubbleMenuButtonActive]: isQuote()
                               })}
                               onClick={handleSetPunchline}
                             >
@@ -248,12 +248,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           )}
                         </Popover>
                         <Popover content={t('Punchline')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isPunchLine(),
+                                [styles.bubbleMenuButtonActive]: isPunchLine()
                               })}
                               onClick={handleSetQuote}
                             >
@@ -265,12 +265,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       <header>{t('squib')}</header>
                       <div class={styles.actions}>
                         <Popover content={t('Incut')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isIncut(),
+                                [styles.bubbleMenuButtonActive]: isIncut()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleArticle().run()
@@ -289,12 +289,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               </>
             </Show>
             <Popover content={t('Bold')}>
-              {(triggerRef: (el) => void) => (
+              {(triggerRef: (el: HTMLElement) => void) => (
                 <button
                   ref={triggerRef}
                   type="button"
                   class={clsx(styles.bubbleMenuButton, {
-                    [styles.bubbleMenuButtonActive]: isBold(),
+                    [styles.bubbleMenuButtonActive]: isBold()
                   })}
                   onClick={() => props.editor.chain().focus().toggleBold().run()}
                 >
@@ -303,12 +303,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               )}
             </Popover>
             <Popover content={t('Italic')}>
-              {(triggerRef: (el) => void) => (
+              {(triggerRef: (el: HTMLElement) => void) => (
                 <button
                   ref={triggerRef}
                   type="button"
                   class={clsx(styles.bubbleMenuButton, {
-                    [styles.bubbleMenuButtonActive]: isItalic(),
+                    [styles.bubbleMenuButtonActive]: isItalic()
                   })}
                   onClick={() => props.editor.chain().focus().toggleItalic().run()}
                 >
@@ -319,12 +319,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
 
             <Show when={!props.isCommonMarkup}>
               <Popover content={t('Highlight')}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef: (el: HTMLElement) => void) => (
                   <button
                     ref={triggerRef}
                     type="button"
                     class={clsx(styles.bubbleMenuButton, {
-                      [styles.bubbleMenuButtonActive]: isHighlight(),
+                      [styles.bubbleMenuButtonActive]: isHighlight()
                     })}
                     onClick={() => props.editor.chain().focus().toggleHighlight({ color: '#f6e3a1' }).run()}
                   >
@@ -335,13 +335,13 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
               <div class={styles.delimiter} />
             </Show>
             <Popover content={<div class={styles.noWrap}>{t('Add url')}</div>}>
-              {(triggerRef: (el) => void) => (
+              {(triggerRef: (el: HTMLElement) => void) => (
                 <button
                   ref={triggerRef}
                   type="button"
                   onClick={handleOpenLinkForm}
                   class={clsx(styles.bubbleMenuButton, {
-                    [styles.bubbleMenuButtonActive]: isLink(),
+                    [styles.bubbleMenuButtonActive]: isLink()
                   })}
                 >
                   <Icon name="editor-link" />
@@ -351,12 +351,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
             <Show when={!props.isCommonMarkup}>
               <>
                 <Popover content={t('Insert footnote')}>
-                  {(triggerRef: (el) => void) => (
+                  {(triggerRef: (el: HTMLElement) => void) => (
                     <button
                       ref={triggerRef}
                       type="button"
                       class={clsx(styles.bubbleMenuButton, {
-                        [styles.bubbleMenuButtonActive]: isFootnote(),
+                        [styles.bubbleMenuButtonActive]: isFootnote()
                       })}
                       onClick={handleOpenFootnoteEditor}
                     >
@@ -369,7 +369,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   <button
                     type="button"
                     class={clsx(styles.bubbleMenuButton, {
-                      [styles.bubbleMenuButtonActive]: listBubbleOpen(),
+                      [styles.bubbleMenuButtonActive]: listBubbleOpen()
                     })}
                     onClick={toggleListPopup}
                   >
@@ -381,12 +381,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                       <header>{t('Lists')}</header>
                       <div class={styles.actions}>
                         <Popover content={t('Bullet list')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isBulletList(),
+                                [styles.bubbleMenuButtonActive]: isBulletList()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleBulletList().run()
@@ -398,12 +398,12 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                           )}
                         </Popover>
                         <Popover content={t('Ordered list')}>
-                          {(triggerRef: (el) => void) => (
+                          {(triggerRef: (el: HTMLElement) => void) => (
                             <button
                               ref={triggerRef}
                               type="button"
                               class={clsx(styles.bubbleMenuButton, {
-                                [styles.bubbleMenuButtonActive]: isOrderedList(),
+                                [styles.bubbleMenuButtonActive]: isOrderedList()
                               })}
                               onClick={() => {
                                 props.editor.chain().focus().toggleOrderedList().run()

@@ -115,10 +115,9 @@
     }
 
     .description {
-      color: var(--black-400);
-
       @include font-size(1.2rem);
 
+      color: var(--black-400);
       font-weight: 500;
       margin: 0;
     }

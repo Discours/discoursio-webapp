@@ -678,7 +678,7 @@ figure {
       cursor: default;
 
       &:hover {
-        background: #fff;
+        background: transparent;
       }
     }
   }
@@ -840,7 +840,7 @@ figure {
   }
 }
 
-#root {
+#app {
   display: flex;
   flex-direction: column;
   place-content: space-between space-between;
@@ -850,11 +850,10 @@ figure {
 .main-content {
   flex: 1 100%;
   min-height: 90vh;
-  padding-top: 80px;
   position: relative;
 
   @include media-breakpoint-up(lg) {
-    padding-top: 130px;
+    // padding-top: 130px;
   }
 }
 
@@ -989,7 +988,7 @@ details {
 
       &::before {
         content: '';
-        background: url(/icons/expand.svg) no-repeat;
+        background: url('/icons/expand.svg') no-repeat;
         background-size: contain;
         height: 1.3rem;
         margin-right: 0.5em;

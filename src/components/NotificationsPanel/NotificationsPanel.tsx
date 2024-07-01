@@ -24,7 +24,7 @@ const getYesterdayStart = () => {
   const now = new Date()
   return new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0, 0, 0, 0)
 }
-
+const hourAgo = () => Date.now() - 3600 * 1000
 const isSameDate = (date1: Date, date2: Date) =>
   date1.getDate() === date2.getDate() &&
   date1.getMonth() === date2.getMonth() &&
@@ -46,7 +46,7 @@ const isEarlier = (date: Date) => {
 
 export const NotificationsPanel = (props: Props) => {
   const [isLoading, setIsLoading] = createSignal(false)
-  const { author } = useSession()
+  const { session } = useSession()
   const { t } = useLocalize()
   const {
     after,
@@ -55,20 +55,18 @@ export const NotificationsPanel = (props: Props) => {
     loadedNotificationsCount,
     totalNotificationsCount,
     loadNotificationsGrouped,
-    markSeenAll,
+    markSeenAll
   } = useNotifications()
   const handleHide = () => {
     props.onClose()
   }
 
-  const panelRef: { current: HTMLDivElement } = {
-    current: null,
-  }
+  let panelRef: HTMLDivElement | undefined
 
   useOutsideClickHandler({
     containerRef: panelRef,
     predicate: () => props.isOpen,
-    handler: () => handleHide(),
+    handler: () => handleHide()
   })
 
   let windowScrollTop = 0
@@ -76,14 +74,14 @@ export const NotificationsPanel = (props: Props) => {
   createEffect(() => {
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
 
-    if (props.isOpen) {
+    if (props.isOpen && mainContent && window) {
       windowScrollTop = window.scrollY
       mainContent.style.marginTop = `-${windowScrollTop}px`
     }
 
     document.body.classList.toggle('fixed', props.isOpen)
 
-    if (!props.isOpen) {
+    if (!props.isOpen && mainContent && window) {
       mainContent.style.marginTop = ''
       window.scrollTo(0, windowScrollTop)
     }
@@ -101,21 +99,25 @@ export const NotificationsPanel = (props: Props) => {
 
   const yesterdayNotifications = createMemo(() => {
     return sortedNotifications().filter((notification) =>
-      isYesterday(new Date(notification.updated_at * 1000)),
+      isYesterday(new Date(notification.updated_at * 1000))
     )
   })
 
   const earlierNotifications = createMemo(() => {
     return sortedNotifications().filter((notification) =>
-      isEarlier(new Date(notification.updated_at * 1000)),
+      isEarlier(new Date(notification.updated_at * 1000))
     )
   })
 
-  const scrollContainerRef: { current: HTMLDivElement } = { current: null }
+  let scrollContainerRef: HTMLDivElement | undefined
   const loadNextPage = async () => {
-    await loadNotificationsGrouped({ after: after(), limit: PAGE_SIZE, offset: loadedNotificationsCount() })
+    await loadNotificationsGrouped({
+      after: after() || hourAgo(),
+      limit: PAGE_SIZE,
+      offset: loadedNotificationsCount()
+    })
     if (loadedNotificationsCount() < totalNotificationsCount()) {
-      const hasMore = scrollContainerRef.current.scrollHeight <= scrollContainerRef.current.offsetHeight
+      const hasMore = (scrollContainerRef?.scrollHeight || 0) <= (scrollContainerRef?.offsetHeight || 0)
 
       if (hasMore) {
         await loadNextPage()
@@ -123,7 +125,7 @@ export const NotificationsPanel = (props: Props) => {
     }
   }
   const handleScroll = async () => {
-    if (!scrollContainerRef.current || isLoading()) {
+    if (!scrollContainerRef || isLoading()) {
       return
     }
     if (totalNotificationsCount() === loadedNotificationsCount()) {
@@ -131,8 +133,8 @@ export const NotificationsPanel = (props: Props) => {
     }
 
     const isNearBottom =
-      scrollContainerRef.current.scrollHeight - scrollContainerRef.current.scrollTop <=
-      scrollContainerRef.current.clientHeight * 1.5
+      scrollContainerRef.scrollHeight - scrollContainerRef.scrollTop <=
+      scrollContainerRef.clientHeight * 1.5
 
     if (isNearBottom) {
       setIsLoading(true)
@@ -143,34 +145,34 @@ export const NotificationsPanel = (props: Props) => {
   const handleScrollThrottled = throttle(50, handleScroll)
 
   onMount(() => {
-    scrollContainerRef.current.addEventListener('scroll', handleScrollThrottled)
+    scrollContainerRef?.addEventListener('scroll', handleScrollThrottled)
     onCleanup(() => {
-      scrollContainerRef.current.removeEventListener('scroll', handleScrollThrottled)
+      scrollContainerRef?.removeEventListener('scroll', handleScrollThrottled)
     })
   })
 
   createEffect(
-    on(author, async (a) => {
-      if (a?.id) {
+    on(session, async (s) => {
+      if (s?.access_token) {
         setIsLoading(true)
         await loadNextPage()
         setIsLoading(false)
       }
-    }),
+    })
   )
 
   return (
     <div
       class={clsx(styles.container, {
-        [styles.isOpened]: props.isOpen,
+        [styles.isOpened]: props.isOpen
       })}
     >
-      <div ref={(el) => (panelRef.current = el)} class={styles.panel}>
+      <div ref={(el) => (panelRef = el)} class={styles.panel}>
         <div class={styles.closeButton} onClick={handleHide}>
           <Icon class={styles.closeIcon} name="close" />
         </div>
         <div class={styles.title}>{t('Notifications')}</div>
-        <div class={clsx('wide-container', styles.content)} ref={(el) => (scrollContainerRef.current = el)}>
+        <div class={clsx('wide-container', styles.content)} ref={(el) => (scrollContainerRef = el)}>
           <Show
             when={sortedNotifications().length > 0}
             fallback={

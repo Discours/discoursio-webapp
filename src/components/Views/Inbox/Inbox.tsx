@@ -1,15 +1,18 @@
-import type { Chat, Message as MessageType } from '../../../graphql/schema/chat.gen'
-import type { Author } from '../../../graphql/schema/core.gen'
-
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
+import { useUI } from '~/context/ui'
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { useRouter } from '../../../stores/router'
-import { showModal } from '../../../stores/ui'
-
+import type {
+  Chat,
+  ChatMember,
+  Message as MessageType,
+  MutationCreate_MessageArgs
+} from '../../../graphql/schema/chat.gen'
+import type { Author } from '../../../graphql/schema/core.gen'
+import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
@@ -20,10 +23,8 @@ import { Icon } from '../../_shared/Icon'
 import { InviteMembers } from '../../_shared/InviteMembers'
 import { Popover } from '../../_shared/Popover'
 
-import { lazy } from 'solid-js'
+import { useSearchParams } from '@solidjs/router'
 import styles from './Inbox.module.scss'
-
-const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
 
 type InboxSearchParams = {
   by?: string
@@ -32,11 +33,7 @@ type InboxSearchParams = {
 }
 
 const userSearch = (array: Author[], keyword: string) => {
-  return array.filter((value) => new RegExp(keyword.trim(), 'gi').test(value.name))
-}
-
-const handleOpenInviteModal = () => {
-  showModal('inviteMembers')
+  return array.filter((value) => new RegExp(keyword.trim(), 'gi').test(value.name || ''))
 }
 
 type Props = {
@@ -46,7 +43,7 @@ type Props = {
 
 export const InboxView = (props: Props) => {
   const { t } = useLocalize()
-  const { chats, messages, loadChats, getMessages, sendMessage, createChat } = useInbox()
+  const { chats, messages, setMessages, loadChats, getMessages, sendMessage, createChat } = useInbox()
   const [recipients, setRecipients] = createSignal<Author[]>(props.authors)
   const [sortByGroup, setSortByGroup] = createSignal(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
@@ -54,66 +51,70 @@ export const InboxView = (props: Props) => {
   const [messageToReply, setMessageToReply] = createSignal<MessageType | null>(null)
   const [isClear, setClear] = createSignal(false)
   const [isScrollToNewVisible, setIsScrollToNewVisible] = createSignal(false)
-  const { author } = useSession()
-  const currentUserId = createMemo(() => author()?.id)
-  const { changeSearchParams, searchParams } = useRouter<InboxSearchParams>()
+  const { session } = useSession()
+  const authorId = createMemo<number>(() => session()?.user?.app_data?.profile?.id || 0)
+  const [searchParams, changeSearchParams] = useSearchParams<InboxSearchParams>()
+  const { showModal } = useUI()
+  const handleOpenInviteModal = () => showModal('inviteMembers')
+  let messagesContainerRef: HTMLDivElement | null
 
-  const messagesContainerRef: { current: HTMLDivElement } = {
-    current: null,
-  }
-
-  const getQuery = (query) => {
+  const getQuery = (query: () => string) => {
     if (query().length >= 2) {
       const match = userSearch(recipients(), query())
       setRecipients(match)
     }
   }
+
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
     changeSearchParams({
-      chat: chat.id,
+      chat: chat.id
     })
     try {
-      await getMessages(chat.id)
+      const mmm = await getMessages?.(chat.id)
+      if (mmm) {
+        setMessages(mmm)
+      }
     } catch (error) {
       console.error('[getMessages]', error)
     } finally {
-      messagesContainerRef.current.scroll({
-        top: messagesContainerRef.current.scrollHeight,
-        behavior: 'instant',
+      messagesContainerRef?.scroll({
+        top: messagesContainerRef?.scrollHeight,
+        behavior: 'instant'
       })
     }
   }
 
   const handleSubmit = (message: string) => {
-    sendMessage({
+    sendMessage?.({
       body: message,
-      chat_id: currentDialog()?.id.toString(),
       reply_to: messageToReply()?.id,
-    })
+      chat_id: currentDialog()?.id || ''
+    } as MutationCreate_MessageArgs)
     setClear(true)
     setMessageToReply(null)
-    messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    if (messagesContainerRef)
+      (messagesContainerRef as HTMLDivElement).scrollTop = messagesContainerRef?.scrollHeight || 0
     setClear(false)
   }
 
   createEffect(async () => {
-    if (searchParams().chat) {
-      const chatToOpen = chats()?.find((chat) => chat.id === searchParams().chat)
+    if (searchParams?.chat) {
+      const chatToOpen = chats()?.find((chat) => chat.id.toString() === searchParams?.chat)
       if (!chatToOpen) return
       await handleOpenChat(chatToOpen)
       return
     }
-    if (searchParams().initChat) {
+    if (searchParams?.initChat) {
       try {
-        const newChat = await createChat([Number(searchParams().initChat)], '')
+        const newChat = await createChat([Number(searchParams?.initChat)], '')
         await loadChats()
         changeSearchParams({
-          initChat: null,
-          chat: newChat.chat.id,
+          initChat: undefined,
+          chat: newChat.chat.id
         })
         const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
-        await handleOpenChat(chatToOpen)
+        await handleOpenChat(chatToOpen as Chat)
       } catch (error) {
         console.error(error)
       }
@@ -122,8 +123,8 @@ export const InboxView = (props: Props) => {
 
   const chatsToShow = () => {
     if (!chats()) return
-    const sorted = chats().sort((a, b) => {
-      return b.updated_at - a.updated_at
+    const sorted = chats().sort((a: Chat, b: Chat) => {
+      return (b?.updated_at || 0) - (a?.updated_at || 0)
     })
     if (sortByPerToPer()) {
       return sorted.filter((chat) => (chat.title || '').trim().length === 0)
@@ -135,31 +136,28 @@ export const InboxView = (props: Props) => {
   }
 
   const findToReply = (messageId: number) => {
-    return messages().find((message: MessageType) => message.id === messageId)
+    return (messages?.() || []).find((message: MessageType) => message.id === messageId)
   }
 
   createEffect(
     on(
-      () => messages(),
-      () => {
-        if (!messagesContainerRef.current) {
-          return
+      () => messages?.() || [],
+      (_mmm) => {
+        if (!messagesContainerRef) return
+        if (messagesContainerRef.scrollTop >= messagesContainerRef.scrollHeight) return
+        if (messagesContainerRef) {
+          messagesContainerRef?.scroll({
+            top: messagesContainerRef.scrollHeight,
+            behavior: 'smooth'
+          })
         }
-        if (messagesContainerRef.current.scrollTop >= messagesContainerRef.current.scrollHeight) {
-          return
-        }
-        messagesContainerRef.current.scroll({
-          top: messagesContainerRef.current.scrollHeight,
-          behavior: 'smooth',
-        })
-      },
-    ),
-    { defer: true },
+      }
+    )
   )
   const handleScrollMessageContainer = () => {
     if (
-      messagesContainerRef.current.scrollHeight - messagesContainerRef.current.scrollTop >
-      messagesContainerRef.current.clientHeight * 1.5
+      (messagesContainerRef?.scrollHeight || 0) - (messagesContainerRef?.scrollTop || 0) >
+      (messagesContainerRef?.clientHeight || 0) * 1.5
     ) {
       setIsScrollToNewVisible(true)
     } else {
@@ -167,9 +165,9 @@ export const InboxView = (props: Props) => {
     }
   }
   const handleScrollToNew = () => {
-    messagesContainerRef.current.scroll({
-      top: messagesContainerRef.current.scrollHeight,
-      behavior: 'smooth',
+    messagesContainerRef?.scroll({
+      top: messagesContainerRef?.scrollHeight,
+      behavior: 'smooth'
     })
     setIsScrollToNewVisible(false)
   }
@@ -234,11 +232,11 @@ export const InboxView = (props: Props) => {
                   <DialogCard
                     onClick={() => handleOpenChat(chat)}
                     isOpened={chat.id === currentDialog()?.id}
-                    members={chat.members}
-                    ownId={currentUserId()}
-                    lastUpdate={chat.updated_at}
-                    counter={chat.unread}
-                    message={chat.messages.pop()?.body}
+                    members={chat?.members as ChatMember[]}
+                    ownId={authorId()}
+                    lastUpdate={chat.updated_at || Date.now()}
+                    counter={chat.unread || 0}
+                    message={chat.messages?.pop()?.body || ''}
                   />
                 )}
               </For>
@@ -258,11 +256,11 @@ export const InboxView = (props: Props) => {
               />
             }
           >
-            <DialogHeader ownId={currentUserId()} chat={currentDialog()} />
+            <DialogHeader ownId={authorId()} chat={currentDialog() as Chat} />
             <div class={styles.conversationMessages}>
               <Show when={isScrollToNewVisible()}>
                 <Popover content={t('To new messages')}>
-                  {(triggerRef: (el) => void) => (
+                  {(triggerRef: (el: HTMLElement) => void) => (
                     <div ref={triggerRef} class={styles.scrollToNew} onClick={handleScrollToNew}>
                       <Icon name="arrow-right" class={styles.icon} />
                     </div>
@@ -271,17 +269,17 @@ export const InboxView = (props: Props) => {
               </Show>
               <div
                 class={styles.messagesContainer}
-                ref={(el) => (messagesContainerRef.current = el)}
+                ref={(el) => (messagesContainerRef = el)}
                 onScroll={handleScrollMessageContainer}
               >
-                <For each={messages()}>
-                  {(message) => (
+                <For each={messages?.() || []}>
+                  {(m) => (
                     <Message
-                      content={message}
-                      ownId={currentUserId()}
-                      members={currentDialog().members}
-                      replyBody={message.reply_to && findToReply(message.reply_to).body}
-                      replyClick={() => setMessageToReply(message)}
+                      content={m}
+                      ownId={authorId()}
+                      members={currentDialog()?.members as ChatMember[]}
+                      replyBody={(m?.reply_to && findToReply(m?.reply_to || 0)?.body) || ''}
+                      replyClick={() => setMessageToReply(m)}
                     />
                   )}
                 </For>

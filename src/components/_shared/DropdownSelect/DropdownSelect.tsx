@@ -18,19 +18,15 @@ type Props = {
 export const DropdownSelect = (props: Props) => {
   const [selected, _setSelected] = createSignal<FilterItem>(props.selectItems[0])
   const [isDropDownVisible, setIsDropDownVisible] = createSignal(false)
-
-  const containerRef: { current: HTMLElement } = {
-    current: null,
-  }
+  let containerRef: HTMLElement | null
 
   const handleShowDropdown = () => {
     setIsDropDownVisible(!isDropDownVisible())
   }
 
   useOutsideClickHandler({
-    containerRef,
     predicate: () => isDropDownVisible(),
-    handler: () => setIsDropDownVisible(false),
+    handler: () => setIsDropDownVisible(false)
   })
 
   return (
@@ -43,7 +39,7 @@ export const DropdownSelect = (props: Props) => {
       </div>
 
       <Show when={isDropDownVisible()}>
-        <ul class={styles.listItems} ref={(el) => (containerRef.current = el)}>
+        <ul class={styles.listItems} ref={(el) => (containerRef = el)}>
           <For each={props.selectItems}>
             {(item) => (
               <li>

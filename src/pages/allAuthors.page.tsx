@@ -10,7 +10,7 @@ import { loadAllAuthors, loadAuthors } from '../stores/zine/authors'
 
 export const AllAuthorsPage = (props: PageProps) => {
   const [isLoaded, setIsLoaded] = createSignal<boolean>(
-    Boolean(props.allAuthors && props.topFollowedAuthors && props.topWritingAuthors),
+    Boolean(props.allAuthors && props.topFollowedAuthors && props.topWritingAuthors)
   )
 
   const { t } = useLocalize()

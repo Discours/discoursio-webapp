@@ -6,7 +6,7 @@ import styles from '../../styles/FeedSettings.module.scss'
 //   by: '' | 'topics' | 'authors' | 'shouts'
 // }
 
-export const FeedSettingsView = (_props) => {
+export const FeedSettingsView = () => {
   const { t } = useLocalize()
   return (
     <div class="container">

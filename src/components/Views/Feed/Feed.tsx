@@ -1,18 +1,18 @@
-import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
+import { Meta } from '@solidjs/meta'
+import { A, useLocation, useSearchParams } from '@solidjs/router'
+import { useGraphQL } from '~/context/graphql'
+import { useUI } from '~/context/ui'
+import getUnratedShoutsQuery from '~/graphql/query/core/articles-load-unrated'
+import { useAuthors } from '../../../context/authors'
+import { useFeed } from '../../../context/feed'
 import { useLocalize } from '../../../context/localize'
-import { Meta } from '../../../context/meta'
 import { useReactions } from '../../../context/reactions'
 import { useSession } from '../../../context/session'
 import { useTopics } from '../../../context/topics'
-import { apiClient } from '../../../graphql/client/core'
 import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphql/schema/core.gen'
-import { router, useRouter } from '../../../stores/router'
-import { showModal } from '../../../stores/ui'
-import { resetSortedArticles, useArticlesStore } from '../../../stores/zine/articles'
-import { useTopAuthorsStore } from '../../../stores/zine/topAuthors'
 import { getImageUrl } from '../../../utils/getImageUrl'
 import { byCreated } from '../../../utils/sortby'
 import { CommentDate } from '../../Article/CommentDate'
@@ -20,6 +20,9 @@ import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { AuthorLink } from '../../Author/AuthorLink'
 import { ArticleCard } from '../../Feed/ArticleCard'
+import stylesBeside from '../../Feed/Beside.module.scss'
+import stylesTopic from '../../Feed/CardTopic.module.scss'
+import { Placeholder } from '../../Feed/Placeholder'
 import { Sidebar } from '../../Feed/Sidebar'
 import { Modal } from '../../Nav/Modal'
 import { DropDown } from '../../_shared/DropDown'
@@ -27,9 +30,6 @@ import { Icon } from '../../_shared/Icon'
 import { InviteMembers } from '../../_shared/InviteMembers'
 import { Loading } from '../../_shared/Loading'
 import { ShareModal } from '../../_shared/ShareModal'
-
-import stylesBeside from '../../Feed/Beside.module.scss'
-import stylesTopic from '../../Feed/CardTopic.module.scss'
 import styles from './Feed.module.scss'
 
 export const FEED_PAGE_SIZE = 20
@@ -89,28 +89,31 @@ export const FeedView = (props: Props) => {
   const periods: PeriodItem[] = [
     { value: 'week', title: t('This week') },
     monthPeriod,
-    { value: 'year', title: t('This year') },
+    { value: 'year', title: t('This year') }
   ]
 
   const visibilities: VisibilityItem[] = [
     { value: 'community', title: t('All') },
-    { value: 'featured', title: t('Published') },
+    { value: 'featured', title: t('Published') }
   ]
-
-  const { page, searchParams, changeSearchParams } = useRouter<FeedSearchParams>()
+  const { query } = useGraphQL()
+  const [searchParams, changeSearchParams] = useSearchParams<FeedSearchParams>()
+  const loc = useLocation()
+  const { showModal } = useUI()
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
   const { session } = useSession()
   const { loadReactionsBy } = useReactions()
-  const { sortedArticles } = useArticlesStore()
+  const { sortedFeed } = useFeed()
   const { topTopics } = useTopics()
-  const { topAuthors } = useTopAuthorsStore()
+  const { topAuthors } = useAuthors()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
   const [unratedArticles, setUnratedArticles] = createSignal<Shout[]>([])
+  const [_searchResults, setSearchResults] = createSignal<Shout[]>([])
 
   const currentPeriod = createMemo(() => {
-    const period = periods.find((p) => p.value === searchParams().period)
+    const period = periods.find((p) => p.value === searchParams?.period)
     if (!period) {
       return monthPeriod
     }
@@ -118,7 +121,7 @@ export const FeedView = (props: Props) => {
   })
 
   const currentVisibility = createMemo(() => {
-    const visibility = visibilities.find((v) => v.value === searchParams().visibility)
+    const visibility = visibilities.find((v) => v.value === searchParams?.visibility)
     if (!visibility) {
       return visibilities[0]
     }
@@ -127,8 +130,8 @@ export const FeedView = (props: Props) => {
 
   const loadUnratedArticles = async () => {
     if (session()) {
-      const result = await apiClient.getUnratedShouts(UNRATED_ARTICLES_COUNT)
-      setUnratedArticles(result)
+      const resp = await query(getUnratedShoutsQuery, { limit: UNRATED_ARTICLES_COUNT }).toPromise()
+      setUnratedArticles(resp?.data?.load_shouts_unrated || [])
     }
   }
 
@@ -143,46 +146,51 @@ export const FeedView = (props: Props) => {
     Promise.all([loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
   })
 
-  createEffect(() => {
-    if (session()?.access_token && !unratedArticles()) {
-      loadUnratedArticles()
-    }
-  })
-
   createEffect(
     on(
-      () => page().route + searchParams().by + searchParams().period + searchParams().visibility,
-      () => {
-        resetSortedArticles()
+      [() => session(), unratedArticles],
+      ([s, seen]) => {
+        if (s?.access_token && !(seen?.length > 0)) loadUnratedArticles()
+      },
+      { defer: true }
+    )
+  )
+
+  // TODO: declare some details
+  createEffect(
+    on(
+      () => searchParams,
+      (_p) => {
+        setSearchResults([])
         loadMore()
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const loadFeedShouts = () => {
     const options: LoadShoutsOptions = {
       limit: FEED_PAGE_SIZE,
-      offset: sortedArticles().length,
+      offset: sortedFeed()?.length || 0
     }
 
-    if (searchParams()?.by) {
-      options.order_by = searchParams().by
+    if (searchParams?.by) {
+      options.order_by = searchParams?.by
     }
 
-    const visibilityMode = searchParams().visibility
+    const visibilityMode = searchParams?.visibility
 
     if (visibilityMode === 'all') {
       options.filters = { ...options.filters }
     } else if (visibilityMode) {
       options.filters = {
         ...options.filters,
-        featured: visibilityMode === 'featured',
+        featured: visibilityMode === 'featured'
       }
     }
 
-    if (searchParams().by && searchParams().by !== 'publish_date') {
-      const period = searchParams().period || 'month'
+    if (searchParams?.by && searchParams?.by !== 'publish_date') {
+      const period = searchParams?.period || 'month'
       options.filters = { after: getFromDate(period) }
     }
 
@@ -197,8 +205,8 @@ export const FeedView = (props: Props) => {
 
     loadReactionsBy({
       by: {
-        shouts: newShouts.map((s) => s.slug),
-      },
+        shouts: newShouts.map((s) => s.slug)
+      }
     })
 
     setIsLoadMoreButtonVisible(hasMore)
@@ -206,7 +214,7 @@ export const FeedView = (props: Props) => {
 
   const ogImage = getImageUrl('production/image/logo_image.png')
   const description = t(
-    'Independent media project about culture, science, art and society with horizontal editing',
+    'Independent media project about culture, science, art and society with horizontal editing'
   )
   const ogTitle = t('Feed')
 
@@ -234,107 +242,113 @@ export const FeedView = (props: Props) => {
         </div>
 
         <div class="col-md-12 offset-xl-1">
-          <div class={styles.filtersContainer}>
-            <ul class={clsx('view-switcher', styles.feedFilter)}>
-              <li
-                class={clsx({
-                  'view-switcher__item--selected':
-                    searchParams().by === 'publish_date' || !searchParams().by,
-                })}
-              >
-                <a href={getPagePath(router, page().route)}>{t('Recent')}</a>
-              </li>
-              {/*<li>*/}
-              {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
-              {/*</li>*/}
-              <li
-                class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'likes',
-                })}
-              >
-                <span class="link" onClick={() => changeSearchParams({ by: 'likes' })}>
-                  {t('Top rated')}
-                </span>
-              </li>
-              <li
-                class={clsx({
-                  'view-switcher__item--selected': searchParams().by === 'last_comment',
-                })}
-              >
-                <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
-                  {t('Most commented')}
-                </span>
-              </li>
-            </ul>
-            <div class={styles.dropdowns}>
-              <Show when={searchParams().by && searchParams().by !== 'publish_date'}>
+          <Show when={!session() && loc?.pathname !== 'feed'}>
+            <Placeholder type={loc?.pathname} mode="feed" />
+          </Show>
+
+          <Show when={(session() || loc?.pathname === 'feed') && sortedFeed().length}>
+            <div class={styles.filtersContainer}>
+              <ul class={clsx('view-switcher', styles.feedFilter)}>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected':
+                      searchParams?.by === 'publish_date' || !searchParams?.by
+                  })}
+                >
+                  <A href={loc.pathname}>{t('Recent')}</A>
+                </li>
+                {/*<li>*/}
+                {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
+                {/*</li>*/}
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': searchParams?.by === 'likes'
+                  })}
+                >
+                  <span class="link" onClick={() => changeSearchParams({ by: 'likes' })}>
+                    {t('Top rated')}
+                  </span>
+                </li>
+                <li
+                  class={clsx({
+                    'view-switcher__item--selected': searchParams?.by === 'last_comment'
+                  })}
+                >
+                  <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
+                    {t('Most commented')}
+                  </span>
+                </li>
+              </ul>
+              <div class={styles.dropdowns}>
+                <Show when={searchParams?.by && searchParams?.by !== 'publish_date'}>
+                  <DropDown
+                    popupProps={{ horizontalAnchor: 'right' }}
+                    options={periods}
+                    currentOption={currentPeriod()}
+                    triggerCssClass={styles.periodSwitcher}
+                    onChange={(period: PeriodItem) => changeSearchParams({ period: period.value })}
+                  />
+                </Show>
                 <DropDown
                   popupProps={{ horizontalAnchor: 'right' }}
-                  options={periods}
-                  currentOption={currentPeriod()}
+                  options={visibilities}
+                  currentOption={currentVisibility()}
                   triggerCssClass={styles.periodSwitcher}
-                  onChange={(period: PeriodItem) => changeSearchParams({ period: period.value })}
+                  onChange={(visibility: VisibilityItem) =>
+                    changeSearchParams({ visibility: visibility.value })
+                  }
                 />
-              </Show>
-              <DropDown
-                popupProps={{ horizontalAnchor: 'right' }}
-                options={visibilities}
-                currentOption={currentVisibility()}
-                triggerCssClass={styles.periodSwitcher}
-                onChange={(visibility: VisibilityItem) =>
-                  changeSearchParams({ visibility: visibility.value })
-                }
-              />
+              </div>
             </div>
-          </div>
 
-          <Show when={!isLoading()} fallback={<Loading />}>
-            <Show when={sortedArticles().length > 0}>
-              <For each={sortedArticles().slice(0, 4)}>
-                {(article) => (
-                  <ArticleCard
-                    onShare={(shared) => handleShare(shared)}
-                    onInvite={() => showModal('inviteMembers')}
-                    article={article}
-                    settings={{ isFeedMode: true }}
-                    desktopCoverSize="M"
-                  />
-                )}
-              </For>
+            <Show when={!isLoading()} fallback={<Loading />}>
+              <Show when={sortedFeed().length > 0}>
+                <For each={sortedFeed().slice(0, 4)}>
+                  {(article) => (
+                    <ArticleCard
+                      onShare={(shared) => handleShare(shared)}
+                      onInvite={() => showModal('inviteMembers')}
+                      article={article}
+                      settings={{ isFeedMode: true }}
+                      desktopCoverSize="M"
+                    />
+                  )}
+                </For>
 
-              <div class={styles.asideSection}>
-                <div class={stylesBeside.besideColumnTitle}>
-                  <h4>{t('Popular authors')}</h4>
-                  <a href="/authors">
-                    {t('All authors')}
-                    <Icon name="arrow-right" class={stylesBeside.icon} />
-                  </a>
+                <div class={styles.asideSection}>
+                  <div class={stylesBeside.besideColumnTitle}>
+                    <h4>{t('Popular authors')}</h4>
+                    <a href="/authors">
+                      {t('All authors')}
+                      <Icon name="arrow-right" class={stylesBeside.icon} />
+                    </a>
+                  </div>
+
+                  <ul class={stylesBeside.besideColumn}>
+                    <For each={topAuthors().slice(0, 5)}>
+                      {(author) => (
+                        <li>
+                          <AuthorBadge author={author} />
+                        </li>
+                      )}
+                    </For>
+                  </ul>
                 </div>
 
-                <ul class={stylesBeside.besideColumn}>
-                  <For each={topAuthors().slice(0, 5)}>
-                    {(author) => (
-                      <li>
-                        <AuthorBadge author={author} />
-                      </li>
-                    )}
-                  </For>
-                </ul>
-              </div>
+                <For each={sortedFeed().slice(4)}>
+                  {(article) => (
+                    <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
+                  )}
+                </For>
+              </Show>
 
-              <For each={sortedArticles().slice(4)}>
-                {(article) => (
-                  <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
-                )}
-              </For>
-            </Show>
-
-            <Show when={isLoadMoreButtonVisible()}>
-              <p class="load-more-container">
-                <button class="button" onClick={loadMore}>
-                  {t('Load more')}
-                </button>
-              </p>
+              <Show when={isLoadMoreButtonVisible()}>
+                <p class="load-more-container">
+                  <button class="button" onClick={loadMore}>
+                    {t('Load more')}
+                  </button>
+                </p>
+              </Show>
             </Show>
           </Show>
         </div>
@@ -349,11 +363,9 @@ export const FeedView = (props: Props) => {
                     return (
                       <div class={styles.comment}>
                         <div class={clsx('text-truncate', styles.commentBody)}>
-                          <a
-                            href={`${getPagePath(router, 'article', {
-                              slug: comment.shout.slug,
-                            })}?commentId=${comment.id}`}
-                            innerHTML={comment.body}
+                          <A
+                            href={`article/${comment.shout.slug}?commentId=${comment.id}`}
+                            innerHTML={comment.body || ''}
                           />
                         </div>
                         <div class={styles.commentDetails}>
@@ -387,16 +399,16 @@ export const FeedView = (props: Props) => {
               <h4>{t('Knowledge base')}</h4>
               <ul class="nodash">
                 <li>
-                  <a href={getPagePath(router, 'guide')}>Как устроен Дискурс</a>
+                  <A href={'/guide'}>Как устроен Дискурс</A>
                 </li>
                 <li>
-                  <a href="/how-to-write-a-good-article">Как создать хороший текст</a>
+                  <A href="/how-to-write-a-good-article">Как создать хороший текст</A>
                 </li>
                 <li>
-                  <a href="#">Правила конструктивных дискуссий</a>
+                  <A href="#">Правила конструктивных дискуссий</A>
                 </li>
                 <li>
-                  <a href={getPagePath(router, 'principles')}>Принципы сообщества</a>
+                  <A href={'/principles'}>Принципы сообщества</A>
                 </li>
               </ul>
             </section>
@@ -415,10 +427,10 @@ export const FeedView = (props: Props) => {
       </div>
       <Show when={shareData()}>
         <ShareModal
-          title={shareData().title}
-          description={shareData().description}
-          imageUrl={shareData().cover}
-          shareUrl={getShareUrl({ pathname: `/${shareData().slug}` })}
+          title={shareData()?.title || ''}
+          description={shareData()?.description || ''}
+          imageUrl={shareData()?.cover || ''}
+          shareUrl={getShareUrl({ pathname: `/${shareData()?.slug || ''}` })}
         />
       </Show>
 

@@ -9,7 +9,7 @@ type Props = {
   class?: string
   placeholder: string
   initialValue?: string
-  value: (string) => void
+  value: (s: string) => void
   maxLength?: number
   allowEnterKey: boolean
   variant?: 'bordered'
@@ -22,18 +22,18 @@ const GrowingTextarea = (props: Props) => {
   const [isFocused, setIsFocused] = createSignal(false)
 
   createEffect(() => {
-    if (props.maxLength && props.initialValue?.length > props.maxLength) {
-      setValue(props.initialValue?.slice(0, props.maxLength))
+    if (((props.maxLength && props.initialValue?.length) || 0) > (props.maxLength || 0)) {
+      setValue(props.initialValue?.slice(0, props.maxLength || 0) || '')
     } else {
       setValue(props.initialValue ?? '')
     }
   })
-  const handleChangeValue = (textareaValue) => {
+  const handleChangeValue = (textareaValue: string) => {
     setValue(textareaValue)
     props.value(textareaValue)
   }
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter' && event.shiftKey) {
       return
     }
@@ -48,7 +48,7 @@ const GrowingTextarea = (props: Props) => {
       <div
         class={clsx(styles.GrowingTextarea, {
           [styles.bordered]: props.variant === 'bordered',
-          [styles.hasFieldName]: props.fieldName && value().length > 0,
+          [styles.hasFieldName]: props.fieldName && value().length > 0
         })}
       >
         <Show when={props.fieldName && value().length > 0}>
@@ -66,7 +66,7 @@ const GrowingTextarea = (props: Props) => {
                 ? props.initialValue?.slice(0, props.maxLength)
                 : props.initialValue
             }
-            onKeyDown={props.allowEnterKey ? handleKeyDown : null}
+            onKeyDown={props.allowEnterKey ? handleKeyDown : () => 1}
             onInput={(event) => handleChangeValue(event.target.value)}
             placeholder={props.placeholder}
             onFocus={() => setIsFocused(true)}
@@ -77,11 +77,11 @@ const GrowingTextarea = (props: Props) => {
           <div
             class={clsx(styles.maxLength, {
               [styles.visible]: isFocused(),
-              [styles.limited]: value().length === props.maxLength,
+              [styles.limited]: value().length === props.maxLength
             })}
           >
             <Show when={props.variant === 'bordered'} fallback={`${value().length} / ${props.maxLength}`}>
-              {`${props.maxLength - value().length}`}
+              {`${(props.maxLength || 0) - value().length}`}
             </Show>
           </div>
         </Show>

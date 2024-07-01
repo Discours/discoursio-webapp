@@ -1,13 +1,14 @@
 import { clsx } from 'clsx'
 
+import { useUI } from '~/context/ui'
 import { useLocalize } from '../../context/localize'
-import { showModal } from '../../stores/ui'
 import { Image } from '../_shared/Image'
 
 import styles from './Banner.module.scss'
 
 export default () => {
   const { t } = useLocalize()
+  const { showModal } = useUI()
   return (
     <div class={styles.discoursBanner}>
       <div class="wide-container">

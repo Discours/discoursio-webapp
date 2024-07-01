@@ -1,6 +1,6 @@
 export const verifyImg = (url: string) => {
   return fetch(url, { method: 'HEAD' }).then((res) => {
-    return res.headers.get('Content-Type').startsWith('image')
+    return res.headers.get('Content-Type')?.startsWith('image')
   })
 }
 

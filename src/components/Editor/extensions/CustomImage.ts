@@ -16,20 +16,20 @@ export const CustomImage = Image.extend({
   addAttributes() {
     return {
       src: {
-        default: null,
+        default: null
       },
       alt: {
-        default: null,
+        default: null
       },
       width: {
-        default: null,
+        default: null
       },
       height: {
-        default: null,
+        default: null
       },
       'data-float': {
-        default: null,
-      },
+        default: null
+      }
     }
   },
   addCommands() {
@@ -39,14 +39,14 @@ export const CustomImage = Image.extend({
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: options,
+            attrs: options
           })
         },
       setImageFloat:
         (value) =>
         ({ commands }) => {
           return commands.updateAttributes(this.name, { 'data-float': value })
-        },
+        }
     }
-  },
+  }
 })

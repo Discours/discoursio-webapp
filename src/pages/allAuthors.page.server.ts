@@ -9,18 +9,18 @@ export const onBeforeRender = async (_pageContext: PageContext) => {
   const topWritingAuthors = await apiClient.loadAuthorsBy({
     by: { order: 'shouts' },
     limit: PAGE_SIZE,
-    offset: 0,
+    offset: 0
   })
   const topFollowedAuthors = await apiClient.loadAuthorsBy({
     by: { order: 'followers' },
     limit: PAGE_SIZE,
-    offset: 0,
+    offset: 0
   })
   const pageProps: PageProps = { allAuthors, seo: { title: '' }, topWritingAuthors, topFollowedAuthors }
 
   return {
     pageContext: {
-      pageProps,
-    },
+      pageProps
+    }
   }
 }

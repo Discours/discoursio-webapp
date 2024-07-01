@@ -1,17 +1,13 @@
-import type { SearchResult } from '../../graphql/schema/core.gen'
-
 import { For, Show, createSignal, onMount } from 'solid-js'
 
+import { useSearchParams } from '@solidjs/router'
+import { useFeed } from '../../context/feed'
 import { useLocalize } from '../../context/localize'
-import { useRouter } from '../../stores/router'
-import { loadShoutsSearch, useArticlesStore } from '../../stores/zine/articles'
-import '../../styles/Search.scss'
+import type { SearchResult } from '../../graphql/schema/core.gen'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { ArticleCard } from '../Feed/ArticleCard'
 
-type SearchPageSearchParams = {
-  by: '' | 'relevance' | 'rating'
-}
+import '../../styles/Search.scss'
 
 type Props = {
   query: string
@@ -22,12 +18,12 @@ const LOAD_MORE_PAGE_SIZE = 50
 
 export const SearchView = (props: Props) => {
   const { t } = useLocalize()
-  const { sortedArticles } = useArticlesStore()
+  const { sortedFeed, loadShoutsSearch } = useFeed()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [query, setQuery] = createSignal(props.query)
   const [offset, setOffset] = createSignal(0)
 
-  const { searchParams } = useRouter<SearchPageSearchParams>()
+  const [searchParams] = useSearchParams<{ by?: string }>()
   let searchEl: HTMLInputElement
   const handleQueryChange = () => {
     setQuery(searchEl.value)
@@ -40,7 +36,7 @@ export const SearchView = (props: Props) => {
       const { hasMore } = await loadShoutsSearch({
         text: query(),
         offset: offset(),
-        limit: LOAD_MORE_PAGE_SIZE,
+        limit: LOAD_MORE_PAGE_SIZE
       })
       setIsLoadMoreButtonVisible(hasMore)
       setOffset(offset() + LOAD_MORE_PAGE_SIZE)
@@ -65,7 +61,7 @@ export const SearchView = (props: Props) => {
           <input
             type="search"
             name="q"
-            ref={searchEl}
+            ref={(el) => (searchEl = el)}
             onInput={handleQueryChange}
             placeholder={query() || `${t('Enter text')}...`}
           />
@@ -80,26 +76,26 @@ export const SearchView = (props: Props) => {
       <ul class="view-switcher">
         <li
           classList={{
-            'view-switcher__item--selected': searchParams().by === 'relevance',
+            'view-switcher__item--selected': searchParams?.by === 'relevance'
           }}
         >
           <a href="?by=relevance">{t('By relevance')}</a>
         </li>
         <li
           classList={{
-            'view-switcher__item--selected': searchParams().by === 'rating',
+            'view-switcher__item--selected': searchParams?.by === 'rating'
           }}
         >
           <a href="?by=rating">{t('Top rated')}</a>
         </li>
       </ul>
 
-      <Show when={sortedArticles().length > 0}>
+      <Show when={sortedFeed()?.length > 0}>
         <h3>{t('Publications')}</h3>
 
         <div class="floor">
           <div class="row">
-            <For each={sortedArticles()}>
+            <For each={sortedFeed()}>
               {(article) => (
                 <div class="col-md-6">
                   <ArticleCard article={article} desktopCoverSize="L" />

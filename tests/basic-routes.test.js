@@ -5,13 +5,13 @@ import { chromium } from 'playwright'
 
   // Define the URLs to visit
   const pagesToVisit = [
-    'http://localhost:3000/',
-    'http://localhost:3000/feed',
-    'http://localhost:3000/create',
-    'http://localhost:3000/about/donate',
-    'http://localhost:3000/authors',
-    'http://localhost:3000/topics',
-    'http://localhost:3000/inbox',
+    'https://localhost:3000/',
+    'https://localhost:3000/feed',
+    'https://localhost:3000/create',
+    'https://localhost:3000/about/donate',
+    'https://localhost:3000/authors',
+    'https://localhost:3000/topics',
+    'https://localhost:3000/inbox'
   ]
 
   // Loop through the pages and visit each one

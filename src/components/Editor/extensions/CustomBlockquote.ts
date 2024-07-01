@@ -1,4 +1,4 @@
-import { Blockquote } from '@tiptap/extension-blockquote'
+import { Blockquote, BlockquoteOptions } from '@tiptap/extension-blockquote'
 
 export type QuoteTypes = 'quote' | 'punchline'
 
@@ -13,19 +13,21 @@ declare module '@tiptap/core' {
 
 export const CustomBlockquote = Blockquote.extend({
   name: 'blockquote',
-  defaultOptions: {
-    HTMLAttributes: {},
-  },
   group: 'block',
   content: 'block+',
+
+  addOptions(): BlockquoteOptions {
+    return {} as BlockquoteOptions
+  },
+
   addAttributes() {
     return {
       'data-float': {
-        default: null,
+        default: null
       },
       'data-type': {
-        default: null,
-      },
+        default: null
+      }
     }
   },
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -34,14 +36,12 @@ export const CustomBlockquote = Blockquote.extend({
     return {
       toggleBlockquote:
         (type) =>
-        ({ commands }) => {
-          return commands.toggleWrap(this.name, { 'data-type': type })
-        },
+        ({ commands }) =>
+          commands.toggleWrap(this.name, { 'data-type': type }),
       setBlockQuoteFloat:
         (value) =>
-        ({ commands }) => {
-          return commands.updateAttributes(this.name, { 'data-float': value })
-        },
+        ({ commands }) =>
+          commands.updateAttributes(this.name, { 'data-float': value })
     }
-  },
+  }
 })

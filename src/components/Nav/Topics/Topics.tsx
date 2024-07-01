@@ -1,57 +1,55 @@
-import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
-
 import { useLocalize } from '../../../context/localize'
-import { router, useRouter } from '../../../stores/router'
 import { Icon } from '../../_shared/Icon'
 
+import { A, useMatch } from '@solidjs/router'
 import styles from './Topics.module.scss'
 
 export const Topics = () => {
   const { t } = useLocalize()
-  const { page } = useRouter()
+  const matchExpo = useMatch(() => '/expo')
   return (
     <nav class={clsx('wide-container text-2xl', styles.Topics)}>
       <ul class={styles.list}>
         <li class={styles.item}>
-          <a class={clsx({ [styles.selected]: page().route === 'expo' })} href="/expo">
+          <A class={clsx({ [styles.selected]: matchExpo() })} href="/expo">
             {t('Art')}
-          </a>
+          </A>
         </li>
         <li class={styles.item}>
-          <a href="/podcasts">{t('Podcasts')}</a>
+          <A href="/podcasts">{t('Podcasts')}</A>
         </li>
         <li class={styles.item}>
-          <a href="/about/projects">{t('Special Projects')}</a>
+          <A href="/about/projects">{t('Special Projects')}</A>
         </li>
         <li class={styles.item}>
-          <a href="/topic/interview">#{t('Interview')}</a>
+          <A href="/topic/interview">#{t('Interview')}</A>
         </li>
         <li class={styles.item}>
-          <a href="/topic/reportage">#{t('Reports')}</a>
+          <A href="/topic/reportage">#{t('Reports')}</A>
         </li>
         <li class={styles.item}>
-          <a href="/topic/empiric">#{t('Experience')}</a>
+          <A href="/topic/empiric">#{t('Experience')}</A>
         </li>
         <li class={styles.item}>
-          <a href="/topic/society">#{t('Society')}</a>
+          <A href="/topic/society">#{t('Society')}</A>
         </li>
         <li class={styles.item}>
-          <a href="/topic/culture">#{t('Culture')}</a>
+          <A href="/topic/culture">#{t('Culture')}</A>
         </li>
         <li class={styles.item}>
-          <a href="/topic/theory">#{t('Theory')}</a>
+          <A href="/topic/theory">#{t('Theory')}</A>
         </li>
         <li class={styles.item}>
-          <a href="/topic/poetry">#{t('Poetry')}</a>
+          <A href="/topic/poetry">#{t('Poetry')}</A>
         </li>
         <li class={clsx(styles.item, styles.right)}>
-          <a href={getPagePath(router, 'topics')}>
+          <A href={'topics'}>
             <span>
               {t('All topics')}
               <Icon name="arrow-right-black" class={'icon'} />
             </span>
-          </a>
+          </A>
         </li>
       </ul>
     </nav>

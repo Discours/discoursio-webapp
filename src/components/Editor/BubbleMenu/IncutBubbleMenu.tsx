@@ -18,7 +18,7 @@ const backgrounds = [null, 'white', 'black', 'yellow', 'pink', 'green']
 export const IncutBubbleMenu = (props: Props) => {
   const { t } = useLocalize()
   const [substratBubbleOpen, setSubstratBubbleOpen] = createSignal(false)
-  const handleChangeBg = (bg) => {
+  const handleChangeBg = (bg: string | null) => {
     props.editor.chain().focus().setArticleBg(bg).run()
     setSubstratBubbleOpen(false)
   }
@@ -60,7 +60,12 @@ export const IncutBubbleMenu = (props: Props) => {
           <div class={styles.dropDown}>
             <div class={styles.actions}>
               <For each={backgrounds}>
-                {(bg) => <div onClick={() => handleChangeBg(bg)} class={clsx(styles.color, styles[bg])} />}
+                {(bg) => (
+                  <div
+                    onClick={() => handleChangeBg(bg)}
+                    class={clsx(styles.color, styles[bg as keyof typeof styles])}
+                  />
+                )}
               </For>
             </div>
           </div>

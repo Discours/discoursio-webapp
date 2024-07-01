@@ -2,16 +2,16 @@ import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on } from 'solid-js'
 
+import { useUI } from '~/context/ui'
+import { useAuthors } from '../../../context/authors'
 import { useInbox } from '../../../context/inbox'
 import { useLocalize } from '../../../context/localize'
 import { Author } from '../../../graphql/schema/core.gen'
-import { hideModal } from '../../../stores/ui'
-import { useAuthorsStore } from '../../../stores/zine/authors'
 import { AuthorBadge } from '../../Author/AuthorBadge'
+import { InlineLoader } from '../../InlineLoader'
 import { Button } from '../Button'
 import { DropdownSelect } from '../DropdownSelect'
 
-import { InlineLoader } from '../../InlineLoader'
 import styles from './InviteMembers.module.scss'
 
 type InviteAuthor = Author & { selected: boolean }
@@ -24,22 +24,23 @@ type Props = {
 const PAGE_SIZE = 50
 export const InviteMembers = (props: Props) => {
   const { t } = useLocalize()
+  const { hideModal } = useUI()
   const roles = [
     {
       title: t('Editor'),
-      description: t('Can write and edit text directly, and accept or reject suggestions from others'),
+      description: t('Can write and edit text directly, and accept or reject suggestions from others')
     },
     {
       title: t('Co-author'),
-      description: t('Can make any changes, accept or reject suggestions, and share access with others'),
+      description: t('Can make any changes, accept or reject suggestions, and share access with others')
     },
     {
       title: t('Commentator'),
-      description: t('Can offer edits and comments, but cannot edit the post or share access with others'),
-    },
+      description: t('Can offer edits and comments, but cannot edit the post or share access with others')
+    }
   ]
 
-  const { sortedAuthors } = useAuthorsStore({ sortBy: 'name' })
+  const { authorsSorted } = useAuthors()
   const { loadChats, createChat } = useInbox()
   const [authorsToInvite, setAuthorsToInvite] = createSignal<InviteAuthor[]>()
   const [searchResultAuthors, setSearchResultAuthors] = createSignal<Author[]>()
@@ -47,7 +48,7 @@ export const InviteMembers = (props: Props) => {
   const fetcher = async (page: number) => {
     await new Promise((resolve, reject) => {
       const checkDataLoaded = () => {
-        if (sortedAuthors().length > 0) {
+        if (authorsSorted().length > 0) {
           resolve(true)
         } else {
           setTimeout(checkDataLoaded, 100)
@@ -59,25 +60,25 @@ export const InviteMembers = (props: Props) => {
     const start = page * PAGE_SIZE
     const end = start + PAGE_SIZE
     const authors = authorsToInvite()?.map((author) => ({ ...author, selected: false }))
-    return authors?.slice(start, end)
+    return authors?.slice(start, end) || []
   }
 
   const [pages, setEl, { end }] = createInfiniteScroll(fetcher)
 
   createEffect(
     on(
-      () => sortedAuthors(),
+      authorsSorted,
       (currentAuthors) => {
         setAuthorsToInvite(currentAuthors.map((author) => ({ ...author, selected: false })))
       },
-      { defer: true },
-    ),
+      { defer: true }
+    )
   )
 
   const handleInputChange = async (value: string) => {
     if (value.length > 1) {
       const match = authorsToInvite()?.filter((author) =>
-        author.name.toLowerCase().includes(value.toLowerCase()),
+        author.name?.toLowerCase().includes(value.toLowerCase())
       )
       setSearchResultAuthors(match)
     } else {
@@ -85,13 +86,13 @@ export const InviteMembers = (props: Props) => {
     }
   }
 
-  const handleInvite = (id) => {
+  const handleInvite = (id: number) => {
     setCollectionToInvite((prev) => [...prev, id])
   }
 
   const handleCloseModal = () => {
     setSearchResultAuthors()
-    setCollectionToInvite()
+    setCollectionToInvite([])
     hideModal()
   }
 
@@ -138,7 +139,7 @@ export const InviteMembers = (props: Props) => {
             <h3>{t('Coming soon')}</h3>
             <p>
               {t(
-                'We are working on collaborative editing of articles and in the near future you will have an amazing opportunity - to create together with your colleagues',
+                'We are working on collaborative editing of articles and in the near future you will have an amazing opportunity - to create together with your colleagues'
               )}
             </p>
           </div>
@@ -158,7 +159,7 @@ export const InviteMembers = (props: Props) => {
               )}
             </For>
             <Show when={!end()}>
-              <div ref={setEl as (e: HTMLDivElement) => void}>
+              <div ref={(el: HTMLDivElement) => setEl(el, () => true)}>
                 <InlineLoader />
               </div>
             </Show>

@@ -12,19 +12,14 @@ declare module '@tiptap/core' {
 
 export default Node.create({
   name: 'article',
-  defaultOptions: {
-    HTMLAttributes: {
-      'data-type': 'incut',
-    },
-  },
   group: 'block',
   content: 'block+',
 
   parseHTML() {
     return [
       {
-        tag: 'article',
-      },
+        tag: 'article'
+      }
     ]
   },
 
@@ -32,14 +27,20 @@ export default Node.create({
     return ['article', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
   },
 
+  addOptions() {
+    return {
+      'data-type': 'incut'
+    }
+  },
+
   addAttributes() {
     return {
       'data-float': {
-        default: null,
+        default: null
       },
       'data-bg': {
-        default: null,
-      },
+        default: null
+      }
     }
   },
 
@@ -60,7 +61,7 @@ export default Node.create({
         (value) =>
         ({ commands }) => {
           return commands.updateAttributes(this.name, { 'data-bg': value })
-        },
+        }
     }
-  },
+  }
 })

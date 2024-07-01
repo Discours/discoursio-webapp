@@ -31,12 +31,17 @@ export const GroupAvatar = (props: Props) => {
       class={clsx(styles.GroupAvatar, props.class, {
         [styles.two]: props.authors.length === 2,
         [styles.three]: props.authors.length === 3,
-        [styles.four]: props.authors.length >= 4,
+        [styles.four]: props.authors.length >= 4
       })}
     >
       <For each={displayedAvatars}>
         {(author: Author) => (
-          <Userpic size={avatarSize()} name={author.name} userpic={author.pic} class={styles.item} />
+          <Userpic
+            size={avatarSize()}
+            name={author.name || ''}
+            userpic={author.pic || ''}
+            class={styles.item}
+          />
         )}
       </For>
       {props.authors.length > 4 && <div class={styles.moreUsers}>+{props.authors?.length - 3}</div>}

@@ -10,10 +10,10 @@ export const Loading = (props: Props) => {
     <div
       class={clsx(styles.container, {
         [styles.small]: props.size === 'small',
-        [styles.tiny]: props.size === 'tiny',
+        [styles.tiny]: props.size === 'tiny'
       })}
     >
-      <div class={styles.icon} />
+      <div class={styles.icon} style={{ background: `url('/icons/arrows-rotate.svg')` }} />
     </div>
   )
 }

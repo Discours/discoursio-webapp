@@ -10,7 +10,7 @@ type Props = {
   onClose: () => void
 }
 
-export const checkUrl = (url) => {
+export const checkUrl = (url: string) => {
   try {
     new URL(url)
     return url
@@ -25,7 +25,7 @@ export const InsertLinkForm = (props: Props) => {
     () => props.editor,
     (ed) => {
       return ed?.getAttributes('link').href || ''
-    },
+    }
   )
   const handleClearLinkForm = () => {
     if (currentUrl()) {

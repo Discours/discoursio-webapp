@@ -1,6 +1,8 @@
-import type { Author, Reaction, Shout, Stat, Topic, TopicStat } from '../graphql/schema/core.gen'
+import type { Author, Maybe, Reaction, Shout, Topic, TopicStat } from '../graphql/schema/core.gen'
 
-export const byFirstChar = (a, b) => (a.name || a.title || '').localeCompare(b.name || b.title || '')
+// biome-ignore lint/suspicious/noExplicitAny: sort by first char
+export const byFirstChar = (a: { name?: any; title?: any }, b: { name?: any; title?: any }) =>
+  (a.name || a.title || '').localeCompare(b.name || b.title || '')
 
 export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
   return a?.created_at - b?.created_at
@@ -12,7 +14,7 @@ export const byPublished = (a: Shout, b: Shout) => {
 
 export const byLength = (
   a: (Shout | Reaction | Topic | Author)[],
-  b: (Shout | Reaction | Topic | Author)[],
+  b: (Shout | Reaction | Topic | Author)[]
 ) => {
   const x = a.length
   const y = b.length
@@ -24,13 +26,13 @@ export const byLength = (
   return 0
 }
 
-export const byStat = (metric: keyof Stat | keyof TopicStat) => {
-  return (a, b) => {
-    const x = a.stat?.[metric] || 0
-    const y = b.stat?.[metric] || 0
-    if (x > y) return -1
-    if (x < y) return 1
-    return 0
+export type SomeStat = { [x: string]: Maybe<number> } | undefined | null
+
+export const byStat = (metric: string) => {
+  return (a: { stat?: SomeStat }, b: { stat?: SomeStat }) => {
+    const aStat = a.stat?.[metric] ?? 0
+    const bStat = b.stat?.[metric] ?? 0
+    return aStat - bStat
   }
 }
 
@@ -45,7 +47,7 @@ export const byTopicStatDesc = (metric: keyof TopicStat) => {
 }
 
 export const byScore = () => {
-  return (a, b) => {
+  return (a: { score: number }, b: { score: number }) => {
     const x = a?.score || 0
     const y = b?.score || 0
     if (x > y) return -1
@@ -53,9 +55,10 @@ export const byScore = () => {
     return 0
   }
 }
-
-export const sortBy = (data, metric) => {
+// biome-ignore lint/suspicious/noExplicitAny: sort
+export const sortBy = (data: any, metric: string | ((a: any, b: any) => number) | undefined) => {
   const x = [...data]
+  // @ts-ignore
   x.sort(typeof metric === 'function' ? metric : byStat(metric))
   return x
 }

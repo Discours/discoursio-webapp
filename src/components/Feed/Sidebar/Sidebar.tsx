@@ -1,80 +1,79 @@
-import { getPagePath } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { For, Show, createSignal } from 'solid-js'
 
+import { A, useMatch } from '@solidjs/router'
+import { useFeed } from '~/context/feed'
 import { useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
-import { useSeen } from '../../../context/seen'
 import { Author } from '../../../graphql/schema/core.gen'
-import { router, useRouter } from '../../../stores/router'
-import { useArticlesStore } from '../../../stores/zine/articles'
 import { Userpic } from '../../Author/Userpic'
 import { Icon } from '../../_shared/Icon'
 import styles from './Sidebar.module.scss'
 
 export const Sidebar = () => {
   const { t } = useLocalize()
-  const { seen } = useSeen()
-  const { subscriptions } = useFollowing()
-  const { page } = useRouter()
-  const { articlesByTopic, articlesByAuthor } = useArticlesStore()
+  const { follows } = useFollowing()
+  const { feedByTopic, feedByAuthor, seen } = useFeed()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
-
+  const matchFeed = useMatch(() => '/feed')
+  const matchFeedMy = useMatch(() => '/feed/my')
+  const matchFeedCollabs = useMatch(() => '/feed/collabs')
+  const matchFeedDiscussions = useMatch(() => '/feed/discussions')
   const checkTopicIsSeen = (topicSlug: string) => {
-    return articlesByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))
+    return feedByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))
   }
 
   const checkAuthorIsSeen = (authorSlug: string) => {
-    return articlesByAuthor()[authorSlug]?.every((article) => Boolean(seen()[article.slug]))
+    return feedByAuthor()[authorSlug]?.every((article) => Boolean(seen()[article.slug]))
   }
 
   return (
     <div class={styles.sidebar}>
       <ul class={styles.feedFilters}>
         <li>
-          <a
-            href={getPagePath(router, 'feed')}
+          <A
+            href={'feed'}
             class={clsx({
-              [styles.selected]: page().route === 'feed',
+              [styles.selected]: matchFeed()
             })}
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-all" class={styles.icon} />
-              {t('All')}
+              {t('Common feed')}
             </span>
-          </a>
+          </A>
         </li>
         <li>
-          <a
-            href={getPagePath(router, 'feedMy')}
+          <A
+            href={'/feed/my'}
             class={clsx({
-              [styles.selected]: page().route === 'feedMy',
+              [styles.selected]: matchFeedMy()
             })}
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-my" class={styles.icon} />
               {t('My feed')}
             </span>
-          </a>
+          </A>
         </li>
         <li>
-          <a
-            href={getPagePath(router, 'feedCollaborations')}
+          <A
+            href={'/feed/collabs'}
             class={clsx({
-              [styles.selected]: page().route === 'feedCollaborations',
+              [styles.selected]: matchFeedCollabs()
             })}
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-collaborate" class={styles.icon} />
               {t('Participation')}
             </span>
-          </a>
+          </A>
         </li>
         <li>
           <a
-            href={getPagePath(router, 'feedDiscussions')}
+            href={'/feed/discussions'}
             class={clsx({
-              [styles.selected]: page().route === 'feedDiscussions',
+              [styles.selected]: matchFeedDiscussions()
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -83,35 +82,9 @@ export const Sidebar = () => {
             </span>
           </a>
         </li>
-        <li>
-          <a
-            href={getPagePath(router, 'feedBookmarks')}
-            class={clsx({
-              [styles.selected]: page().route === 'feedBookmarks',
-            })}
-          >
-            <span class={styles.sidebarItemName}>
-              <Icon name="bookmark" class={styles.icon} />
-              {t('Bookmarks')}
-            </span>
-          </a>
-        </li>
-        <li>
-          <a
-            href={getPagePath(router, 'feedNotifications')}
-            class={clsx({
-              [styles.selected]: page().route === 'feedNotifications',
-            })}
-          >
-            <span class={styles.sidebarItemName}>
-              <Icon name="feed-notifications" class={styles.icon} />
-              {t('Notifications')}
-            </span>
-          </a>
-        </li>
       </ul>
 
-      <Show when={subscriptions.authors.length > 0 || subscriptions.topics.length > 0}>
+      <Show when={(follows?.authors?.length || 0) > 0 || (follows?.topics?.length || 0) > 0}>
         <h4
           classList={{ [styles.opened]: isSubscriptionsVisible() }}
           onClick={() => {
@@ -123,19 +96,19 @@ export const Sidebar = () => {
         </h4>
 
         <ul class={clsx(styles.subscriptions, { [styles.hidden]: !isSubscriptionsVisible() })}>
-          <For each={subscriptions.authors}>
+          <For each={follows.authors}>
             {(a: Author) => (
               <li>
                 <a href={`/author/${a.slug}`} classList={{ [styles.unread]: checkAuthorIsSeen(a.slug) }}>
                   <div class={styles.sidebarItemName}>
-                    <Userpic name={a.name} userpic={a.pic} size="XS" class={styles.userpic} />
+                    <Userpic name={a.name || ''} userpic={a.pic || ''} size="XS" class={styles.userpic} />
                     <div class={styles.sidebarItemNameLabel}>{a.name}</div>
                   </div>
                 </a>
               </li>
             )}
           </For>
-          <For each={subscriptions.topics}>
+          <For each={follows.topics}>
             {(topic) => (
               <li>
                 <a

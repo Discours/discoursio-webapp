@@ -1,25 +1,21 @@
-import type { Author, Shout, Topic } from '../../../graphql/schema/core.gen'
-
-import { getPagePath, openPage } from '@nanostores/router'
+import { A, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, createSignal } from 'solid-js'
-
+import { Accessor, For, Show, createMemo, createSignal } from 'solid-js'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { router, useRouter } from '../../../stores/router'
+import type { Author, Maybe, Shout, Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
 import { getDescription } from '../../../utils/meta'
 import { CoverImage } from '../../Article/CoverImage'
 import { RatingControl as ShoutRatingControl } from '../../Article/RatingControl'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { AuthorLink } from '../../Author/AuthorLink'
+import stylesHeader from '../../Nav/Header/Header.module.scss'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 import { Popover } from '../../_shared/Popover'
 import { CardTopic } from '../CardTopic'
 import { FeedArticlePopup } from '../FeedArticlePopup'
-
-import stylesHeader from '../../Nav/Header/Header.module.scss'
 import styles from './ArticleCard.module.scss'
 
 export type ArticleCardProps = {
@@ -47,27 +43,27 @@ export type ArticleCardProps = {
     noAuthorLink?: boolean
   }
   withAspectRatio?: boolean
-  desktopCoverSize?: 'XS' | 'S' | 'M' | 'L'
+  desktopCoverSize?: string // 'XS' | 'S' | 'M' | 'L'
   article: Shout
   onShare?: (article: Shout) => void
   onInvite?: () => void
 }
 
-const desktopCoverImageWidths: Record<ArticleCardProps['desktopCoverSize'], number> = {
+const desktopCoverImageWidths: Record<string, number> = {
   XS: 300,
   S: 400,
   M: 600,
-  L: 800,
+  L: 800
 }
 
 const getTitleAndSubtitle = (
-  article: Shout,
+  article: Shout
 ): {
   title: string
   subtitle: string
 } => {
-  let title = article.title
-  let subtitle: string = article.subtitle || ''
+  let title = article?.title || ''
+  let subtitle: string = article?.subtitle || ''
 
   if (!subtitle) {
     let titleParts = article.title?.split('. ') || []
@@ -90,34 +86,36 @@ const getTitleAndSubtitle = (
 
 const getMainTopicTitle = (article: Shout, lng: string) => {
   const mainTopicSlug = article?.main_topic || ''
-  const mainTopic = article?.topics?.find((tpc: Topic) => tpc.slug === mainTopicSlug)
+  const mainTopic = (article?.topics || []).find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
   const mainTopicTitle =
     mainTopicSlug && lng === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
 
   return [mainTopicTitle, mainTopicSlug]
 }
 
-const LAYOUT_ASPECT = {
+const LAYOUT_ASPECT: { [key: string]: string } = {
   music: styles.aspectRatio1x1,
+  audio: styles.aspectRatio1x1,
   literature: styles.aspectRatio16x9,
   video: styles.aspectRatio16x9,
-  image: styles.aspectRatio4x3,
+  image: styles.aspectRatio4x3
 }
 
 export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
-  const { author, session } = useSession()
-  const { changeSearchParams } = useRouter()
+  const { session } = useSession()
+  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
+  const [, changeSearchParams] = useSearchParams()
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
   const description = getDescription(props.article?.body)
-  const aspectRatio = () => LAYOUT_ASPECT[props.article?.layout]
+  const aspectRatio: Accessor<string> = () => LAYOUT_ASPECT[props.article?.layout as string]
   const [mainTopicTitle, mainTopicSlug] = getMainTopicTitle(props.article, lang())
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const formattedDate = createMemo<string>(() =>
-    props.article?.published_at ? formatDate(new Date(props.article.published_at * 1000)) : '',
+    props.article?.published_at ? formatDate(new Date(props.article.published_at * 1000)) : ''
   )
 
   const canEdit = createMemo(
@@ -125,15 +123,19 @@ export const ArticleCard = (props: ArticleCardProps) => {
       Boolean(author()?.id) &&
       (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
         props.article?.created_by?.id === author().id ||
-        session()?.user?.roles.includes('editor')),
+        session()?.user?.roles?.includes('editor'))
   )
-
-  const scrollToComments = (event) => {
+  const navigate = useNavigate()
+  const scrollToComments = (event: MouseEvent & { currentTarget: HTMLAnchorElement; target: Element }) => {
     event.preventDefault()
-    openPage(router, 'article', { slug: props.article.slug })
+    navigate(`/article/${props.article.slug}`)
     changeSearchParams({
-      scrollTo: 'comments',
+      scrollTo: 'comments'
     })
+  }
+
+  const onInvite = () => {
+    if (props.onInvite) props.onInvite()
   }
 
   return (
@@ -151,7 +153,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         [styles.shoutCardSingle]: props.settings?.isSingle,
         [styles.shoutCardBeside]: props.settings?.isBeside,
         [styles.shoutCardNoImage]: !props.article.cover,
-        [aspectRatio()]: props.withAspectRatio,
+        [aspectRatio()]: props.withAspectRatio
       })}
     >
       {/* Cover Image */}
@@ -160,7 +162,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
         <div class={styles.shoutCardCoverContainer}>
           <div
             class={clsx(styles.shoutCardCover, {
-              [styles.loading]: props.article.cover && isCoverImageLoading(),
+              [styles.loading]: props.article.cover && isCoverImageLoading()
             })}
           >
             <Show
@@ -168,9 +170,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
               fallback={<CoverImage class={styles.placeholderCoverImage} />}
             >
               <Image
-                src={props.article.cover}
+                src={props.article.cover || ''}
                 alt={title}
-                width={desktopCoverImageWidths[props.desktopCoverSize]}
+                width={desktopCoverImageWidths[props.desktopCoverSize || 'M']}
                 onError={() => {
                   setIsCoverImageLoadError(true)
                   setIsCoverImageLoading(false)
@@ -208,17 +210,17 @@ export const ArticleCard = (props: ArticleCardProps) => {
             slug={mainTopicSlug}
             isFloorImportant={props.settings?.isFloorImportant}
             isFeedMode={true}
-            class={clsx(styles.shoutTopic, { [styles.shoutTopicTop]: props.settings.isShort })}
+            class={clsx(styles.shoutTopic, { [styles.shoutTopicTop]: props.settings?.isShort })}
           />
         </Show>
 
         {/* Title and Subtitle */}
         <div
           class={clsx(styles.shoutCardTitlesContainer, {
-            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode,
+            [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <a href={getPagePath(router, 'article', { slug: props.article.slug })}>
+          <A href={`/article${props.article?.slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer} innerHTML={title} />
@@ -227,10 +229,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
             <Show when={!props.settings?.nosubtitle && subtitle}>
               <div class={styles.shoutCardSubtitle}>
-                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle} />
+                <span class={styles.shoutCardLinkContainer} innerHTML={subtitle || ''} />
               </div>
             </Show>
-          </a>
+          </A>
         </div>
 
         {/* Details */}
@@ -242,11 +244,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
             <Show when={!props.settings?.noauthor}>
               <div class={styles.shoutAuthor}>
                 <For each={props.article.authors}>
-                  {(a: Author) => (
+                  {(a: Maybe<Author>) => (
                     <AuthorLink
                       size={'XS'}
-                      author={a}
-                      isFloorImportant={props.settings.isFloorImportant || props.settings?.isWithCover}
+                      author={a as Author}
+                      isFloorImportant={Boolean(
+                        props.settings?.isFloorImportant || props.settings?.isWithCover
+                      )}
                     />
                   )}
                 </For>
@@ -260,11 +264,11 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
         {/* Description */}
         <Show when={props.article.description}>
-          <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
+          <section class={styles.shoutCardDescription} innerHTML={props.article.description || ''} />
         </Show>
         <Show when={props.settings?.isFeedMode}>
           <Show when={props.article.description}>
-            <section class={styles.shoutCardDescription} innerHTML={props.article.description} />
+            <section class={styles.shoutCardDescription} innerHTML={props.article.description || ''} />
           </Show>
           <Show when={!props.settings?.noimage && props.article.cover}>
             <div class={styles.shoutCardCoverContainer}>
@@ -283,7 +287,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
-                <Image src={props.article.cover} alt={title} width={600} loading="lazy" />
+                <Image src={props.article.cover || ''} alt={title} width={600} loading="lazy" />
               </div>
             </div>
           </Show>
@@ -326,22 +330,22 @@ export const ArticleCard = (props: ArticleCardProps) => {
             <div class={styles.shoutCardDetailsContent}>
               <Show when={canEdit()}>
                 <Popover content={t('Edit')} disabled={isActionPopupActive()}>
-                  {(triggerRef: (el) => void) => (
+                  {(triggerRef: (el: HTMLElement) => void) => (
                     <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
-                      <a href={getPagePath(router, 'edit', { shoutId: props.article?.id.toString() })}>
+                      <A href={`/edit/${props.article?.id}`}>
                         <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
                         <Icon
                           name="pencil-outline-hover"
                           class={clsx(styles.icon, styles.iconHover, styles.feedControlIcon)}
                         />
-                      </a>
+                      </A>
                     </div>
                   )}
                 </Popover>
               </Show>
 
               <Popover content={t('Add to bookmarks')} disabled={isActionPopupActive()}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef: (el: HTMLElement) => void) => (
                   <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                     <button>
                       <Icon name="bookmark" class={clsx(styles.icon, styles.feedControlIcon)} />
@@ -355,13 +359,13 @@ export const ArticleCard = (props: ArticleCardProps) => {
               </Popover>
 
               <Popover content={t('Share')} disabled={isActionPopupActive()}>
-                {(triggerRef: (el) => void) => (
+                {(triggerRef: (el: HTMLElement) => void) => (
                   <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
                     <SharePopup
                       containerCssClass={stylesHeader.control}
                       title={title}
                       description={description}
-                      imageUrl={props.article.cover}
+                      imageUrl={props.article.cover || ''}
                       shareUrl={getShareUrl({ pathname: `/${props.article.slug}` })}
                       onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                       trigger={
@@ -380,10 +384,10 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
               <div class={styles.shoutCardDetailsItem}>
                 <FeedArticlePopup
-                  canEdit={canEdit()}
+                  canEdit={Boolean(canEdit())}
                   containerCssClass={stylesHeader.control}
-                  onShareClick={() => props.onShare(props.article)}
-                  onInviteClick={props.onInvite}
+                  onShareClick={() => props.onShare?.(props.article)}
+                  onInviteClick={onInvite}
                   onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                   trigger={
                     <button>

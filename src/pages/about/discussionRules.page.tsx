@@ -10,7 +10,7 @@ export const DiscussionRulesPage = () => {
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Community Discussion Rules')
   const description = t(
-    'Why you can earn a hole in your karma and how to receive rays of gratitude for your contribution to discussions in samizdat communities',
+    'Why you can earn a hole in your karma and how to receive rays of gratitude for your contribution to discussions in samizdat communities'
   )
 
   return (
@@ -40,7 +40,7 @@ export const DiscussionRulesPage = () => {
         людей рождается истина.
       </p>
 
-      <h3>За&nbsp;что можно получить дырку в&nbsp;карме и&nbsp;выиграть бан в&nbsp;сообществе</h3>
+      <h3 id="ban">За&nbsp;что можно получить дырку в&nbsp;карме и&nbsp;выиграть бан в&nbsp;сообществе</h3>
       <ol>
         <li>
           <p>

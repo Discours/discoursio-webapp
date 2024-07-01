@@ -35,7 +35,7 @@ export const ProfileSecurityPage = () => {
     oldPassword: undefined,
     newPassword: undefined,
     newPasswordConfirm: undefined,
-    email: undefined,
+    email: undefined
   }
   const [formData, setFormData] = createSignal(initialState)
   const oldPasswordRef: { current: HTMLDivElement } = { current: null }
@@ -44,13 +44,13 @@ export const ProfileSecurityPage = () => {
   createEffect(
     on(
       () => session()?.user?.email,
-      () => {
+      (email) => {
         setFormData((prevData) => ({
           ...prevData,
-          ['email']: session()?.user?.email,
+          email
         }))
-      },
-    ),
+      }
+    )
   )
   const handleInputChange = (name: FormField, value: string) => {
     if (
@@ -63,7 +63,7 @@ export const ProfileSecurityPage = () => {
     }
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value
     }))
   }
 
@@ -71,13 +71,13 @@ export const ProfileSecurityPage = () => {
     const isConfirmed = await showConfirm({
       confirmBody: t('Do you really want to reset all changes?'),
       confirmButtonVariant: 'primary',
-      declineButtonVariant: 'secondary',
+      declineButtonVariant: 'secondary'
     })
     if (isConfirmed) {
       setEmailError()
       setFormData({
         ...initialState,
-        ['email']: session()?.user?.email,
+        ['email']: session()?.user?.email
       })
       setIsFloatingPanelVisible(false)
     }
@@ -96,7 +96,7 @@ export const ProfileSecurityPage = () => {
       window.scrollTo({
         top: topPosition,
         left: 0,
-        behavior: 'smooth',
+        behavior: 'smooth'
       })
       showSnackbar({ type: 'error', body: t('Incorrect new password confirm') })
       setNewPasswordError(t('Passwords are not equal'))
@@ -110,7 +110,7 @@ export const ProfileSecurityPage = () => {
       old_password: formData()['oldPassword'],
       new_password: formData()['newPassword'] || formData()['oldPassword'],
       confirm_new_password: formData()['newPassword'] || formData()['oldPassword'],
-      email: formData()['email'],
+      email: formData()['email']
     }
 
     try {
@@ -125,7 +125,7 @@ export const ProfileSecurityPage = () => {
           window.scrollTo({
             top: topPosition,
             left: 0,
-            behavior: 'smooth',
+            behavior: 'smooth'
           })
           setIsFloatingPanelVisible(false)
         }
@@ -176,7 +176,7 @@ export const ProfileSecurityPage = () => {
                         <Show when={emailError()}>
                           <div
                             class={clsx(styles.emailValidationError, {
-                              'form-message--error': emailError(),
+                              'form-message--error': emailError()
                             })}
                           >
                             {emailError()}
@@ -271,7 +271,7 @@ export const ProfileSecurityPage = () => {
                             class={clsx(
                               styles.socialButton,
                               styles.socialButtonApple,
-                              'button' + ' button--light',
+                              'button' + ' button--light'
                             )}
                             type="button"
                           >

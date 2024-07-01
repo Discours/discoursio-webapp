@@ -18,16 +18,24 @@ jobs:
         run: npm install --global --save-exact @biomejs/biome
 
       - name: Lint with Biome
-        run: npx biome ci .
+        run: npx @biomejs/biome ci
 
       - name: Lint styles
-        run: npm run lint:styles
+        run: npx stylelint **/*.{scss,css}
 
       - name: Check types
         run: npm run typecheck
 
       - name: Test production build
         run: npm run build
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npm run e2e
+        env:
+          BASE_URL: ${{ github.event.deployment_status.target_url }}
 
   email-templates:
     runs-on: ubuntu-latest

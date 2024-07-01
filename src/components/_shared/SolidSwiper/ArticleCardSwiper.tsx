@@ -20,10 +20,11 @@ type Props = {
 }
 
 export const ArticleCardSwiper = (props: Props) => {
-  const mainSwipeRef: { current: SwiperRef } = { current: null }
+  let mainSwipeRef: SwiperRef | null
 
   onMount(async () => {
-    if (props.slides.length > 1) {
+    if (props.slides?.length > 1) {
+      console.debug(props.slides)
       const { register } = await import('swiper/element/bundle')
       register()
       SwiperCore.use([Pagination, Navigation, Manipulation])
@@ -34,27 +35,27 @@ export const ArticleCardSwiper = (props: Props) => {
     <ShowOnlyOnClient>
       <div
         class={clsx({
-          [styles.Swiper]: props.slides.length > 1,
+          [styles.Swiper]: props.slides?.length > 1,
           [styles.articleMode]: true,
-          [styles.ArticleCardSwiper]: props.slides.length > 1,
+          [styles.ArticleCardSwiper]: props.slides?.length > 1
         })}
       >
         <Show when={props.title}>
           <h2 class={styles.sliderTitle}>{props.title}</h2>
         </Show>
         <div class={styles.container}>
-          <Show when={props.slides.length > 0}>
+          <Show when={props.slides?.length > 0}>
             <Show when={props.slides.length !== 1} fallback={<Row1 article={props.slides[0]} />}>
               <Show when={props.slides.length !== 2} fallback={<Row2 articles={props.slides} />}>
                 <div class={styles.holder}>
                   <swiper-container
-                    ref={(el) => (mainSwipeRef.current = el)}
+                    ref={(el) => (mainSwipeRef = el)}
                     centered-slides={true}
                     observer={true}
                     space-between={10}
                     breakpoints={{
                       576: { spaceBetween: 20, slidesPerView: 1.5 },
-                      992: { spaceBetween: 52, slidesPerView: 1.5 },
+                      992: { spaceBetween: 52, slidesPerView: 1.5 }
                     }}
                     round-lengths={true}
                     loop={true}
@@ -62,7 +63,7 @@ export const ArticleCardSwiper = (props: Props) => {
                     autoplay={{
                       disableOnInteraction: false,
                       delay: 6000,
-                      pauseOnMouseEnter: true,
+                      pauseOnMouseEnter: true
                     }}
                   >
                     <For each={props.slides}>
@@ -76,7 +77,7 @@ export const ArticleCardSwiper = (props: Props) => {
                               additionalClass: 'swiper-slide',
                               isFloorImportant: true,
                               isWithCover: true,
-                              nodate: true,
+                              nodate: true
                             }}
                             desktopCoverSize="L"
                           />
@@ -86,13 +87,13 @@ export const ArticleCardSwiper = (props: Props) => {
                   </swiper-container>
                   <div
                     class={clsx(styles.navigation, styles.prev)}
-                    onClick={() => mainSwipeRef.current.swiper.slidePrev()}
+                    onClick={() => mainSwipeRef?.swiper.slidePrev()}
                   >
                     <Icon name="swiper-l-arr" class={styles.icon} />
                   </div>
                   <div
                     class={clsx(styles.navigation, styles.next)}
-                    onClick={() => mainSwipeRef.current.swiper.slideNext()}
+                    onClick={() => mainSwipeRef?.swiper.slideNext()}
                   >
                     <Icon name="swiper-r-arr" class={styles.icon} />
                   </div>

@@ -11,43 +11,36 @@ import styles from './ImageCropper.module.scss'
 
 interface CropperProps {
   uploadFile: UploadFile
-  onSave: (any) => void
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  onSave: (arg0: any) => void
   onDecline?: () => void
 }
 
 export const ImageCropper = (props: CropperProps) => {
   const { t } = useLocalize()
-
-  const imageTagRef: { current: HTMLImageElement } = {
-    current: null,
-  }
-
-  const [cropper, setCropper] = createSignal(null)
+  let imageTagRef: HTMLImageElement | null
+  const [cropper, setCropper] = createSignal<Cropper>()
 
   onMount(() => {
-    if (imageTagRef.current) {
-      setCropper(
-        new Cropper(imageTagRef.current, {
-          viewMode: 1,
-          aspectRatio: 1,
-          guides: false,
-          background: false,
-          rotatable: false,
-          autoCropArea: 1,
-          modal: true,
-        }),
-      )
-    }
+    setCropper((_) => {
+      if (!imageTagRef) return
+      new Cropper(imageTagRef, {
+        viewMode: 1,
+        aspectRatio: 1,
+        guides: false,
+        background: false,
+        rotatable: false,
+        autoCropArea: 1,
+        modal: true
+      })
+      return undefined
+    })
   })
 
   return (
     <div>
       <div class={styles.cropperContainer}>
-        <img
-          ref={(el) => (imageTagRef.current = el)}
-          src={props.uploadFile.source}
-          alt="image crop panel"
-        />
+        <img ref={(el) => (imageTagRef = el)} src={props.uploadFile.source} alt="image crop panel" />
       </div>
 
       <div class={styles.cropperControls}>
@@ -59,16 +52,16 @@ export const ImageCropper = (props: CropperProps) => {
           variant="primary"
           onClick={() => {
             cropper()
-              .getCroppedCanvas()
-              .toBlob((blob) => {
+              ?.getCroppedCanvas()
+              .toBlob(((blob: Blob) => {
                 const formData = new FormData()
                 formData.append('media', blob, props.uploadFile.file.name)
 
                 props.onSave({
                   ...props.uploadFile,
-                  file: formData.get('media'),
+                  file: formData.get('media')
                 })
-              })
+              }) as BlobCallback)
           }}
           value={t('Save')}
         />

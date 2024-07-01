@@ -4,7 +4,7 @@ import { Feedback } from '../../components/Discours/Feedback'
 import { Modal } from '../../components/Nav/Modal'
 import Opener from '../../components/Nav/Modal/Opener'
 import { StaticPage } from '../../components/Views/StaticPage'
-import { Subscribe } from '../../components/_shared/Subscribe'
+import { Newsletter } from '../../components/_shared/Newsletter'
 import { useLocalize } from '../../context/localize'
 import { getImageUrl } from '../../utils/getImageUrl'
 
@@ -14,7 +14,7 @@ export const ManifestPage = () => {
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Discours Manifest')
   const description = t(
-    'Manifest of samizdat: principles and mission of an open magazine with a horizontal editorial board',
+    'Manifest of samizdat: principles and mission of an open magazine with a horizontal editorial board'
   )
 
   return (
@@ -24,7 +24,7 @@ export const ManifestPage = () => {
           <Feedback />
         </Modal>
         <Modal variant="wide" name="subscribe">
-          <Subscribe />
+          <Newsletter />
         </Modal>
         <Meta name="descprition" content={description} />
         <Meta name="keywords" content={t('keywords')} />

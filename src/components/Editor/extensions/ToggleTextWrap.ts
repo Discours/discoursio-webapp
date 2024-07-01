@@ -39,11 +39,11 @@ export const ToggleTextWrap = Extension.create({
           })
 
           if (changesApplied) {
-            dispatch(tr)
+            dispatch?.(tr)
             return true
           }
           return false
-        },
+        }
     }
-  },
+  }
 })

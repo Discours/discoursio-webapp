@@ -22,9 +22,9 @@ export const InlineForm = (props: Props) => {
   const [formValue, setFormValue] = createSignal(props.initialValue || '')
   const [formValueError, setFormValueError] = createSignal<string | undefined>()
 
-  const inputRef: { current: HTMLInputElement } = { current: null }
-  const handleFormInput = (e) => {
-    const value = e.currentTarget.value
+  let inputRef: HTMLInputElement | undefined
+  const handleFormInput = (e: { currentTarget: HTMLInputElement; target: HTMLInputElement }) => {
+    const value = (e.currentTarget || e.target).value
     setFormValueError()
     setFormValue(value)
   }
@@ -42,7 +42,7 @@ export const InlineForm = (props: Props) => {
     props.onClose()
   }
 
-  const handleKeyDown = async (e) => {
+  const handleKeyDown = async (e: KeyboardEvent) => {
     setFormValueError('')
 
     if (e.key === 'Enter') {
@@ -56,18 +56,18 @@ export const InlineForm = (props: Props) => {
   }
 
   const handleClear = () => {
-    props.initialValue ? props.onClear() : props.onClose()
+    props.initialValue ? props.onClear?.() : props.onClose()
   }
 
   onMount(() => {
-    inputRef.current.focus()
+    inputRef?.focus()
   })
 
   return (
     <div class={styles.InlineForm}>
       <div class={styles.form}>
         <input
-          ref={(el) => (inputRef.current = el)}
+          ref={(el) => (inputRef = el)}
           type="text"
           value={props.initialValue ?? ''}
           placeholder={props.placeholder}
@@ -75,7 +75,7 @@ export const InlineForm = (props: Props) => {
           onInput={handleFormInput}
         />
         <Popover content={t('Add link')}>
-          {(triggerRef: (el) => void) => (
+          {(triggerRef: (el: HTMLElement) => void) => (
             <button
               ref={triggerRef}
               type="button"
@@ -87,7 +87,7 @@ export const InlineForm = (props: Props) => {
           )}
         </Popover>
         <Popover content={props.initialValue ? t('Remove link') : t('Cancel')}>
-          {(triggerRef: (el) => void) => (
+          {(triggerRef: (el: HTMLElement) => void) => (
             <button ref={triggerRef} type="button" onClick={handleClear}>
               {props.initialValue ? <Icon name="editor-unlink" /> : <Icon name="status-cancel" />}
             </button>

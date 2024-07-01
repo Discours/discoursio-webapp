@@ -1,10 +1,9 @@
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
-
-import { MediaItem } from '../../../pages/types'
 import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
 import { Icon } from '../../_shared/Icon'
 
+import { MediaItem } from '~/types/mediaitem'
 import styles from './AudioPlayer.module.scss'
 
 type Props = {
@@ -17,10 +16,7 @@ type Props = {
 }
 
 export const PlayerHeader = (props: Props) => {
-  const volumeContainerRef: { current: HTMLDivElement } = {
-    current: null,
-  }
-
+  let volumeContainerRef: HTMLDivElement | undefined
   const [isVolumeBarOpened, setIsVolumeBarOpened] = createSignal(false)
 
   const toggleVolumeBar = () => {
@@ -30,7 +26,7 @@ export const PlayerHeader = (props: Props) => {
   useOutsideClickHandler({
     containerRef: volumeContainerRef,
     predicate: () => isVolumeBarOpened(),
-    handler: () => toggleVolumeBar(),
+    handler: () => toggleVolumeBar()
   })
 
   return (
@@ -42,7 +38,7 @@ export const PlayerHeader = (props: Props) => {
           onClick={props.onPlayMedia}
           class={clsx(
             styles.playButton,
-            props.isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay,
+            props.isPlaying ? styles.playButtonInvertPause : styles.playButtonInvertPlay
           )}
           aria-label="Play"
           data-playing="false"
@@ -65,7 +61,7 @@ export const PlayerHeader = (props: Props) => {
         >
           <Icon name="player-arrow" />
         </button>
-        <div ref={(el) => (volumeContainerRef.current = el)} class={styles.volumeContainer}>
+        <div ref={(el) => (volumeContainerRef = el)} class={styles.volumeContainer}>
           <Show when={isVolumeBarOpened()}>
             <input
               type="range"

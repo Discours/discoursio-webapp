@@ -1,23 +1,26 @@
-import type { ProfileInput } from '../graphql/schema/core.gen'
+import type { Author, ProfileInput } from '../graphql/schema/core.gen'
 
-import { JSX, createContext, createEffect, useContext } from 'solid-js'
+import { AuthToken } from '@authorizerdev/authorizer-js'
+import { Accessor, JSX, createContext, createEffect, createSignal, on, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
-
-import { apiClient } from '../graphql/client/core'
-
+import updateAuthorMuatation from '~/graphql/mutation/core/author-update'
+import { useAuthors } from './authors'
+import { useGraphQL } from './graphql'
 import { useSession } from './session'
 
-type ProfileFormContextType = {
+type ProfileContextType = {
+  author: Accessor<Author>
+  setAuthor: (a: Author) => void
   form: ProfileInput
   setForm: (profile: ProfileInput) => void
   submit: (profile: ProfileInput) => Promise<void>
   updateFormField: (fieldName: string, value: string, remove?: boolean) => void
 }
 
-const ProfileFormContext = createContext<ProfileFormContextType>()
+const ProfileContext = createContext<ProfileContextType>({} as ProfileContextType)
 
-export function useProfileForm() {
-  return useContext(ProfileFormContext)
+export function useProfile() {
+  return useContext(ProfileContext)
 }
 
 const userpicUrl = (userpic: string) => {
@@ -26,12 +29,33 @@ const userpicUrl = (userpic: string) => {
   }
   return userpic
 }
-export const ProfileFormProvider = (props: { children: JSX.Element }) => {
-  const { author } = useSession()
-  const [form, setForm] = createStore<ProfileInput>({})
+
+export const ProfileProvider = (props: { children: JSX.Element }) => {
+  const { session } = useSession()
+  const { mutation } = useGraphQL()
+  const { addAuthor } = useAuthors()
+  const [form, setForm] = createStore<ProfileInput>({} as ProfileInput)
+  const [author, setAuthor] = createSignal<Author>({} as Author)
+
+  // when session is loaded
+  createEffect(
+    on(
+      () => session(),
+      (s: AuthToken | undefined) => {
+        if (s) {
+          const profile = s?.user?.app_data?.profile
+          if (profile?.id) {
+            setAuthor(profile)
+            addAuthor(profile)
+          }
+        }
+      },
+      { defer: true }
+    )
+  )
 
   const submit = async (profile: ProfileInput) => {
-    const response = await apiClient.updateAuthor(profile)
+    const response = await mutation(updateAuthorMuatation, profile).toPromise()
     if (response.error) {
       console.error(response.error)
       throw response.error
@@ -46,8 +70,8 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
         slug: currentAuthor.slug,
         bio: currentAuthor.bio,
         about: currentAuthor.about,
-        pic: userpicUrl(currentAuthor.pic),
-        links: currentAuthor.links,
+        pic: userpicUrl(currentAuthor.pic || ''),
+        links: currentAuthor.links
       })
     }
   })
@@ -55,7 +79,9 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
   const updateFormField = (fieldName: string, value: string, remove?: boolean) => {
     if (fieldName === 'links') {
       setForm((prev) => {
-        const updatedLinks = remove ? prev.links.filter((item) => item !== value) : [...prev.links, value]
+        const updatedLinks = remove
+          ? (prev.links || []).filter((item) => item !== value)
+          : [...(prev.links || []), value]
         return { ...prev, links: updatedLinks }
       })
     } else {
@@ -63,12 +89,14 @@ export const ProfileFormProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const value: ProfileFormContextType = {
+  const value: ProfileContextType = {
+    author,
+    setAuthor,
     form,
     submit,
     updateFormField,
-    setForm,
+    setForm
   }
 
-  return <ProfileFormContext.Provider value={value}>{props.children}</ProfileFormContext.Provider>
+  return <ProfileContext.Provider value={value}>{props.children}</ProfileContext.Provider>
 }

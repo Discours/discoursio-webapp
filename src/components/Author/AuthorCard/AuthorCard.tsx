@@ -1,15 +1,11 @@
 import type { Author, Community } from '../../../graphql/schema/core.gen'
 
-import { openPage, redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
-
-import { useFollowing } from '../../../context/following'
+import { FollowsFilter, useFollowing } from '../../../context/following'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
-import { SubscriptionFilter } from '../../../pages/types'
-import { router, useRouter } from '../../../stores/router'
 import { isAuthor } from '../../../utils/isAuthor'
 import { translit } from '../../../utils/ru2en'
 import { isCyrillic } from '../../../utils/translate'
@@ -17,87 +13,91 @@ import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { Button } from '../../_shared/Button'
+import { FollowingCounters } from '../../_shared/FollowingCounters/FollowingCounters'
 import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
 import { AuthorBadge } from '../AuthorBadge'
 import { Userpic } from '../Userpic'
 
+import { useNavigate, useSearchParams } from '@solidjs/router'
 import stylesButton from '../../_shared/Button/Button.module.scss'
 import styles from './AuthorCard.module.scss'
 
 type Props = {
   author: Author
   followers?: Author[]
-  following?: Array<Author | Topic>
+  flatFollows?: Array<Author | Topic>
 }
+
 export const AuthorCard = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { author, isSessionLoaded, requireAuthentication } = useSession()
+  const navigate = useNavigate()
+  const { session, isSessionLoaded, requireAuthentication } = useSession()
+  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const [authorSubs, setAuthorSubs] = createSignal<Array<Author | Topic | Community>>([])
-  const [subscriptionFilter, setSubscriptionFilter] = createSignal<SubscriptionFilter>('all')
-  const [isSubscribed, setIsSubscribed] = createSignal<boolean>()
+  const [followsFilter, setFollowsFilter] = createSignal<FollowsFilter>('all')
+  const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const { follow, unfollow, subscriptions, subscribeInAction } = useFollowing()
+  const { follow, unfollow, follows, following } = useFollowing()
 
   onMount(() => {
-    setAuthorSubs(props.following)
+    setAuthorSubs(props.flatFollows || [])
   })
 
   createEffect(() => {
-    if (!(subscriptions && props.author)) return
-    const subscribed = subscriptions.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
-    setIsSubscribed(subscribed)
+    if (!(follows && props.author)) return
+    const followed = follows?.authors?.some((authorEntity) => authorEntity.id === props.author?.id)
+    setIsFollowed(followed)
   })
 
   const name = createMemo(() => {
-    if (lang() !== 'ru' && isCyrillic(props.author.name)) {
+    if (lang() !== 'ru' && isCyrillic(props.author?.name || '')) {
       if (props.author.name === 'Дискурс') {
         return 'Discours'
       }
-      return translit(props.author.name)
+      return translit(props.author?.name || '')
     }
     return props.author.name
   })
 
-  // TODO: reimplement AuthorCard
-  const { changeSearchParams } = useRouter()
+  const [, changeSearchParams] = useSearchParams()
   const initChat = () => {
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      openPage(router, 'inbox')
+      navigate('/inbox')
       changeSearchParams({
-        initChat: props.author?.id.toString(),
+        initChat: props.author?.id.toString()
       })
     }, 'discussions')
   }
 
   createEffect(() => {
-    if (props.following) {
-      if (subscriptionFilter() === 'authors') {
-        setAuthorSubs(props.following.filter((s) => 'name' in s))
-      } else if (subscriptionFilter() === 'topics') {
-        setAuthorSubs(props.following.filter((s) => 'title' in s))
-      } else if (subscriptionFilter() === 'communities') {
-        setAuthorSubs(props.following.filter((s) => 'title' in s))
+    if (props.flatFollows) {
+      if (followsFilter() === 'authors') {
+        setAuthorSubs(props.flatFollows.filter((s) => 'name' in s))
+      } else if (followsFilter() === 'topics') {
+        setAuthorSubs(props.flatFollows.filter((s) => 'title' in s))
+      } else if (followsFilter() === 'communities') {
+        setAuthorSubs(props.flatFollows.filter((s) => 'title' in s))
       } else {
-        setAuthorSubs(props.following)
+        setAuthorSubs(props.flatFollows)
       }
     }
   })
 
   const handleFollowClick = () => {
     requireAuthentication(() => {
-      isSubscribed()
+      isFollowed()
         ? unfollow(FollowingEntity.Author, props.author.slug)
         : follow(FollowingEntity.Author, props.author.slug)
-    }, 'subscribe')
+    }, 'follow')
   }
 
   const followButtonText = createMemo(() => {
-    if (subscribeInAction()?.slug === props.author.slug) {
-      return subscribeInAction().type === 'subscribe' ? t('Subscribing...') : t('Unsubscribing...')
+    if (following()?.slug === props.author.slug) {
+      return following()?.type === 'follow' ? t('Following...') : t('Unfollowing...')
     }
 
-    if (isSubscribed()) {
+    if (isFollowed()) {
       return (
         <>
           <span class={stylesButton.buttonSubscribeLabel}>{t('Following')}</span>
@@ -108,13 +108,82 @@ export const AuthorCard = (props: Props) => {
     return t('Follow')
   })
 
+  const FollowersModalView = () => (
+    <>
+      <h2>{t('Followers')}</h2>
+      <div class={styles.listWrapper}>
+        <div class="row">
+          <div class="col-24">
+            <For each={props.followers}>{(follower: Author) => <AuthorBadge author={follower} />}</For>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+
+  const FollowingModalView = () => (
+    <>
+      <h2>{t('Subscriptions')}</h2>
+      <ul class="view-switcher">
+        <li
+          class={clsx({
+            'view-switcher__item--selected': followsFilter() === 'all'
+          })}
+        >
+          <button type="button" onClick={() => setFollowsFilter('all')}>
+            {t('All')}
+          </button>
+          <span class="view-switcher__counter">{props.flatFollows?.length}</span>
+        </li>
+        <li
+          class={clsx({
+            'view-switcher__item--selected': followsFilter() === 'authors'
+          })}
+        >
+          <button type="button" onClick={() => setFollowsFilter('authors')}>
+            {t('Authors')}
+          </button>
+          <span class="view-switcher__counter">{props.flatFollows?.filter((s) => 'name' in s).length}</span>
+        </li>
+        <li
+          class={clsx({
+            'view-switcher__item--selected': followsFilter() === 'topics'
+          })}
+        >
+          <button type="button" onClick={() => setFollowsFilter('topics')}>
+            {t('Topics')}
+          </button>
+          <span class="view-switcher__counter">
+            {props.flatFollows?.filter((s) => 'title' in s).length}
+          </span>
+        </li>
+      </ul>
+      <br />
+      <div class={styles.listWrapper}>
+        <div class="row">
+          <div class="col-24">
+            <For each={authorSubs()}>
+              {(subscription) =>
+                isAuthor(subscription) ? (
+                  <AuthorBadge author={subscription} subscriptionsMode={true} />
+                ) : (
+                  <TopicBadge topic={subscription} subscriptionsMode={true} />
+                )
+              }
+            </For>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+
   return (
     <div class={clsx(styles.author, 'row')}>
       <div class="col-md-5">
         <Userpic
           size={'XL'}
-          name={props.author.name}
-          userpic={props.author.pic}
+          name={props.author.name || ''}
+          userpic={props.author.pic || ''}
           slug={props.author.slug}
           class={styles.circlewrap}
         />
@@ -123,61 +192,16 @@ export const AuthorCard = (props: Props) => {
         <div class={styles.authorDetailsWrapper}>
           <div class={styles.authorName}>{name()}</div>
           <Show when={props.author.bio}>
-            <div class={styles.authorAbout} innerHTML={props.author.bio} />
+            <div class={styles.authorAbout} innerHTML={props.author.bio || ''} />
           </Show>
-          <Show when={props.followers?.length > 0 || props.following?.length > 0}>
+          <Show when={(props.followers || [])?.length > 0 || (props.flatFollows || []).length > 0}>
             <div class={styles.subscribersContainer}>
-              <Show when={props.followers && props.followers.length > 0}>
-                <a href="?m=followers" class={styles.subscribers}>
-                  <For each={props.followers.slice(0, 3)}>
-                    {(f) => (
-                      <Userpic size={'XS'} name={f.name} userpic={f.pic} class={styles.subscribersItem} />
-                    )}
-                  </For>
-                  <div class={styles.subscribersCounter}>
-                    {t('SubscriberWithCount', {
-                      count: props.followers.length ?? 0,
-                    })}
-                  </div>
-                </a>
-              </Show>
-
-              <Show when={props.following && props.following.length > 0}>
-                <a href="?m=following" class={styles.subscribers}>
-                  <For each={props.following.slice(0, 3)}>
-                    {(f) => {
-                      if ('name' in f) {
-                        return (
-                          <Userpic
-                            size={'XS'}
-                            name={f.name}
-                            userpic={f.pic}
-                            class={styles.subscribersItem}
-                          />
-                        )
-                      }
-
-                      if ('title' in f) {
-                        return (
-                          <Userpic
-                            size={'XS'}
-                            name={f.title}
-                            userpic={f.pic}
-                            class={styles.subscribersItem}
-                          />
-                        )
-                      }
-
-                      return null
-                    }}
-                  </For>
-                  <div class={styles.subscribersCounter}>
-                    {t('SubscriptionWithCount', {
-                      count: props?.following.length ?? 0,
-                    })}
-                  </div>
-                </a>
-              </Show>
+              <FollowingCounters
+                followers={props.followers}
+                followersAmount={props.author?.stat?.followers || 0}
+                following={props.flatFollows}
+                followingAmount={props.flatFollows?.length || 0}
+              />
             </div>
           </Show>
         </div>
@@ -186,15 +210,15 @@ export const AuthorCard = (props: Props) => {
             <Show when={props.author.links && props.author.links.length > 0}>
               <div class={styles.authorSubscribeSocial}>
                 <For each={props.author.links}>
-                  {(link) => (
+                  {(link: string | null) => (
                     <a
                       class={styles.socialLink}
-                      href={link.startsWith('http') ? link : `https://${link}`}
+                      href={link?.startsWith('http') ? link : `https://${link}`}
                       target="_blank"
                       rel="nofollow noopener noreferrer"
                     >
                       <span class={styles.authorSubscribeSocialLabel}>
-                        {link.startsWith('http') ? link : `https://${link}`}
+                        {link?.startsWith('http') ? link : `https://${link}`}
                       </span>
                     </a>
                   )}
@@ -208,11 +232,11 @@ export const AuthorCard = (props: Props) => {
                   <Show when={authorSubs()?.length}>
                     <Button
                       onClick={handleFollowClick}
-                      disabled={Boolean(subscribeInAction())}
+                      disabled={Boolean(following())}
                       value={followButtonText()}
                       isSubscribeButton={true}
                       class={clsx({
-                        [stylesButton.subscribed]: isSubscribed(),
+                        [stylesButton.followed]: isFollowed()
                       })}
                     />
                   </Show>
@@ -228,7 +252,7 @@ export const AuthorCard = (props: Props) => {
               <div class={styles.authorActions}>
                 <Button
                   variant="secondary"
-                  onClick={() => redirectPage(router, 'profileSettings')}
+                  onClick={() => navigate('/profile/settings')}
                   value={
                     <>
                       <span class={styles.authorActionsLabel}>{t('Edit profile')}</span>
@@ -237,11 +261,11 @@ export const AuthorCard = (props: Props) => {
                   }
                 />
                 <SharePopup
-                  title={props.author.name}
-                  description={props.author.bio}
-                  imageUrl={props.author.pic}
+                  title={props.author.name || ''}
+                  description={props.author.bio || ''}
+                  imageUrl={props.author.pic || ''}
                   shareUrl={getShareUrl({
-                    pathname: `/author/${props.author.slug}`,
+                    pathname: `/author/${props.author.slug}`
                   })}
                   trigger={<Button variant="secondary" value={t('Share')} />}
                 />
@@ -251,77 +275,12 @@ export const AuthorCard = (props: Props) => {
         </ShowOnlyOnClient>
         <Show when={props.followers}>
           <Modal variant="medium" isResponsive={true} name="followers" maxHeight>
-            <>
-              <h2>{t('Followers')}</h2>
-              <div class={styles.listWrapper}>
-                <div class="row">
-                  <div class="col-24">
-                    <For each={props.followers}>
-                      {(follower: Author) => <AuthorBadge author={follower} />}
-                    </For>
-                  </div>
-                </div>
-              </div>
-            </>
+            <FollowersModalView />
           </Modal>
         </Show>
-        <Show when={props.following}>
+        <Show when={props.flatFollows}>
           <Modal variant="medium" isResponsive={true} name="following" maxHeight>
-            <>
-              <h2>{t('Subscriptions')}</h2>
-              <ul class="view-switcher">
-                <li
-                  class={clsx({
-                    'view-switcher__item--selected': subscriptionFilter() === 'all',
-                  })}
-                >
-                  <button type="button" onClick={() => setSubscriptionFilter('all')}>
-                    {t('All')}
-                  </button>
-                  <span class="view-switcher__counter">{props.following.length}</span>
-                </li>
-                <li
-                  class={clsx({
-                    'view-switcher__item--selected': subscriptionFilter() === 'authors',
-                  })}
-                >
-                  <button type="button" onClick={() => setSubscriptionFilter('authors')}>
-                    {t('Authors')}
-                  </button>
-                  <span class="view-switcher__counter">
-                    {props.following.filter((s) => 'name' in s).length}
-                  </span>
-                </li>
-                <li
-                  class={clsx({
-                    'view-switcher__item--selected': subscriptionFilter() === 'topics',
-                  })}
-                >
-                  <button type="button" onClick={() => setSubscriptionFilter('topics')}>
-                    {t('Topics')}
-                  </button>
-                  <span class="view-switcher__counter">
-                    {props.following.filter((s) => 'title' in s).length}
-                  </span>
-                </li>
-              </ul>
-              <br />
-              <div class={styles.listWrapper}>
-                <div class="row">
-                  <div class="col-24">
-                    <For each={authorSubs()}>
-                      {(subscription) =>
-                        isAuthor(subscription) ? (
-                          <AuthorBadge author={subscription} />
-                        ) : (
-                          <TopicBadge topic={subscription} subscriptionsMode={true} />
-                        )
-                      }
-                    </For>
-                  </div>
-                </div>
-              </div>
-            </>
+            <FollowingModalView />
           </Modal>
         </Show>
       </div>

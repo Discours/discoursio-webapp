@@ -1,23 +1,19 @@
 import { UploadFile } from '@solid-primitives/upload'
+import { thumborUrl } from '../config/config'
 
-import { UploadedFile } from '../pages/types'
-
-import { thumborUrl } from './config'
-
-export const handleImageUpload = async (uploadFile: UploadFile, token: string): Promise<UploadedFile> => {
+export const handleImageUpload = async (uploadFile: UploadFile, token: string) => {
   const formData = new FormData()
   formData.append('media', uploadFile.file, uploadFile.name)
-  const headers = token ? { Authorization: token } : {}
   const response = await fetch(`${thumborUrl}/image`, {
     method: 'POST',
     body: formData,
-    headers,
+    headers: token ? { Authorization: token } : {}
   })
 
   const location = response.headers.get('Location')
 
-  const url = `${thumborUrl}/unsafe/production${location.slice(0, location.lastIndexOf('/'))}`
-  const originalFilename = location.slice(location.lastIndexOf('/') + 1)
+  const url = `${thumborUrl}/unsafe/production${location?.slice(0, location.lastIndexOf('/'))}`
+  const originalFilename = location?.slice(location.lastIndexOf('/') + 1)
 
   // check that image is available
   await new Promise<void>((resolve, reject) => {
@@ -39,6 +35,6 @@ export const handleImageUpload = async (uploadFile: UploadFile, token: string): 
 
   return {
     originalFilename,
-    url,
+    url
   }
 }

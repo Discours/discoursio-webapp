@@ -1,13 +1,9 @@
-import type { AuthModalSearchParams } from './types'
-
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal } from 'solid-js'
 
+import { useSnackbar, useUI } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
-import { useSnackbar } from '../../../context/snackbar'
-import { useRouter } from '../../../stores/router'
-import { hideModal } from '../../../stores/ui'
 import { validateEmail } from '../../../utils/validateEmail'
 
 import { AuthModalHeader } from './AuthModalHeader'
@@ -15,6 +11,7 @@ import { PasswordField } from './PasswordField'
 import { SocialProviders } from './SocialProviders'
 import { email, setEmail } from './sharedLogic'
 
+import { useSearchParams } from '@solidjs/router'
 import styles from './AuthModal.module.scss'
 
 type FormFields = {
@@ -25,7 +22,8 @@ type FormFields = {
 type ValidationErrors = Partial<Record<keyof FormFields, string>>
 
 export const LoginForm = () => {
-  const { changeSearchParams } = useRouter<AuthModalSearchParams>()
+  const { hideModal } = useUI()
+  const [, setSearchParams] = useSearchParams()
   const { t } = useLocalize()
   const [submitError, setSubmitError] = createSignal<string | JSX.Element>()
   const [isSubmitting, setIsSubmitting] = createSignal(false)
@@ -33,9 +31,9 @@ export const LoginForm = () => {
   const [validationErrors, setValidationErrors] = createSignal<ValidationErrors>({})
   // FIXME: use signal or remove
   const [_isLinkSent, setIsLinkSent] = createSignal(false)
-  const authFormRef: { current: HTMLFormElement } = { current: null }
+  let authFormRef: HTMLFormElement
   const { showSnackbar } = useSnackbar()
-  const { signIn } = useSession()
+  const { signIn, authError } = useSession()
 
   const handleEmailInput = (newEmail: string) => {
     setValidationErrors(({ email: _notNeeded, ...rest }) => rest)
@@ -52,7 +50,7 @@ export const LoginForm = () => {
 
     setIsLinkSent(true)
     setSubmitError()
-    changeSearchParams({ mode: 'send-confirm-email' })
+    setSearchParams({ mode: 'send-confirm-email' })
   }
 
   const preSendValidate = async (value: string, type: 'email' | 'password'): Promise<boolean> => {
@@ -60,7 +58,7 @@ export const LoginForm = () => {
       if (value === '' || !validateEmail(value)) {
         setValidationErrors((prev) => ({
           ...prev,
-          email: t('Invalid email'),
+          email: t('Invalid email')
         }))
         return false
       }
@@ -68,7 +66,7 @@ export const LoginForm = () => {
       if (value === '') {
         setValidationErrors((prev) => ({
           ...prev,
-          password: t('Please enter password'),
+          password: t('Please enter password')
         }))
         return false
       }
@@ -85,7 +83,7 @@ export const LoginForm = () => {
     setSubmitError()
 
     if (Object.keys(validationErrors()).length > 0) {
-      authFormRef.current
+      authFormRef
         .querySelector<HTMLInputElement>(`input[name="${Object.keys(validationErrors())[0]}"]`)
         ?.focus()
       return
@@ -94,53 +92,54 @@ export const LoginForm = () => {
     setIsSubmitting(true)
 
     try {
-      const { errors } = await signIn({ email: email(), password: password() })
-      console.error('[signIn errors]', errors)
-      if (errors?.length > 0) {
-        if (
-          errors.some(
-            (error) =>
-              error.message.includes('bad user credentials') || error.message.includes('user not found'),
-          )
-        ) {
-          setValidationErrors((prev) => ({
-            ...prev,
-            password: t('Something went wrong, check email and password'),
-          }))
-        } else if (errors.some((error) => error.message.includes('user not found'))) {
-          setSubmitError('Пользователь не найден')
-        } else if (errors.some((error) => error.message.includes('email not verified'))) {
-          setSubmitError(
-            <div class={styles.info}>
-              {t('This email is not verified')}
-              {'. '}
-              <span class={'link'} onClick={handleSendLinkAgainClick}>
-                {t('Send link again')}
-              </span>
-            </div>,
-          )
-        } else {
-          setSubmitError(t('Error', errors[0].message))
+      const success = await signIn({ email: email(), password: password() })
+      if (!success) {
+        switch (authError()) {
+          case 'user has not signed up email & password':
+          case 'bad user credentials': {
+            setValidationErrors((prev) => ({
+              ...prev,
+              password: t('Something went wrong, check email and password')
+            }))
+            break
+          }
+          case 'user not found': {
+            setValidationErrors((prev) => ({ ...prev, email: t('User was not found') }))
+            break
+          }
+          case 'email not verified': {
+            setValidationErrors((prev) => ({ ...prev, email: t('This email is not verified') }))
+            break
+          }
+          default:
+            setSubmitError(
+              <div class={styles.info}>
+                {t('Error', authError())}
+                {'. '}
+                <span class={'link'} onClick={handleSendLinkAgainClick}>
+                  {t('Send link again')}
+                </span>
+              </div>
+            )
         }
-        return
       }
       hideModal()
       showSnackbar({ body: t('Welcome!') })
     } catch (error) {
       console.error(error)
-      setSubmitError(error.message)
+      setSubmitError(authError())
     } finally {
       setIsSubmitting(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef.current = el)}>
+    <form onSubmit={handleSubmit} class={styles.authForm} ref={(el) => (authFormRef = el)}>
       <div>
         <AuthModalHeader modalType="login" />
         <div
           class={clsx('pretty-form__item', {
-            'pretty-form__item--error': validationErrors().email,
+            'pretty-form__item--error': validationErrors().email
           })}
         >
           <input
@@ -177,8 +176,8 @@ export const LoginForm = () => {
           <span
             class="link"
             onClick={() =>
-              changeSearchParams({
-                mode: 'send-reset-link',
+              setSearchParams({
+                mode: 'send-reset-link'
               })
             }
           >
@@ -194,8 +193,8 @@ export const LoginForm = () => {
           <span
             class={styles.authLink}
             onClick={() =>
-              changeSearchParams({
-                mode: 'register',
+              setSearchParams({
+                mode: 'register'
               })
             }
           >

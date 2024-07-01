@@ -1,23 +1,21 @@
-import { redirectPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 import { Show, createEffect, createMemo, createSignal, lazy, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
+import { useSnackbar, useUI } from '~/context/ui'
 import { ShoutForm, useEditorContext } from '../../../context/editor'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
 import { useTopics } from '../../../context/topics'
 import { Topic } from '../../../graphql/schema/core.gen'
-import { UploadedFile } from '../../../pages/types'
-import { router } from '../../../stores/router'
-import { hideModal, showModal } from '../../../stores/ui'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../Nav/Modal'
 import { Button } from '../../_shared/Button'
 import { Icon } from '../../_shared/Icon'
 import { Image } from '../../_shared/Image'
 
-import { useSnackbar } from '../../../context/snackbar'
+import { useNavigate } from '@solidjs/router'
+import { UploadedFile } from '~/types/upload'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import styles from './PublishSettings.module.scss'
 
@@ -38,21 +36,34 @@ const shorten = (str: string, maxLen: number) => {
 
 const EMPTY_TOPIC: Topic = {
   id: -1,
-  slug: '',
+  slug: ''
 }
-const emptyConfig = {
+
+interface FormConfig {
+  coverImageUrl?: string
+  mainTopic?: Topic
+  slug?: string
+  title?: string
+  subtitle?: string
+  description?: string
+  selectedTopics?: Topic[]
+}
+
+const emptyConfig: FormConfig = {
   coverImageUrl: '',
   mainTopic: EMPTY_TOPIC,
   slug: '',
   title: '',
   subtitle: '',
   description: '',
-  selectedTopics: [],
+  selectedTopics: []
 }
 
 export const PublishSettings = (props: Props) => {
   const { t } = useLocalize()
-  const { author } = useSession()
+  const { showModal, hideModal } = useUI()
+  const navigate = useNavigate()
+  const { session } = useSession()
   const { sortedTopics } = useTopics()
   const { showSnackbar } = useSnackbar()
   const [topics, setTopics] = createSignal<Topic[]>(sortedTopics())
@@ -74,11 +85,11 @@ export const PublishSettings = (props: Props) => {
       title: props.form?.title || '',
       subtitle: props.form?.subtitle || '',
       description: composeDescription() || '',
-      selectedTopics: [],
+      selectedTopics: []
     }
   })
 
-  const [settingsForm, setSettingsForm] = createStore(emptyConfig)
+  const [settingsForm, setSettingsForm] = createStore<FormConfig>(emptyConfig)
 
   onMount(() => {
     setSettingsForm(initialData())
@@ -88,23 +99,23 @@ export const PublishSettings = (props: Props) => {
 
   const { formErrors, setForm, setFormErrors, saveShout, publishShout } = useEditorContext()
 
-  const handleUploadModalContentCloseSetCover = (image: UploadedFile) => {
+  const handleUploadModalContentCloseSetCover = (image: UploadedFile | undefined) => {
     hideModal()
-    setSettingsForm('coverImageUrl', image.url)
+    setSettingsForm('coverImageUrl', image?.url)
   }
   const handleDeleteCoverImage = () => {
     setSettingsForm('coverImageUrl', '')
   }
 
-  const handleTopicSelectChange = (newSelectedTopics) => {
+  const handleTopicSelectChange = (newSelectedTopics: Topic[]) => {
     if (
       props.form.selectedTopics.length === 0 ||
-      newSelectedTopics.every((topic) => topic.id !== props.form.mainTopic?.id)
+      newSelectedTopics.every((topic: Topic) => topic.id !== props.form.mainTopic?.id)
     ) {
       setSettingsForm((prev) => {
         return {
           ...prev,
-          mainTopic: newSelectedTopics[0],
+          mainTopic: newSelectedTopics[0]
         }
       })
     }
@@ -116,9 +127,7 @@ export const PublishSettings = (props: Props) => {
   }
 
   const handleBackClick = () => {
-    redirectPage(router, 'edit', {
-      shoutId: props.shoutId.toString(),
-    })
+    navigate(`/edit/${props.shoutId}`)
   }
   const handleCancelClick = () => {
     setSettingsForm(initialData())
@@ -162,7 +171,7 @@ export const PublishSettings = (props: Props) => {
               </div>
               <div
                 class={clsx(styles.shoutCardCoverContainer, {
-                  [styles.hasImage]: settingsForm.coverImageUrl,
+                  [styles.hasImage]: settingsForm.coverImageUrl
                 })}
               >
                 <Show when={settingsForm.coverImageUrl ?? initialData().coverImageUrl}>
@@ -172,17 +181,19 @@ export const PublishSettings = (props: Props) => {
                 </Show>
                 <div class={styles.text}>
                   <Show when={settingsForm.mainTopic}>
-                    <div class={styles.mainTopic}>{settingsForm.mainTopic.title}</div>
+                    <div class={styles.mainTopic}>{settingsForm.mainTopic?.title || ''}</div>
                   </Show>
                   <div class={styles.shoutCardTitle}>{settingsForm.title}</div>
                   <div class={styles.shoutCardSubtitle}>{settingsForm.subtitle || ''}</div>
-                  <div class={styles.shoutAuthor}>{author()?.name}</div>
+                  <div class={styles.shoutAuthor}>
+                    {session()?.user?.app_data?.profile?.name || t('Anonymous')}
+                  </div>
                 </div>
               </div>
             </div>
             <p class="description">
               {t(
-                'Choose a title image for the article. You can immediately see how the publication card will look like.',
+                'Choose a title image for the article. You can immediately see how the publication card will look like.'
               )}
             </p>
 
@@ -193,7 +204,8 @@ export const PublishSettings = (props: Props) => {
                 fieldName={t('Header')}
                 placeholder={t('Come up with a title for your story')}
                 initialValue={settingsForm.title}
-                value={(value) => setSettingsForm('title', value)}
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                value={(value: any) => setSettingsForm('title', value)}
                 allowEnterKey={false}
                 maxLength={100}
               />
@@ -203,7 +215,8 @@ export const PublishSettings = (props: Props) => {
                 fieldName={t('Subheader')}
                 placeholder={t('Come up with a subtitle for your story')}
                 initialValue={settingsForm.subtitle || ''}
-                value={(value) => setSettingsForm('subtitle', value)}
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                value={(value: any) => setSettingsForm('subtitle', value)}
                 allowEnterKey={false}
                 maxLength={100}
               />
@@ -214,7 +227,8 @@ export const PublishSettings = (props: Props) => {
                 placeholder={t('Write a short introduction')}
                 label={t('Description')}
                 initialContent={composeDescription()}
-                onChange={(value) => setForm('description', value)}
+                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+                onChange={(value: any) => setForm('description', value)}
                 maxLength={DESCRIPTION_MAX_LENGTH}
               />
             </div>
@@ -228,7 +242,7 @@ export const PublishSettings = (props: Props) => {
             <h4>{t('Topics')}</h4>
             <p class="description">
               {t(
-                'Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title',
+                'Add a few topics so that the reader knows what your content is about and can find it on pages of topics that interest them. Topics can be swapped, the first topic becomes the title'
               )}
             </p>
             <div class={styles.inputContainer}>
@@ -276,7 +290,11 @@ export const PublishSettings = (props: Props) => {
         </div>
       </div>
       <Modal variant="narrow" name="uploadCoverImage">
-        <UploadModalContent onClose={(value) => handleUploadModalContentCloseSetCover(value)} />
+        <UploadModalContent
+          onClose={(value: UploadedFile | undefined) =>
+            handleUploadModalContentCloseSetCover(value as UploadedFile)
+          }
+        />
       </Modal>
     </form>
   )

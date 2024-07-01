@@ -17,10 +17,10 @@ type Props = {
 }
 
 export const SocialNetworkInput = (props: Props) => {
-  const inputRef: { current: HTMLInputElement } = { current: null }
+  let inputRef: HTMLInputElement | null
   onMount(() => {
     if (props.autofocus) {
-      inputRef.current.focus()
+      inputRef?.focus()
     }
   })
   return (
@@ -29,12 +29,12 @@ export const SocialNetworkInput = (props: Props) => {
         <Icon name={props.network ? `social-${props.network}` : 'user-link-default'} />
       </div>
       <input
-        ref={(el) => (inputRef.current = el)}
+        ref={(el) => (inputRef = el)}
         class={styles.input}
         type="text"
-        value={props.isExist ? props.link : null}
+        value={props.isExist ? props.link : ''}
         onInput={(event) => props.handleInput(event.currentTarget.value)}
-        placeholder={props.autofocus ? null : `${props.link}${props.slug}`}
+        placeholder={props.autofocus ? '' : `${props.link}${props.slug}`}
       />
       <Show when={props.isExist}>
         <button type="button" onClick={props.handleDelete}>

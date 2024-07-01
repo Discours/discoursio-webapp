@@ -1,21 +1,18 @@
-import type { Accessor, JSX, Resource } from 'solid-js'
-import type { AuthModalSearchParams, AuthModalSource } from '../components/Nav/AuthModal/types'
-import type { Author } from '../graphql/schema/core.gen'
-
 import {
   ApiResponse,
   AuthToken,
   Authorizer,
   ConfigType,
   ForgotPasswordInput,
-  ForgotPasswordResponse,
   GenericResponse,
   LoginInput,
   ResendVerifyEmailInput,
   SignupInput,
   UpdateProfileInput,
-  VerifyEmailInput,
+  VerifyEmailInput
 } from '@authorizerdev/authorizer-js'
+import { useSearchParams } from '@solidjs/router'
+import type { Accessor, JSX, Resource } from 'solid-js'
 import {
   createContext,
   createEffect,
@@ -25,58 +22,70 @@ import {
   on,
   onCleanup,
   onMount,
-  useContext,
+  useContext
 } from 'solid-js'
-
-import { inboxClient } from '../graphql/client/chat'
-import { apiClient } from '../graphql/client/core'
-import { useRouter } from '../stores/router'
-import { showModal } from '../stores/ui'
-import { addAuthors } from '../stores/zine/authors'
-
+import { type AuthModalSource, useSnackbar, useUI } from '~/context/ui'
+import { authApiUrl } from '../config/config'
 import { useLocalize } from './localize'
-import { useSnackbar } from './snackbar'
 
 const defaultConfig: ConfigType = {
-  authorizerURL: 'https://auth.discours.io',
+  authorizerURL: authApiUrl.replace('/graphql', ''),
   redirectURL: 'https://testing.discours.io',
-  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24', // FIXME: use env?
+  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24'
 }
 
 export type SessionContextType = {
   config: Accessor<ConfigType>
   session: Resource<AuthToken>
-  author: Resource<Author | null>
   authError: Accessor<string>
   isSessionLoaded: Accessor<boolean>
-  loadSession: () => AuthToken | Promise<AuthToken>
-  setSession: (token: AuthToken | null) => void // setSession
-  loadAuthor: (info?: unknown) => Author | Promise<Author>
-  setAuthor: (a: Author) => void
+  loadSession: () => AuthToken | Promise<AuthToken> | undefined | null
+  setSession: (token: AuthToken) => void
   requireAuthentication: (
     callback: (() => Promise<void>) | (() => void),
-    modalSource: AuthModalSource,
+    modalSource: AuthModalSource
   ) => void
-  signUp: (params: SignupInput) => Promise<{ data: AuthToken; errors: Error[] }>
-  signIn: (params: LoginInput) => Promise<{ data: AuthToken; errors: Error[] }>
-  updateProfile: (params: UpdateProfileInput) => Promise<{ data: AuthToken; errors: Error[] }>
-  signOut: () => Promise<void>
+  signUp: (params: SignupInput) => Promise<boolean>
+  signIn: (params: LoginInput) => Promise<boolean>
+  updateProfile: (params: UpdateProfileInput) => Promise<boolean>
+  signOut: () => Promise<boolean>
   oauth: (provider: string) => Promise<void>
-  forgotPassword: (
-    params: ForgotPasswordInput,
-  ) => Promise<{ data: ForgotPasswordResponse; errors: Error[] }>
+  forgotPassword: (params: ForgotPasswordInput) => Promise<string>
   changePassword: (password: string, token: string) => void
-  confirmEmail: (input: VerifyEmailInput) => Promise<AuthToken> // email confirm callback is in auth.discours.io
+  confirmEmail: (input: VerifyEmailInput) => Promise<void>
   setIsSessionLoaded: (loaded: boolean) => void
   authorizer: () => Authorizer
   isRegistered: (email: string) => Promise<string>
-  resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<GenericResponse>
+  resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<boolean>
 }
 
-// biome-ignore lint/suspicious/noEmptyBlockStatements: <explanation>
-const noop = () => {}
-
-const SessionContext = createContext<SessionContextType>()
+const noop = () => null
+const metaRes = {
+  data: {
+    meta: {
+      version: 'latest',
+      client_id: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
+      is_google_login_enabled: true,
+      is_facebook_login_enabled: true,
+      is_github_login_enabled: true,
+      is_linkedin_login_enabled: false,
+      is_apple_login_enabled: false,
+      is_twitter_login_enabled: true,
+      is_microsoft_login_enabled: false,
+      is_twitch_login_enabled: false,
+      is_roblox_login_enabled: false,
+      is_email_verification_enabled: true,
+      is_basic_authentication_enabled: true,
+      is_magic_link_login_enabled: true,
+      is_sign_up_enabled: true,
+      is_strong_password_enabled: false,
+      is_multi_factor_auth_enabled: true,
+      is_mobile_basic_authentication_enabled: true,
+      is_phone_verification_enabled: false
+    }
+  }
+}
+const SessionContext = createContext<SessionContextType>({} as SessionContextType)
 
 export function useSession() {
   return useContext(SessionContext)
@@ -88,56 +97,58 @@ export const SessionProvider = (props: {
 }) => {
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
-  const { searchParams, changeSearchParams } = useRouter()
+  const [searchParams, changeSearchParams] = useSearchParams<{
+    mode?: string
+    m?: string
+    state?: string
+    redirectURL?: string
+    redirect_uri?: string
+    token?: string
+    access_token?: string
+    scope?: string
+  }>()
+  const clearSearchParams = () => changeSearchParams({}, { replace: true })
   const [config, setConfig] = createSignal<ConfigType>(defaultConfig)
   const authorizer = createMemo(() => new Authorizer(config()))
   const [oauthState, setOauthState] = createSignal<string>()
 
-  // handle auth state callback
-  createEffect(
-    on(
-      () => searchParams()?.state,
-      (state) => {
-        if (state) {
-          setOauthState((_s) => state)
-          const scope = searchParams()?.scope
-            ? searchParams()?.scope?.toString().split(' ')
-            : ['openid', 'profile', 'email']
-          if (scope) console.info(`[context.session] scope: ${scope}`)
-          const url = searchParams()?.redirect_uri || searchParams()?.redirectURL || window.location.href
-          setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
-          changeSearchParams({ mode: 'confirm-email', m: 'auth' }, true)
-        }
-      },
-      { defer: true },
-    ),
-  )
+  // load
+  let minuteLater: NodeJS.Timeout | null
+  const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
+  const [authError, setAuthError] = createSignal<string>('')
+  const { showModal } = useUI()
+
+  // handle auth state callback from outside
+  onMount(() => {
+    const params = searchParams
+    if (params?.state) {
+      setOauthState((_s) => params?.state)
+      const scope = params?.scope ? params?.scope?.toString().split(' ') : ['openid', 'profile', 'email']
+      if (scope) console.info(`[context.session] scope: ${scope}`)
+      const url = params?.redirect_uri || params?.redirectURL || window.location.href
+      setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
+      changeSearchParams({ mode: 'confirm-email', m: 'auth' }, { replace: true })
+    }
+  })
 
   // handle token confirm
   createEffect(() => {
-    const token = searchParams()?.token
-    const access_token = searchParams()?.access_token
+    const token = searchParams?.token
+    const access_token = searchParams?.access_token
     if (access_token)
       changeSearchParams({
         mode: 'confirm-email',
         m: 'auth',
-        access_token,
+        access_token
       })
     else if (token) {
       changeSearchParams({
         mode: 'change-password',
         m: 'auth',
-        token,
+        token
       })
     }
   })
-
-  // load
-  let minuteLater: NodeJS.Timeout | null
-
-  const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
-  const [authError, setAuthError] = createSignal('')
-  const { clearSearchParams } = useRouter<AuthModalSearchParams>()
 
   // Function to load session data
   const sessionData = async () => {
@@ -160,26 +171,23 @@ export const SessionProvider = (props: {
         return s.data
       }
       console.info('[context.session] cannot refresh session', s.errors)
-      setAuthError(s.errors.pop().message)
+      setAuthError(s.errors?.pop()?.message || '')
 
       // Set the session loaded flag even if there's an error
       setIsSessionLoaded(true)
-
-      return null
     } catch (error) {
       console.info('[context.session] cannot refresh session', error)
-      setAuthError(error)
+      if (error) setAuthError(t('error'))
 
       // Set the session loaded flag even if there's an error
       setIsSessionLoaded(true)
-
-      return null
     }
+    return {} as AuthToken
   }
 
   const [session, { refetch: loadSession, mutate: setSession }] = createResource<AuthToken>(sessionData, {
     ssrLoadFrom: 'initial',
-    initialValue: null,
+    initialValue: {} as AuthToken
   })
 
   const checkSessionIsExpired = () => {
@@ -200,84 +208,23 @@ export const SessionProvider = (props: {
     }
   }
 
-  onCleanup(() => clearTimeout(minuteLater))
-
-  const authorData = async () => {
-    const u = session()?.user
-    return u ? (await apiClient.getAuthorId({ user: u.id.trim() })) || null : null
-  }
-  const [author, { refetch: loadAuthor, mutate: setAuthor }] = createResource<Author | null>(authorData, {
-    ssrLoadFrom: 'initial',
-    initialValue: null,
-  })
-
-  // when session is loaded
-  createEffect(() => {
-    if (session()) {
-      const token = session()?.access_token
-      if (token) {
-        if (!inboxClient.private) {
-          apiClient.connect(token)
-          inboxClient.connect(token)
-        }
-
-        try {
-          const appdata = session()?.user.app_data
-          if (appdata) {
-            const { profile } = appdata
-            if (profile?.id) {
-              setAuthor(profile)
-              addAuthors([profile])
-            } else {
-              setTimeout(loadAuthor, 15)
-            }
-          }
-        } catch (e) {
-          console.error(e)
-        }
-
-        setIsSessionLoaded(true)
-      }
-    }
-  })
-
-  // when author is loaded
-  createEffect(() => {
-    if (author()) {
-      addAuthors([author()])
-    } else {
-      reset()
-    }
-  })
-
-  const reset = () => {
-    setIsSessionLoaded(true)
-    setSession(null)
-    setAuthor(null)
-  }
+  onCleanup(() => clearTimeout(minuteLater as NodeJS.Timeout))
 
   // initial effect
-  onMount(async () => {
-    const metaRes = await authorizer().getMetaData()
+  onMount(() => {
     setConfig({
       ...defaultConfig,
       ...metaRes,
-      redirectURL: window.location.origin,
+      redirectURL: window.location.origin
     })
-    let s: AuthToken
-    try {
-      s = await loadSession()
-    } catch (error) {
-      console.warn('[context.session] load session failed', error)
-    }
-    if (!s) reset()
+    loadSession()
   })
 
   // callback state updater
   createEffect(
     on([() => props.onStateChangeCallback, session], ([_, ses]) => {
       ses?.user?.id && props.onStateChangeCallback(ses)
-    }),
+    })
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(noop)
@@ -300,31 +247,67 @@ export const SessionProvider = (props: {
   })
 
   // authorizer api proxy methods
-  const authenticate = async (authFunction, params) => {
+  const authenticate = async (
+    authFunction: (data: SignupInput) => Promise<ApiResponse<AuthToken | GenericResponse>>,
+    // biome-ignore lint/suspicious/noExplicitAny: authorizer
+    params: any
+  ) => {
     const resp = await authFunction(params)
     console.debug('[context.session] authenticate:', resp)
-    if (resp?.data && resp?.errors.length === 0) {
-      setSession(resp.data)
-    }
+    if (resp?.data && resp?.errors.length === 0) setSession(resp.data as AuthToken)
     return { data: resp?.data, errors: resp?.errors }
   }
-  const signUp = async (params: SignupInput) => await authenticate(authorizer().signup, params)
-  const signIn = async (params: LoginInput) => await authenticate(authorizer().login, params)
-  const updateProfile = async (params: UpdateProfileInput) =>
-    await authenticate(authorizer().updateProfile, params)
+  const signUp = async (params: SignupInput): Promise<boolean> => {
+    const resp = await authenticate(authorizer().signup, params as SignupInput)
+    console.debug('[context.session] signUp:', resp)
+    if (resp?.data) {
+      setSession(resp.data as AuthToken)
+      return true
+    }
+    return false
+  }
+
+  const signIn = async (params: LoginInput): Promise<boolean> => {
+    const resp = await authenticate(authorizer().login, params as LoginInput)
+    console.debug('[context.session] signIn:', resp)
+    if (resp?.data) {
+      setSession(resp.data as AuthToken)
+      return true
+    }
+    console.warn('[signIn] response: ', resp)
+    setAuthError(resp.errors.pop()?.message || '')
+    return false
+  }
+
+  const updateProfile = async (params: UpdateProfileInput) => {
+    const resp = await authenticate(authorizer().updateProfile, params as UpdateProfileInput)
+    console.debug('[context.session] updateProfile response:', resp)
+    if (resp?.data) {
+      // console.debug('[context.session] response data ', resp.data)
+      // FIXME: renew updated profile
+      return true
+    }
+    return false
+  }
 
   const signOut = async () => {
     const authResult: ApiResponse<GenericResponse> = await authorizer().logout()
-    console.debug(authResult)
-    reset()
-    showSnackbar({ body: t("You've successfully logged out") })
+    // console.debug('[context.session] sign out', authResult)
+    if (authResult) {
+      setSession({} as AuthToken)
+      setIsSessionLoaded(true)
+      showSnackbar({ body: t("You've successfully logged out") })
+      // console.debug(session())
+      return true
+    }
+    return false
   }
 
   const changePassword = async (password: string, token: string) => {
     const resp = await authorizer().resetPassword({
       password,
       token,
-      confirm_password: password,
+      confirm_password: password
     })
     console.debug('[context.session] change password response:', resp)
   }
@@ -332,25 +315,25 @@ export const SessionProvider = (props: {
   const forgotPassword = async (params: ForgotPasswordInput) => {
     const resp = await authorizer().forgotPassword(params)
     console.debug('[context.session] change password response:', resp)
-    return { data: resp?.data, errors: resp.errors }
+    return resp?.errors?.pop()?.message || ''
   }
 
-  const resendVerifyEmail = async (params: ResendVerifyEmailInput) => {
-    const resp = await authorizer().resendVerifyEmail(params)
+  const resendVerifyEmail = async (params: ResendVerifyEmailInput): Promise<boolean> => {
+    const resp = await authorizer().resendVerifyEmail(params as ResendVerifyEmailInput)
     console.debug('[context.session] resend verify email response:', resp)
     if (resp.errors) {
       resp.errors.forEach((error) => {
         showSnackbar({ type: 'error', body: error.message })
       })
     }
-    return resp?.data
+    return resp ? resp.data?.message === 'Verification email has been sent. Please check your inbox' : false
   }
 
   const isRegistered = async (email: string): Promise<string> => {
     console.debug('[context.session] calling is_registered for ', email)
     try {
       const response = await authorizer().graphqlQuery({
-        query: `query { is_registered(email: "${email}") { message }}`,
+        query: `query { is_registered(email: "${email}") { message }}`
       })
       return response?.data?.is_registered?.message
     } catch (error) {
@@ -361,22 +344,18 @@ export const SessionProvider = (props: {
 
   const confirmEmail = async (input: VerifyEmailInput) => {
     console.debug(`[context.session] calling authorizer's verify email with`, input)
-    try {
-      const at: ApiResponse<AuthToken> = await authorizer().verifyEmail(input)
-      if (at?.data) {
-        setSession(at.data)
-        return at.data
-      }
-      console.warn(at?.errors)
-    } catch (error) {
-      console.warn(error)
+    const at: ApiResponse<AuthToken> = await authorizer().verifyEmail(input)
+    if (at?.data) {
+      setSession(at.data)
+    } else {
+      console.warn(at)
     }
   }
 
   const oauth = async (oauthProvider: string) => {
     console.debug(`[context.session] calling authorizer's oauth for`)
     try {
-      await authorizer().oauthLogin(oauthProvider, [], window.location.origin, oauthState())
+      await authorizer().oauthLogin(oauthProvider, [], window?.location?.origin || '', oauthState())
     } catch (error) {
       console.warn(error)
     }
@@ -391,22 +370,19 @@ export const SessionProvider = (props: {
     updateProfile,
     setIsSessionLoaded,
     setSession,
-    setAuthor,
     authorizer,
-    loadAuthor,
     forgotPassword,
     changePassword,
     oauth,
-    isRegistered,
+    isRegistered
   }
   const value: SessionContextType = {
     authError,
     config,
     session,
     isSessionLoaded,
-    author,
     ...actions,
-    resendVerifyEmail,
+    resendVerifyEmail
   }
 
   return <SessionContext.Provider value={value}>{props.children}</SessionContext.Provider>

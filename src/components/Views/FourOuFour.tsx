@@ -1,17 +1,18 @@
-import { openPage } from '@nanostores/router'
 import { clsx } from 'clsx'
 
 import { useLocalize } from '../../context/localize'
-import { router } from '../../stores/router'
 import { Icon } from '../_shared/Icon'
 
+import { useNavigate } from '@solidjs/router'
 import styles from '../../styles/FourOuFour.module.scss'
 
-export const FourOuFourView = (_props) => {
-  let queryInput: HTMLInputElement
-  const search = (_ev) => {
-    openPage(router, 'search', { q: queryInput.value })
-  }
+type EvType = Event & { submitter: HTMLElement } & { currentTarget: HTMLFormElement; target: Element }
+
+export const FourOuFourView = () => {
+  let queryInput: HTMLInputElement | null
+  const navigate = useNavigate()
+  const search = (_ev: EvType) => navigate(`/search?q=${queryInput?.value || ''}`)
+
   const { t } = useLocalize()
   return (
     <div class={styles.errorPageWrapper}>
@@ -35,14 +36,18 @@ export const FourOuFourView = (_props) => {
               <div class={styles.errorExplain}>
                 <p>{t(`You've reached a non-existed page`)}</p>
                 <p>{t('Try to find another way')}:</p>
-                <form class={clsx(styles.prettyForm, 'pretty-form')} method="get" onSubmit={search}>
+                <form
+                  class={clsx(styles.prettyForm, 'pretty-form')}
+                  method="get"
+                  onSubmit={(ev) => search(ev)}
+                >
                   <div class={clsx(styles.prettyFormItem, 'pretty-form__item')}>
                     <input
                       type="text"
                       name="q"
                       placeholder={t('Search')}
                       id="search-field"
-                      ref={queryInput}
+                      ref={(el) => (queryInput = el)}
                     />
                     <label for="search-field">{t('Search')}</label>
                     <button type="submit" class={styles.searchSubmit}>

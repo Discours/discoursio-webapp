@@ -22,5 +22,6 @@ bun.lockb
 /blob-report/
 /playwright/.cache/
 /plawright-report/
-target
-.venv
+
+.output
+.vinxi

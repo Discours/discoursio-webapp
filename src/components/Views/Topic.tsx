@@ -1,16 +1,23 @@
-import { LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
+import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '../../graphql/schema/core.gen'
 
+import { Meta } from '@solidjs/meta'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
-import { Meta } from '../../context/meta'
 
+import { useSearchParams } from '@solidjs/router'
+import { useGraphQL } from '~/context/graphql'
+import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-top'
+import loadShoutsRandomQuery from '~/graphql/query/core/articles-load-random-topic'
+import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
+import getTopicFollowersQuery from '~/graphql/query/core/topic-followers'
+import { useAuthors } from '../../context/authors'
+import { useFeed } from '../../context/feed'
 import { useLocalize } from '../../context/localize'
 import { useTopics } from '../../context/topics'
-import { useRouter } from '../../stores/router'
-import { loadShouts, useArticlesStore } from '../../stores/zine/articles'
-import { useAuthorsStore } from '../../stores/zine/authors'
+import styles from '../../styles/Topic.module.scss'
 import { capitalize } from '../../utils/capitalize'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { getUnixtime } from '../../utils/getServerDate'
 import { getDescription } from '../../utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
 import { splitToPages } from '../../utils/splitToPages'
@@ -21,10 +28,6 @@ import { Row3 } from '../Feed/Row3'
 import { FullTopic } from '../Topic/Full'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
-import { apiClient } from '../../graphql/client/core'
-import styles from '../../styles/Topic.module.scss'
-import { getUnixtime } from '../../utils/getServerDate'
-
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
 }
@@ -33,6 +36,7 @@ interface Props {
   topic: Topic
   shouts: Shout[]
   topicSlug: string
+  followers?: Author[]
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 28
@@ -40,31 +44,50 @@ const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const TopicView = (props: Props) => {
   const { t, lang } = useLocalize()
-  const { searchParams, changeSearchParams } = useRouter<TopicsPageSearchParams>()
+  const { query } = useGraphQL()
+  const [searchParams, changeSearchParams] = useSearchParams<TopicsPageSearchParams>()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const { sortedArticles } = useArticlesStore({ shouts: props.shouts })
+  const { feedByTopic, loadShouts } = useFeed()
+  const sortedFeed = createMemo(() => feedByTopic()[topic()?.slug || ''] || [])
   const { topicEntities } = useTopics()
-  const { authorsByTopic } = useAuthorsStore()
+  const { authorsByTopic } = useAuthors()
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
 
   const [topic, setTopic] = createSignal<Topic>()
+  createEffect(
+    on([() => props.topicSlug, topic, topicEntities], async ([slug, t, ttt]) => {
+      if (slug && !t && ttt) {
+        const current = slug in ttt ? ttt[slug] : null
+        console.debug(current)
+        setTopic(current as Topic)
+        await loadTopicFollowers()
+        await loadTopicAuthors()
+        loadRandom()
+      }
+    })
+  )
 
-  createEffect(() => {
-    const topics = topicEntities()
-    if (props.topicSlug && !topic() && topics) {
-      setTopic(topics[props.topicSlug])
-    }
-  })
+  const [followers, setFollowers] = createSignal<Author[]>(props.followers || [])
+  const loadTopicFollowers = async () => {
+    const resp = await query(getTopicFollowersQuery, { slug: props.topicSlug }).toPromise()
+    setFollowers(resp?.data?.get_topic_followers || [])
+  }
+  const [topicAuthors, setTopicAuthors] = createSignal<Author[]>([])
+  const loadTopicAuthors = async () => {
+    const by: AuthorsBy = { topic: props.topicSlug }
+    const resp = await query(loadAuthorsByQuery, { by, limit: 10, offset: 0 }).toPromise()
+    setTopicAuthors(resp?.data?.load_authors_by || [])
+  }
 
   const loadFavoriteTopArticles = async (topic: string) => {
     const options: LoadShoutsOptions = {
       filters: { featured: true, topic: topic },
       limit: 10,
-      random_limit: 100,
+      random_limit: 100
     }
-    const result = await apiClient.getRandomTopShouts({ options })
-    setFavoriteTopArticles(result)
+    const resp = await query(getRandomTopShoutsQuery, { options }).toPromise()
+    setFavoriteTopArticles(resp?.data?.l)
   }
 
   const loadReactedTopMonthArticles = async (topic: string) => {
@@ -74,35 +97,28 @@ export const TopicView = (props: Props) => {
     const options: LoadShoutsOptions = {
       filters: { after: after, featured: true, topic: topic },
       limit: 10,
-      random_limit: 10,
+      random_limit: 10
     }
 
-    const result = await apiClient.getRandomTopShouts({ options })
-
-    setReactedTopMonthArticles(result)
+    const resp = await query(loadShoutsRandomQuery, { options }).toPromise()
+    setReactedTopMonthArticles(resp?.data?.load_shouts_random)
   }
 
   const loadRandom = () => {
-    loadFavoriteTopArticles(topic()?.slug)
-    loadReactedTopMonthArticles(topic()?.slug)
+    if (topic()) {
+      loadFavoriteTopArticles((topic() as Topic).slug)
+      loadReactedTopMonthArticles((topic() as Topic).slug)
+    }
   }
-
-  createEffect(
-    on(
-      () => topic(),
-      () => loadRandom(),
-      { defer: true },
-    ),
-  )
 
   const title = createMemo(
     () =>
       `#${capitalize(
         lang() === 'en'
-          ? topic()?.slug.replace(/-/, ' ')
-          : topic()?.title || topic()?.slug.replace(/-/, ' '),
-        true,
-      )}`,
+          ? (topic() as Topic)?.slug.replace(/-/, ' ')
+          : (topic() as Topic)?.title || (topic() as Topic)?.slug.replace(/-/, ' '),
+        true
+      )}`
   )
 
   const loadMore = async () => {
@@ -111,7 +127,7 @@ export const TopicView = (props: Props) => {
     const { hasMore } = await loadShouts({
       filters: { topic: topic()?.slug },
       limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedArticles().length,
+      offset: sortedFeed().length // FIXME: use feedByTopic
     })
     setIsLoadMoreButtonVisible(hasMore)
 
@@ -120,13 +136,13 @@ export const TopicView = (props: Props) => {
 
   onMount(() => {
     loadRandom()
-    if (sortedArticles().length === PRERENDERED_ARTICLES_COUNT) {
+    if (sortedFeed() || [].length === PRERENDERED_ARTICLES_COUNT) {
       loadMore()
     }
   })
   /*
   const selectionTitle = createMemo(() => {
-    const m = searchParams().by
+    const m = searchParams?.by
     if (m === 'viewed') return t('Top viewed')
     if (m === 'rating') return t('Top rated')
     if (m === 'commented') return t('Top discussed')
@@ -134,16 +150,16 @@ export const TopicView = (props: Props) => {
   })
   */
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedArticles(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE),
+    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   const ogImage = () =>
     topic()?.pic
-      ? getImageUrl(topic().pic, { width: 1200 })
+      ? getImageUrl(topic()?.pic || '', { width: 1200 })
       : getImageUrl('production/image/logo_image.png')
   const description = () =>
     topic()?.body
-      ? getDescription(topic().body)
+      ? getDescription(topic()?.body || '')
       : t('The most interesting publications on the topic', { topicName: title() })
 
   return (
@@ -158,21 +174,21 @@ export const TopicView = (props: Props) => {
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={title()} />
       <Meta name="twitter:description" content={description()} />
-      <FullTopic topic={topic()} />
+      <FullTopic topic={topic() as Topic} followers={followers()} authors={topicAuthors()} />
       <div class="wide-container">
         <div class={clsx(styles.groupControls, 'row group__controls')}>
           <div class="col-md-16">
             <ul class="view-switcher">
               <li
                 classList={{
-                  'view-switcher__item--selected': searchParams().by === 'recent' || !searchParams().by,
+                  'view-switcher__item--selected': searchParams?.by === 'recent' || !searchParams?.by
                 }}
               >
                 <button
                   type="button"
                   onClick={() =>
                     changeSearchParams({
-                      by: 'recent',
+                      by: 'recent'
                     })
                   }
                 >
@@ -206,34 +222,34 @@ export const TopicView = (props: Props) => {
         </div>
       </div>
 
-      <Row1 article={sortedArticles()[0]} />
-      <Row2 articles={sortedArticles().slice(1, 3)} isEqual={true} />
+      <Row1 article={sortedFeed()[0]} />
+      <Row2 articles={sortedFeed().slice(1, 3)} isEqual={true} />
 
       <Beside
         title={t('Topic is supported by')}
-        values={authorsByTopic()[topic()?.slug]?.slice(0, 6)}
-        beside={sortedArticles()[4]}
+        values={authorsByTopic()[topic()?.slug || '']?.slice(0, 6)}
+        beside={sortedFeed()[4]}
         wrapper={'author'}
       />
       <Show when={reactedTopMonthArticles()?.length > 0} keyed={true}>
         <ArticleCardSwiper title={t('Top month')} slides={reactedTopMonthArticles()} />
       </Show>
       <Beside
-        beside={sortedArticles()[12]}
+        beside={sortedFeed()[12]}
         title={t('Top viewed')}
-        values={sortedArticles().slice(0, 5)}
+        values={sortedFeed().slice(0, 5)}
         wrapper={'top-article'}
       />
 
-      <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
-      <Row1 article={sortedArticles()[15]} />
+      <Row2 articles={sortedFeed().slice(13, 15)} isEqual={true} />
+      <Row1 article={sortedFeed()[15]} />
 
       <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
         <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
       </Show>
-      <Show when={sortedArticles().length > 15}>
-        <Row3 articles={sortedArticles().slice(23, 26)} />
-        <Row2 articles={sortedArticles().slice(26, 28)} />
+      <Show when={sortedFeed().length > 15}>
+        <Row3 articles={sortedFeed().slice(23, 26)} />
+        <Row2 articles={sortedFeed().slice(26, 28)} />
       </Show>
 
       <For each={pages()}>

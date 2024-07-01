@@ -1,4 +1,4 @@
-import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
+import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on } from 'solid-js'
 
 import { AuthGuard } from '../components/AuthGuard'
 import { Loading } from '../components/_shared/Loading'
@@ -45,12 +45,25 @@ export const EditPage = () => {
   const [shoutId, setShoutId] = createSignal<number>(0)
   const [shout, setShout] = createSignal<Shout>()
 
-  onMount(() => {
-    const shoutId = window.location.pathname.split('/').pop()
-    const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
-    console.debug(`editing shout ${shoutIdFromUrl}`)
-    if (shoutIdFromUrl) setShoutId(shoutIdFromUrl)
-  })
+  createEffect(
+    on(
+      () => window?.location.pathname,
+      (p) => {
+        if (p) {
+          console.debug(p)
+          const shoutId = p.split('/').pop()
+          if (shoutId) {
+            const shoutIdFromUrl = Number.parseInt(shoutId ?? '0', 10)
+            console.debug(`editing shout ${shoutIdFromUrl}`)
+            if (shoutIdFromUrl) {
+              setShoutId(shoutIdFromUrl)
+            }
+          }
+        }
+      },
+      { defer: true }
+    )
+  )
 
   createEffect(
     on([session, shout, shoutId], async ([ses, sh, shid]) => {
@@ -63,6 +76,7 @@ export const EditPage = () => {
         }
       }
     }),
+    { defer: true }
   )
 
   const title = createMemo(() => {

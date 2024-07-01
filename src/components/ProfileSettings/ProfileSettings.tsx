@@ -1,4 +1,4 @@
-import { createFileUploader } from '@solid-primitives/upload'
+import { UploadFile, createFileUploader } from '@solid-primitives/upload'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
 import {
@@ -11,18 +11,16 @@ import {
   lazy,
   on,
   onCleanup,
-  onMount,
+  onMount
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import { useConfirm } from '../../context/confirm'
 import { useLocalize } from '../../context/localize'
-import { useProfileForm } from '../../context/profile'
+import { useProfile } from '../../context/profile'
 import { useSession } from '../../context/session'
-import { useSnackbar } from '../../context/snackbar'
-import { ProfileInput } from '../../graphql/schema/core.gen'
+import { useSnackbar, useUI } from '../../context/ui'
+import { InputMaybe, ProfileInput } from '../../graphql/schema/core.gen'
 import styles from '../../pages/profile/Settings.module.scss'
-import { hideModal, showModal } from '../../stores/ui'
 import { clone } from '../../utils/clone'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { handleImageUpload } from '../../utils/handleImageUpload'
@@ -40,37 +38,43 @@ import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
 const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))
 
+function filterNulls(arr: InputMaybe<string>[]): string[] {
+  return arr.filter((item): item is string => item !== null && item !== undefined)
+}
+
 export const ProfileSettings = () => {
   const { t } = useLocalize()
   const [prevForm, setPrevForm] = createStore<ProfileInput>({})
   const [isFormInitialized, setIsFormInitialized] = createSignal(false)
   const [isSaving, setIsSaving] = createSignal(false)
-  const [social, setSocial] = createSignal([])
+  const [social, setSocial] = createSignal<string[]>([])
   const [addLinkForm, setAddLinkForm] = createSignal<boolean>(false)
   const [incorrectUrl, setIncorrectUrl] = createSignal<boolean>(false)
   const [isUserpicUpdating, setIsUserpicUpdating] = createSignal(false)
-  const [userpicFile, setUserpicFile] = createSignal(null)
+  const [userpicFile, setUserpicFile] = createSignal<UploadFile>()
   const [uploadError, setUploadError] = createSignal(false)
   const [isFloatingPanelVisible, setIsFloatingPanelVisible] = createSignal(false)
   const [hostname, setHostname] = createSignal<string | null>(null)
   const [slugError, setSlugError] = createSignal<string>()
   const [nameError, setNameError] = createSignal<string>()
-  const { form, submit, updateFormField, setForm } = useProfileForm()
+  const { form, submit, updateFormField, setForm } = useProfile()
   const { showSnackbar } = useSnackbar()
-  const { loadAuthor, session } = useSession()
-  const { showConfirm } = useConfirm()
+  const { loadSession, session } = useSession()
+  const { showConfirm } = useUI()
   const [clearAbout, setClearAbout] = createSignal(false)
+  const { showModal, hideModal } = useUI()
 
   createEffect(() => {
     if (Object.keys(form).length > 0 && !isFormInitialized()) {
       setPrevForm(form)
-      setSocial(form.links)
+      const soc: string[] = filterNulls(form.links || [])
+      setSocial(soc)
       setIsFormInitialized(true)
     }
   })
 
-  const slugInputRef: { current: HTMLInputElement } = { current: null }
-  const nameInputRef: { current: HTMLInputElement } = { current: null }
+  let slugInputRef: HTMLInputElement | null
+  let nameInputRef: HTMLInputElement | null
 
   const handleChangeSocial = (value: string) => {
     if (validateUrl(value)) {
@@ -81,18 +85,18 @@ export const ProfileSettings = () => {
     }
   }
 
-  const handleSubmit = async (event: Event) => {
-    event.preventDefault()
+  const handleSubmit = async (event: MouseEvent | undefined) => {
+    event?.preventDefault()
     setIsSaving(true)
-    if (nameInputRef.current.value.length === 0) {
+    if (nameInputRef?.value.length === 0) {
       setNameError(t('Required'))
-      nameInputRef.current.focus()
+      nameInputRef?.focus()
       setIsSaving(false)
       return
     }
-    if (slugInputRef.current.value.length === 0) {
+    if (slugInputRef?.value.length === 0) {
       setSlugError(t('Required'))
-      slugInputRef.current.focus()
+      slugInputRef?.focus()
       setIsSaving(false)
       return
     }
@@ -102,9 +106,9 @@ export const ProfileSettings = () => {
       setPrevForm(clone(form))
       showSnackbar({ body: t('Profile successfully saved') })
     } catch (error) {
-      if (error.code === 'duplicate_slug') {
+      if (error?.toString().search('duplicate_slug')) {
         setSlugError(t('The address is already taken'))
-        slugInputRef.current.focus()
+        slugInputRef?.focus()
         return
       }
       showSnackbar({ type: 'error', body: t('Error') })
@@ -112,14 +116,14 @@ export const ProfileSettings = () => {
       setIsSaving(false)
     }
 
-    await loadAuthor() // renews author's profile
+    setTimeout(loadSession, 5000) // renews author's profile
   }
 
   const handleCancel = async () => {
     const isConfirmed = await showConfirm({
       confirmBody: t('Do you really want to reset all changes?'),
       confirmButtonVariant: 'primary',
-      declineButtonVariant: 'secondary',
+      declineButtonVariant: 'secondary'
     })
     if (isConfirmed) {
       setClearAbout(true)
@@ -132,21 +136,21 @@ export const ProfileSettings = () => {
     const { selectFiles } = createFileUploader({ multiple: false, accept: 'image/*' })
 
     selectFiles(([uploadFile]) => {
-      setUserpicFile(uploadFile)
+      setUserpicFile(uploadFile as UploadFile)
 
       showModal('cropImage')
     })
   }
 
-  const handleUploadAvatar = async (uploadFile) => {
+  const handleUploadAvatar = async (uploadFile: UploadFile) => {
     try {
       setUploadError(false)
       setIsUserpicUpdating(true)
 
-      const result = await handleImageUpload(uploadFile, session()?.access_token)
+      const result = await handleImageUpload(uploadFile, session()?.access_token || '')
       updateFormField('pic', result.url)
 
-      setUserpicFile(null)
+      setUserpicFile(undefined)
       setIsUserpicUpdating(false)
     } catch (error) {
       setUploadError(true)
@@ -158,10 +162,10 @@ export const ProfileSettings = () => {
     setHostname(window?.location.host)
 
     // eslint-disable-next-line unicorn/consistent-function-scoping
-    const handleBeforeUnload = (event) => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (!deepEqual(form, prevForm)) {
         event.returnValue = t(
-          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?',
+          'There are unsaved changes in your profile settings. Are you sure you want to leave the page without saving?'
         )
       }
     }
@@ -177,11 +181,11 @@ export const ProfileSettings = () => {
         if (Object.keys(prevForm).length > 0) {
           setIsFloatingPanelVisible(!deepEqual(form, prevForm))
         }
-      },
-    ),
+      }
+    )
   )
 
-  const handleDeleteSocialLink = (link) => {
+  const handleDeleteSocialLink = (link: string) => {
     updateFormField('links', link, true)
   }
 
@@ -215,15 +219,15 @@ export const ProfileSettings = () => {
                             <div
                               class={styles.userpicImage}
                               style={{
-                                'background-image': `url(${getImageUrl(form.pic, {
+                                'background-image': `url(${getImageUrl(form.pic || '', {
                                   width: 180,
-                                  height: 180,
-                                })})`,
+                                  height: 180
+                                })})`
                               }}
                             />
                             <div class={styles.controls}>
                               <Popover content={t('Delete userpic')}>
-                                {(triggerRef: (el) => void) => (
+                                {(triggerRef: (el: HTMLElement) => void) => (
                                   <button
                                     ref={triggerRef}
                                     class={styles.control}
@@ -236,7 +240,7 @@ export const ProfileSettings = () => {
 
                               {/* @@TODO inspect popover below. onClick causes page refreshing */}
                               {/* <Popover content={t('Upload userpic')}>
-                                {(triggerRef: (el) => void) => (
+                                {(triggerRef: (el: HTMLElement) => void) => (
                                   <button
                                     ref={triggerRef}
                                     class={styles.control}
@@ -261,7 +265,7 @@ export const ProfileSettings = () => {
                     <h4>{t('Name')}</h4>
                     <p class="description">
                       {t(
-                        'Your name will appear on your profile page and as your signature in publications, comments and responses.',
+                        'Your name will appear on your profile page and as your signature in publications, comments and responses.'
                       )}
                     </p>
                     <div class="pretty-form__item">
@@ -273,8 +277,8 @@ export const ProfileSettings = () => {
                         autocomplete="one-time-code"
                         placeholder={t('Name')}
                         onInput={(event) => updateFormField('name', event.currentTarget.value)}
-                        value={form.name}
-                        ref={(el) => (nameInputRef.current = el)}
+                        value={form.name || ''}
+                        ref={(el) => (nameInputRef = el)}
                       />
                       <label for="nameOfUser">{t('Name')}</label>
                       <Show when={nameError()}>
@@ -299,8 +303,8 @@ export const ProfileSettings = () => {
                             data-lpignore="true"
                             autocomplete="one-time-code2"
                             onInput={(event) => updateFormField('slug', event.currentTarget.value)}
-                            value={form.slug}
-                            ref={(el) => (slugInputRef.current = el)}
+                            value={form.slug || ''}
+                            ref={(el) => (slugInputRef = el)}
                             class="nolabel"
                           />
                           <Show when={slugError()}>
@@ -359,7 +363,7 @@ export const ProfileSettings = () => {
                               network={network.name}
                               handleInput={(value) => handleChangeSocial(value)}
                               isExist={!network.isPlaceholder}
-                              slug={form.slug}
+                              slug={form.slug || ''}
                               handleDelete={() => handleDeleteSocialLink(network.link)}
                             />
                           )}
@@ -405,12 +409,12 @@ export const ProfileSettings = () => {
             </div>
           </div>
         </Show>
-        <Modal variant="medium" name="cropImage" onClose={() => setUserpicFile(null)}>
+        <Modal variant="medium" name="cropImage" onClose={() => setUserpicFile(undefined)}>
           <h2>{t('Crop image')}</h2>
 
-          <Show when={userpicFile()}>
+          <Show when={Boolean(userpicFile())}>
             <ImageCropper
-              uploadFile={userpicFile()}
+              uploadFile={userpicFile() as UploadFile}
               onSave={(data) => {
                 handleUploadAvatar(data)
 

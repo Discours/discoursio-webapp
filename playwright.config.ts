@@ -38,7 +38,6 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] }
@@ -63,7 +62,7 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  ]
+  ],
 
   /* Run local dev server before starting the tests */
   webServer: {
@@ -71,6 +70,6 @@ export default defineConfig({
     url: 'https://localhost:3000',
     ignoreHTTPSErrors: true,
     reuseExistingServer: !process.env.CI,
-    timeout: 5 * 60 * 1000,
-  },
+    timeout: 5 * 60 * 1000
+  }
 })

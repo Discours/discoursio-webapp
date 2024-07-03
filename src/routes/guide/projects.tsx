@@ -15,4 +15,4 @@ export const ProjectsPage = () => {
     </PageLayout>
   )
 }
-export const Page = ProjectsPage
+export default ProjectsPage

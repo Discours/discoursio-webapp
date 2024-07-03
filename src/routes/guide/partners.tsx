@@ -28,4 +28,4 @@ export const PartnersPage = () => {
   )
 }
 
-export const Page = PartnersPage
+export default PartnersPage

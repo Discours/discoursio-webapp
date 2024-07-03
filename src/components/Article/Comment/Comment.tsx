@@ -253,7 +253,7 @@ export const Comment = (props: Props) => {
               {/*  class={clsx(styles.commentControl, styles.commentControlComplain)}*/}
               {/*  onClick={() => showModal('reportComment')}*/}
               {/*>*/}
-              {/*  {t('Report')}*/}
+              {/*  {t('Complain')}*/}
               {/*</button>*/}
             </div>
 

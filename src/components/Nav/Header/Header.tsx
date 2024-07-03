@@ -282,7 +282,7 @@ export const Header = (props: Props) => {
                 <div class={styles.mainNavigationAdditionalLinks}>
                   <A href="/about/dogma">{t('Dogma')}</A>
                   <A href="/about/discussion-rules">{t('Discussion rules')}</A>
-                  <A href="/about/principles">{t('Principles')}</A>
+                  <A href="/guide/principles">{t('Our principles')}</A>
                 </div>
 
                 <p
@@ -348,7 +348,7 @@ export const Header = (props: Props) => {
                 <A href="/about/dogma">{t('Dogma')}</A>
               </li>
               <li>
-                <A href="/about/principles">{t('Community Principles')}</A>
+                <A href="/guide/principles">{t('Community Our principles')}</A>
               </li>
               <li>
                 <A href="/about/guide">{t('Platform Guide')}</A>
@@ -456,7 +456,7 @@ export const Header = (props: Props) => {
               </li>
 
               <li>
-                <A href={'/feed/my'}>
+                <A href={'/feed/followed'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-my" class={styles.icon} />
                     {t('My feed')}
@@ -464,7 +464,7 @@ export const Header = (props: Props) => {
                 </A>
               </li>
               <li>
-                <A href={'/feed/collab'}>
+                <A href={'/feed/coauthored'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-collaborate" class={styles.icon} />
                     {t('Participation')}
@@ -472,7 +472,7 @@ export const Header = (props: Props) => {
                 </A>
               </li>
               <li>
-                <A href={'/feed/discussions'}>
+                <A href={'/feed/discussed'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-discussion" class={styles.icon} />
                     {t('Discussions')}
@@ -480,18 +480,10 @@ export const Header = (props: Props) => {
                 </A>
               </li>
               <li>
-                <A href={'/feed/bookmark'}>
+                <A href={'/feed/bookmarked'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="bookmark" class={styles.icon} />
                     {t('Bookmarks')}
-                  </span>
-                </A>
-              </li>
-              <li>
-                <A href={'/feed/notifications'}>
-                  <span class={styles.subnavigationItemName}>
-                    <Icon name="feed-notifications" class={styles.icon} />
-                    {t('Notifications')}
                   </span>
                 </A>
               </li>

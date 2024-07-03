@@ -98,7 +98,7 @@ const CreateModalContent = (props: Props) => {
           onClick={handleCreate}
           disabled={usersId().length === 0}
         >
-          {usersId().length > 1 ? t('Create Group') : t('Create Chat')}
+          {usersId().length > 1 ? t('New group') : t('Create Chat')}
         </button>
       </div>
     </div>

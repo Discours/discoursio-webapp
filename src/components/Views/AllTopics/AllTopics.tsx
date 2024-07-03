@@ -2,8 +2,9 @@ import { Meta } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
-
 import { useTopics } from '~/context/topics'
+import ruKeywords from '~/lib/locales/ru/keywords.json'
+import enKeywords from '~/lib/locales/ru/keywords.json'
 import { useLocalize } from '../../../context/localize'
 import type { Topic } from '../../../graphql/schema/core.gen'
 import { capitalize } from '../../../utils/capitalize'
@@ -107,7 +108,7 @@ export const AllTopics = (props: Props) => {
   return (
     <div class={clsx(styles.allTopicsPage, 'wide-container')}>
       <Meta name="descprition" content={description} />
-      <Meta name="keywords" content={t('keywords')} />
+      <Meta name="keywords" content={lang() === 'ru' ? ruKeywords[''] : enKeywords['']} />
       <Meta name="og:type" content="article" />
       <Meta name="og:title" content={ogTitle} />
       <Meta name="og:image" content={ogImage} />

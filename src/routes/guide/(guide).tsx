@@ -1,11 +1,13 @@
 import { Meta } from '@solidjs/meta'
 import { createMemo } from 'solid-js'
+import ruKeywords from '~/lib/locales/ru/keywords.json'
+import enKeywords from '~/lib/locales/ru/keywords.json'
 import { StaticPage } from '../../components/Views/StaticPage'
 import { useLocalize } from '../../context/localize'
 import { getImageUrl } from '../../utils/getImageUrl'
 
 export default () => {
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
   const ogImage = createMemo(() => getImageUrl('production/image/logo_image.png'))
   const ogTitle = createMemo(() => t('How Discours works'))
   const description = createMemo(() => t('A guide to horizontal editorial: how an open journal works'))
@@ -14,7 +16,7 @@ export default () => {
     <StaticPage title={ogTitle()}>
       <>
         <Meta name="descprition" content={description()} />
-        <Meta name="keywords" content={t('keywords')} />
+        <Meta name="keywords" content={`${lang() === 'ru' ? ruKeywords['guide'] : enKeywords['guide']}`} />
         <Meta name="og:type" content="article" />
         <Meta name="og:title" content={ogTitle()} />
         <Meta name="og:image" content={ogImage()} />

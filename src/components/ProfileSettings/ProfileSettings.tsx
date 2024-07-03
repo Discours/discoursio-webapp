@@ -324,15 +324,15 @@ export const ProfileSettings = () => {
                       maxLength={120}
                     />
 
-                    <h4>{t('About')}</h4>
+                    <h4>{t('About the author')}</h4>
                     <SimplifiedEditor
                       resetToInitial={clearAbout()}
                       noLimits={true}
                       variant="bordered"
                       onlyBubbleControls={true}
                       smallHeight={true}
-                      placeholder={t('About')}
-                      label={t('About')}
+                      placeholder={t('About the author')}
+                      label={t('About the author')}
                       initialContent={form.about || ''}
                       autoFocus={false}
                       onChange={(value) => updateFormField('about', value)}

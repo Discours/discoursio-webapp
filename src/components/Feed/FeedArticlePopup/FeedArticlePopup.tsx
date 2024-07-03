@@ -93,10 +93,10 @@ export const FeedArticlePopup = (props: Props) => {
           {/*      class={styles.action}*/}
           {/*      role="button"*/}
           {/*      onClick={() => {*/}
-          {/*        alert('Report')*/}
+          {/*        alert('Complain')*/}
           {/*      }}*/}
           {/*    >*/}
-          {/*      {t('Report')}*/}
+          {/*      {t('Complain')}*/}
           {/*    </button>*/}
           {/*  </li>*/}
           {/*</Show>*/}

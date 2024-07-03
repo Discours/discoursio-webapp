@@ -1,7 +1,7 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
 import { Show, Suspense, createSignal, onMount } from 'solid-js'
 import { LoadShoutsOptions } from '~/graphql/schema/core.gen'
-import { loadShouts } from '~/lib/api'
+import { loadShouts } from '~/lib/api/public'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { byStat } from '~/utils/sortby'
 import { HomeView, HomeViewProps } from '../components/Views/Home'

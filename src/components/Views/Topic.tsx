@@ -28,6 +28,9 @@ import { Row3 } from '../Feed/Row3'
 import { FullTopic } from '../Topic/Full'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
+import ruKeywords from '~/lib/locales/ru/keywords.json'
+import enKeywords from '~/lib/locales/ru/keywords.json'
+
 type TopicsPageSearchParams = {
   by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
 }
@@ -165,7 +168,10 @@ export const TopicView = (props: Props) => {
   return (
     <div class={styles.topicPage}>
       <Meta name="descprition" content={description()} />
-      <Meta name="keywords" content={t('topicKeywords', { topic: title() })} />
+      <Meta
+        name="keywords"
+        content={`${title()}, ${lang() === 'ru' ? ruKeywords['topic'] : enKeywords['topic']}`}
+      />
       <Meta name="og:type" content="article" />
       <Meta name="og:title" content={title()} />
       <Meta name="og:image" content={ogImage()} />

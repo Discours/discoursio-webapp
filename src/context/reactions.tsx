@@ -19,6 +19,7 @@ import { useSnackbar } from './ui'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
+  reactionsByShout: Record<string, Reaction[]>
   loadReactionsBy: (args: QueryLoad_Reactions_ByArgs) => Promise<Reaction[]>
   createReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
   updateReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction>
@@ -33,6 +34,7 @@ export function useReactions() {
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
+  const [reactionsByShout, setReactionsByShout] = createStore<Record<number, Reaction[]>>({})
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
   const { query, mutation } = useGraphQL()
@@ -40,13 +42,17 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
     const resp = await query(getReactionsByQuery, opts)
     const result = resp?.data?.load_reactions_by || []
+    const newReactionsByShout: Record<string, Reaction[]> = {}
     const newReactionEntities = result.reduce(
       (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {
         acc[reaction.id] = reaction
+        if (!newReactionsByShout[reaction.shout.slug]) newReactionsByShout[reaction.shout.slug] = []
+        newReactionsByShout[reaction.shout.slug].push(reaction)
         return acc
       },
       {}
     )
+    setReactionsByShout(newReactionsByShout)
     setReactionEntities(newReactionEntities)
     return result
   }
@@ -115,7 +121,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     deleteReaction
   }
 
-  const value: ReactionsContextType = { reactionEntities, ...actions }
+  const value: ReactionsContextType = { reactionEntities, reactionsByShout, ...actions }
 
   return <ReactionsContext.Provider value={value}>{props.children}</ReactionsContext.Provider>
 }

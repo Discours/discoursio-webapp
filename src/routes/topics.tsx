@@ -2,7 +2,7 @@ import { type RouteDefinition, type RouteSectionProps, createAsync } from '@soli
 import { Suspense, createEffect } from 'solid-js'
 import { useTopics } from '~/context/topics'
 import { Topic } from '~/graphql/schema/core.gen'
-import { loadTopics } from '~/lib/api'
+import { loadTopics } from '~/lib/api/public'
 import { AllTopics } from '../components/Views/AllTopics'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'

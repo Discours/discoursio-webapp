@@ -76,7 +76,7 @@ export const AuthModal = () => {
                   'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine'
                 )}
                 .&nbsp;
-                {t('New stories every day and even more!')}
+                {t('New stories and more are waiting for you every day!')}
               </p>
             </div>
             <p class={styles.disclaimer}>
@@ -89,7 +89,7 @@ export const AuthModal = () => {
               >
                 {t('terms of use')}
               </a>
-              , {t('personal data usage and email notifications')}.
+              , {t('to process personal data and receive email notifications')}.
             </p>
           </div>
         </div>{' '}

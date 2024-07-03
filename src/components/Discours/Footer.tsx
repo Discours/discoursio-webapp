@@ -28,7 +28,7 @@ export const FooterView = () => {
           { title: t('Discours Manifest'), slug: '/about/manifest' },
           { title: t('How it works'), slug: '/about/guide' },
           { title: t('Dogma'), slug: '/about/dogma' },
-          { title: t('Principles'), slug: '/about/principles' },
+          { title: t('Our principles'), slug: '/guide/principles' },
           { title: t('How to write an article'), slug: '/how-to-write-a-good-article' }
         ]
       },

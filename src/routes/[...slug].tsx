@@ -1,10 +1,10 @@
-import { RouteSectionProps, createAsync } from '@solidjs/router'
+import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
 import { ErrorBoundary, Suspense, createMemo, createReaction, createSignal, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config/config'
 import { useLocalize } from '~/context/localize'
-import { getShout } from '~/lib/api'
+import { getShout } from '~/lib/api/public'
 import { initGA, loadGAScript } from '~/utils/ga'
 import { FullArticle } from '../components/Article/FullArticle'
 import { PageLayout } from '../components/_shared/PageLayout'
@@ -21,7 +21,8 @@ export const route = {
 }
 
 export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
-  const article = createAsync(async () => props.data.article || (await fetchShout(props.params.slug)))
+  const params = useParams()
+  const article = createAsync(async () => props.data.article || (await fetchShout(params.slug)))
   const { t } = useLocalize()
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
   const title = createMemo(

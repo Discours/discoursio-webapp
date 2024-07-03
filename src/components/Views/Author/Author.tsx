@@ -203,7 +203,7 @@ export const AuthorView = (props: Props) => {
                   </li>
                   <li classList={{ 'view-switcher__item--selected': !!matchAbout() }}>
                     <A onClick={() => checkBioHeight()} href={`/author/${props.authorSlug}`}>
-                      {t('About')}
+                      {t('About the author')}
                     </A>
                   </li>
                 </ul>

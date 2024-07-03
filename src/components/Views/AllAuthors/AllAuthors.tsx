@@ -1,7 +1,10 @@
 import { Meta } from '@solidjs/meta'
+import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
-
+import ruKeywords from '~/lib/locales/ru/keywords.json'
+import enKeywords from '~/lib/locales/ru/keywords.json'
+import { byFirstChar, byStat } from '~/utils/sortby'
 import { type SortFunction, useAuthors } from '../../../context/authors'
 import { useLocalize } from '../../../context/localize'
 import type { Author } from '../../../graphql/schema/core.gen'
@@ -11,9 +14,6 @@ import { authorLetterReduce, translateAuthor } from '../../../utils/translate'
 import { AuthorsList } from '../../AuthorsList'
 import { Loading } from '../../_shared/Loading'
 import { SearchField } from '../../_shared/SearchField'
-
-import { useSearchParams } from '@solidjs/router'
-import { byFirstChar, byStat } from '~/utils/sortby'
 import styles from './AllAuthors.module.scss'
 
 type Props = {
@@ -70,7 +70,7 @@ export const AllAuthors = (props: Props) => {
   return (
     <div class={clsx(styles.allAuthorsPage, 'wide-container')}>
       <Meta name="descprition" content={description()} />
-      <Meta name="keywords" content={t('keywords')} />
+      <Meta name="keywords" content={lang() === 'ru' ? ruKeywords[''] : enKeywords['']} />
       <Meta name="og:type" content="article" />
       <Meta name="og:title" content={ogTitle()} />
       <Meta name="og:image" content={ogImage()} />

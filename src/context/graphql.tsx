@@ -69,5 +69,5 @@ export const useGraphQL = (url: string = coreApiUrl) => {
     }
   }
   if (!c) c = clients[coreApiUrl]
-  return { query: c.query, mutation: c.mutation }
+  return c
 }

@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ShoutsFollowedQuery($limit: Int!, $offset: Int!) {
-    load_shouts_followed(limit: Int, offset: Int) {
+  query ShoutsFollowedByUserQuery($slug: String!, $limit: Int!, $offset: Int!) {
+    load_shouts_followed_by(slug: String!, limit: Int, offset: Int) {
       title
       subtitle
       layout

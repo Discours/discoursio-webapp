@@ -14,7 +14,7 @@ export default () => {
       <div class="wide-container">
         <div class="row">
           <div class={clsx(styles.discoursBannerContent, 'col-lg-10')}>
-            <h3>{t('Discours is created with our common effort')}</h3>
+            <h3>{t('Discours exists because of our common effort')}</h3>
             <p>
               <a href="/about/help">{t('Support us')}</a>
               <a href="/create">{t('Become an author')}</a>

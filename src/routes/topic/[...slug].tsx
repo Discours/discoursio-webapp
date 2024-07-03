@@ -1,4 +1,4 @@
-import { RouteSectionProps, createAsync } from '@solidjs/router'
+import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
 import { ErrorBoundary, Suspense, createMemo, createReaction } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { TopicView } from '~/components/Views/Topic'
@@ -8,26 +8,31 @@ import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { useTopics } from '~/context/topics'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
-import { loadShouts } from '~/lib/api'
+import { loadShouts } from '~/lib/api/public'
 import { SHOUTS_PER_PAGE } from '../(home)'
 
-const fetchTopicShouts = async (slug: string) => {
-  const opts: LoadShoutsOptions = { filters: { topic: slug }, limit: SHOUTS_PER_PAGE }
+const fetchTopicShouts = async (slug: string, offset?: number) => {
+  const opts: LoadShoutsOptions = { filters: { topic: slug }, limit: SHOUTS_PER_PAGE, offset }
   const shoutsLoader = loadShouts(opts)
   return await shoutsLoader()
 }
 
 export const route = {
-  load: async ({ params }: RouteSectionProps<{ articles: Shout[] }>) => await fetchTopicShouts(params.slug)
+  load: async ({ params, location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
+    const offset: number = Number.parseInt(query.offset, 10)
+    const result = await fetchTopicShouts(params.slug, offset)
+    return result
+  }
 }
 
 export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
+  const params = useParams()
   const articles = createAsync(
-    async () => props.data.articles || (await fetchTopicShouts(props.params.slug)) || []
+    async () => props.data.articles || (await fetchTopicShouts(params.slug)) || []
   )
   const { topicEntities } = useTopics()
   const { t } = useLocalize()
-  const topic = createMemo(() => topicEntities?.()[props.params.slug])
+  const topic = createMemo(() => topicEntities?.()[params.slug])
   const title = createMemo(() => `${t('Discours')}: ${topic()?.title || ''}`)
 
   // docs: `a side effect that is run the first time the expression

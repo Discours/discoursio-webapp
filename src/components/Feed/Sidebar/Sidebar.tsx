@@ -16,9 +16,9 @@ export const Sidebar = () => {
   const { feedByTopic, feedByAuthor, seen } = useFeed()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
   const matchFeed = useMatch(() => '/feed')
-  const matchFeedMy = useMatch(() => '/feed/my')
-  const matchFeedCollabs = useMatch(() => '/feed/collabs')
-  const matchFeedDiscussions = useMatch(() => '/feed/discussions')
+  const matchFeedMy = useMatch(() => '/feed/followed')
+  const matchFeedCollabs = useMatch(() => '/feed/coauthored')
+  const matchFeedDiscussions = useMatch(() => '/feed/discussed')
   const checkTopicIsSeen = (topicSlug: string) => {
     return feedByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))
   }
@@ -39,13 +39,13 @@ export const Sidebar = () => {
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-all" class={styles.icon} />
-              {t('Common feed')}
+              {t('All')}
             </span>
           </A>
         </li>
         <li>
           <A
-            href={'/feed/my'}
+            href={'/feed/followed'}
             class={clsx({
               [styles.selected]: matchFeedMy()
             })}
@@ -58,7 +58,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <A
-            href={'/feed/collabs'}
+            href={'/feed/coauthored'}
             class={clsx({
               [styles.selected]: matchFeedCollabs()
             })}
@@ -71,7 +71,7 @@ export const Sidebar = () => {
         </li>
         <li>
           <a
-            href={'/feed/discussions'}
+            href={'/feed/discussed'}
             class={clsx({
               [styles.selected]: matchFeedDiscussions()
             })}

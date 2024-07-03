@@ -307,7 +307,7 @@ export const InboxView = (props: Props) => {
                   smallHeight={true}
                   imageEnabled={true}
                   isCancelButtonVisible={false}
-                  placeholder={t('Write message')}
+                  placeholder={t('New message')}
                   setClear={isClear()}
                   onSubmit={(message) => handleSubmit(message)}
                   submitByCtrlEnter={true}

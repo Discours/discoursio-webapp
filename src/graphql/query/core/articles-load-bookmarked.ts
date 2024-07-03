@@ -1,15 +1,19 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ShoutsFollowedQuery($limit: Int!, $offset: Int!) {
-    load_shouts_followed(limit: Int, offset: Int) {
+  query LoadBookmarkedShoutsQuery($limit: Int, $offset: Int) {
+    load_shouts_bookmarked(limit: $limit, offset: $offset) {
+      id
       title
+      description
       subtitle
-      layout
       slug
+      layout
       cover
+      cover_caption
       main_topic
       topics {
+        id
         title
         body
         slug
@@ -24,6 +28,8 @@ export default gql`
         name
         slug
         pic
+        created_at
+        bio
       }
       created_at
       published_at
@@ -31,6 +37,7 @@ export default gql`
       stat {
         viewed
         rating
+        commented
       }
     }
   }

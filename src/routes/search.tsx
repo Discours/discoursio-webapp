@@ -1,8 +1,8 @@
-import { RouteSectionProps, action } from '@solidjs/router'
+import { action, useSearchParams } from '@solidjs/router'
 import { Show, Suspense, createEffect, createSignal, onCleanup } from 'solid-js'
 
 import { QueryLoad_Shouts_SearchArgs, SearchResult } from '~/graphql/schema/core.gen'
-import { loadShoutsSearch } from '~/lib/api'
+import { loadShoutsSearch } from '~/lib/api/public'
 import { SearchView } from '../components/Views/Search'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
@@ -14,22 +14,23 @@ const fetchSearchResult = async ({ text, limit, offset }: QueryLoad_Shouts_Searc
   return await loadShoutsSearch({ text, limit, offset })
 }
 
-export const SearchPage = (props: RouteSectionProps<{ params: Record<string, string> }>) => {
+export const SearchPage = () => {
   const { t } = useLocalize()
+  const [searchParams] = useSearchParams<{ q: string }>()
   const [isLoaded, setIsLoaded] = createSignal(false)
   const [hasSearched, setHasSearched] = createSignal(false)
   const [searchResults, setSearchResults] = createSignal<SearchResult[]>([])
 
   createEffect(async () => {
-    if (props.params.q?.trim()) {
+    if (searchParams.q?.trim()) {
       try {
-        console.debug('[routes.search] query:', props.params.q)
+        console.debug('[routes.search] query:', searchParams.q)
         const searchAction = action(async (text) => {
           if (!text.trim()) return { search: () => [] as SearchResult[], query: text }
           const search = await fetchSearchResult({ text, limit: 50, offset: 0 })
           return { search, query: text }
         })
-        const { search: searchLoader } = await searchAction(props.params.q)
+        const { search: searchLoader } = await searchAction(searchParams.q)
         const results = await searchLoader()
         setSearchResults((results || []) as SearchResult[])
         setHasSearched(true)
@@ -59,7 +60,7 @@ export const SearchPage = (props: RouteSectionProps<{ params: Record<string, str
                 </Show>
               }
             >
-              <SearchView results={searchResults() as SearchResult[]} query={props.params.q} />
+              <SearchView results={searchResults() as SearchResult[]} query={searchParams?.q || ''} />
             </Show>
           </Show>
         </Suspense>

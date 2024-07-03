@@ -55,7 +55,7 @@ export default function AllTopicsPage(props: RouteSectionProps<{ authors: Author
     <PageLayout withPadding={true} title={`${t('Discours')}:${t('All topics')}`}>
       <ReactionsProvider>
         <Suspense fallback={<Loading />}>
-          <AllAuthors authors={authors() || []} isLoaded={Boolean(authors?.())} />
+          <AllAuthors authors={authors() || []} isLoaded={Boolean(authors())} />
         </Suspense>
       </ReactionsProvider>
     </PageLayout>

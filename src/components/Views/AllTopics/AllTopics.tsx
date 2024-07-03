@@ -1,5 +1,5 @@
 import { Meta } from '@solidjs/meta'
-import { useSearchParams } from '@solidjs/router'
+import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
@@ -79,13 +79,13 @@ export const AllTopics = (props: Props) => {
 
         <ul class="view-switcher">
           <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'shouts' }}>
-            <a href="/topics?by=shouts">{t('By shouts')}</a>
+            <A href="/topics?by=shouts">{t('By shouts')}</A>
           </li>
           <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'authors' }}>
-            <a href="/topics?by=authors">{t('By authors')}</a>
+            <A href="/topics?by=authors">{t('By authors')}</A>
           </li>
           <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'title' }}>
-            <a href="/topics?by=title">{t('By title')}</a>
+            <A href="/topics?by=title">{t('By title')}</A>
           </li>
           <Show when={searchParams?.by !== 'title'}>
             <li class="view-switcher__search">
@@ -129,7 +129,7 @@ export const AllTopics = (props: Props) => {
                       {(letter, index) => (
                         <li>
                           <Show when={letter in byLetter()} fallback={letter}>
-                            <a
+                            <A
                               href={`/topics?by=title#letter-${index()}`}
                               onClick={(event) => {
                                 event.preventDefault()
@@ -137,7 +137,7 @@ export const AllTopics = (props: Props) => {
                               }}
                             >
                               {letter}
-                            </a>
+                            </A>
                           </Show>
                         </li>
                       )}
@@ -155,11 +155,11 @@ export const AllTopics = (props: Props) => {
                             <For each={byLetter()[letter]}>
                               {(topic) => (
                                 <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
-                                  <a href={`/topic/${topic.slug}`}>
+                                  <A href={`/topic/${topic.slug}`}>
                                     {lang() === 'en'
                                       ? capitalize(topic.slug.replaceAll('-', ' '))
                                       : topic.title}
-                                  </a>
+                                  </A>
                                   <span class={styles.articlesCounter}>{topic.stat?.shouts || 0}</span>
                                 </div>
                               )}

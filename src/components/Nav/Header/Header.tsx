@@ -1,6 +1,6 @@
+import { A, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-
 import { useUI } from '~/context/ui'
 import { useLocalize } from '../../../context/localize'
 import { useSession } from '../../../context/session'
@@ -17,8 +17,6 @@ import { HeaderAuth } from '../HeaderAuth'
 import { Modal } from '../Modal'
 import { SearchModal } from '../SearchModal/SearchModal'
 import { Snackbar } from '../Snackbar'
-
-import { A, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import styles from './Header.module.scss'
 
 type Props = {
@@ -154,14 +152,9 @@ export const Header = (props: Props) => {
   const loc = useLocation()
   const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
     event.preventDefault()
-    // console.debug('[Header] toggle menu link from', loc.pathname)
-    // console.debug('to', route)
-    if (!fixed()) return
-    if (loc.pathname.startsWith(route) || loc.pathname.startsWith(`/${route}`)) {
-      toggleFixed()
-    }
     navigate(route)
   }
+
   return (
     <header
       class={styles.mainHeader}
@@ -208,51 +201,22 @@ export const Header = (props: Props) => {
             </Show>
             <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
               <ul class="view-switcher">
-                <A
-                  onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
-                  onMouseOut={() => hideSubnavigation()}
-                  href="/"
-                  hidden={!isZineVisible()}
-                  onClick={(event) => handleToggleMenuByLink(event, '/')}
-                >
-                  {t('journal')}
-                </A>
-                <A
-                  onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
-                  onMouseOut={() => hideSubnavigation()}
-                  href="/feed"
-                  hidden={!isFeedVisible()}
-                  onClick={(event) => handleToggleMenuByLink(event, '/feed')}
-                >
-                  {t('feed')}
-                </A>
 
-                <A
-                  onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
-                  onMouseOut={() => hideSubnavigation}
-                  href="/topics"
-                  hidden={!isTopicsVisible()}
-                  onClick={(event) => handleToggleMenuByLink(event, '/topics')}
-                >
-                  {t('topics')}
-                </A>
-                <A
-                  onMouseOver={() => hideSubnavigation(0)}
-                  onMouseOut={() => hideSubnavigation(0)}
-                  href="/authors"
-                  onClick={(event) => handleToggleMenuByLink(event, '/authors')}
-                >
-                  {t('authors')}
-                </A>
-                <A
-                  onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
-                  onMouseOut={() => hideSubnavigation()}
-                  href="/guide"
-                  hidden={!isKnowledgeBaseVisible()}
-                  onClick={(event) => handleToggleMenuByLink(event, '/guide')}
-                >
-                  {t('Knowledge base')}
-                </A>
+                <For each={['', 'feed', 'topics', 'authors', 'guide']}>
+                  {(route: string) => (
+                  <li classList={{ 'view-switcher__item--selected': route === loc.pathname }}>
+                      <A
+                        class={clsx({ [styles.mainNavigationItemActive]: loc.pathname === route })}
+                        href={`/${route}`}
+                        onClick={(event) => handleToggleMenuByLink(event, `/${route}`)}
+                        onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
+                        onMouseOut={() => hideSubnavigation()}
+                      >
+                        {t(route || 'journal')}
+                      </A>
+                  </li>
+                  )}
+                </For>
               </ul>
 
               <div class={styles.mainNavigationMobile}>

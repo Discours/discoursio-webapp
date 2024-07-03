@@ -22,12 +22,16 @@ type Props = {
   topWritingAuthors?: Author[]
   isLoaded: boolean
 }
+export const AUTHORS_PER_PAGE = 20
+export const ABC = {
+  ru: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#',
+  en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
+}
 
 export const AllAuthors = (props: Props) => {
   const { t, lang } = useLocalize()
   const [searchQuery, setSearchQuery] = createSignal('')
-  const ALPHABET =
-    lang() === 'ru' ? [...'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@'] : [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ@']
+  const alphabet = createMemo(() => ABC[lang()] || ABC['ru'])
   const [searchParams] = useSearchParams<{ by?: string }>()
   const { authorsSorted, addAuthors, setSortBy } = useAuthors()
 
@@ -41,15 +45,12 @@ export const AllAuthors = (props: Props) => {
   })
   const filteredAuthors = createMemo(() => {
     const query = searchQuery().toLowerCase()
-    return authorsSorted?.().filter((author: Author) => {
-      // Предполагаем, что у автора есть свойство name
-      return author?.name?.toLowerCase().includes(query)
-    })
+    return authorsSorted?.().filter((a: Author) => a?.name?.toLowerCase().includes(query))
   })
 
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
     return filteredAuthors().reduce(
-      (acc, author) => authorLetterReduce(acc, author, lang()),
+      (acc, author: Author) => authorLetterReduce(acc, author, lang()),
       {} as { [letter: string]: Author[] }
     )
   })
@@ -119,7 +120,7 @@ export const AllAuthors = (props: Props) => {
             <div class="row">
               <div class="col-lg-20 col-xl-18">
                 <ul class={clsx('nodash', styles.alphabet)}>
-                  <For each={ALPHABET}>
+                  <For each={[...alphabet()]}>
                     {(letter, index) => (
                       <li>
                         <Show when={letter in byLetterFiltered()} fallback={letter}>
@@ -142,7 +143,7 @@ export const AllAuthors = (props: Props) => {
             <For each={sortedKeys()}>
               {(letter) => (
                 <div class={clsx(styles.group, 'group')}>
-                  <h2 id={`letter-${ALPHABET.indexOf(letter)}`}>{letter}</h2>
+                  <h2 id={`letter-${alphabet().indexOf(letter)}`}>{letter}</h2>
                   <div class="container">
                     <div class="row">
                       <div class="col-lg-20">

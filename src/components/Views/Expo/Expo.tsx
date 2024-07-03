@@ -5,6 +5,7 @@ import { A } from '@solidjs/router'
 import { useGraphQL } from '~/context/graphql'
 import getShoutsQuery from '~/graphql/query/core/articles-load-by'
 import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-top'
+import { LayoutType } from '~/types/common'
 import { useLocalize } from '../../../context/localize'
 import { LoadShoutsFilters, LoadShoutsOptions, Shout } from '../../../graphql/schema/core.gen'
 import { getUnixtime } from '../../../utils/getServerDate'
@@ -15,8 +16,6 @@ import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
 import { Loading } from '../../_shared/Loading'
 import { ArticleCardSwiper } from '../../_shared/SolidSwiper/ArticleCardSwiper'
 import styles from './Expo.module.scss'
-
-export type LayoutType = 'music' | 'literature' | 'video' | 'article' | 'image'
 
 type Props = {
   shouts: Shout[]

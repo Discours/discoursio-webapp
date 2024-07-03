@@ -192,4 +192,4 @@ export const PrinciplesPage = () => {
   )
 }
 
-export const Page = PrinciplesPage
+export default PrinciplesPage

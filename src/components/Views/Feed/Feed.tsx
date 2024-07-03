@@ -182,7 +182,7 @@ export const FeedView = (props: FeedProps) => {
                 <div class={styles.asideSection}>
                   <div class={stylesBeside.besideColumnTitle}>
                     <h4>{t('Popular authors')}</h4>
-                    <a href="/authors">
+                    <a href="/author">
                       {t('All authors')}
                       <Icon name="arrow-right" class={stylesBeside.icon} />
                     </a>

@@ -70,7 +70,7 @@ export const FullTopic = (props: Props) => {
           value={followed() ? t('Unfollow the topic') : t('Follow the topic')}
           class={styles.followControl}
         />
-        <a class={styles.writeControl} href={`/create/?topicId=${props.topic?.id}`}>
+        <a class={styles.writeControl} href={`/edit/new/?topicId=${props.topic?.id}`}>
           {t('Write about the topic')}
         </a>
       </div>

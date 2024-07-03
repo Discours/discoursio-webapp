@@ -7,10 +7,10 @@ import { chromium } from 'playwright'
   const pagesToVisit = [
     'https://localhost:3000/',
     'https://localhost:3000/feed',
-    'https://localhost:3000/create',
-    'https://localhost:3000/about/donate',
-    'https://localhost:3000/authors',
-    'https://localhost:3000/topics',
+    'https://localhost:3000/edit/new',
+    'https://localhost:3000/guide/support',
+    'https://localhost:3000/author',
+    'https://localhost:3000/topic',
     'https://localhost:3000/inbox'
   ]
 

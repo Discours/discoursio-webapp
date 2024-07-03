@@ -5,10 +5,10 @@ const baseHost = process.env.BASE_HOST || 'https://localhost:3000'
 const pagesTitles: { [key: string]: RegExp } = {
   '/': /Дискурс/,
   '/feed': /Лента/,
-  '/create': /Выберите тип публикации/,
-  '/about/help': /Поддержите Дискурс/,
-  '/authors': /Авторы/,
-  '/topics': /Темы и сюжеты/,
+  '/edit/new': /Выберите тип публикации/,
+  '/guide/support': /Поддержите Дискурс/,
+  '/author': /Авторы/,
+  '/topic': /Темы и сюжеты/,
   '/inbox': /Входящие/
 }
 

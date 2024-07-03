@@ -5,6 +5,7 @@ import loadShoutsCoauthoredQuery from '~/graphql/query/core/articles-load-coauth
 import loadShoutsDiscussedQuery from '~/graphql/query/core/articles-load-discussed'
 import loadShoutsFollowedQuery from '~/graphql/query/core/articles-load-followed'
 import loadShoutsUnratedQuery from '~/graphql/query/core/articles-load-unrated'
+
 import {
   QueryLoad_Shouts_FollowedArgs,
   QueryLoad_Shouts_UnratedArgs,

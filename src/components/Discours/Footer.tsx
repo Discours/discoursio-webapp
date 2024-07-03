@@ -25,9 +25,9 @@ export const FooterView = () => {
       {
         header: t('About the project'),
         items: [
-          { title: t('Discours Manifest'), slug: '/about/manifest' },
-          { title: t('How it works'), slug: '/about/guide' },
-          { title: t('Dogma'), slug: '/about/dogma' },
+          { title: t('Discours Manifest'), slug: '/guide/manifest' },
+          { title: t('How it works'), slug: '/guide' },
+          { title: t('Dogma'), slug: '/guide/dogma' },
           { title: t('Our principles'), slug: '/guide/principles' },
           { title: t('How to write an article'), slug: '/how-to-write-a-good-article' }
         ]
@@ -36,8 +36,8 @@ export const FooterView = () => {
         header: t('Participating'),
         items: [
           { title: t('Suggest an idea'), slug: '/connect' },
-          { title: t('Become an author'), slug: '/create' },
-          { title: t('Support Discours'), slug: '/about/help' },
+          { title: t('Become an author'), slug: '/edit/new' },
+          { title: t('Support Discours'), slug: '/guide/support' },
           {
             title: t('Work with us'),
             slug: 'https://docs.google.com/forms/d/e/1FAIpQLSeNNvIzKlXElJtkPkYiXl-jQjlvsL9u4-kpnoRjz1O8Wo40xQ/viewform'
@@ -47,10 +47,10 @@ export const FooterView = () => {
       {
         header: t('Sections'),
         items: [
-          { title: t('Authors'), slug: '/authors' },
+          { title: t('Authors'), slug: '/author' },
           { title: t('Communities'), slug: '/community' },
-          { title: t('Partners'), slug: '/about/partners' },
-          { title: t('Special projects'), slug: '/about/projects' },
+          { title: t('Partners'), slug: '/guide/partners' },
+          { title: t('Special projects'), slug: '/guide/projects' },
           {
             title: lang() === 'ru' ? 'English' : 'Русский',
             slug: `?lng=${lang() === 'ru' ? 'en' : 'ru'}`,
@@ -97,7 +97,7 @@ export const FooterView = () => {
               'Independant magazine with an open horizontal cooperation about culture, science and society'
             )}
             . {t('Discours')} &copy; 2015&ndash;{new Date().getFullYear()}{' '}
-            <a href="/about/terms-of-use">{t('Terms of use')}</a>
+            <a href="/guide/terms">{t('Terms of use')}</a>
           </div>
           <div class={clsx(styles.footerCopyrightSocial, 'col-md-6 col-lg-4')}>
             <For each={social}>

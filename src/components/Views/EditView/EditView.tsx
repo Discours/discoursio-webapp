@@ -1,4 +1,3 @@
-import { useMatch } from '@solidjs/router'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
 import {
@@ -37,7 +36,6 @@ import { InviteMembers } from '../../_shared/InviteMembers'
 import { Loading } from '../../_shared/Loading'
 import { Popover } from '../../_shared/Popover'
 import { EditorSwiper } from '../../_shared/SolidSwiper'
-import { PublishSettings } from '../PublishSettings'
 import styles from './EditView.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
@@ -272,8 +270,6 @@ export const EditView = (props: Props) => {
     setIsLeadVisible(true)
   }
 
-  const matchEdit = useMatch(() => 'edit')
-  const matchEditSettings = useMatch(() => 'edit/:shoutId/settings')
   return (
     <>
       <div class={styles.container}>
@@ -299,7 +295,7 @@ export const EditView = (props: Props) => {
 
             <div class="row">
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
-                <Show when={matchEdit() && props.shout}>
+                <Show when={props.shout}>
                   <div class={styles.headingActions}>
                     <Show when={!isSubtitleVisible() && props.shout.layout !== 'audio'}>
                       <div class={styles.action} onClick={showSubtitleInput}>
@@ -455,7 +451,7 @@ export const EditView = (props: Props) => {
                 </Show>
               </div>
             </div>
-            <Show when={matchEdit() && form?.shoutId} fallback={<Loading />}>
+            <Show when={form?.shoutId} fallback={<Loading />}>
               <Editor
                 shoutId={form.shoutId}
                 initialContent={form.body}
@@ -465,9 +461,6 @@ export const EditView = (props: Props) => {
           </div>
         </form>
       </div>
-      <Show when={matchEditSettings()}>
-        <PublishSettings shoutId={props.shout.id} form={form} />
-      </Show>
       <Show when={props.shout}>
         <Panel shoutId={props.shout.id} />
       </Show>

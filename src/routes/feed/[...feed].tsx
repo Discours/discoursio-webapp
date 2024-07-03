@@ -140,4 +140,4 @@ export const FeedPage = (props: RouteSectionProps<Shout[]>) => {
   )
 }
 
-export const Page = FeedPage
+export default FeedPage

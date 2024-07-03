@@ -80,13 +80,13 @@ export const AllTopics = (props: Props) => {
 
         <ul class="view-switcher">
           <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'shouts' }}>
-            <A href="/topics?by=shouts">{t('By shouts')}</A>
+            <A href="/topic?by=shouts">{t('By shouts')}</A>
           </li>
           <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'authors' }}>
-            <A href="/topics?by=authors">{t('By authors')}</A>
+            <A href="/topic?by=authors">{t('By authors')}</A>
           </li>
           <li classList={{ 'view-switcher__item--selected': searchParams?.by === 'title' }}>
-            <A href="/topics?by=title">{t('By title')}</A>
+            <A href="/topic?by=title">{t('By title')}</A>
           </li>
           <Show when={searchParams?.by !== 'title'}>
             <li class="view-switcher__search">
@@ -131,7 +131,7 @@ export const AllTopics = (props: Props) => {
                         <li>
                           <Show when={letter in byLetter()} fallback={letter}>
                             <A
-                              href={`/topics?by=title#letter-${index()}`}
+                              href={`/topic?by=title#letter-${index()}`}
                               onClick={(event) => {
                                 event.preventDefault()
                                 scrollHandler(`letter-${index()}`)

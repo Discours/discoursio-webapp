@@ -1,18 +1,18 @@
 import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
 import { ErrorBoundary, Suspense, createMemo, createReaction } from 'solid-js'
+import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
-import { TopicView } from '~/components/Views/Topic'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
+import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
-import { useTopics } from '~/context/topics'
-import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
+import { Author, LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { loadShouts } from '~/lib/api/public'
-import { SHOUTS_PER_PAGE } from '../(home)'
+import { SHOUTS_PER_PAGE } from '../../(home)'
 
-const fetchTopicShouts = async (slug: string, offset?: number) => {
-  const opts: LoadShoutsOptions = { filters: { topic: slug }, limit: SHOUTS_PER_PAGE, offset }
+const fetchAuthorShouts = async (slug: string, offset?: number) => {
+  const opts: LoadShoutsOptions = { filters: { author: slug }, limit: SHOUTS_PER_PAGE, offset }
   const shoutsLoader = loadShouts(opts)
   return await shoutsLoader()
 }
@@ -20,7 +20,7 @@ const fetchTopicShouts = async (slug: string, offset?: number) => {
 export const route = {
   load: async ({ params, location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
     const offset: number = Number.parseInt(query.offset, 10)
-    const result = await fetchTopicShouts(params.slug, offset)
+    const result = await fetchAuthorShouts(params.slug, offset)
     return result
   }
 }
@@ -28,20 +28,20 @@ export const route = {
 export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
   const params = useParams()
   const articles = createAsync(
-    async () => props.data.articles || (await fetchTopicShouts(params.slug)) || []
+    async () => props.data.articles || (await fetchAuthorShouts(params.slug)) || []
   )
-  const { topicEntities } = useTopics()
+  const { authorsEntities } = useAuthors()
   const { t } = useLocalize()
-  const topic = createMemo(() => topicEntities?.()[params.slug])
-  const title = createMemo(() => `${t('Discours')}: ${topic()?.title || ''}`)
+  const author = createMemo(() => authorsEntities?.()[params.slug])
+  const title = createMemo(() => `${t('Discours')}: ${author()?.name || ''}`)
 
   // docs: `a side effect that is run the first time the expression
   // wrapped by the returned tracking function is notified of a change`
   createReaction(() => {
-    if (topic()) {
+    if (author()) {
       console.debug('[routes.slug] article signal changed once')
       window.gtag?.('event', 'page_view', {
-        page_title: topic()?.title,
+        page_title: author()?.name || '',
         page_location: window.location.href,
         page_path: window.location.pathname
       })
@@ -52,16 +52,17 @@ export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
       <Suspense fallback={<Loading />}>
         <PageLayout
           title={title()}
-          headerTitle={topic()?.title || ''}
-          slug={topic()?.slug}
-          articleBody={topic()?.body || ''}
-          cover={topic()?.pic || ''}
+          headerTitle={author()?.name || ''}
+          slug={author()?.slug}
+          articleBody={author()?.about || author()?.bio || ''}
+          cover={author()?.pic || ''}
         >
           <ReactionsProvider>
-            <TopicView
-              topic={topic() as Topic}
-              topicSlug={props.params.slug}
+            <AuthorView
+              author={author() as Author}
+              authorSlug={params.slug}
               shouts={articles() as Shout[]}
+              selectedTab={params.tab || ''}
             />
           </ReactionsProvider>
         </PageLayout>
@@ -70,4 +71,4 @@ export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
   )
 }
 
-export default TopicPage
+export const Page = TopicPage

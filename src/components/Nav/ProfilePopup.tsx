@@ -27,7 +27,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           </A>
         </li>
         <li>
-          <A class={styles.action} href={'/drafts'}>
+          <A class={styles.action} href={'/edit'}>
             <Icon name="pencil-outline" class={styles.icon} />
             {t('Drafts')}
           </A>

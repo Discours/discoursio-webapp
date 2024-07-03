@@ -1,5 +1,5 @@
 import { Meta, Title } from '@solidjs/meta'
-import { A, useLocation, useMatch } from '@solidjs/router'
+import { A, useLocation, useParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 import { useAuthors } from '~/context/authors'
@@ -34,6 +34,7 @@ type Props = {
   authorSlug: string
   shouts?: Shout[]
   author?: Author
+  selectedTab: string
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -41,6 +42,7 @@ const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
   const { t } = useLocalize()
+  const params = useParams()
   const { followers: myFollowers, follows: myFollows } = useFollowing()
   const { session } = useSession()
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
@@ -48,9 +50,6 @@ export const AuthorView = (props: Props) => {
   const { sortedFeed } = useFeed()
   const { modal, hideModal } = useUI()
   const loc = useLocation()
-  const matchAuthor = useMatch(() => '/author')
-  const matchComments = useMatch(() => '/author/:authorId/comments')
-  const matchAbout = useMatch(() => '/author/:authorId/about')
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const { loadAuthor, authorsEntities } = useAuthors()
@@ -189,20 +188,20 @@ export const AuthorView = (props: Props) => {
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">
                 <ul class="view-switcher">
-                  <li classList={{ 'view-switcher__item--selected': !!matchAuthor() }}>
+                  <li classList={{ 'view-switcher__item--selected': params.tab === '' }}>
                     <A href={`/author/${props.authorSlug}`}>{t('Publications')}</A>
                     <Show when={author()?.stat}>
                       <span class="view-switcher__counter">{author()?.stat?.shouts || 0}</span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': !!matchComments() }}>
+                  <li classList={{ 'view-switcher__item--selected': params.tab === 'comment' }}>
                     <A href={`/author/${props.authorSlug}/comments`}>{t('Comments')}</A>
                     <Show when={author()?.stat}>
                       <span class="view-switcher__counter">{author()?.stat?.comments || 0}</span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': !!matchAbout() }}>
-                    <A onClick={() => checkBioHeight()} href={`/author/${props.authorSlug}`}>
+                  <li classList={{ 'view-switcher__item--selected': params.tab === 'about' }}>
+                    <A onClick={() => checkBioHeight()} href={`/author/${props.authorSlug}/about`}>
                       {t('About the author')}
                     </A>
                   </li>
@@ -222,7 +221,7 @@ export const AuthorView = (props: Props) => {
       </div>
 
       <Switch>
-        <Match when={matchAbout()}>
+        <Match when={params.tab === 'about'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -246,7 +245,7 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={matchComments()}>
+        <Match when={params.tab === 'comments'}>
           <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
@@ -272,7 +271,7 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={matchAuthor()}>
+        <Match when={params.tab === ''}>
           <Show when={me()?.slug === props.authorSlug && !me().stat?.shouts}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />

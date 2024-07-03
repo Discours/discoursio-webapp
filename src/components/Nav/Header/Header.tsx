@@ -119,7 +119,7 @@ export const Header = (props: Props) => {
     requireAuthentication(() => {
       ev?.preventDefault()
 
-      navigate('/create')
+      navigate('/edit/new')
     }, 'create')
   }
 
@@ -216,13 +216,13 @@ export const Header = (props: Props) => {
                 <h4>{t('Participating')}</h4>
                 <ul class="view-switcher">
                   <li>
-                    <A href="/create">{t('Create post')}</A>
+                    <A href="/edit/new">{t('Create post')}</A>
                   </li>
                   <li>
                     <A href="/connect">{t('Suggest an idea')}</A>
                   </li>
                   <li>
-                    <A href="/about/help">{t('Support the project')}</A>
+                    <A href="/guide/support">{t('Support the project')}</A>
                   </li>
                 </ul>
 
@@ -280,8 +280,8 @@ export const Header = (props: Props) => {
                 </select>
 
                 <div class={styles.mainNavigationAdditionalLinks}>
-                  <A href="/about/dogma">{t('Dogma')}</A>
-                  <A href="/about/discussion-rules">{t('Discussion rules')}</A>
+                  <A href="/guide/dogma">{t('Dogma')}</A>
+                  <A href="/guide/debate">{t('Discussion rules')}</A>
                   <A href="/guide/principles">{t('Our principles')}</A>
                 </div>
 
@@ -342,22 +342,22 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li>
-                <A href="/about/manifest">{t('Manifesto')}</A>
+                <A href="/guide/manifest">{t('Manifesto')}</A>
               </li>
               <li>
-                <A href="/about/dogma">{t('Dogma')}</A>
+                <A href="/guide/dogma">{t('Dogma')}</A>
               </li>
               <li>
                 <A href="/guide/principles">{t('Community Our principles')}</A>
               </li>
               <li>
-                <A href="/about/guide">{t('Platform Guide')}</A>
+                <A href="/guide">{t('Platform Guide')}</A>
               </li>
               <li>
-                <A href="/about/manifest#participation">{t('Support us')}</A>
+                <A href="/guide/manifest#participation">{t('Support us')}</A>
               </li>
               <li>
-                <A href="/about/help">{t('How to help')}</A>
+                <A href="/guide/support">{t('How to help')}</A>
               </li>
               <li class={styles.rightItem}>
                 <A href="/connect">
@@ -382,7 +382,7 @@ export const Header = (props: Props) => {
                 <A href="/podcasts">{t('Podcasts')}</A>
               </li>
               <li class="item">
-                <A href="/about/projects">{t('Special Projects')}</A>
+                <A href="/guide/projects">{t('Special Projects')}</A>
               </li>
               <li>
                 <A href="/topic/interview">#{t('Interview')}</A>
@@ -406,7 +406,7 @@ export const Header = (props: Props) => {
                 <A href="/topic/poetry">#{t('Poetry')}</A>
               </li>
               <li class={styles.rightItem}>
-                <A href="/topics">
+                <A href="/topic">
                   {t('All topics')}
                   <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
                 </A>
@@ -431,7 +431,7 @@ export const Header = (props: Props) => {
                   )}
                 </For>
                 <li class={styles.rightItem}>
-                  <A href="/topics">
+                  <A href="/topic">
                     {t('All topics')}
                     <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
                   </A>

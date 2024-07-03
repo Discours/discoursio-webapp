@@ -75,4 +75,4 @@ export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
   )
 }
 
-export const Page = ArticlePage
+export default ArticlePage

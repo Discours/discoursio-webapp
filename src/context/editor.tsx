@@ -179,7 +179,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       if (shout?.published_at) {
         navigate(`/article/${shout.slug}`)
       } else {
-        navigate('/drafts')
+        navigate('/edit')
       }
     } catch (error) {
       console.error('[saveShout]', error)

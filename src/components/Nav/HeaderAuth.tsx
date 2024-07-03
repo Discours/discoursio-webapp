@@ -111,7 +111,7 @@ export const HeaderAuth = (props: Props) => {
                   styles.userControlItemCreate
                 )}
               >
-                <A href={'/create'}>
+                <A href={'/edit/new'}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
                   <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
@@ -224,7 +224,7 @@ export const HeaderAuth = (props: Props) => {
                   styles.userControlItemCreate
                 )}
               >
-                <A href={'/create'}>
+                <A href={'/edit/new'}>
                   <span class={styles.textLabel}>{t('Create post')}</span>
                   <Icon name="pencil-outline" class={styles.icon} />
                   <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />

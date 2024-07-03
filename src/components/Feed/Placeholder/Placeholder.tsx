@@ -36,14 +36,14 @@ const data: PlaceholderData = {
     text: 'Placeholder feed',
     buttonLabelAuthor: 'Popular authors',
     buttonLabelFeed: 'Create own feed',
-    href: '/authors?by=followers'
+    href: '/author?by=followers'
   },
   feedCollaborations: {
     image: 'placeholder-experts.webp',
     header: 'Find collaborators',
     text: 'Placeholder feedCollaborations',
     buttonLabel: 'Find co-authors',
-    href: '/authors?by=name'
+    href: '/author?by=name'
   },
   feedDiscussions: {
     image: 'placeholder-discussions.webp',
@@ -58,7 +58,7 @@ const data: PlaceholderData = {
     header: 'Join our team of authors',
     text: 'Join our team of authors text',
     buttonLabel: 'Create post',
-    href: '/create',
+    href: '/edit/new',
     profileLinks: [
       {
         href: '/how-to-write-a-good-article',
@@ -74,11 +74,11 @@ const data: PlaceholderData = {
     href: '/feed?by=last_comment',
     profileLinks: [
       {
-        href: '/about/discussion-rules',
+        href: '/guide/debate',
         label: 'Discussion rules'
       },
       {
-        href: '/about/discussion-rules#ban',
+        href: '/guide/debate#ban',
         label: 'Block rules'
       }
     ]

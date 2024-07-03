@@ -20,7 +20,7 @@ export default () => {
               )}
             />
             <div class={styles.aboutDiscoursActions}>
-              <a class="button" href="/create">
+              <a class="button" href="/edit/new">
                 {t('Create post')}
               </a>
               <a
@@ -34,7 +34,7 @@ export default () => {
               >
                 {t('Join the community')}
               </a>
-              <a class="button" href="/about/help">
+              <a class="button" href="/guide/support">
                 {t('Support us')}
               </a>
             </div>

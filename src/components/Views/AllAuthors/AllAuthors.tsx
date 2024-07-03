@@ -91,21 +91,21 @@ export const AllAuthors = (props: Props) => {
                     ['view-switcher__item--selected']: !searchParams?.by || searchParams?.by === 'shouts'
                   })}
                 >
-                  <a href="/authors?by=shouts">{t('By shouts')}</a>
+                  <a href="/author?by=shouts">{t('By shouts')}</a>
                 </li>
                 <li
                   class={clsx({
                     ['view-switcher__item--selected']: searchParams?.by === 'followers'
                   })}
                 >
-                  <a href="/authors?by=followers">{t('By popularity')}</a>
+                  <a href="/author?by=followers">{t('By popularity')}</a>
                 </li>
                 <li
                   class={clsx({
                     ['view-switcher__item--selected']: searchParams?.by === 'name'
                   })}
                 >
-                  <a href="/authors?by=name">{t('By name')}</a>
+                  <a href="/author?by=name">{t('By name')}</a>
                 </li>
                 <Show when={searchParams?.by === 'name'}>
                   <li class="view-switcher__search">
@@ -125,7 +125,7 @@ export const AllAuthors = (props: Props) => {
                       <li>
                         <Show when={letter in byLetterFiltered()} fallback={letter}>
                           <a
-                            href={`/authors?by=name#letter-${index()}`}
+                            href={`/author?by=name#letter-${index()}`}
                             onClick={(event) => {
                               event.preventDefault()
                               scrollHandler(`letter-${index()}`)

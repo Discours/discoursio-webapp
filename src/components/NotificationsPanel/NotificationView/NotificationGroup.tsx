@@ -50,7 +50,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
 
     markSeenThread(threadId)
     const [slug, commentId] = threadId.split('::')
-    navigate(`/article/${slug}`)
+    navigate(`/${slug}`)
     if (commentId) changeSearchParams({ commentId })
   }
 

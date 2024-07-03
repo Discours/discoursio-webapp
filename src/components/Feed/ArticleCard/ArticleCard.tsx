@@ -128,7 +128,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const navigate = useNavigate()
   const scrollToComments = (event: MouseEvent & { currentTarget: HTMLAnchorElement; target: Element }) => {
     event.preventDefault()
-    navigate(`/article/${props.article.slug}`)
+    navigate(`/${props.article.slug}`)
     changeSearchParams({
       scrollTo: 'comments'
     })

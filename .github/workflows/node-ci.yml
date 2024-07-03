@@ -28,13 +28,13 @@ jobs:
         run: npm run build
 
       - name: Install http-server
-        run: npm install -g http-server
+        run: npm install http-server
 
       - name: Install e2e test dependencies
         run: npm run e2e:install
 
       - name: Serve the build directory
-        run: http-server ./dist -p 8080 &
+        run: npx http-server ./dist -p 8080 &
         # Adjust "./build" to your build output directory
 
 #      - name: Run e2e tests

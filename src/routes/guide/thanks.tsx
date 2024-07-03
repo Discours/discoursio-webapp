@@ -8,7 +8,7 @@ export const ThanksPage = () => {
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Thank you')
   const description = t(
-    'Self-publishing exists thanks to the help of wonderful people from all over the world. Thank you!',
+    'Self-publishing exists thanks to the help of wonderful people from all over the world. Thank you!'
   )
 
   return (

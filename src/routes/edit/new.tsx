@@ -11,9 +11,9 @@ import { useLocalize } from '~/context/localize'
 import createShoutMutation from '~/graphql/mutation/core/article-create'
 import enKeywords from '~/lib/locales/en/keywords.json'
 import ruKeywords from '~/lib/locales/ru/keywords.json'
+import styles from '~/styles/Create.module.scss'
 import { LayoutType } from '~/types/common'
 import { getImageUrl } from '~/utils/getImageUrl'
-import styles from '../styles/Create.module.scss'
 
 export default () => {
   const { t, lang } = useLocalize()

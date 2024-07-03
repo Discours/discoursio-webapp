@@ -252,7 +252,7 @@ export const AuthorCard = (props: Props) => {
               <div class={styles.authorActions}>
                 <Button
                   variant="secondary"
-                  onClick={() => navigate('/profile/settings')}
+                  onClick={() => navigate('/profile')}
                   value={
                     <>
                       <span class={styles.authorActionsLabel}>{t('Edit profile')}</span>

@@ -51,7 +51,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           </a>
         </li>
         <li>
-          <A class={styles.action} href={'/profile/settings'}>
+          <A class={styles.action} href={'/profile'}>
             <Icon name="settings" class={styles.icon} />
             {t('Settings')}
           </A>

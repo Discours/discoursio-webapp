@@ -30,9 +30,9 @@ export const ROUTES = {
   termsOfUse: '/about/terms-of-use',
   thanks: '/guide/thanks',
   expo: '/expo/:layout?',
-  profileSettings: '/profile/settings',
+  profileSettings: '/profile',
   profileSecurity: '/profile/security',
-  profileSubscriptions: '/profile/subscriptions',
+  profileSubscriptions: '/profile/subs',
   fourOuFour: '/404',
   article: '/:slug'
 } as const

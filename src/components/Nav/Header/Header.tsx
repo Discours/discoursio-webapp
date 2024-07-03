@@ -201,10 +201,9 @@ export const Header = (props: Props) => {
             </Show>
             <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
               <ul class="view-switcher">
-
                 <For each={['', 'feed', 'topics', 'authors', 'guide']}>
                   {(route: string) => (
-                  <li classList={{ 'view-switcher__item--selected': route === loc.pathname }}>
+                    <li classList={{ 'view-switcher__item--selected': route === loc.pathname }}>
                       <A
                         class={clsx({ [styles.mainNavigationItemActive]: loc.pathname === route })}
                         href={`/${route}`}
@@ -214,7 +213,7 @@ export const Header = (props: Props) => {
                       >
                         {t(route || 'journal')}
                       </A>
-                  </li>
+                    </li>
                   )}
                 </For>
               </ul>

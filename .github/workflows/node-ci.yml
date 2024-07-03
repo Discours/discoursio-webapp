@@ -27,8 +27,19 @@ jobs:
       - name: Test production build
         run: npm run build
 
-#     - name: Install e2e test dependencies
-#      run: npm run e2e:install
+      - name: Install http-server
+        run: npm install -g http-server
+
+      - name: Install e2e test dependencies
+        run: npm run e2e:install
+
+      - name: Serve the build directory
+        run: http-server ./dist -p 8080 &
+        # Adjust "./build" to your build output directory
 
 #      - name: Run e2e tests
 #        run: npm run e2e:tests
+
+      - name: Run e2e tests
+        run: npm run e2e:tests -- --baseUrl http://localhost:8080
+        # Ensure your e2e tests can accept a baseUrl parameter

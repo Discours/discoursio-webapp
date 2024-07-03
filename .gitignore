@@ -1,3 +1,4 @@
+.devcontainer
 dist/
 node_modules/
 npm-debug.log*
@@ -22,6 +23,8 @@ bun.lockb
 /blob-report/
 /playwright/.cache/
 /plawright-report/
+target
+.github/dependabot.yml
 
 .output
 .vinxi

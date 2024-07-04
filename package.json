@@ -10,6 +10,7 @@
     "start": "vinxi start",
     "codegen": "graphql-codegen",
     "e2e:tests": "npx playwright test --project=webkit",
+    "e2e:tests:ci": "CI=true BASE_URL=https://127.0.0.1:8080 npx playwright test --project=webkit",
     "e2e:install": "npx playwright install webkit && npx playwright install-deps ",
     "fix": "npx @biomejs/biome check . --fix && stylelint **/*.{scss,css} --fix",
     "format": "npx @biomejs/biome format src/. --write",

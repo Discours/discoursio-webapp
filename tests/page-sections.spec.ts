@@ -2,6 +2,8 @@
 import https from 'node:https'
 import { type Page, expect, test } from '@playwright/test'
 
+const baseHost = process.env.BASE_URL || 'https://localhost:3000'
+
 /* Global starting test config */
 
 let page: Page
@@ -44,7 +46,7 @@ async function waitForServer(url: string, timeout = 150000) {
 test.beforeAll(async ({ browser }) => {
   console.log('Waiting for the server to start...')
   await new Promise((resolve) => setTimeout(resolve, 5000))
-  const baseURL = 'https://localhost:3000'
+  const baseURL = process.env.BASE_URL || 'https://localhost:3000'
   await waitForServer(baseURL)
   page = await browser.newPage()
   test.setTimeout(150000)

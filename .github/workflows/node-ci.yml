@@ -26,3 +26,18 @@ jobs:
 
       - name: Test production build
         run: npm run build
+
+      - name: Install http-server
+        run: npm install http-server
+
+      - name: Install e2e test dependencies
+        run: npm run e2e:install
+
+      - name: Serve the build directory
+        run: npx http-server ./.output/public -p 8080 --ssl --cert ./tests/certs/cert.pem --key ./tests/certs/key.pem &
+
+#      - name: Run e2e tests
+#        run: npm run e2e:tests
+
+      - name: Run e2e tests
+        run: npm run e2e:tests:ci

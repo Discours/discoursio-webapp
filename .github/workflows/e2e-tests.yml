@@ -1,0 +1,37 @@
+name: "e2e tests"
+
+on:
+  deployment_status:
+    types: [success]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Wait for deployment to be live
+        run: |
+          echo "Waiting for Vercel deployment to be live..."
+          until curl -sSf https://testing3.discours.io > /dev/null; do
+            printf '.'
+            sleep 10
+          done
+
+      - name: Install Playwright and dependencies
+        run: npm run e2e:install
+
+      - name: Run Playwright tests
+        run: npm run e2e:tests:ci
+        env:
+          BASE_URL:  https://testing3.discours.io 

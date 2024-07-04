@@ -3,7 +3,7 @@ import type { JSX } from 'solid-js'
 import { Link } from '@solidjs/meta'
 import { splitProps } from 'solid-js'
 
-import { getImageUrl } from '../../../utils/getImageUrl'
+import { getImageUrl } from '~/utils/getImageUrl'
 
 type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {
   width: number

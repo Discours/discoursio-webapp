@@ -1,11 +1,11 @@
 import type { Editor } from '@tiptap/core'
 
+import { Icon } from '~/components/_shared/Icon'
+import { Popover } from '~/components/_shared/Popover'
+import { useLocalize } from '~/context/localize'
 import { UploadedFile } from '~/types/upload'
-import { useLocalize } from '../../../context/localize'
-import { renderUploadedImage } from '../../../utils/renderUploadedImage'
+import { renderUploadedImage } from '~/utils/renderUploadedImage'
 import { Modal } from '../../Nav/Modal'
-import { Icon } from '../../_shared/Icon'
-import { Popover } from '../../_shared/Popover'
 import { UploadModalContent } from '../UploadModalContent'
 
 import { useUI } from '~/context/ui'

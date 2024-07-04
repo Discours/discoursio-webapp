@@ -6,8 +6,8 @@ import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
+import { loadAuthors } from '~/graphql/api/public'
 import { Author, QueryLoad_Authors_ByArgs } from '~/graphql/schema/core.gen'
-import { loadAuthors } from '~/lib/api/public'
 
 const fetchData = async () => {
   const opts: QueryLoad_Authors_ByArgs = {

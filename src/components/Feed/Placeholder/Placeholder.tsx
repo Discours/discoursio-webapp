@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { For, Show, createMemo } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { Icon } from '../../_shared/Icon'
+import { Icon } from '~/components/_shared/Icon'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import styles from './Placeholder.module.scss'
 
 type ProfileLink = {

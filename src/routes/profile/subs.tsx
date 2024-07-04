@@ -1,7 +1,7 @@
-import { AuthGuard } from '../../components/AuthGuard'
-import { ProfileSubscriptions } from '../../components/Views/ProfileSubscriptions'
-import { PageLayout } from '../../components/_shared/PageLayout'
-import { useLocalize } from '../../context/localize'
+import { AuthGuard } from '~/components/AuthGuard'
+import { ProfileSubscriptions } from '~/components/Views/ProfileSubscriptions'
+import { PageLayout } from '~/components/_shared/PageLayout'
+import { useLocalize } from '~/context/localize'
 
 export const ProfileSubscriptionsPage = () => {
   const { t } = useLocalize()

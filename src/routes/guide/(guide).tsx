@@ -1,10 +1,10 @@
 import { Meta } from '@solidjs/meta'
 import { createMemo } from 'solid-js'
-import ruKeywords from '~/lib/locales/ru/keywords.json'
-import enKeywords from '~/lib/locales/ru/keywords.json'
-import { StaticPage } from '../../components/Views/StaticPage'
-import { useLocalize } from '../../context/localize'
-import { getImageUrl } from '../../utils/getImageUrl'
+import { StaticPage } from '~/components/Views/StaticPage'
+import enKeywords from '~/config/locales/en/keywords.json'
+import ruKeywords from '~/config/locales/ru/keywords.json'
+import { useLocalize } from '~/context/localize'
+import { getImageUrl } from '~/utils/getImageUrl'
 
 export default () => {
   const { t, lang } = useLocalize()

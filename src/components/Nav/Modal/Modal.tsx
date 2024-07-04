@@ -1,10 +1,10 @@
 import { clsx } from 'clsx'
 import type { JSX } from 'solid-js'
 import { Show } from 'solid-js'
+import { Icon } from '~/components/_shared/Icon'
 import { useUI } from '~/context/ui'
 import { isPortrait } from '~/utils/media-query'
-import { useEscKeyDownHandler } from '../../../utils/useEscKeyDownHandler'
-import { Icon } from '../../_shared/Icon'
+import { useEscKeyDownHandler } from '~/utils/useEscKeyDownHandler'
 import styles from './Modal.module.scss'
 
 interface Props {

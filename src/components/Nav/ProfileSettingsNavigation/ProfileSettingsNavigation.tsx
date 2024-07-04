@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 
-import { useLocalize } from '../../../context/localize'
+import { useLocalize } from '~/context/localize'
 
 import { useLocation } from '@solidjs/router'
 import styles from './ProfileSettingsNavigation.module.scss'

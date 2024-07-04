@@ -10,7 +10,7 @@ import {
   onMount,
   useContext
 } from 'solid-js'
-import { TimeAgo, type i18n, i18next, i18nextInit } from '~/lib/i18next'
+import { TimeAgo, type i18n, i18next, i18nextInit } from '~/utils/i18next'
 
 i18nextInit()
 

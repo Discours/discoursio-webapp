@@ -1,4 +1,4 @@
-import type { Author, ProfileInput } from '../graphql/schema/core.gen'
+import type { Author, ProfileInput } from '~/graphql/schema/core.gen'
 
 import { AuthToken } from '@authorizerdev/authorizer-js'
 import { Accessor, JSX, createContext, createEffect, createSignal, on, useContext } from 'solid-js'

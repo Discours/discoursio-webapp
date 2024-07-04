@@ -1,5 +1,5 @@
+import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { useLocalize } from '../../context/localize'
 import { Button } from '../_shared/Button'
 
 export const Feedback = () => {

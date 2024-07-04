@@ -1,18 +1,18 @@
 import { clsx } from 'clsx'
 import { For, Show, createMemo, createSignal, lazy, onMount } from 'solid-js'
 
-import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
-import { useSession } from '../../context/session'
-import { Author, Reaction, ReactionKind, ReactionSort } from '../../graphql/schema/core.gen'
-import { byCreated, byStat } from '../../utils/sortby'
+import { useLocalize } from '~/context/localize'
+import { useReactions } from '~/context/reactions'
+import { useSession } from '~/context/session'
+import { Author, Reaction, ReactionKind, ReactionSort } from '~/graphql/schema/core.gen'
+import { byCreated, byStat } from '~/utils/sortby'
 import { Button } from '../_shared/Button'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 
 import { Comment } from './Comment'
 
 import { SortFunction } from '~/context/authors'
-import { useFeed } from '../../context/feed'
+import { useFeed } from '~/context/feed'
 import styles from './Article.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))

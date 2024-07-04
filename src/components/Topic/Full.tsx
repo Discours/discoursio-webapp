@@ -1,12 +1,12 @@
-import type { Author, Topic } from '../../graphql/schema/core.gen'
+import type { Author, Topic } from '~/graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal } from 'solid-js'
 
-import { useFollowing } from '../../context/following'
-import { useLocalize } from '../../context/localize'
-import { useSession } from '../../context/session'
-import { FollowingEntity } from '../../graphql/schema/core.gen'
+import { useFollowing } from '~/context/following'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import { FollowingEntity } from '~/graphql/schema/core.gen'
 import { Button } from '../_shared/Button'
 
 import { FollowingCounters } from '../_shared/FollowingCounters/FollowingCounters'

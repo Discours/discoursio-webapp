@@ -1,13 +1,13 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
 import { Suspense, createEffect } from 'solid-js'
+import { AllTopics } from '~/components/Views/AllTopics'
+import { Loading } from '~/components/_shared/Loading'
+import { PageLayout } from '~/components/_shared/PageLayout'
+import { useLocalize } from '~/context/localize'
+import { ReactionsProvider } from '~/context/reactions'
 import { useTopics } from '~/context/topics'
+import { loadTopics } from '~/graphql/api/public'
 import { Topic } from '~/graphql/schema/core.gen'
-import { loadTopics } from '~/lib/api/public'
-import { AllTopics } from '../../components/Views/AllTopics'
-import { Loading } from '../../components/_shared/Loading'
-import { PageLayout } from '../../components/_shared/PageLayout'
-import { useLocalize } from '../../context/localize'
-import { ReactionsProvider } from '../../context/reactions'
 
 const fetchData = async () => {
   const topicsFetcher = loadTopics()

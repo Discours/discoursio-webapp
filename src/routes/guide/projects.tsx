@@ -1,5 +1,5 @@
-import { PageLayout } from '../../components/_shared/PageLayout'
-import { useLocalize } from '../../context/localize'
+import { PageLayout } from '~/components/_shared/PageLayout'
+import { useLocalize } from '~/context/localize'
 
 export const ProjectsPage = () => {
   const { t } = useLocalize()

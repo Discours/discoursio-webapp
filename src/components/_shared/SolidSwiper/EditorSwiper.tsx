@@ -4,12 +4,12 @@ import { For, Show, createEffect, createSignal, lazy, on, onMount } from 'solid-
 import SwiperCore from 'swiper'
 import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 
+import { useLocalize } from '~/context/localize'
 import { useSnackbar } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
-import { composeMediaItems } from '../../../utils/composeMediaItems'
-import { getImageUrl } from '../../../utils/getImageUrl'
-import { handleImageUpload } from '../../../utils/handleImageUpload'
-import { validateFiles } from '../../../utils/validateFile'
+import { composeMediaItems } from '~/utils/composeMediaItems'
+import { getImageUrl } from '~/utils/getImageUrl'
+import { handleImageUpload } from '~/utils/handleImageUpload'
+import { validateFiles } from '~/utils/validateFile'
 import { DropArea } from '../DropArea'
 import { Icon } from '../Icon'
 import { Image } from '../Image'
@@ -18,9 +18,9 @@ import { Popover } from '../Popover'
 
 import { SwiperRef } from './swiper'
 
+import { useSession } from '~/context/session'
 import { MediaItem } from '~/types/mediaitem'
 import { UploadedFile } from '~/types/upload'
-import { useSession } from '../../../context/session'
 import styles from './Swiper.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))

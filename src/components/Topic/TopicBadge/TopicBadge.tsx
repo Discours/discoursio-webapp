@@ -1,14 +1,14 @@
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal, on } from 'solid-js'
 
+import { FollowingButton } from '~/components/_shared/FollowingButton'
+import { useFollowing } from '~/context/following'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import { FollowingEntity, Topic } from '~/graphql/schema/core.gen'
+import { capitalize } from '~/utils/capitalize'
+import { getImageUrl } from '~/utils/getImageUrl'
 import { mediaMatches } from '~/utils/media-query'
-import { useFollowing } from '../../../context/following'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
-import { capitalize } from '../../../utils/capitalize'
-import { getImageUrl } from '../../../utils/getImageUrl'
-import { FollowingButton } from '../../_shared/FollowingButton'
 import styles from './TopicBadge.module.scss'
 
 type Props = {

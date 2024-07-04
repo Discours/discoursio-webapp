@@ -20,9 +20,9 @@ import {
   useEditorIsFocused
 } from 'solid-tiptap'
 
+import { useEditorContext } from '~/context/editor'
+import { useLocalize } from '~/context/localize'
 import { UploadedFile } from '~/types/upload'
-import { useEditorContext } from '../../context/editor'
-import { useLocalize } from '../../context/localize'
 import { Modal } from '../Nav/Modal'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'

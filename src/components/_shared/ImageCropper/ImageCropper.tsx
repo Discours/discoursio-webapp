@@ -4,7 +4,7 @@ import { UploadFile } from '@solid-primitives/upload'
 import Cropper from 'cropperjs'
 import { Show, createSignal, onMount } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
+import { useLocalize } from '~/context/localize'
 import { Button } from '../Button'
 
 import styles from './ImageCropper.module.scss'

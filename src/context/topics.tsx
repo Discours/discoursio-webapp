@@ -10,9 +10,9 @@ import {
   on,
   useContext
 } from 'solid-js'
-import { loadTopics } from '~/lib/api/public'
+import { loadTopics } from '~/graphql/api/public'
+import { Topic } from '~/graphql/schema/core.gen'
 import { getRandomTopicsFromArray } from '~/utils/getRandomTopicsFromArray'
-import { Topic } from '../graphql/schema/core.gen'
 import { byTopicStatDesc } from '../utils/sortby'
 
 type TopicsContextType = {

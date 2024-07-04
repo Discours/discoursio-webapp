@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal } from 'solid-js'
 
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
 
 import { email, setEmail } from './sharedLogic'
 

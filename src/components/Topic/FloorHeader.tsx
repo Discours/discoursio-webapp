@@ -1,6 +1,6 @@
-import type { Topic } from '../../graphql/schema/core.gen'
+import type { Topic } from '~/graphql/schema/core.gen'
 
-import { useLocalize } from '../../context/localize'
+import { useLocalize } from '~/context/localize'
 import { Icon } from '../_shared/Icon'
 
 import './FloorHeader.scss'

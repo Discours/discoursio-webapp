@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 
+import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
 
 import styles from './AuthModal.module.scss'
 

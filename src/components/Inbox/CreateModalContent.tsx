@@ -1,9 +1,9 @@
 import { For, createEffect, createSignal } from 'solid-js'
 
+import { useInbox } from '~/context/inbox'
+import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { useInbox } from '../../context/inbox'
-import { useLocalize } from '../../context/localize'
-import type { Author } from '../../graphql/schema/core.gen'
+import type { Author } from '~/graphql/schema/core.gen'
 import InviteUser from './InviteUser'
 
 import styles from './CreateModalContent.module.scss'

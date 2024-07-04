@@ -12,7 +12,7 @@ import {
   QueryLoad_Reactions_ByArgs,
   Reaction,
   ReactionKind
-} from '../graphql/schema/core.gen'
+} from '~/graphql/schema/core.gen'
 import { useGraphQL } from './graphql'
 import { useLocalize } from './localize'
 import { useSnackbar } from './ui'

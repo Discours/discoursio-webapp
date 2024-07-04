@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import { For, createSignal, onMount } from 'solid-js'
-import { useLocalize } from '../../context/localize'
+import { useLocalize } from '~/context/localize'
 import { Icon } from '../_shared/Icon'
 import { Newsletter } from '../_shared/Newsletter'
 import styles from './Footer.module.scss'

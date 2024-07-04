@@ -1,13 +1,13 @@
 import { Params, RouteSectionProps, createAsync, useParams } from '@solidjs/router'
 import { createEffect, createMemo, on } from 'solid-js'
+import { Topics } from '~/components/Nav/Topics'
+import { Expo } from '~/components/Views/Expo'
+import { PageLayout } from '~/components/_shared/PageLayout'
+import { useLocalize } from '~/context/localize'
+import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
-import { loadShouts } from '~/lib/api/public'
 import { LayoutType } from '~/types/common'
 import { SHOUTS_PER_PAGE } from '../(home)'
-import { Topics } from '../../components/Nav/Topics'
-import { Expo } from '../../components/Views/Expo'
-import { PageLayout } from '../../components/_shared/PageLayout'
-import { useLocalize } from '../../context/localize'
 
 const fetchExpoShouts = async (layouts: string[]) => {
   const result = await loadShouts({

@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 
-import { useLocalize } from '../../../context/localize'
+import { useLocalize } from '~/context/localize'
 import { Icon } from '../Icon'
 
 import styles from './SoonChip.module.scss'

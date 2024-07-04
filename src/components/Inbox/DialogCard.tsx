@@ -1,10 +1,10 @@
-import type { ChatMember } from '../../graphql/schema/chat.gen'
+import type { ChatMember } from '~/graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
 import { Match, Show, Switch, createMemo } from 'solid-js'
 
-import { useLocalize } from '../../context/localize'
-import { Author } from '../../graphql/schema/core.gen'
+import { useLocalize } from '~/context/localize'
+import { Author } from '~/graphql/schema/core.gen'
 import { AuthorBadge } from '../Author/AuthorBadge'
 
 import DialogAvatar from './DialogAvatar'

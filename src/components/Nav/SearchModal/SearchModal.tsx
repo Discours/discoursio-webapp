@@ -1,15 +1,15 @@
-import type { Shout } from '../../../graphql/schema/core.gen'
+import type { Shout } from '~/graphql/schema/core.gen'
 
 import { For, Show, createResource, createSignal, onCleanup } from 'solid-js'
 import { debounce } from 'throttle-debounce'
 
+import { Button } from '~/components/_shared/Button'
+import { Icon } from '~/components/_shared/Icon'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
-import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { byScore } from '../../../utils/sortby'
+import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
+import { byScore } from '~/utils/sortby'
 import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
-import { Button } from '../../_shared/Button'
-import { Icon } from '../../_shared/Icon'
 
 import { SearchResultItem } from './SearchResultItem'
 

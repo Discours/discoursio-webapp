@@ -6,9 +6,9 @@ import createChatMutation from '~/graphql/mutation/chat/chat-create'
 import createMessageMutation from '~/graphql/mutation/chat/chat-message-create'
 import loadChatMessagesQuery from '~/graphql/query/chat/chat-messages-load-by'
 import loadChatsQuery from '~/graphql/query/chat/chats-load'
+import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '~/graphql/schema/chat.gen'
+import { Author } from '~/graphql/schema/core.gen'
 import { useAuthors } from '../context/authors'
-import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
-import { Author } from '../graphql/schema/core.gen'
 import { SSEMessage, useConnect } from './connect'
 
 type InboxContextType = {

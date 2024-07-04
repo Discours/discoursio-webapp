@@ -5,7 +5,7 @@ import { HashNavigation, Manipulation, Navigation, Pagination } from 'swiper/mod
 import { throttle } from 'throttle-debounce'
 
 import { MediaItem } from '~/types/mediaitem'
-import { getImageUrl } from '../../../utils/getImageUrl'
+import { getImageUrl } from '~/utils/getImageUrl'
 import { Icon } from '../Icon'
 import { Image } from '../Image'
 import { SwiperRef } from './swiper'

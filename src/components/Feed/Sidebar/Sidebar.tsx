@@ -2,12 +2,12 @@ import { clsx } from 'clsx'
 import { For, Show, createSignal } from 'solid-js'
 
 import { A, useMatch } from '@solidjs/router'
+import { Icon } from '~/components/_shared/Icon'
 import { useFeed } from '~/context/feed'
-import { useFollowing } from '../../../context/following'
-import { useLocalize } from '../../../context/localize'
-import { Author } from '../../../graphql/schema/core.gen'
+import { useFollowing } from '~/context/following'
+import { useLocalize } from '~/context/localize'
+import { Author } from '~/graphql/schema/core.gen'
 import { Userpic } from '../../Author/Userpic'
-import { Icon } from '../../_shared/Icon'
 import styles from './Sidebar.module.scss'
 
 export const Sidebar = () => {

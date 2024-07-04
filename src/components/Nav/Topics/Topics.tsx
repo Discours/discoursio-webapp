@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
-import { useLocalize } from '../../../context/localize'
-import { Icon } from '../../_shared/Icon'
+import { Icon } from '~/components/_shared/Icon'
+import { useLocalize } from '~/context/localize'
 
 import { A, useMatch } from '@solidjs/router'
 import styles from './Topics.module.scss'

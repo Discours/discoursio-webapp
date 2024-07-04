@@ -3,7 +3,7 @@ import { For, Show, onMount } from 'solid-js'
 import SwiperCore from 'swiper'
 import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 
-import { Shout } from '../../../graphql/schema/core.gen'
+import { Shout } from '~/graphql/schema/core.gen'
 import { ArticleCard } from '../../Feed/ArticleCard'
 import { Icon } from '../Icon'
 import { ShowOnlyOnClient } from '../ShowOnlyOnClient'

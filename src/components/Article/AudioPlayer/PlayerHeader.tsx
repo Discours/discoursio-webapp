@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
-import { useOutsideClickHandler } from '../../../utils/useOutsideClickHandler'
-import { Icon } from '../../_shared/Icon'
+import { Icon } from '~/components/_shared/Icon'
+import { useOutsideClickHandler } from '~/utils/useOutsideClickHandler'
 
 import { MediaItem } from '~/types/mediaitem'
 import styles from './AudioPlayer.module.scss'

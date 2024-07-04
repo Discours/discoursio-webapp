@@ -1,8 +1,8 @@
 import { JSX, Show, createSignal } from 'solid-js'
 
+import { useLocalize } from '~/context/localize'
 import { useSnackbar } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
-import { validateEmail } from '../../../utils/validateEmail'
+import { validateEmail } from '~/utils/validateEmail'
 import { Button } from '../Button'
 import { Icon } from '../Icon'
 

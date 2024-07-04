@@ -4,8 +4,8 @@ import ICU from 'i18next-icu'
 import TimeAgo from 'javascript-time-ago'
 import enTime from 'javascript-time-ago/locale/en'
 import ruTime from 'javascript-time-ago/locale/ru'
-import en from './locales/en/translation.json'
-import ru from './locales/ru/translation.json'
+import en from '~/config/locales/en/translation.json'
+import ru from '~/config/locales/ru/translation.json'
 
 TimeAgo.addLocale(enTime)
 TimeAgo.addLocale(ruTime)

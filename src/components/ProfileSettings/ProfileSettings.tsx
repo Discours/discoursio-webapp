@@ -14,16 +14,16 @@ import {
   onMount
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { useLocalize } from '../../context/localize'
-import { useProfile } from '../../context/profile'
-import { useSession } from '../../context/session'
-import { useSnackbar, useUI } from '../../context/ui'
-import { InputMaybe, ProfileInput } from '../../graphql/schema/core.gen'
-import { clone } from '../../utils/clone'
-import { getImageUrl } from '../../utils/getImageUrl'
-import { handleImageUpload } from '../../utils/handleImageUpload'
-import { profileSocialLinks } from '../../utils/profileSocialLinks'
-import { validateUrl } from '../../utils/validateUrl'
+import { useLocalize } from '~/context/localize'
+import { useProfile } from '~/context/profile'
+import { useSession } from '~/context/session'
+import { useSnackbar, useUI } from '~/context/ui'
+import { InputMaybe, ProfileInput } from '~/graphql/schema/core.gen'
+import { clone } from '~/utils/clone'
+import { getImageUrl } from '~/utils/getImageUrl'
+import { handleImageUpload } from '~/utils/handleImageUpload'
+import { profileSocialLinks } from '~/utils/profileSocialLinks'
+import { validateUrl } from '~/utils/validateUrl'
 import { Modal } from '../Nav/Modal'
 import { ProfileSettingsNavigation } from '../Nav/ProfileSettingsNavigation'
 import { Button } from '../_shared/Button'
@@ -34,8 +34,8 @@ import { Popover } from '../_shared/Popover'
 import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
 import styles from './Settings.module.scss'
 
-const SimplifiedEditor = lazy(() => import('../../components/Editor/SimplifiedEditor'))
-const GrowingTextarea = lazy(() => import('../../components/_shared/GrowingTextarea/GrowingTextarea'))
+const SimplifiedEditor = lazy(() => import('~/components/Editor/SimplifiedEditor'))
+const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 function filterNulls(arr: InputMaybe<string>[]): string[] {
   return arr.filter((item): item is string => item !== null && item !== undefined)

@@ -1,4 +1,4 @@
-import { Shout } from '../graphql/schema/core.gen'
+import { Shout } from '~/graphql/schema/core.gen'
 
 const MAX_DESCRIPTION_LENGTH = 150
 

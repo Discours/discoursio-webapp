@@ -7,8 +7,8 @@ import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { useTopics } from '~/context/topics'
+import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
-import { loadShouts } from '~/lib/api/public'
 import { SHOUTS_PER_PAGE } from '../(home)'
 
 const fetchTopicShouts = async (slug: string, offset?: number) => {

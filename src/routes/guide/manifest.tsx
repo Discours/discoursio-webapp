@@ -1,11 +1,11 @@
 import { Meta } from '@solidjs/meta'
-import { Feedback } from '../../components/Discours/Feedback'
-import { Modal } from '../../components/Nav/Modal'
-import Opener from '../../components/Nav/Modal/Opener'
-import { StaticPage } from '../../components/Views/StaticPage'
-import { Newsletter } from '../../components/_shared/Newsletter'
-import { useLocalize } from '../../context/localize'
-import { getImageUrl } from '../../utils/getImageUrl'
+import { Feedback } from '~/components/Discours/Feedback'
+import { Modal } from '~/components/Nav/Modal'
+import Opener from '~/components/Nav/Modal/Opener'
+import { StaticPage } from '~/components/Views/StaticPage'
+import { Newsletter } from '~/components/_shared/Newsletter'
+import { useLocalize } from '~/context/localize'
+import { getImageUrl } from '~/utils/getImageUrl'
 
 export const ManifestPage = () => {
   const { t } = useLocalize()

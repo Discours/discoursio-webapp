@@ -8,10 +8,10 @@ import {
   on,
   useContext
 } from 'solid-js'
-import loadAuthorByQuery from '../graphql/query/core/author-by'
-import loadAuthorsAllQuery from '../graphql/query/core/authors-all'
-import loadAuthorsByQuery from '../graphql/query/core/authors-load-by'
-import { Author, Maybe, QueryLoad_Authors_ByArgs, Shout, Topic } from '../graphql/schema/core.gen'
+import loadAuthorByQuery from '~/graphql/query/core/author-by'
+import loadAuthorsAllQuery from '~/graphql/query/core/authors-all'
+import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
+import { Author, Maybe, QueryLoad_Authors_ByArgs, Shout, Topic } from '~/graphql/schema/core.gen'
 import { useFeed } from './feed'
 import { useGraphQL } from './graphql'
 

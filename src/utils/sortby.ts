@@ -1,4 +1,4 @@
-import type { Author, Maybe, Reaction, Shout, Topic, TopicStat } from '../graphql/schema/core.gen'
+import type { Author, Maybe, Reaction, Shout, Topic, TopicStat } from '~/graphql/schema/core.gen'
 
 // biome-ignore lint/suspicious/noExplicitAny: sort by first char
 export const byFirstChar = (a: { name?: any; title?: any }, b: { name?: any; title?: any }) =>

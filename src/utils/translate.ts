@@ -1,4 +1,4 @@
-import { Author } from '../graphql/schema/core.gen'
+import { Author } from '~/graphql/schema/core.gen'
 import { capitalize } from './capitalize'
 import { translit } from './ru2en'
 

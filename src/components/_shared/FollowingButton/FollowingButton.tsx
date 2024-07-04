@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import { Show, createMemo } from 'solid-js'
-import { useLocalize } from '../../../context/localize'
+import { useLocalize } from '~/context/localize'
 import { Button } from '../Button'
 import { CheckButton } from '../CheckButton'
 import { Icon } from '../Icon'

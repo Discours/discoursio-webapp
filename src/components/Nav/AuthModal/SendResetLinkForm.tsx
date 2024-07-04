@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal, onMount } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { validateEmail } from '../../../utils/validateEmail'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import { validateEmail } from '~/utils/validateEmail'
 import { email, setEmail } from './sharedLogic'
 
 import { useSearchParams } from '@solidjs/router'

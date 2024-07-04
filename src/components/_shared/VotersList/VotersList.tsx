@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { For, Show } from 'solid-js'
 
-import { Reaction, ReactionKind } from '../../../graphql/schema/core.gen'
+import { Reaction, ReactionKind } from '~/graphql/schema/core.gen'
 import { Userpic } from '../../Author/Userpic'
 
 import styles from './VotersList.module.scss'

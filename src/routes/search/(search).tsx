@@ -1,13 +1,13 @@
 import { action, useSearchParams } from '@solidjs/router'
 import { Show, Suspense, createEffect, createSignal, onCleanup } from 'solid-js'
 
+import { SearchView } from '~/components/Views/Search'
+import { Loading } from '~/components/_shared/Loading'
+import { PageLayout } from '~/components/_shared/PageLayout'
+import { useLocalize } from '~/context/localize'
+import { ReactionsProvider } from '~/context/reactions'
+import { loadShoutsSearch } from '~/graphql/api/public'
 import { QueryLoad_Shouts_SearchArgs, SearchResult } from '~/graphql/schema/core.gen'
-import { loadShoutsSearch } from '~/lib/api/public'
-import { SearchView } from '../../components/Views/Search'
-import { Loading } from '../../components/_shared/Loading'
-import { PageLayout } from '../../components/_shared/PageLayout'
-import { useLocalize } from '../../context/localize'
-import { ReactionsProvider } from '../../context/reactions'
 
 const fetchSearchResult = async ({ text, limit, offset }: QueryLoad_Shouts_SearchArgs) => {
   if (!text.trim()) return () => [] as SearchResult[]

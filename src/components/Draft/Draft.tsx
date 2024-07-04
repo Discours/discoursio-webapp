@@ -1,8 +1,8 @@
 import { clsx } from 'clsx'
 
+import { useLocalize } from '~/context/localize'
 import { useSnackbar, useUI } from '~/context/ui'
-import { useLocalize } from '../../context/localize'
-import type { Shout } from '../../graphql/schema/core.gen'
+import type { Shout } from '~/graphql/schema/core.gen'
 import { Icon } from '../_shared/Icon'
 
 import { A } from '@solidjs/router'

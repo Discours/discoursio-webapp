@@ -4,12 +4,12 @@ import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config/config'
 import { useLocalize } from '~/context/localize'
-import { getShout } from '~/lib/api/public'
+import { getShout } from '~/graphql/api/public'
+import type { Shout } from '~/graphql/schema/core.gen'
 import { initGA, loadGAScript } from '~/utils/ga'
 import { FullArticle } from '../components/Article/FullArticle'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { ReactionsProvider } from '../context/reactions'
-import type { Shout } from '../graphql/schema/core.gen'
 
 const fetchShout = async (slug: string) => {
   const shoutLoader = getShout({ slug })

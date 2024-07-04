@@ -1,10 +1,10 @@
 import { For, Show, createSignal, onMount } from 'solid-js'
 
 import { useSearchParams } from '@solidjs/router'
-import { useFeed } from '../../context/feed'
-import { useLocalize } from '../../context/localize'
-import type { SearchResult } from '../../graphql/schema/core.gen'
-import { restoreScrollPosition, saveScrollPosition } from '../../utils/scroll'
+import { useFeed } from '~/context/feed'
+import { useLocalize } from '~/context/localize'
+import type { SearchResult } from '~/graphql/schema/core.gen'
+import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { ArticleCard } from '../Feed/ArticleCard'
 
 import '../../styles/Search.scss'

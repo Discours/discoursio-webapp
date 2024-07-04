@@ -1,6 +1,6 @@
-import { useLocalize } from '../../../context/localize'
-import { useUI } from '../../../context/ui'
-import { Button } from '../../_shared/Button'
+import { Button } from '~/components/_shared/Button'
+import { useLocalize } from '~/context/localize'
+import { useUI } from '~/context/ui'
 
 import styles from './ConfirmModal.module.scss'
 

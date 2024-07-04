@@ -2,11 +2,11 @@ import { UploadFile, createDropzone, createFileUploader } from '@solid-primitive
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { handleFileUpload } from '../../../utils/handleFileUpload'
-import { handleImageUpload } from '../../../utils/handleImageUpload'
-import { validateFiles } from '../../../utils/validateFile'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import { handleFileUpload } from '~/utils/handleFileUpload'
+import { handleImageUpload } from '~/utils/handleImageUpload'
+import { validateFiles } from '~/utils/validateFile'
 
 import styles from './DropArea.module.scss'
 

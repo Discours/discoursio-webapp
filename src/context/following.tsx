@@ -12,8 +12,8 @@ import { createStore } from 'solid-js/store'
 
 import followMutation from '~/graphql/mutation/core/follow'
 import unfollowMutation from '~/graphql/mutation/core/unfollow'
-import loadAuthorFollowers from '../graphql/query/core/author-followers'
-import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
+import loadAuthorFollowers from '~/graphql/query/core/author-followers'
+import { Author, Community, FollowingEntity, Topic } from '~/graphql/schema/core.gen'
 import { useGraphQL } from './graphql'
 import { useSession } from './session'
 

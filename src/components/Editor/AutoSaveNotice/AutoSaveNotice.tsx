@@ -1,8 +1,6 @@
 import { clsx } from 'clsx'
-
-import { useLocalize } from '../../../context/localize'
-import { Loading } from '../../_shared/Loading'
-
+import { Loading } from '~/components/_shared/Loading'
+import { useLocalize } from '~/context/localize'
 import styles from './AutoSaveNotice.module.scss'
 
 type Props = {

@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { Match, Show, Switch, createEffect, createSignal } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
+import { useLocalize } from '~/context/localize'
 import { Button } from '../Button'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'

@@ -1,5 +1,5 @@
+import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
 import { Modal } from '../../Nav/Modal'
 import { ShareLinks } from '../ShareLinks'
 

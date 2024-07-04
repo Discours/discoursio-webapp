@@ -1,4 +1,4 @@
-import { useLocalize } from '../../context/localize'
+import { useLocalize } from '~/context/localize'
 import { Loading } from '../_shared/Loading'
 import styles from './InlineLoader.module.scss'
 

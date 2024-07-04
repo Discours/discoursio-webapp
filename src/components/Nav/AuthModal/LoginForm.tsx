@@ -1,10 +1,10 @@
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal } from 'solid-js'
 
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import { useSnackbar, useUI } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { validateEmail } from '../../../utils/validateEmail'
+import { validateEmail } from '~/utils/validateEmail'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'

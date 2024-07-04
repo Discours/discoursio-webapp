@@ -7,8 +7,8 @@ import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
+import { loadShouts } from '~/graphql/api/public'
 import { Author, LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
-import { loadShouts } from '~/lib/api/public'
 import { SHOUTS_PER_PAGE } from '../../(home)'
 
 const fetchAuthorShouts = async (slug: string, offset?: number) => {

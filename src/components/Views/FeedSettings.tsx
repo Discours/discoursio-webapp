@@ -1,4 +1,4 @@
-import { useLocalize } from '../../context/localize'
+import { useLocalize } from '~/context/localize'
 
 import styles from '../../styles/FeedSettings.module.scss'
 

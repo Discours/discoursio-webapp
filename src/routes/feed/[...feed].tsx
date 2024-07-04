@@ -7,15 +7,15 @@ import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { useSession } from '~/context/session'
-import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import {
   loadBookmarkedShouts,
   loadCoauthoredShouts,
   loadDiscussedShouts,
   loadFollowedShouts,
   loadUnratedShouts
-} from '~/lib/api/private'
-import { loadShouts } from '~/lib/api/public'
+} from '~/graphql/api/private'
+import { loadShouts } from '~/graphql/api/public'
+import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { SHOUTS_PER_PAGE } from '../(home)'
 
 export type FeedPeriod = 'week' | 'month' | 'year'

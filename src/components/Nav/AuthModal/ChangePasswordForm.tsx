@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { JSX, Show, createSignal } from 'solid-js'
 
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
 import { PasswordField } from './PasswordField'
 
 import { useSearchParams } from '@solidjs/router'

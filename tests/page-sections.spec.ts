@@ -46,7 +46,7 @@ async function waitForServer(url: string, timeout = 150000) {
 test.beforeAll(async ({ browser }) => {
   console.log('Waiting for the server to start...')
   await new Promise((resolve) => setTimeout(resolve, 5000))
-  const baseURL =  `${baseHost}`
+  const baseURL = process.env.BASE_URL || 'https://localhost:3000'
   await waitForServer(baseURL)
   page = await browser.newPage()
   test.setTimeout(150000)

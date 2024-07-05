@@ -86,7 +86,7 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
     t: ((s: string) => {
       try {
         return i18next.t(s)
-      } catch(_) {
+      } catch (_) {
         return s
       }
     }) as i18n['t'],

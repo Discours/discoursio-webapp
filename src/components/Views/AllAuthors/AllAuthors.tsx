@@ -56,7 +56,7 @@ export const AllAuthors = (props: Props) => {
   })
 
   const sortedKeys = createMemo<string[]>(() => {
-    const keys = Object.keys(byLetterFiltered()||{})
+    const keys = Object.keys(byLetterFiltered() || {})
     keys.sort()
     const fk = keys.shift() || ''
     fk && keys.push(fk)

@@ -34,11 +34,11 @@ export const AllAuthors = (props: Props) => {
   const [searchParams] = useSearchParams<{ by?: string }>()
   const { authorsSorted, addAuthors, setAuthorsSort } = useAuthors()
   createEffect(on(() => searchParams?.by || 'name', setAuthorsSort, {}))
-  createEffect(() => addAuthors?.([...(props.authors || [])]))
+  createEffect(on(() => props.authors || [], addAuthors, {}))
 
   const filteredAuthors = createMemo(() => {
     const query = searchQuery().toLowerCase()
-    return authorsSorted?.().filter((a: Author) => a?.name?.toLowerCase().includes(query))
+    return authorsSorted?.()?.filter((a: Author) => a?.name?.toLowerCase().includes(query)) || []
   })
 
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
@@ -165,7 +165,7 @@ export const AllAuthors = (props: Props) => {
           </Show>
           <Show when={searchParams?.by !== 'name' && props.isLoaded}>
             <AuthorsList
-              allAuthorsLength={authorsSorted?.()?.length || 0}
+              allAuthorsLength={authorsSorted()?.length || 0}
               searchQuery={searchQuery()}
               query={searchParams?.by === 'followers' ? 'followers' : 'shouts'}
             />

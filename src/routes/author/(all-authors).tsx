@@ -1,9 +1,8 @@
 import { RouteDefinition, RouteLoadFuncArgs, type RouteSectionProps, createAsync } from '@solidjs/router'
-import { Suspense, createEffect } from 'solid-js'
+import { Suspense } from 'solid-js'
 import { AllAuthors } from '~/components/Views/AllAuthors'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
-import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { loadAuthors } from '~/graphql/api/public'
@@ -48,9 +47,7 @@ export const route = {
 
 export default function AllAuthorsPage(props: RouteSectionProps<{ authors: Author[] }>) {
   const { t } = useLocalize()
-  const authors = createAsync<Author[]>(async () => props.data.authors || (await fetchData()) || [])
-  const { addAuthors } = useAuthors()
-  createEffect(() => addAuthors(authors() || []))
+  const authors = createAsync<Author[]>(async () => props.data.authors || await fetchData())
   return (
     <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('All authors')}`}>
       <ReactionsProvider>

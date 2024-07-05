@@ -1,7 +1,7 @@
 import { Meta } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
 import { SearchField } from '~/components/_shared/SearchField'
 import { useLocalize } from '~/context/localize'
@@ -31,8 +31,9 @@ export const AllTopics = (props: Props) => {
   const alphabet = createMemo(() => ABC[lang()])
   const { setTopicsSort, sortedTopics } = useTopics()
   const topics = createMemo(() => sortedTopics() || props.topics)
-  const [searchParams] = useSearchParams<{ by?: string }>()
-  createEffect(on(() => searchParams?.by || 'shouts', setTopicsSort, {}))
+  const [searchParams, changeSearchParams] = useSearchParams<{ by?: string }>()
+  createEffect(on(() => searchParams?.by || 'shouts', setTopicsSort, {defer:true}))
+  onMount(() => setTimeout(() => !searchParams?.by && changeSearchParams({ by: 'shouts'}), 1))
 
   // sorted derivative
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {

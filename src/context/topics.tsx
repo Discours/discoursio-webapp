@@ -113,7 +113,7 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
 
   createEffect(() => {
     const topics = Object.values(topicEntities())
-    console.debug('[context.topics] effect trig', topics)
+    // console.debug('[context.topics] effect trig', topics)
     switch (sortAllBy()) {
       case 'followers': {
         topics.sort(byTopicStatDesc('followers'))

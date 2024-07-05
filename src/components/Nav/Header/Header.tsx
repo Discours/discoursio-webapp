@@ -220,7 +220,7 @@ export const Header = (props: Props) => {
                   onMouseOut={hideSubnavigation}
                   href="/topic"
                   active={isTopicsVisible()}
-                  body={t('topics')}
+                  body={t('Topics')}
                   onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'topic')}
                 />
                 <Link
@@ -377,7 +377,7 @@ export const Header = (props: Props) => {
                 <A href="/dogma">{t('Dogma')}</A>
               </li>
               <li>
-                <A href="/principles">{t('Community Principles')}</A>
+                <A href="/principles">{t('Our principles')}</A>
               </li>
               <li>
                 <A href="/guide">{t('Platform Guide')}</A>

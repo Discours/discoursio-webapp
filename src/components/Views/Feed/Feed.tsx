@@ -21,7 +21,7 @@ import ruKeywords from '~/intl/locales/ru/keywords.json'
 import enKeywords from '~/intl/locales/ru/keywords.json'
 import { getImageUrl } from '~/lib/getImageUrl'
 import { byCreated } from '~/lib/sortby'
-import { FeedSearchParams } from '~/routes/feed/[...feed]'
+import { FeedSearchParams } from '~/routes/feed/[feed]'
 import { CommentDate } from '../../Article/CommentDate'
 import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorBadge } from '../../Author/AuthorBadge'
@@ -264,7 +264,7 @@ export const FeedView = (props: FeedProps) => {
                   <A href="#">Правила конструктивных дискуссий</A>
                 </li>
                 <li>
-                  <A href={'/guide/principles'}>Принципы сообщества</A>
+                  <A href={'/principles'}>Принципы сообщества</A>
                 </li>
               </ul>
             </section>

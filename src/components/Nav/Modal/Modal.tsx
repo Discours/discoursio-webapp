@@ -1,3 +1,4 @@
+import { redirect } from '@solidjs/router'
 import { clsx } from 'clsx'
 import type { JSX } from 'solid-js'
 import { Show } from 'solid-js'
@@ -23,8 +24,11 @@ export const Modal = (props: Props) => {
 
   const handleHide = () => {
     console.debug('[Modal.handleHide]', modal())
-    modal() && props.onClose?.()
-    hideModal()
+    if (modal()) {
+      if (props.hideClose) redirect('/')
+      props.onClose?.()
+      hideModal()
+    }
   }
 
   useEscKeyDownHandler(handleHide)

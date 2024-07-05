@@ -20,7 +20,7 @@ export const Topics = () => {
           <A href="/podcasts">{t('Podcasts')}</A>
         </li>
         <li class={styles.item}>
-          <A href="/guide/projects">{t('Special Projects')}</A>
+          <A href="/projects">{t('Special Projects')}</A>
         </li>
         <li class={styles.item}>
           <A href="/topic/interview">#{t('Interview')}</A>

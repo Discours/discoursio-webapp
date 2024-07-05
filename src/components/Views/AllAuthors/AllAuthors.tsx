@@ -1,17 +1,16 @@
 import { Meta } from '@solidjs/meta'
 import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
 import { SearchField } from '~/components/_shared/SearchField'
-import { type SortFunction, useAuthors } from '~/context/authors'
+import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
 import type { Author } from '~/graphql/schema/core.gen'
 import enKeywords from '~/intl/locales/en/keywords.json'
 import ruKeywords from '~/intl/locales/ru/keywords.json'
 import { authorLetterReduce, translateAuthor } from '~/intl/translate'
 import { getImageUrl } from '~/lib/getImageUrl'
-import { byFirstChar, byStat } from '~/lib/sortby'
 import { scrollHandler } from '~/utils/scroll'
 import { AuthorsList } from '../../AuthorsList'
 import styles from './AllAuthors.module.scss'
@@ -33,25 +32,21 @@ export const AllAuthors = (props: Props) => {
   const [searchQuery, setSearchQuery] = createSignal('')
   const alphabet = createMemo(() => ABC[lang()] || ABC['ru'])
   const [searchParams] = useSearchParams<{ by?: string }>()
-  const { authorsSorted, addAuthors, setSortBy } = useAuthors()
+  const { authorsSorted, addAuthors, setAuthorsSort } = useAuthors()
+  createEffect(on(() => searchParams?.by || 'name', setAuthorsSort, {}))
+  createEffect(() => addAuthors?.([...(props.authors || [])]))
 
-  onMount(() => {
-    addAuthors([...props.authors])
-    const sortStat: string = searchParams?.by || 'name'
-    const sortfn = sortStat
-      ? (byStat(sortStat) as SortFunction<Author>)
-      : (byFirstChar as SortFunction<Author>)
-    setSortBy(sortfn)
-  })
   const filteredAuthors = createMemo(() => {
     const query = searchQuery().toLowerCase()
     return authorsSorted?.().filter((a: Author) => a?.name?.toLowerCase().includes(query))
   })
 
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
-    return filteredAuthors().reduce(
-      (acc, author: Author) => authorLetterReduce(acc, author, lang()),
-      {} as { [letter: string]: Author[] }
+    return (
+      filteredAuthors()?.reduce(
+        (acc, author: Author) => authorLetterReduce(acc, author, lang()),
+        {} as { [letter: string]: Author[] }
+      ) || {}
     )
   })
 
@@ -170,7 +165,7 @@ export const AllAuthors = (props: Props) => {
           </Show>
           <Show when={searchParams?.by !== 'name' && props.isLoaded}>
             <AuthorsList
-              allAuthorsLength={authorsSorted()?.length || 0}
+              allAuthorsLength={authorsSorted?.()?.length || 0}
               searchQuery={searchQuery()}
               query={searchParams?.by === 'followers' ? 'followers' : 'shouts'}
             />

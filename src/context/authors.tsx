@@ -12,6 +12,7 @@ import loadAuthorByQuery from '~/graphql/query/core/author-by'
 import loadAuthorsAllQuery from '~/graphql/query/core/authors-all'
 import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
 import { Author, Maybe, QueryLoad_Authors_ByArgs, Shout, Topic } from '~/graphql/schema/core.gen'
+import { byStat } from '~/lib/sortby'
 import { useFeed } from './feed'
 import { useGraphQL } from './graphql'
 
@@ -38,7 +39,7 @@ type AuthorsContextType = {
   loadAuthors: (args: QueryLoad_Authors_ByArgs) => Promise<void>
   topAuthors: Accessor<Author[]>
   authorsByTopic: Accessor<{ [topicSlug: string]: Author[] }>
-  setSortBy: (sortfn: SortFunction<Author>) => void
+  setAuthorsSort: (stat: string) => void
   loadAllAuthors: () => Promise<Author[]>
 }
 
@@ -52,6 +53,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
   const [sortBy, setSortBy] = createSignal<SortFunction<Author>>()
   const { feedByAuthor } = useFeed()
   const { query } = useGraphQL()
+  const setAuthorsSort = (stat: string) => setSortBy((_) => byStat(stat) as SortFunction<Author>)
 
   // Эффект для отслеживания изменений сигнала sortBy и обновления authorsSorted
   createEffect(
@@ -59,7 +61,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
       [sortBy, authorsEntities],
       ([sortfn, authorsdict]) => {
         if (sortfn) {
-          setAuthorsSorted([...filterAndSort(Object.values(authorsdict), sortfn)])
+          setAuthorsSorted?.([...filterAndSort(Object.values(authorsdict), sortfn)])
         }
       },
       { defer: true }
@@ -178,7 +180,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     loadAuthors,
     topAuthors,
     authorsByTopic,
-    setSortBy
+    setAuthorsSort
   }
 
   return <AuthorsContext.Provider value={contextValue}>{props.children}</AuthorsContext.Provider>

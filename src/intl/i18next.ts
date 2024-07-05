@@ -10,17 +10,9 @@ import ru from '~/intl/locales/ru/translation.json'
 TimeAgo.addLocale(enTime)
 TimeAgo.addLocale(ruTime)
 
-class AutoKeyMap extends Map<string, string> {
-  get(key: string): string {
-    return super.get(key) ?? key
-  }
-}
-
 export const i18nextInit = async (lng = 'ru') => {
   if (!i18next.isInitialized) {
     console.debug('[i18next] initializing...')
-
-    const enAutoKeyMap = new AutoKeyMap(Object.entries(en))
 
     await i18next
       .use(HttpApi)
@@ -34,7 +26,7 @@ export const i18nextInit = async (lng = 'ru') => {
         initImmediate: false,
         resources: {
           ru: { translation: ru },
-          en: { translation: enAutoKeyMap }
+          en: { translation: en }
         },
         interpolation: {
           escapeValue: false

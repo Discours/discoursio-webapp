@@ -27,7 +27,7 @@ export const AuthModalHeader = (props: Props) => {
         return {
           title: t(`${title} to add to your bookmarks`),
           description: t(
-            'In&nbsp;bookmarks, you can save favorite discussions and&nbsp;materials that you want to return to'
+            'In bookmarks, you can save favorite discussions and materials that you want to return to'
           )
         }
       }
@@ -35,7 +35,7 @@ export const AuthModalHeader = (props: Props) => {
         return {
           title: t(`${title} to participate in discussions`),
           description: t(
-            "You&nbsp;ll be able to participate in&nbsp;discussions, rate others' comments and&nbsp;learn about&nbsp;new responses"
+            "You ll be able to participate in discussions, rate others' comments and learn about new responses"
           )
         }
       }
@@ -43,7 +43,7 @@ export const AuthModalHeader = (props: Props) => {
         return {
           title: t(`${title} to subscribe`),
           description: t(
-            'This way you&nbsp;ll be able to subscribe to&nbsp;authors, interesting topics and&nbsp;customize your feed'
+            'This way you ll be able to subscribe to authors, interesting topics and customize your feed'
           )
         }
       }
@@ -51,7 +51,7 @@ export const AuthModalHeader = (props: Props) => {
         return {
           title: t(`${title} to subscribe to new publications`),
           description: t(
-            'This way you&nbsp;ll be able to subscribe to&nbsp;authors, interesting topics and&nbsp;customize your feed'
+            'This way you ll be able to subscribe to authors, interesting topics and customize your feed'
           )
         }
       }
@@ -59,7 +59,7 @@ export const AuthModalHeader = (props: Props) => {
         return {
           title: t(`${title} to vote`),
           description: t(
-            'This way we&nbsp;ll realize that you&nbsp;re a real person and&nbsp;ll take your vote into account. And&nbsp;you&nbsp;ll see how others voted'
+            'This way we ll realize that you re a real person and ll take your vote into account. And you ll see how others voted'
           )
         }
       }

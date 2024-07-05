@@ -1,4 +1,4 @@
-import { A, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
+import { A, redirect, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { useLocalize } from '~/context/localize'
@@ -120,7 +120,7 @@ export const Header = (props: Props) => {
     requireAuthentication(() => {
       ev?.preventDefault()
 
-      navigate('/edit/new')
+      redirect('/edit/new')
     }, 'create')
   }
 
@@ -149,13 +149,9 @@ export const Header = (props: Props) => {
   }
 
   const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
-    console.debug('toggling menu link', fixed(), route)
     event.preventDefault()
-    if (loc.pathname === route) {
-      toggleFixed()
-    }
-
-    navigate(route)
+    if (fixed()) toggleFixed()
+    if (loc.pathname !== route) navigate(route)
   }
   return (
     <header
@@ -248,13 +244,13 @@ export const Header = (props: Props) => {
                 <h4>{t('Participating')}</h4>
                 <ul class="view-switcher">
                   <li>
-                    <a href="/create">{t('Create post')}</a>
+                    <A href="/edit/new">{t('Create post')}</A>
                   </li>
                   <li>
-                    <a href="/connect">{t('Suggest an idea')}</a>
+                    <A href="/connect">{t('Suggest an idea')}</A>
                   </li>
                   <li>
-                    <a href="/about/help">{t('Support the project')}</a>
+                    <A href="/support">{t('Support the project')}</A>
                   </li>
                 </ul>
 
@@ -312,9 +308,9 @@ export const Header = (props: Props) => {
                 </select>
 
                 <div class={styles.mainNavigationAdditionalLinks}>
-                  <a href="/about/dogma">{t('Dogma')}</a>
-                  <a href="/about/discussion-rules" innerHTML={t('Discussion rules')} />
-                  <a href="/about/principles">{t('Principles')}</a>
+                  <A href="/dogma">{t('Dogma')}</A>
+                  <A href="/terms">{t('Discussion rules')}</A>
+                  <A href="/principles">{t('Principles')}</A>
                 </div>
 
                 <p
@@ -375,28 +371,28 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li>
-                <a href="/about/manifest">{t('Manifesto')}</a>
+                <A href="/manifest">{t('Manifesto')}</A>
               </li>
               <li>
-                <a href="/about/dogma">{t('Dogma')}</a>
+                <A href="/dogma">{t('Dogma')}</A>
               </li>
               <li>
-                <a href="/about/principles">{t('Community Principles')}</a>
+                <A href="/principles">{t('Community Principles')}</A>
               </li>
               <li>
-                <a href="/about/guide">{t('Platform Guide')}</a>
+                <A href="/guide">{t('Platform Guide')}</A>
               </li>
               <li>
-                <a href="/about/manifest#participation">{t('Support us')}</a>
+                <A href="/support">{t('Support us')}</A>
               </li>
               <li>
-                <a href="/about/help">{t('How to help')}</a>
+                <A href="/manifest#participation">{t('How to help')}</A>
               </li>
               <li class={styles.rightItem}>
-                <a href="/connect">
+                <A href="/connect">
                   {t('Suggest an idea')}
                   <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
-                </a>
+                </A>
               </li>
             </ul>
           </div>
@@ -409,34 +405,37 @@ export const Header = (props: Props) => {
           >
             <ul class="nodash">
               <li class="item">
-                <a href="/expo">{t('Art')}</a>
+                <A href="/expo">{t('Art')}</A>
               </li>
               <li class="item">
-                <a href="/podcasts">{t('Podcasts')}</a>
+                <A href="/expo/audio">{t('Music')}</A>
               </li>
               <li class="item">
-                <a href="/about/projects">{t('Special Projects')}</a>
+                <A href="/expo/video">{t('Video')}</A>
+              </li>
+              <li class="item">
+                <A href="/projects">{t('Special Projects')}</A>
               </li>
               <li>
-                <a href="/topic/interview">#{t('Interview')}</a>
+                <A href="/topic/interview">#{t('Interview')}</A>
               </li>
               <li>
-                <a href="/topic/reportage">#{t('Reports')}</a>
+                <A href="/topic/reportage">#{t('Reports')}</A>
               </li>
               <li>
-                <a href="/topic/empiric">#{t('Experience')}</a>
+                <A href="/topic/empiric">#{t('Experience')}</A>
               </li>
               <li>
-                <a href="/topic/society">#{t('Society')}</a>
+                <A href="/topic/society">#{t('Society')}</A>
               </li>
               <li>
-                <a href="/topic/culture">#{t('Culture')}</a>
+                <A href="/topic/culture">#{t('Culture')}</A>
               </li>
               <li>
-                <a href="/topic/theory">#{t('Theory')}</a>
+                <A href="/topic/theory">#{t('Theory')}</A>
               </li>
               <li>
-                <a href="/topic/poetry">#{t('Poetry')}</a>
+                <A href="/topic/poetry">#{t('Poetry')}</A>
               </li>
               <li class={styles.rightItem}>
                 <A href="/topic">

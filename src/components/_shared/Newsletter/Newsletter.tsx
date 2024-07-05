@@ -106,7 +106,7 @@ export const Newsletter = (props: Props) => {
               <Icon name="arrow-right" />
             </button>
           </div>
-          <div class="description">Подпишитесь на&nbsp;рассылку лучших публикаций</div>
+          <div class="description">{t('Subscribe to the best publications newsletter')}</div>
         </Show>
         <Show when={emailError()}>
           <div class={styles.error}>{emailError()}</div>

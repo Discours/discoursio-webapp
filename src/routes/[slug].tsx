@@ -1,5 +1,5 @@
 import { RouteSectionProps, createAsync, useLocation, useParams } from '@solidjs/router'
-import { ErrorBoundary, Suspense, createMemo, createReaction, createSignal, onMount } from 'solid-js'
+import { ErrorBoundary, Suspense, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -20,7 +20,7 @@ export const route = {
   load: async ({ params }: RouteSectionProps<{ article: Shout }>) => await fetchShout(params.slug)
 }
 
-export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
+export default (props: RouteSectionProps<{ article: Shout }>) => {
   const params = useParams()
   const loc = useLocation()
   const article = createAsync(async () => props.data.article || (await fetchShout(params.slug)))
@@ -42,18 +42,22 @@ export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
     }
   })
 
-  // docs: `a side effect that is run the first time the expression
-  // wrapped by the returned tracking function is notified of a change`
-  createReaction(() => {
-    if (article()) {
-      console.debug('[routes.slug] article signal changed once')
-      window.gtag?.('event', 'page_view', {
-        page_title: article()?.title,
-        page_location: window.location.href,
-        page_path: loc.pathname
-      })
-    }
-  })
+  createEffect(
+    on(
+      article,
+      (a?: Shout) => {
+        if (!a) return
+        console.debug('[routes.slug] article found')
+        window.gtag?.('event', 'page_view', {
+          page_title: a.title,
+          page_location: window.location.href,
+          page_path: loc.pathname
+        })
+      },
+      { defer: true }
+    )
+  )
+
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>
@@ -75,5 +79,3 @@ export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
     </ErrorBoundary>
   )
 }
-
-export default ArticlePage

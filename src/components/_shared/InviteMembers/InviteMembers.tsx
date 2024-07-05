@@ -48,7 +48,7 @@ export const InviteMembers = (props: Props) => {
   const fetcher = async (page: number) => {
     await new Promise((resolve, reject) => {
       const checkDataLoaded = () => {
-        if (authorsSorted().length > 0) {
+        if ((authorsSorted?.().length || 0) > 0) {
           resolve(true)
         } else {
           setTimeout(checkDataLoaded, 100)

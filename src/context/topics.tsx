@@ -105,11 +105,11 @@ const saveTopicsToIndexedDB = async (db: IDBDatabase, topics: Topic[]) => {
     await tx.done
   }
 }
-export type TopicSort = 'shouts' | 'followers' | 'authors' | 'title' | ''
+export type TopicSort = 'shouts' | 'followers' | 'authors' | 'title'
 export const TopicsProvider = (props: { children: JSX.Element }) => {
   const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: Topic }>({})
   const [sortedTopics, setSortedTopics] = createSignal<Topic[]>([])
-  const [sortAllBy, setSortAllBy] = createSignal<TopicSort>('')
+  const [sortAllBy, setSortAllBy] = createSignal<TopicSort>('shouts')
 
   createEffect(() => {
     const topics = Object.values(topicEntities())

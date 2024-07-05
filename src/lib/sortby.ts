@@ -1,7 +1,6 @@
 import type { Author, Maybe, Reaction, Shout, Topic, TopicStat } from '~/graphql/schema/core.gen'
 
-// biome-ignore lint/suspicious/noExplicitAny: sort by first char
-export const byFirstChar = (a: { name?: any; title?: any }, b: { name?: any; title?: any }) =>
+export const byFirstChar = (a: { name?: string; title?: string }, b: { name?: string; title?: string }) =>
   (a.name || a.title || '').localeCompare(b.name || b.title || '')
 
 export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
@@ -29,6 +28,7 @@ export const byLength = (
 export type SomeStat = { [x: string]: Maybe<number> } | undefined | null
 
 export const byStat = (metric: string) => {
+  if (metric === 'name' || metric === 'title') return byFirstChar
   return (a: { stat?: SomeStat }, b: { stat?: SomeStat }) => {
     const aStat = a.stat?.[metric] ?? 0
     const bStat = b.stat?.[metric] ?? 0

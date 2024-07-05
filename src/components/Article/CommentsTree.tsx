@@ -98,7 +98,7 @@ export const CommentsTree = (props: Props) => {
         <h2 class={styles.commentsHeader}>
           {t('Comments')} {comments().length.toString() || ''}
           <Show when={newReactions().length > 0}>
-            <span class={styles.newReactions}>&nbsp;+{newReactions().length}</span>
+            <span class={styles.newReactions}>{` +${newReactions().length}`}</span>
           </Show>
         </h2>
         <Show when={comments().length > 0}>
@@ -150,7 +150,7 @@ export const CommentsTree = (props: Props) => {
             <a href="?m=auth&mode=register" class={styles.link}>
               {t('sign up')}
             </a>{' '}
-            {t('or')}&nbsp;
+            {t('or')}{' '}
             <a href="?m=auth&mode=login" class={styles.link}>
               {t('sign in')}
             </a>

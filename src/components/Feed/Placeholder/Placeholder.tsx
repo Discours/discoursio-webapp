@@ -74,11 +74,11 @@ const data: PlaceholderData = {
     href: '/feed?by=last_comment',
     profileLinks: [
       {
-        href: '/guide/debate',
+        href: '/debate',
         label: 'Discussion rules'
       },
       {
-        href: '/guide/debate#ban',
+        href: '/debate#ban',
         label: 'Block rules'
       }
     ]

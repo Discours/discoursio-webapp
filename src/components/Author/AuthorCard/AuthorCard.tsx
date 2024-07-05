@@ -1,13 +1,14 @@
-import type { Author, Community } from '~/graphql/schema/core.gen'
-
+import { redirect, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
 import { Button } from '~/components/_shared/Button'
+import stylesButton from '~/components/_shared/Button/Button.module.scss'
 import { FollowingCounters } from '~/components/_shared/FollowingCounters/FollowingCounters'
 import { ShowOnlyOnClient } from '~/components/_shared/ShowOnlyOnClient'
 import { FollowsFilter, useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
+import type { Author, Community } from '~/graphql/schema/core.gen'
 import { FollowingEntity, Topic } from '~/graphql/schema/core.gen'
 import { isCyrillic } from '~/intl/translate'
 import { translit } from '~/intl/translit'
@@ -16,9 +17,6 @@ import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import { AuthorBadge } from '../AuthorBadge'
 import { Userpic } from '../Userpic'
-
-import { useNavigate, useSearchParams } from '@solidjs/router'
-import stylesButton from '~/components/_shared/Button/Button.module.scss'
 import styles from './AuthorCard.module.scss'
 
 type Props = {
@@ -251,7 +249,7 @@ export const AuthorCard = (props: Props) => {
               <div class={styles.authorActions}>
                 <Button
                   variant="secondary"
-                  onClick={() => navigate('/profile')}
+                  onClick={() => redirect('/profile')}
                   value={
                     <>
                       <span class={styles.authorActionsLabel}>{t('Edit profile')}</span>

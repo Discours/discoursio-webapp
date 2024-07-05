@@ -35,7 +35,7 @@ export const FeedSettingsView = () => {
         </div>
 
         <div>
-          <label for="checkbox1">Комментарии к&nbsp;моим постам</label>
+          <label for="checkbox1">Комментарии к моим постам</label>
           <div>
             <input type="checkbox" name="checkbox1" id="checkbox1" />
             <label for="checkbox1" />
@@ -69,7 +69,7 @@ export const FeedSettingsView = () => {
         </div>
 
         <div>
-          <label for="checkbox3">добавление моих текстов в&nbsp;коллекции</label>
+          <label for="checkbox3">добавление моих текстов в коллекции</label>
           <div>
             <input type="checkbox" name="checkbox3" id="checkbox3" />
             <label for="checkbox3" />
@@ -90,7 +90,7 @@ export const FeedSettingsView = () => {
         </div>
 
         <div>
-          <label for="checkbox4">добавление моих текстов в&nbsp;коллекции</label>
+          <label for="checkbox4">добавление моих текстов в коллекции</label>
           <div>
             <input type="checkbox" name="checkbox4" id="checkbox4" />
             <label for="checkbox4" />

@@ -27,8 +27,8 @@ export const FooterView = () => {
         items: [
           { title: t('Discours Manifest'), slug: '/manifest' },
           { title: t('How it works'), slug: '/guide' },
-          { title: t('Dogma'), slug: '/guide/dogma' },
-          { title: t('Our principles'), slug: '/guide/principles' },
+          { title: t('Dogma'), slug: '/dogma' },
+          { title: t('Our principles'), slug: '/principles' },
           { title: t('How to write an article'), slug: '/how-to-write-a-good-article' }
         ]
       },
@@ -50,7 +50,7 @@ export const FooterView = () => {
           { title: t('Authors'), slug: '/author' },
           { title: t('Communities'), slug: '/community' },
           { title: t('Partners'), slug: '/partners' },
-          { title: t('Special projects'), slug: '/guide/projects' },
+          { title: t('Special projects'), slug: '/projects' },
           {
             title: lang() === 'ru' ? 'English' : 'Русский',
             slug: `?lng=${lang() === 'ru' ? 'en' : 'ru'}`,

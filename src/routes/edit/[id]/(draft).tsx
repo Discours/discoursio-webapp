@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from '@solidjs/router'
+import { redirect, useParams } from '@solidjs/router'
 import { createEffect, createMemo, createSignal, lazy, on } from 'solid-js'
 import { AuthGuard } from '~/components/AuthGuard'
 import { PageLayout } from '~/components/_shared/PageLayout'
@@ -31,12 +31,11 @@ export const EditPage = () => {
   const { t } = useLocalize()
   const { session } = useSession()
   const snackbar = useSnackbar()
-  const navigate = useNavigate()
   const fail = async (error: string) => {
     console.error(error)
     const errorMessage = error === 'forbidden' ? "You can't edit this post" : error
     await snackbar?.showSnackbar({ type: 'error', body: t(errorMessage) })
-    navigate('/edit')
+    redirect('/edit') // all drafts page
   }
   const [shout, setShout] = createSignal<Shout>()
   const params = useParams()

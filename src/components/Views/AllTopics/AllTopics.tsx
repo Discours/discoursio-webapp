@@ -33,7 +33,7 @@ export const AllTopics = (props: Props) => {
   const topics = createMemo(() => sortedTopics() || props.topics)
   const [searchParams, changeSearchParams] = useSearchParams<{ by?: string }>()
   createEffect(on(() => searchParams?.by || 'shouts', setTopicsSort, { defer: true }))
-  onMount(() => setTimeout(() => !searchParams?.by && changeSearchParams({ by: 'shouts' }), 1))
+  onMount(() => !searchParams?.by && changeSearchParams({ by: 'shouts' }))
 
   // sorted derivative
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {

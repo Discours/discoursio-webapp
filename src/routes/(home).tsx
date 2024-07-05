@@ -1,6 +1,7 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
-import { Show, Suspense, createSignal, onMount } from 'solid-js'
-import { loadShouts } from '~/graphql/api/public'
+import { Show, Suspense, createEffect, createSignal, onMount } from 'solid-js'
+import { useTopics } from '~/context/topics'
+import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { LoadShoutsOptions } from '~/graphql/schema/core.gen'
 import { byStat } from '~/lib/sortby'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
@@ -11,6 +12,11 @@ import { useLocalize } from '../context/localize'
 import { ReactionsProvider } from '../context/reactions'
 
 export const SHOUTS_PER_PAGE = 20
+
+const fetchAllTopics = async () => {
+  const allTopicsLoader = loadTopics()
+  return await allTopicsLoader()
+}
 
 const fetchHomeTopData = async () => {
   const topCommentedLoader = loadShouts({
@@ -50,13 +56,13 @@ export const route = {
       filters: { featured: true },
       limit
     })
-    return { ...(await fetchHomeTopData()), featuredShouts: await featuredLoader() }
+    return { ...(await fetchHomeTopData()), featuredShouts: await featuredLoader(), topics: await fetchAllTopics() }
   }
 } satisfies RouteDefinition
 
 export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
   const limit = 20
-
+  const { addTopics } = useTopics()
   const { t } = useLocalize()
   const [featuredOffset, setFeaturedOffset] = createSignal<number>(0)
 
@@ -71,6 +77,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
 
   // async ssr-friendly router-level cached data source
   const data = createAsync(async (prev?: HomeViewProps) => {
+    const topics = props.data?.topics || await fetchAllTopics()
     const featuredShoutsLoader = featuredLoader(featuredOffset())
     const featuredShouts = [
       ...(prev?.featuredShouts || []),
@@ -82,10 +89,12 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
       ...prev,
       ...props.data,
       topViewedShouts,
-      featuredShouts
+      featuredShouts,
+      topics
     }
     return result
   })
+  createEffect(() => data()?.topics && addTopics(data()?.topics || []))
 
   const [canLoadMoreFeatured, setCanLoadMoreFeatured] = createSignal(true)
   const loadMoreFeatured = async () => {

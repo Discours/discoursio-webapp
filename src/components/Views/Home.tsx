@@ -36,6 +36,7 @@ export interface HomeViewProps {
   topMonthShouts: Shout[]
   topViewedShouts: Shout[]
   topCommentedShouts: Shout[]
+  topics?: Topic[]
 }
 
 export const HomeView = (props: HomeViewProps) => {

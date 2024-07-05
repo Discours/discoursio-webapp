@@ -39,7 +39,7 @@ export const FooterView = () => {
           { title: t('Become an author'), slug: '/edit/new' },
           { title: t('Support Discours'), slug: '/support' },
           {
-            title: t('Work with us'),
+            title: t('Cooperate with Discours'),
             slug: 'https://docs.google.com/forms/d/e/1FAIpQLSeNNvIzKlXElJtkPkYiXl-jQjlvsL9u4-kpnoRjz1O8Wo40xQ/viewform'
           }
         ]

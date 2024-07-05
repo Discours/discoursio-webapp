@@ -56,7 +56,11 @@ export const route = {
       filters: { featured: true },
       limit
     })
-    return { ...(await fetchHomeTopData()), featuredShouts: await featuredLoader(), topics: await fetchAllTopics() }
+    return {
+      ...(await fetchHomeTopData()),
+      featuredShouts: await featuredLoader(),
+      topics: await fetchAllTopics()
+    }
   }
 } satisfies RouteDefinition
 
@@ -77,7 +81,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
 
   // async ssr-friendly router-level cached data source
   const data = createAsync(async (prev?: HomeViewProps) => {
-    const topics = props.data?.topics || await fetchAllTopics()
+    const topics = props.data?.topics || (await fetchAllTopics())
     const featuredShoutsLoader = featuredLoader(featuredOffset())
     const featuredShouts = [
       ...(prev?.featuredShouts || []),

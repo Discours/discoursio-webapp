@@ -1,4 +1,4 @@
-import { HttpStatusCode } from "@solidjs/start"
+import { HttpStatusCode } from '@solidjs/start'
 import { FourOuFourView } from '../components/Views/FourOuFour'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'

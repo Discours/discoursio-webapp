@@ -1,8 +1,8 @@
+import { A } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 import { useEditorHTML } from 'solid-tiptap'
 import Typograf from 'typograf'
-
 import { Button } from '~/components/_shared/Button'
 import { DarkModeToggle } from '~/components/_shared/DarkModeToggle'
 import { Icon } from '~/components/_shared/Icon'
@@ -11,8 +11,6 @@ import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
 import { useEscKeyDownHandler } from '~/utils/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '~/utils/useOutsideClickHandler'
-
-import { A } from '@solidjs/router'
 import styles from './Panel.module.scss'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
@@ -164,27 +162,27 @@ export const Panel = (props: Props) => {
       <div class={clsx(styles.actionsHolder, styles.scrolled, { hidden: !isShortcutsVisible() })}>
         <p>
           <button class={styles.backToMenuControl} onClick={() => setIsShortcutsVisible(false)}>
-            {t('back to menu"')}
+            {t('Back to menu"').toLocaleLowerCase()}
           </button>
         </p>
 
         <section class={styles.shortcutList}>
           <p>
-            {t('bold')}
+            {t('Bold').toLocaleLowerCase()}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>B</span>
             </span>
           </p>
           <p>
-            {t('italic')}
+            {t('Italic').toLocaleLowerCase()}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>I</span>
             </span>
           </p>
           <p>
-            {t('add link')}
+            {t('Add link').toLocaleLowerCase()}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>K</span>
@@ -194,7 +192,7 @@ export const Panel = (props: Props) => {
 
         <section class={styles.shortcutList}>
           <p>
-            {t('header 1')}
+            {t('Header 1').toLocaleLowerCase()}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Alt</span>
@@ -202,7 +200,7 @@ export const Panel = (props: Props) => {
             </span>
           </p>
           <p>
-            {t('header 2')}
+            {t('Header 2').toLocaleLowerCase()}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Alt</span>
@@ -210,7 +208,7 @@ export const Panel = (props: Props) => {
             </span>
           </p>
           <p>
-            {t('header 3')}
+            {t('Header 3').toLocaleLowerCase()}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Alt</span>
@@ -245,14 +243,14 @@ export const Panel = (props: Props) => {
 
         <section class={styles.shortcutList}>
           <p>
-            {t('cancel')}
+            {t('Cancel').toLocaleLowerCase()}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Z</span>
             </span>
           </p>
           <p>
-            {t('repeat')}
+            {t('Repeat').toLocaleLowerCase()}
             <span class={styles.shortcut}>
               <span class={styles.shortcutButton}>Ctrl</span>
               <span class={styles.shortcutButton}>Shift</span>

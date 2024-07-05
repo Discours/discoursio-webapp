@@ -50,31 +50,31 @@ export default () => {
             <li>
               <div class={styles.link} onClick={() => handleCreate('article')}>
                 <Icon name="create-article" class={styles.icon} />
-                <div>{t('article')}</div>
+                <div>{t('Article').toLocaleLowerCase()}</div>
               </div>
             </li>
             <li>
               <div class={styles.link} onClick={() => handleCreate('literature')}>
                 <Icon name="create-books" class={styles.icon} />
-                <div>{t('literature')}</div>
+                <div>{t('Literature').toLocaleLowerCase()}</div>
               </div>
             </li>
             <li>
               <div class={styles.link} onClick={() => handleCreate('image')}>
                 <Icon name="create-images" class={styles.icon} />
-                <div>{t('images')}</div>
+                <div>{t('Images').toLocaleLowerCase()}</div>
               </div>
             </li>
             <li>
               <div class={styles.link} onClick={() => handleCreate('audio')}>
                 <Icon name="create-music" class={styles.icon} />
-                <div>{t('music')}</div>
+                <div>{t('Music').toLocaleLowerCase()}</div>
               </div>
             </li>
             <li>
               <div class={styles.link} onClick={() => handleCreate('video')}>
                 <Icon name="create-video" class={styles.icon} />
-                <div>{t('video')}</div>
+                <div>{t('Video').toLocaleLowerCase()}</div>
               </div>
             </li>
           </ul>

@@ -14,18 +14,18 @@ export const FeedSettingsView = () => {
 
       <ul class="view-switcher">
         <li class="view-switcher__item--selected">
-          <a href="?by=topics">{t('topics')}</a>
+          <a href="?by=topics">{t('Topics').toLocaleLowerCase()}</a>
         </li>
         {/*<li>
           <a href="?by=collections" onClick={() => setBy('collections')}>
-            {t('collections')}
+            {t('Collections').toLocaleLowerCase()}
           </a>
         </li>*/}
         <li>
-          <a href="?by=authors">{t('authors')}</a>
+          <a href="?by=authors">{t('Authors').toLocaleLowerCase()}</a>
         </li>
         <li>
-          <a href="?by=shouts">{t('publications')}</a>
+          <a href="?by=shouts">{t('Publications').toLocaleLowerCase()}</a>
         </li>
       </ul>
 

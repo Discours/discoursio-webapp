@@ -134,7 +134,7 @@ export const RegisterForm = () => {
               {t('This email is registered')}. {t('try')}
               {', '}
               <span class="link" onClick={() => changeSearchParams({ mode: 'login' })}>
-                {t('enter')}
+                {t('Enter').toLocaleLowerCase()}
               </span>
             </>
           )

@@ -44,7 +44,7 @@ export const Newsletter = (props: Props) => {
 
     if (!validate()) return
 
-    setTitle(t('subscribing...'))
+    setTitle(t('Subscribing...'))
 
     const requestOptions = {
       method: 'POST',

@@ -204,7 +204,7 @@ export const Header = (props: Props) => {
                   onMouseOut={hideSubnavigation}
                   href="/"
                   active={isZineVisible()}
-                  body={t('journal')}
+                  body={t('Journal')}
                   onClick={(event: MouseEvent) => handleToggleMenuByLink(event, '')}
                 />
                 <Link
@@ -212,7 +212,7 @@ export const Header = (props: Props) => {
                   onMouseOut={hideSubnavigation}
                   href="/feed"
                   active={isFeedVisible()}
-                  body={t('feed')}
+                  body={t('Feed')}
                   onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'feed')}
                 />
                 <Link
@@ -227,7 +227,7 @@ export const Header = (props: Props) => {
                   onMouseOver={(event?: MouseEvent) => hideSubnavigation(event, 0)}
                   onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
                   href="/author"
-                  body={t('authors')}
+                  body={t('Authors')}
                   onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'author')}
                 />
                 <Link
@@ -414,7 +414,7 @@ export const Header = (props: Props) => {
                 <A href="/expo/video">{t('Video')}</A>
               </li>
               <li class="item">
-                <A href="/projects">{t('Special Projects')}</A>
+                <A href="/projects">{t('Special projects')}</A>
               </li>
               <li>
                 <A href="/topic/interview">#{t('Interview')}</A>

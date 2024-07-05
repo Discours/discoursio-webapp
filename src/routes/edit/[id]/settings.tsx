@@ -25,7 +25,8 @@ export const EditSettingsPage = () => {
     }
   }
   return (
-    <PageLayout title={t('Publication settings')}>
+
+    <PageLayout title={`${t('Discours')} :: ${t('Publication settings')}`}>
       <AuthGuard>
         <EditSettingsView shout={shout() as Shout} />
       </AuthGuard>

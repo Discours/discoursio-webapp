@@ -22,7 +22,7 @@ export default function AllTopicsPage(props: RouteSectionProps<{ topics: Topic[]
   const { addTopics } = useTopics()
   createEffect(() => addTopics(topics() || []))
   return (
-    <PageLayout withPadding={true} title={`${t('Discours')}:${t('All topics')}`}>
+    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('All topics')}`}>
       <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <AllTopics topics={topics() as Topic[]} />

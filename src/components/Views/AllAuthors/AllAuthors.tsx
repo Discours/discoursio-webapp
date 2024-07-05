@@ -56,7 +56,7 @@ export const AllAuthors = (props: Props) => {
   })
 
   const sortedKeys = createMemo<string[]>(() => {
-    const keys = Object.keys(byLetterFiltered())
+    const keys = Object.keys(byLetterFiltered()||{})
     keys.sort()
     const fk = keys.shift() || ''
     fk && keys.push(fk)
@@ -69,16 +69,16 @@ export const AllAuthors = (props: Props) => {
 
   return (
     <div class={clsx(styles.allAuthorsPage, 'wide-container')}>
-      <Meta name="descprition" content={description()} />
+      <Meta name="descprition" content={description() || ''} />
       <Meta name="keywords" content={lang() === 'ru' ? ruKeywords[''] : enKeywords['']} />
       <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle()} />
-      <Meta name="og:image" content={ogImage()} />
-      <Meta name="twitter:image" content={ogImage()} />
-      <Meta name="og:description" content={description()} />
+      <Meta name="og:title" content={ogTitle() || ''} />
+      <Meta name="og:image" content={ogImage() || ''} />
+      <Meta name="twitter:image" content={ogImage() || ''} />
+      <Meta name="og:description" content={description() || ''} />
       <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle()} />
-      <Meta name="twitter:description" content={description()} />
+      <Meta name="twitter:title" content={ogTitle() || ''} />
+      <Meta name="twitter:description" content={description() || ''} />
       <Show when={props.isLoaded} fallback={<Loading />}>
         <div class="offset-md-5">
           <div class="row">

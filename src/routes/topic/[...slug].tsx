@@ -33,7 +33,7 @@ export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
   const { topicEntities } = useTopics()
   const { t } = useLocalize()
   const topic = createMemo(() => topicEntities?.()[params.slug])
-  const title = createMemo(() => `${t('Discours')}: ${topic()?.title || ''}`)
+  const title = createMemo(() => `${t('Discours')} :: ${topic()?.title || ''}`)
 
   // docs: `a side effect that is run the first time the expression
   // wrapped by the returned tracking function is notified of a change`

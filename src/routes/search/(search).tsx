@@ -48,7 +48,7 @@ export const SearchPage = () => {
   })
 
   return (
-    <PageLayout title={t('Search')}>
+    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Search')}`}>
       <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <Show when={isLoaded()} fallback={<Loading />}>

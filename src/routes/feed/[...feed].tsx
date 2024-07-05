@@ -125,7 +125,7 @@ export const FeedPage = (props: RouteSectionProps<Shout[]>) => {
   }
   createEffect(() => setIsLoadMoreButtonVisible(offset() < (shouts()?.length || 0)))
   return (
-    <PageLayout title={t('Feed')}>
+    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Feed')}`}>
       <ReactionsProvider>
         <Feed shouts={shouts() || []} />
       </ReactionsProvider>

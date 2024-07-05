@@ -69,7 +69,7 @@ test.describe('Pages open', () => {
   Object.keys(pagesTitles).forEach((res: string) => {
     test(`Open Page ${res}`, async ({ page }) => {
       await page.goto(`${res}`)
-      const title = pagesTitles[res as keyof typeof pagesTitles] || ''
+      const title = pagesTitles[res as keyof typeof pagesTitles] || '00000000000'
       await expect(page).toHaveTitle(title)
     })
   })

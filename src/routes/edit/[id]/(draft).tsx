@@ -64,7 +64,7 @@ export const EditPage = () => {
   })
 
   return (
-    <PageLayout title={title()}>
+    <PageLayout title={`${t('Discours')} :: ${title()}`}>
       <AuthGuard>
         <EditView shout={shout() as Shout} />
       </AuthGuard>

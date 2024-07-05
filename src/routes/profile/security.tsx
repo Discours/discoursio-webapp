@@ -135,7 +135,7 @@ export const ProfileSecurityPage = () => {
   }
 
   return (
-    <PageLayout title={t('Profile')}>
+    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Security')}`}>
       <AuthGuard>
         <Show when={isSessionLoaded()} fallback={<Loading />}>
           <div class="wide-container">

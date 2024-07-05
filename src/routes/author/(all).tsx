@@ -46,13 +46,13 @@ export const route = {
   }
 } satisfies RouteDefinition
 
-export default function AllTopicsPage(props: RouteSectionProps<{ authors: Author[] }>) {
+export default function AllAuthorsPage(props: RouteSectionProps<{ authors: Author[] }>) {
   const { t } = useLocalize()
   const authors = createAsync<Author[]>(async () => props.data.authors || (await fetchData()) || [])
   const { addAuthors } = useAuthors()
   createEffect(() => addAuthors(authors() || []))
   return (
-    <PageLayout withPadding={true} title={`${t('Discours')}:${t('All topics')}`}>
+    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('All authors')}`}>
       <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <AllAuthors authors={authors() || []} isLoaded={Boolean(authors())} />

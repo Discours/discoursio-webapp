@@ -7,7 +7,7 @@ export const ProfileSubscriptionsPage = () => {
   const { t } = useLocalize()
 
   return (
-    <PageLayout title={t('Profile')}>
+    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Subscriptions')}`}>
       <AuthGuard>
         <ProfileSubscriptions />
       </AuthGuard>

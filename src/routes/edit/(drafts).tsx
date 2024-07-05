@@ -20,7 +20,7 @@ export const DraftsPage = () => {
   const drafts = createAsync(async () => await fetchDrafts(client))
 
   return (
-    <PageLayout title={t('Drafts')}>
+    <PageLayout title={`${t('Discours')} :: ${t('Drafts')}`}>
       <AuthGuard>
         <DraftsView drafts={drafts() || []} />
       </AuthGuard>

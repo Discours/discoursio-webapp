@@ -60,7 +60,7 @@ export const ExpoPage = (props: RouteSectionProps<Shout[]>) => {
   createEffect(on(title, (ttl) => (document.title = ttl), { defer: true }))
 
   return (
-    <PageLayout withPadding={true} zeroBottomPadding={true} title={title()}>
+    <PageLayout withPadding={true} zeroBottomPadding={true} title={`${t('Discours')} :: ${title()}`}>
       <Topics />
       <Expo shouts={shouts() || []} layout={layout() as LayoutType} />
     </PageLayout>

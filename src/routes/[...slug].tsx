@@ -1,4 +1,4 @@
-import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
+import { RouteSectionProps, createAsync, useLocation, useParams } from '@solidjs/router'
 import { ErrorBoundary, Suspense, createMemo, createReaction, createSignal, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
@@ -22,11 +22,12 @@ export const route = {
 
 export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
   const params = useParams()
+  const loc = useLocation()
   const article = createAsync(async () => props.data.article || (await fetchShout(params.slug)))
   const { t } = useLocalize()
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
   const title = createMemo(
-    () => `${article()?.authors?.[0]?.name || t('Discours')}: ${article()?.title || ''}`
+    () => `${article()?.authors?.[0]?.name || t('Discours')} :: ${article()?.title || ''}`
   )
   onMount(async () => {
     if (gaIdentity) {
@@ -49,7 +50,7 @@ export const ArticlePage = (props: RouteSectionProps<{ article: Shout }>) => {
       window.gtag?.('event', 'page_view', {
         page_title: article()?.title,
         page_location: window.location.href,
-        page_path: window.location.pathname
+        page_path: loc.pathname
       })
     }
   })

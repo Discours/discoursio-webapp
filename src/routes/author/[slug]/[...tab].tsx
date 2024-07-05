@@ -33,7 +33,7 @@ export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
   const { authorsEntities } = useAuthors()
   const { t } = useLocalize()
   const author = createMemo(() => authorsEntities?.()[params.slug])
-  const title = createMemo(() => `${t('Discours')}: ${author()?.name || ''}`)
+  const title = createMemo(() => `${author()?.name || ''}`)
 
   // docs: `a side effect that is run the first time the expression
   // wrapped by the returned tracking function is notified of a change`
@@ -51,7 +51,7 @@ export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>
         <PageLayout
-          title={title()}
+          title={`${t('Discours')} :: ${title()}`}
           headerTitle={author()?.name || ''}
           slug={author()?.slug}
           articleBody={author()?.about || author()?.bio || ''}

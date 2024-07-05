@@ -32,7 +32,7 @@ export default () => {
     }
   }
   return (
-    <PageLayout title={ogTitle()}>
+    <PageLayout title={`${t('Discours')} :: ${ogTitle()}`}>
       <Meta name="descprition" content={description()} />
       <Meta name="keywords" content={lang() === 'ru' ? ruKeywords[''] : enKeywords['']} />
       <Meta name="og:type" content="article" />

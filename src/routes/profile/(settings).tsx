@@ -8,7 +8,7 @@ export const ProfileSettingsPage = () => {
   const { t } = useLocalize()
 
   return (
-    <PageLayout title={t('Profile')}>
+    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Profile')}`}>
       <AuthGuard>
         <ProfileProvider>
           <ProfileSettings />

@@ -41,7 +41,7 @@ export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
   const { modal } = useUI()
   const { requireAuthentication } = useSession()
-  const [searchParams, ] = useSearchParams<HeaderSearchParams>()
+  const [searchParams] = useSearchParams<HeaderSearchParams>()
   const { sortedTopics: topics } = useTopics()
   const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
@@ -82,7 +82,7 @@ export const Header = (props: Props) => {
 
     if (!(fixed() || modal())) {
       window.scrollTo(0, windowScrollTop)
-      if(mainContent) mainContent.style.marginTop = ''
+      if (mainContent) mainContent.style.marginTop = ''
     }
   })
 
@@ -101,7 +101,10 @@ export const Header = (props: Props) => {
     })
   })
 
-  const scrollToComments = (event: MouseEvent & { currentTarget: HTMLDivElement; target: Element }, value: boolean) => {
+  const scrollToComments = (
+    event: MouseEvent & { currentTarget: HTMLDivElement; target: Element },
+    value: boolean
+  ) => {
     event.preventDefault()
     props.scrollToComments?.(value)
   }
@@ -190,7 +193,7 @@ export const Header = (props: Props) => {
             </div>
           </div>
           <div class={clsx('col-md-5 col-xl-4 col-auto', styles.mainLogo)}>
-            <A href='/'>
+            <A href="/">
               <img src="/logo.svg" alt={t('Discours')} />
             </A>
           </div>

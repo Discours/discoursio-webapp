@@ -21,7 +21,7 @@ export const Link = (props: Props) => {
     >
       <ConditionalWrapper
         condition={props.href === `/${loc.pathname}`}
-        wrapper={(children) => <A href={props.href||'/'}>{children}</A>}
+        wrapper={(children) => <A href={props.href || '/'}>{children}</A>}
       >
         <span
           class={clsx('cursorPointer linkReplacement', { [styles.mainNavigationItemActive]: props.active })}

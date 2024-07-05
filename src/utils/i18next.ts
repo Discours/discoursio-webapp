@@ -12,7 +12,7 @@ TimeAgo.addLocale(ruTime)
 
 class AutoKeyMap extends Map<string, string> {
   get(key: string): string {
-    return super.get(key) ?? key;
+    return super.get(key) ?? key
   }
 }
 
@@ -20,7 +20,7 @@ export const i18nextInit = async (lng = 'ru') => {
   if (!i18next.isInitialized) {
     console.debug('[i18next] initializing...')
 
-    const enAutoKeyMap = new AutoKeyMap(Object.entries(en));
+    const enAutoKeyMap = new AutoKeyMap(Object.entries(en))
 
     await i18next
       .use(HttpApi)
@@ -39,7 +39,7 @@ export const i18nextInit = async (lng = 'ru') => {
         interpolation: {
           escapeValue: false
         },
-        parseMissingKeyHandler: (key) => key
+        parseMissingKeyHandler: (key: string) => key
       })
   } else if (i18next.language !== lng) {
     await i18next.changeLanguage(lng)

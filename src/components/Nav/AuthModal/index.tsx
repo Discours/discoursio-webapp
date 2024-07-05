@@ -82,7 +82,7 @@ export const AuthModal = () => {
             <p class={styles.disclaimer}>
               {t('By signing up you agree with our')}{' '}
               <a
-                href="/guide/terms"
+                href="/terms"
                 onClick={() => {
                   hideModal()
                 }}

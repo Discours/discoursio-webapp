@@ -2,8 +2,6 @@
 import https from 'node:https'
 import { type Page, expect, test } from '@playwright/test'
 
-const baseHost = process.env.BASE_URL || 'https://localhost:3000'
-
 /* Global starting test config */
 
 let page: Page
@@ -63,7 +61,7 @@ test.afterAll(async () => {
 const pagesTitles = {
   '/': /Дискурс/,
   '/feed': /Лента/,
-  '/guide/support': /Поддержите Дискурс/,
+  '/support': /Поддержите Дискурс/,
   '/author': /Авторы/,
   '/topic': /Темы и сюжеты/
 }

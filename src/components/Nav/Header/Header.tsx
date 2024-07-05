@@ -222,7 +222,7 @@ export const Header = (props: Props) => {
                     <A href="/connect">{t('Suggest an idea')}</A>
                   </li>
                   <li>
-                    <A href="/guide/support">{t('Support the project')}</A>
+                    <A href="/support">{t('Support the project')}</A>
                   </li>
                 </ul>
 
@@ -351,13 +351,13 @@ export const Header = (props: Props) => {
                 <A href="/guide/principles">{t('Community Our principles')}</A>
               </li>
               <li>
-                <A href="/guide">{t('Platform Guide')}</A>
+                <A href='/guide'>{t('Platform Guide')}</A>
               </li>
               <li>
-                <A href="/guide/manifest#participation">{t('Support us')}</A>
+                <A href="/support">{t('Support us')}</A>
               </li>
               <li>
-                <A href="/guide/support">{t('How to help')}</A>
+                <A href="/manifest#participation">{t('How to help')}</A>
               </li>
               <li class={styles.rightItem}>
                 <A href="/connect">

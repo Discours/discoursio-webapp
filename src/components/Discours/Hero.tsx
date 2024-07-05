@@ -34,7 +34,7 @@ export default () => {
               >
                 {t('Join the community')}
               </a>
-              <a class="button" href="/guide/support">
+              <a class="button" href="/support">
                 {t('Support us')}
               </a>
             </div>

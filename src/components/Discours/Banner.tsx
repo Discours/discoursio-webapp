@@ -16,7 +16,7 @@ export default () => {
           <div class={clsx(styles.discoursBannerContent, 'col-lg-10')}>
             <h3>{t('Discours exists because of our common effort')}</h3>
             <p>
-              <a href="/guide/support">{t('Support us')}</a>
+              <a href="/support">{t('Support us')}</a>
               <a href="/edit/new">{t('Become an author')}</a>
               <a href={''} onClick={() => showModal('auth')}>
                 {t('Join the community')}

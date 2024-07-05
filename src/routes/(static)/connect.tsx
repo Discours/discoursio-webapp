@@ -2,7 +2,7 @@ import { ConnectView } from '~/components/Views/ConnectView'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
 
-export const ConnectPage = () => {
+export default () => {
   const { t } = useLocalize()
   return (
     <PageLayout title={t('Suggest an idea')}>
@@ -10,5 +10,3 @@ export const ConnectPage = () => {
     </PageLayout>
   )
 }
-
-export default ConnectPage

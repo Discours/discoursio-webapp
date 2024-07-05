@@ -3,7 +3,7 @@ import { StaticPage } from '~/components/Views/StaticPage'
 import { useLocalize } from '~/context/localize'
 import { getImageUrl } from '~/lib/getImageUrl'
 
-export const PartnersPage = () => {
+export default () => {
   const { t } = useLocalize()
 
   const ogTitle = t('Partners')
@@ -27,5 +27,3 @@ export const PartnersPage = () => {
     </StaticPage>
   )
 }
-
-export default PartnersPage

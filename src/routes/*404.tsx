@@ -3,7 +3,7 @@ import { FourOuFourView } from '../components/Views/FourOuFour'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 
-export const FourOuFourPage = () => {
+export default () => {
   const { t } = useLocalize()
 
   return (
@@ -13,5 +13,3 @@ export const FourOuFourPage = () => {
     </PageLayout>
   )
 }
-
-export const Page = FourOuFourPage

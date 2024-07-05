@@ -14,7 +14,7 @@ const fetchSearchResult = async ({ text, limit, offset }: QueryLoad_Shouts_Searc
   return await loadShoutsSearch({ text, limit, offset })
 }
 
-export const SearchPage = () => {
+export default () => {
   const { t } = useLocalize()
   const [searchParams] = useSearchParams<{ q: string }>()
   const [isLoaded, setIsLoaded] = createSignal(false)
@@ -68,5 +68,3 @@ export const SearchPage = () => {
     </PageLayout>
   )
 }
-
-export default SearchPage

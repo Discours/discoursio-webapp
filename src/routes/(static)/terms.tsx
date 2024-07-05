@@ -3,7 +3,7 @@ import { StaticPage } from '~/components/Views/StaticPage'
 import { useLocalize } from '~/context/localize'
 import { getImageUrl } from '~/lib/getImageUrl'
 
-export const TermsOfUsePage = () => {
+export default () => {
   const { t } = useLocalize()
   const ogTitle = t('Terms of use')
   const ogImage = getImageUrl('production/image/logo_image.png')
@@ -240,5 +240,3 @@ export const TermsOfUsePage = () => {
     </StaticPage>
   )
 }
-
-export default TermsOfUsePage

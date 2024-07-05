@@ -26,7 +26,7 @@ export const route = {
   }
 }
 
-export const ExpoPage = (props: RouteSectionProps<Shout[]>) => {
+export default (props: RouteSectionProps<Shout[]>) => {
   const { t } = useLocalize()
   const params = useParams()
   const shouts = createAsync(
@@ -66,5 +66,3 @@ export const ExpoPage = (props: RouteSectionProps<Shout[]>) => {
     </PageLayout>
   )
 }
-
-export default ExpoPage

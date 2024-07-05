@@ -3,7 +3,7 @@ import { ProfileSubscriptions } from '~/components/Views/ProfileSubscriptions'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
 
-export const ProfileSubscriptionsPage = () => {
+export default () => {
   const { t } = useLocalize()
 
   return (
@@ -14,5 +14,3 @@ export const ProfileSubscriptionsPage = () => {
     </PageLayout>
   )
 }
-
-export default ProfileSubscriptionsPage

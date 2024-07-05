@@ -25,7 +25,7 @@ export const route = {
   }
 }
 
-export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
+export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
   const params = useParams()
   const articles = createAsync(
     async () => props.data.articles || (await fetchAuthorShouts(params.slug)) || []
@@ -70,5 +70,3 @@ export const TopicPage = (props: RouteSectionProps<{ articles: Shout[] }>) => {
     </ErrorBoundary>
   )
 }
-
-export const Page = TopicPage

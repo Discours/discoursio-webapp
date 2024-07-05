@@ -9,7 +9,7 @@ import { useSession } from '~/context/session'
 import getShoutDraft from '~/graphql/query/core/article-my'
 import { Shout } from '~/graphql/schema/core.gen'
 
-export const EditSettingsPage = () => {
+export default () => {
   const { t } = useLocalize()
   const params = useParams()
   const client = useGraphQL()
@@ -32,5 +32,3 @@ export const EditSettingsPage = () => {
     </PageLayout>
   )
 }
-
-export default EditSettingsPage

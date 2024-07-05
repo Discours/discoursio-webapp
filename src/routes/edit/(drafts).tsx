@@ -14,7 +14,7 @@ const fetchDrafts = async (client: Client) => {
   return result as Shout[]
 }
 
-export const DraftsPage = () => {
+export default () => {
   const { t } = useLocalize()
   const client = useGraphQL()
   const drafts = createAsync(async () => await fetchDrafts(client))
@@ -27,5 +27,3 @@ export const DraftsPage = () => {
     </PageLayout>
   )
 }
-
-export default DraftsPage

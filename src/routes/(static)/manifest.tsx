@@ -7,7 +7,7 @@ import { Newsletter } from '~/components/_shared/Newsletter'
 import { useLocalize } from '~/context/localize'
 import { getImageUrl } from '~/lib/getImageUrl'
 
-export const ManifestPage = () => {
+export default () => {
   const { t } = useLocalize()
   const ogImage = getImageUrl('production/image/logo_image.png')
   const ogTitle = t('Discours Manifest')
@@ -159,5 +159,3 @@ export const ManifestPage = () => {
     </StaticPage>
   )
 }
-
-export default ManifestPage

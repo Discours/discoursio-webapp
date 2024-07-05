@@ -96,7 +96,7 @@ export const route = {
   }
 }
 
-export const FeedPage = (props: RouteSectionProps<Shout[]>) => {
+export default (props: RouteSectionProps<Shout[]>) => {
   const [searchParams] = useSearchParams<FeedSearchParams>()
   const { t } = useLocalize()
   const params = useParams()
@@ -139,5 +139,3 @@ export const FeedPage = (props: RouteSectionProps<Shout[]>) => {
     </PageLayout>
   )
 }
-
-export default FeedPage

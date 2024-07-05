@@ -16,7 +16,7 @@ const fetchData = async () => {
 
 export const route = { load: loadTopics } satisfies RouteDefinition
 
-export default function AllTopicsPage(props: RouteSectionProps<{ topics: Topic[] }>) {
+export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
   const { t } = useLocalize()
   const topics = createAsync<Topic[]>(async () => props.data.topics || (await fetchData()) || [])
   const { addTopics } = useTopics()

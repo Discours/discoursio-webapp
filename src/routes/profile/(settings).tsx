@@ -4,7 +4,7 @@ import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
 import { ProfileProvider } from '~/context/profile'
 
-export const ProfileSettingsPage = () => {
+export default () => {
   const { t } = useLocalize()
 
   return (
@@ -17,5 +17,3 @@ export const ProfileSettingsPage = () => {
     </PageLayout>
   )
 }
-
-export default ProfileSettingsPage

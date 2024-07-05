@@ -83,11 +83,11 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
   const formatTimeAgo = (date: Date) => timeAgo().format(date)
 
   const value: LocalizeContextType = {
-    t: ((s: string) => {
+    t: ((...args) => {
       try {
-        return i18next.t(s)
+        return i18next.t(...args)
       } catch (_) {
-        return s
+        return args?.length > 0 ? args[0] as string : ''
       }
     }) as i18n['t'],
     lang,

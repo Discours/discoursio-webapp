@@ -1,6 +1,6 @@
 import { useSearchParams } from '@solidjs/router'
 import { Show } from 'solid-js'
-import { useLocalize } from '../../../../context/localize'
+import { useLocalize } from '~/context/localize'
 import styles from './AuthModalHeader.module.scss'
 
 type Props = {

@@ -10,30 +10,40 @@ import ru from '~/config/locales/ru/translation.json'
 TimeAgo.addLocale(enTime)
 TimeAgo.addLocale(ruTime)
 
+class AutoKeyMap extends Map<string, string> {
+  get(key: string): string {
+    return super.get(key) ?? key;
+  }
+}
+
 export const i18nextInit = async (lng = 'ru') => {
   if (!i18next.isInitialized) {
     console.debug('[i18next] initializing...')
-    // eslint-disable-next-line import/no-named-as-default-member
+
+    const enAutoKeyMap = new AutoKeyMap(Object.entries(en));
+
     await i18next
       .use(HttpApi)
       .use(ICU)
       .init({
         // debug: true,
         supportedLngs: ['ru', 'en'],
-        fallbackLng: lng,
+        fallbackLng: 'en',
         lng,
         load: 'languageOnly',
         initImmediate: false,
         resources: {
           ru: { translation: ru },
-          en: { translation: en }
-        }
+          en: { translation: enAutoKeyMap }
+        },
+        interpolation: {
+          escapeValue: false
+        },
+        parseMissingKeyHandler: (key) => key
       })
-    // console.debug(i18next)
   } else if (i18next.language !== lng) {
     await i18next.changeLanguage(lng)
   }
-
-  // console.debug(`[i18next] using <${lng}>...`)
 }
+
 export { TimeAgo, i18next, type i18n }

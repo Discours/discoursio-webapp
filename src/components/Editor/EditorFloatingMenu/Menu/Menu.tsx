@@ -1,4 +1,4 @@
-import { useLocalize } from '../../../../context/localize'
+import { useLocalize } from '~/context/localize'
 import { Icon } from '../../../_shared/Icon'
 import { Popover } from '../../../_shared/Popover'
 

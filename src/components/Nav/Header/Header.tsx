@@ -1,16 +1,16 @@
 import { A, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
-import { Icon } from '~/components/_shared/Icon'
-import { Newsletter } from '~/components/_shared/Newsletter'
+import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
-import type { Topic } from '~/graphql/schema/core.gen'
-import { getRandomTopicsFromArray } from '~/utils/getRandomTopicsFromArray'
-import { getDescription } from '~/utils/meta'
+import type { Topic } from '../../../graphql/schema/core.gen'
+import { getRandomTopicsFromArray } from '../../../utils/getRandomTopicsFromArray'
+import { getDescription } from '../../../utils/meta'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
+import { Icon } from '../../_shared/Icon'
+import { Newsletter } from '../../_shared/Newsletter'
 import { AuthModal } from '../AuthModal'
 import { ConfirmModal } from '../ConfirmModal'
 import { HeaderAuth } from '../HeaderAuth'
@@ -18,6 +18,7 @@ import { Modal } from '../Modal'
 import { SearchModal } from '../SearchModal/SearchModal'
 import { Snackbar } from '../Snackbar'
 import styles from './Header.module.scss'
+import { Link } from './HeaderLink'
 
 type Props = {
   title?: string
@@ -32,27 +33,29 @@ type HeaderSearchParams = {
   source?: string
 }
 
-const handleSwitchLanguage = (value: string) => {
-  location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${value}`
+const handleSwitchLanguage = (event: { target: { value: string } }) => {
+  location.href = `${location.href}${location.href.includes('?') ? '&' : '?'}lng=${event.target.value}`
 }
 
 export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
   const { modal } = useUI()
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams<HeaderSearchParams>()
   const { requireAuthentication } = useSession()
-  const { sortedTopics } = useTopics()
-  const topics = createMemo<Topic[]>(() => sortedTopics())
+  const [searchParams, ] = useSearchParams<HeaderSearchParams>()
+  const { sortedTopics: topics } = useTopics()
   const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
   const [isSharePopupVisible, setIsSharePopupVisible] = createSignal(false)
   const [isProfilePopupVisible, setIsProfilePopupVisible] = createSignal(false)
-  const [isTopMenuVisible, setIsTopMenuVisible] = createSignal(false)
+  const [isKnowledgeBaseVisible, setIsKnowledgeBaseVisible] = createSignal(false)
+  const [isTopicsVisible, setIsTopicsVisible] = createSignal(false)
+  const [isZineVisible, setIsZineVisible] = createSignal(false)
+  const [isFeedVisible, setIsFeedVisible] = createSignal(false)
   const { session } = useSession()
-
+  const loc = useLocation()
+  const navigate = useNavigate()
   const toggleFixed = () => setFixed(!fixed())
 
   const tag = (topic: Topic) =>
@@ -62,29 +65,24 @@ export const Header = (props: Props) => {
 
   createEffect(() => {
     if (topics()?.length) {
-      const rt: Topic[] = getRandomTopicsFromArray(topics())
-      setRandomTopics(rt)
+      setRandomTopics(getRandomTopicsFromArray(topics()))
     }
   })
 
   createEffect(() => {
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
 
-    if ((window && fixed()) || modal() !== null) {
+    if (fixed() || modal() !== null) {
       windowScrollTop = window.scrollY
-      if (mainContent) {
-        mainContent.style.marginTop = `-${windowScrollTop}px`
-      }
+      if (mainContent) mainContent.style.marginTop = `-${windowScrollTop}px`
     }
 
     document.body.classList.toggle('fixed', fixed() || modal() !== null)
     document.body.classList.toggle(styles.fixed, fixed() && !modal())
 
     if (!(fixed() || modal())) {
-      if (mainContent) {
-        mainContent.style.marginTop = ''
-      }
       window.scrollTo(0, windowScrollTop)
+      if(mainContent) mainContent.style.marginTop = ''
     }
   })
 
@@ -103,19 +101,19 @@ export const Header = (props: Props) => {
     })
   })
 
-  const scrollToComments = (event: MouseEvent | undefined, value: boolean) => {
-    event?.preventDefault()
+  const scrollToComments = (event: MouseEvent & { currentTarget: HTMLDivElement; target: Element }, value: boolean) => {
+    event.preventDefault()
     props.scrollToComments?.(value)
   }
 
-  const handleBookmarkButtonClick = (ev: MouseEvent | undefined) => {
+  const handleBookmarkButtonClick = (ev: { preventDefault: () => void }) => {
     requireAuthentication(() => {
       // TODO: implement bookmark clicked
-      ev?.preventDefault()
+      ev.preventDefault()
     }, 'bookmark')
   }
 
-  const handleCreateButtonClick = (ev: MouseEvent | undefined) => {
+  const handleCreateButtonClick = (ev?: { preventDefault: () => void }) => {
     requireAuthentication(() => {
       ev?.preventDefault()
 
@@ -123,9 +121,12 @@ export const Header = (props: Props) => {
     }, 'create')
   }
 
-  const toggleSubnavigation = (isShow: boolean, signal?: (v: boolean) => void) => {
+  const toggleSubnavigation = (isShow: boolean, signal?: (b: boolean) => void) => {
     clearTimer()
-    setIsTopMenuVisible(false)
+    setIsKnowledgeBaseVisible(false)
+    setIsTopicsVisible(false)
+    setIsZineVisible(false)
+    setIsFeedVisible(false)
 
     if (signal) {
       signal(isShow)
@@ -138,17 +139,21 @@ export const Header = (props: Props) => {
     clearTimeout(timer)
   }
 
-  const hideSubnavigation = (time = 500) => {
+  const hideSubnavigation = (_ev?: MouseEvent, time = 500) => {
     timer = setTimeout(() => {
       toggleSubnavigation(false)
     }, time)
   }
-  const loc = useLocation()
+
   const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
+    console.debug('toggling menu link', fixed(), route)
     event.preventDefault()
+    if (loc.pathname === route) {
+      toggleFixed()
+    }
+
     navigate(route)
   }
-
   return (
     <header
       class={styles.mainHeader}
@@ -163,7 +168,7 @@ export const Header = (props: Props) => {
       <Modal
         variant={searchParams?.source ? 'narrow' : 'wide'}
         name="auth"
-        hideClose={Boolean(searchParams?.source === 'authguard')}
+        hideClose={searchParams?.source === 'authguard'}
         noPadding={true}
       >
         <AuthModal />
@@ -185,7 +190,7 @@ export const Header = (props: Props) => {
             </div>
           </div>
           <div class={clsx('col-md-5 col-xl-4 col-auto', styles.mainLogo)}>
-            <A href={'/'}>
+            <A href='/'>
               <img src="/logo.svg" alt={t('Discours')} />
             </A>
           </div>
@@ -195,34 +200,58 @@ export const Header = (props: Props) => {
             </Show>
             <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
               <ul class="view-switcher">
-                <For each={['', 'feed', 'topics', 'authors', 'guide']}>
-                  {(route: string) => (
-                    <li classList={{ 'view-switcher__item--selected': loc.pathname.includes(route) }}>
-                      <A
-                        class={clsx({ [styles.mainNavigationItemActive]: loc.pathname.includes(route) })}
-                        href={`/${route}`}
-                        onClick={(event) => handleToggleMenuByLink(event, `/${route}`)}
-                        onMouseOver={() => toggleSubnavigation(true, setIsTopMenuVisible)}
-                        onMouseOut={() => hideSubnavigation()}
-                      >
-                        {t(route || 'journal')}
-                      </A>
-                    </li>
-                  )}
-                </For>
+                <Link
+                  onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
+                  onMouseOut={hideSubnavigation}
+                  href="/"
+                  active={isZineVisible()}
+                  body={t('journal')}
+                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, '')}
+                />
+                <Link
+                  onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
+                  onMouseOut={hideSubnavigation}
+                  href="/feed"
+                  active={isFeedVisible()}
+                  body={t('feed')}
+                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'feed')}
+                />
+                <Link
+                  onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
+                  onMouseOut={hideSubnavigation}
+                  href="/topic"
+                  active={isTopicsVisible()}
+                  body={t('topics')}
+                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'topic')}
+                />
+                <Link
+                  onMouseOver={(event?: MouseEvent) => hideSubnavigation(event, 0)}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
+                  href="/author"
+                  body={t('authors')}
+                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'author')}
+                />
+                <Link
+                  onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
+                  onMouseOut={() => hideSubnavigation}
+                  href="/guide"
+                  body={t('Knowledge base')}
+                  active={isKnowledgeBaseVisible()}
+                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'guide')}
+                />
               </ul>
 
               <div class={styles.mainNavigationMobile}>
                 <h4>{t('Participating')}</h4>
                 <ul class="view-switcher">
                   <li>
-                    <A href="/edit/new">{t('Create post')}</A>
+                    <a href="/create">{t('Create post')}</a>
                   </li>
                   <li>
-                    <A href="/connect">{t('Suggest an idea')}</A>
+                    <a href="/connect">{t('Suggest an idea')}</a>
                   </li>
                   <li>
-                    <A href="/support">{t('Support the project')}</A>
+                    <a href="/about/help">{t('Support the project')}</a>
                   </li>
                 </ul>
 
@@ -272,7 +301,7 @@ export const Header = (props: Props) => {
                 <h4>{t('Language')}</h4>
                 <select
                   class={styles.languageSelectorMobile}
-                  onChange={(ev) => handleSwitchLanguage(ev.target.value)}
+                  onChange={handleSwitchLanguage}
                   value={lang()}
                 >
                   <option value="ru">🇷🇺 Русский</option>
@@ -280,9 +309,9 @@ export const Header = (props: Props) => {
                 </select>
 
                 <div class={styles.mainNavigationAdditionalLinks}>
-                  <A href="/guide/dogma">{t('Dogma')}</A>
-                  <A href="/guide/debate">{t('Discussion rules')}</A>
-                  <A href="/guide/principles">{t('Our principles')}</A>
+                  <a href="/about/dogma">{t('Dogma')}</a>
+                  <a href="/about/discussion-rules" innerHTML={t('Discussion rules')} />
+                  <a href="/about/principles">{t('Principles')}</a>
                 </div>
 
                 <p
@@ -337,73 +366,74 @@ export const Header = (props: Props) => {
 
           <div
             class={clsx(styles.subnavigation, 'col')}
+            classList={{ hidden: !isKnowledgeBaseVisible() }}
             onMouseOver={clearTimer}
-            onMouseOut={() => hideSubnavigation()}
+            onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
               <li>
-                <A href="/guide/manifest">{t('Manifesto')}</A>
+                <a href="/about/manifest">{t('Manifesto')}</a>
               </li>
               <li>
-                <A href="/guide/dogma">{t('Dogma')}</A>
+                <a href="/about/dogma">{t('Dogma')}</a>
               </li>
               <li>
-                <A href="/guide/principles">{t('Community Our principles')}</A>
+                <a href="/about/principles">{t('Community Principles')}</a>
               </li>
               <li>
-                <A href="/guide">{t('Platform Guide')}</A>
+                <a href="/about/guide">{t('Platform Guide')}</a>
               </li>
               <li>
-                <A href="/support">{t('Support us')}</A>
+                <a href="/about/manifest#participation">{t('Support us')}</a>
               </li>
               <li>
-                <A href="/manifest#participation">{t('How to help')}</A>
+                <a href="/about/help">{t('How to help')}</a>
               </li>
               <li class={styles.rightItem}>
-                <A href="/connect">
+                <a href="/connect">
                   {t('Suggest an idea')}
                   <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
-                </A>
+                </a>
               </li>
             </ul>
           </div>
 
           <div
             class={clsx(styles.subnavigation, 'col')}
-            classList={{ hidden: !isTopMenuVisible() }}
+            classList={{ hidden: !isZineVisible() }}
             onMouseOver={clearTimer}
-            onMouseOut={() => hideSubnavigation()}
+            onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
               <li class="item">
-                <A href="/expo">{t('Art')}</A>
+                <a href="/expo">{t('Art')}</a>
               </li>
               <li class="item">
-                <A href="/podcasts">{t('Podcasts')}</A>
+                <a href="/podcasts">{t('Podcasts')}</a>
               </li>
               <li class="item">
-                <A href="/guide/projects">{t('Special Projects')}</A>
+                <a href="/about/projects">{t('Special Projects')}</a>
               </li>
               <li>
-                <A href="/topic/interview">#{t('Interview')}</A>
+                <a href="/topic/interview">#{t('Interview')}</a>
               </li>
               <li>
-                <A href="/topic/reportage">#{t('Reports')}</A>
+                <a href="/topic/reportage">#{t('Reports')}</a>
               </li>
               <li>
-                <A href="/topic/empiric">#{t('Experience')}</A>
+                <a href="/topic/empiric">#{t('Experience')}</a>
               </li>
               <li>
-                <A href="/topic/society">#{t('Society')}</A>
+                <a href="/topic/society">#{t('Society')}</a>
               </li>
               <li>
-                <A href="/topic/culture">#{t('Culture')}</A>
+                <a href="/topic/culture">#{t('Culture')}</a>
               </li>
               <li>
-                <A href="/topic/theory">#{t('Theory')}</A>
+                <a href="/topic/theory">#{t('Theory')}</a>
               </li>
               <li>
-                <A href="/topic/poetry">#{t('Poetry')}</A>
+                <a href="/topic/poetry">#{t('Poetry')}</a>
               </li>
               <li class={styles.rightItem}>
                 <A href="/topic">
@@ -416,8 +446,9 @@ export const Header = (props: Props) => {
 
           <div
             class={clsx(styles.subnavigation, 'col')}
+            classList={{ hidden: !isTopicsVisible() }}
             onMouseOver={clearTimer}
-            onMouseOut={() => hideSubnavigation()}
+            onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
               <Show when={randomTopics().length > 0}>
@@ -442,8 +473,9 @@ export const Header = (props: Props) => {
 
           <div
             class={clsx(styles.subnavigation, styles.subnavigationFeed, 'col')}
+            classList={{ hidden: !isFeedVisible() }}
             onMouseOver={clearTimer}
-            onMouseOut={() => hideSubnavigation()}
+            onMouseOut={hideSubnavigation}
           >
             <ul class="nodash">
               <li>

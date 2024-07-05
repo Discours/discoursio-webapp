@@ -120,7 +120,7 @@ export const AllAuthors = (props: Props) => {
             <div class="row">
               <div class="col-lg-20 col-xl-18">
                 <ul class={clsx('nodash', styles.alphabet)}>
-                  <For each={[...alphabet()]}>
+                  <For each={[...(alphabet()||[])]}>
                     {(letter, index) => (
                       <li>
                         <Show when={letter in byLetterFiltered()} fallback={letter}>
@@ -140,15 +140,15 @@ export const AllAuthors = (props: Props) => {
                 </ul>
               </div>
             </div>
-            <For each={sortedKeys()}>
+            <For each={sortedKeys() || []}>
               {(letter) => (
                 <div class={clsx(styles.group, 'group')}>
-                  <h2 id={`letter-${alphabet().indexOf(letter)}`}>{letter}</h2>
+                  <h2 id={`letter-${alphabet()?.indexOf(letter)||''}`}>{letter}</h2>
                   <div class="container">
                     <div class="row">
                       <div class="col-lg-20">
                         <div class="row">
-                          <For each={byLetterFiltered()[letter]}>
+                          <For each={byLetterFiltered()?.[letter] || []}>
                             {(author) => (
                               <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                                 <div class="topic-title">

@@ -1,9 +1,9 @@
 import { Meta } from '@solidjs/meta'
-import { JSX, createMemo } from 'solid-js'
+import { JSX, createMemo, onMount } from 'solid-js'
 import { useLocalize } from '~/context/localize'
 import enKeywords from '~/intl/locales/en/keywords.json'
 import ruKeywords from '~/intl/locales/ru/keywords.json'
-import { processJSXElement } from '~/intl/prepositions'
+import { processPrepositions } from '~/intl/prepositions'
 import { getImageUrl } from '~/lib/getImageUrl'
 import { TableOfContents } from '../TableOfContents'
 import { PageLayout } from '../_shared/PageLayout'
@@ -13,6 +13,7 @@ type Props = {
   desc?: string
   children: JSX.Element
 }
+
 export const StaticPage = (props: Props) => {
   let articleBodyElement: HTMLElement | null = null
   const { t, lang } = useLocalize()
@@ -23,7 +24,10 @@ export const StaticPage = (props: Props) => {
     const page = props.title.toLocaleLowerCase() as keyof typeof ruKeywords
     return `${lang() === 'ru' ? ruKeywords[page] : enKeywords[page]}`
   })
-
+  let bodyEl: HTMLDivElement | undefined
+  onMount(() => {
+    if (bodyEl) bodyEl.innerHTML = processPrepositions(bodyEl.innerHTML)
+  })
   return (
     <PageLayout title={props.title}>
       <Meta name="descprition" content={description()} />
@@ -36,17 +40,15 @@ export const StaticPage = (props: Props) => {
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={ogTitle()} />
       <Meta name="twitter:description" content={description()} />
-      <h1>
-        <span class="wrapped">{ogTitle()}</span>
-      </h1>
       <article
         class="wide-container container--static-page"
         id="articleBody"
         ref={(el) => (articleBodyElement = el)}
       >
         <div class="row">
-          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
-            {processJSXElement(props.children)}
+          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first mt-5" ref={(el) => (bodyEl = el)}>
+            <h1>{ogTitle()}</h1>
+            {props.children}
           </div>
 
           <div class="col-md-6 col-lg-4 order-md-last">

@@ -75,8 +75,7 @@ export const AuthModal = () => {
                 {t(
                   'Get to know the most intelligent people of our time, edit and discuss the articles, share your expertise, rate and decide what to publish in the magazine'
                 )}
-                .{' '}
-                {t('New stories and more are waiting for you every day!')}
+                . {t('New stories and more are waiting for you every day!')}
               </p>
             </div>
             <p class={styles.disclaimer}>

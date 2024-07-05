@@ -47,7 +47,7 @@ export const route = {
 
 export default function AllAuthorsPage(props: RouteSectionProps<{ authors: Author[] }>) {
   const { t } = useLocalize()
-  const authors = createAsync<Author[]>(async () => props.data.authors || await fetchData())
+  const authors = createAsync<Author[]>(async () => props.data.authors || (await fetchData()))
   return (
     <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('All authors')}`}>
       <ReactionsProvider>

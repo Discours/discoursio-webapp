@@ -351,7 +351,7 @@ export const Header = (props: Props) => {
                 <A href="/guide/principles">{t('Community Our principles')}</A>
               </li>
               <li>
-                <A href='/guide'>{t('Platform Guide')}</A>
+                <A href="/guide">{t('Platform Guide')}</A>
               </li>
               <li>
                 <A href="/support">{t('Support us')}</A>

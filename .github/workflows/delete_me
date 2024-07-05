@@ -1,0 +1,67 @@
+name: "e2e tests"
+
+on:
+  deployment_status:
+    types: [success]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Wait for deployment to be live
+        run: |
+          echo "Waiting for Vercel deployment to be live..."
+          until curl -sSf https://testing3.discours.io > /dev/null; do
+            printf '.'
+            sleep 10
+          done
+
+      - name: Install Playwright and dependencies
+        run: npm run e2e:install
+
+      - name: Run Playwright tests
+        run: npm run e2e:tests:ci
+        env:
+          BASE_URL:  https://testing3.discours.io 
+
+
+name: "deploy"
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Install CI checks
+        run: npm ci
+
+      - name: Check types
+        run: npm run typecheck
+
+      - name: Lint with Biome
+        run: npx @biomejs/biome check src/.
+
+      - name: Lint styles
+        run: npx stylelint **/*.{scss,css}
+
+      - name: Test production build
+        run: npm run build

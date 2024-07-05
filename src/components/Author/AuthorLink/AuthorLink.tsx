@@ -3,9 +3,9 @@ import { createMemo } from 'solid-js'
 
 import { useLocalize } from '~/context/localize'
 import { Author } from '~/graphql/schema/core.gen'
+import { isCyrillic } from '~/intl/translate'
+import { translit } from '~/intl/translit'
 import { capitalize } from '~/utils/capitalize'
-import { translit } from '~/utils/ru2en'
-import { isCyrillic } from '~/utils/translate'
 import { Userpic } from '../Userpic'
 
 import styles from './AhtorLink.module.scss'

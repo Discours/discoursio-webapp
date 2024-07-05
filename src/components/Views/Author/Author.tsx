@@ -15,10 +15,10 @@ import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
 import loadReactionsBy from '~/graphql/query/core/reactions-load-by'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/utils/getImageUrl'
-import { getDescription } from '~/utils/meta'
+import { getImageUrl } from '~/lib/getImageUrl'
+import { byCreated } from '~/lib/sortby'
+import { getArticleDescription } from '~/utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
-import { byCreated } from '~/utils/sortby'
 import { splitToPages } from '~/utils/splitToPages'
 import stylesArticle from '../../Article/Article.module.scss'
 import { Comment } from '../../Article/Comment'
@@ -156,7 +156,7 @@ export const AuthorView = (props: Props) => {
       ? getImageUrl(author()?.pic || '', { width: 1200 })
       : getImageUrl('production/image/logo_image.png')
   )
-  const description = createMemo(() => getDescription(author()?.bio || ''))
+  const description = createMemo(() => getArticleDescription(author()?.bio || ''))
   const handleDeleteComment = (id: number) => {
     setCommented((prev) => (prev || []).filter((comment) => comment.id !== id))
   }

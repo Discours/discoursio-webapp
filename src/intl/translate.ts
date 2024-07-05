@@ -1,6 +1,6 @@
 import { Author } from '~/graphql/schema/core.gen'
-import { capitalize } from './capitalize'
-import { translit } from './ru2en'
+import { capitalize } from '~/utils/capitalize'
+import { translit } from './translit'
 
 export const isCyrillic = (s: string): boolean => {
   const cyrillicRegex = /[\u0400-\u04FF]/ // Range for Cyrillic characters

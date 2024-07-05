@@ -2,7 +2,7 @@ import { RouteSectionProps, createAsync, useLocation, useParams } from '@solidjs
 import { ErrorBoundary, Suspense, createMemo, createReaction, createSignal, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
-import { gaIdentity } from '~/config/config'
+import { gaIdentity } from '~/config'
 import { useLocalize } from '~/context/localize'
 import { getShout } from '~/graphql/api/public'
 import type { Shout } from '~/graphql/schema/core.gen'

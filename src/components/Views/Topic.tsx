@@ -5,8 +5,6 @@ import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
 import { useSearchParams } from '@solidjs/router'
-import enKeywords from '~/config/locales/en/keywords.json'
-import ruKeywords from '~/config/locales/ru/keywords.json'
 import { useAuthors } from '~/context/authors'
 import { useFeed } from '~/context/feed'
 import { useGraphQL } from '~/context/graphql'
@@ -16,10 +14,12 @@ import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-t
 import loadShoutsRandomQuery from '~/graphql/query/core/articles-load-random-topic'
 import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
 import getTopicFollowersQuery from '~/graphql/query/core/topic-followers'
+import enKeywords from '~/intl/locales/en/keywords.json'
+import ruKeywords from '~/intl/locales/ru/keywords.json'
+import { getImageUrl } from '~/lib/getImageUrl'
 import { capitalize } from '~/utils/capitalize'
-import { getImageUrl } from '~/utils/getImageUrl'
 import { getUnixtime } from '~/utils/getServerDate'
-import { getDescription } from '~/utils/meta'
+import { getArticleDescription } from '~/utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { splitToPages } from '~/utils/splitToPages'
 import styles from '../../styles/Topic.module.scss'
@@ -161,7 +161,7 @@ export const TopicView = (props: Props) => {
       : getImageUrl('production/image/logo_image.png')
   const description = () =>
     topic()?.body
-      ? getDescription(topic()?.body || '')
+      ? getArticleDescription(topic()?.body || '')
       : t('The most interesting publications on the topic', { topicName: title() })
 
   return (

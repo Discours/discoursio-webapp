@@ -1,5 +1,5 @@
 import { UploadFile } from '@solid-primitives/upload'
-import { thumborUrl } from '../config/config'
+import { thumborUrl } from '../config'
 
 export const handleImageUpload = async (uploadFile: UploadFile, token: string) => {
   const formData = new FormData()

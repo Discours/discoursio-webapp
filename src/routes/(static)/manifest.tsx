@@ -5,7 +5,7 @@ import Opener from '~/components/Nav/Modal/Opener'
 import { StaticPage } from '~/components/Views/StaticPage'
 import { Newsletter } from '~/components/_shared/Newsletter'
 import { useLocalize } from '~/context/localize'
-import { getImageUrl } from '~/utils/getImageUrl'
+import { getImageUrl } from '~/lib/getImageUrl'
 
 export const ManifestPage = () => {
   const { t } = useLocalize()

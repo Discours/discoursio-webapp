@@ -10,7 +10,7 @@ import {
   onMount,
   useContext
 } from 'solid-js'
-import { TimeAgo, type i18n, i18next, i18nextInit } from '~/utils/i18next'
+import { TimeAgo, type i18n, i18next, i18nextInit } from '~/intl/i18next'
 
 i18nextInit()
 
@@ -87,7 +87,7 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
       try {
         return i18next.t(...args)
       } catch (_) {
-        return args?.length > 0 ? args[0] as string : ''
+        return args?.length > 0 ? (args[0] as string) : ''
       }
     }) as i18n['t'],
     lang,

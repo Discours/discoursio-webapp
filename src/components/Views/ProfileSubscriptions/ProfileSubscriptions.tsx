@@ -6,8 +6,7 @@ import { SearchField } from '~/components/_shared/SearchField'
 import { FollowsFilter, useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
 import { Author, Topic } from '~/graphql/schema/core.gen'
-import { dummyFilter } from '~/utils/dummyFilter'
-import { isAuthor } from '~/utils/isAuthor'
+import { dummyFilter } from '~/lib/dummyFilter'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
 import { TopicBadge } from '../../Topic/TopicBadge'
@@ -100,10 +99,10 @@ export const ProfileSubscriptions = () => {
                   <For each={filtered()}>
                     {(followingItem) => (
                       <div>
-                        {isAuthor(followingItem) ? (
-                          <AuthorBadge minimize={true} author={followingItem} />
+                        {'name' in followingItem ? (
+                          <AuthorBadge minimize={true} author={followingItem as Author} />
                         ) : (
-                          <TopicBadge minimize={true} topic={followingItem} />
+                          <TopicBadge minimize={true} topic={followingItem as Topic} />
                         )}
                       </div>
                     )}

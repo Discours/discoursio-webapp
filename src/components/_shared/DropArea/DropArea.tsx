@@ -4,8 +4,8 @@ import { JSX, Show, createSignal } from 'solid-js'
 
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
-import { handleFileUpload } from '~/utils/handleFileUpload'
-import { handleImageUpload } from '~/utils/handleImageUpload'
+import { handleFileUpload } from '~/lib/handleFileUpload'
+import { handleImageUpload } from '~/lib/handleImageUpload'
 import { validateFiles } from '~/utils/validateFile'
 
 import styles from './DropArea.module.scss'

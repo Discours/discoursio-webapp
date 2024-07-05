@@ -1,5 +1,5 @@
 import { UploadFile } from '@solid-primitives/upload'
-import { coreApiUrl } from '../config/config'
+import { coreApiUrl } from '../config'
 
 const apiUrl = `${coreApiUrl}/upload`
 

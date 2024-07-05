@@ -5,7 +5,7 @@ import { EventSource } from 'extended-eventsource'
 import { createContext, createEffect, createSignal, on, useContext } from 'solid-js'
 
 import { Chat, Message } from '~/graphql/schema/chat.gen'
-import { sseUrl } from '../config/config'
+import { sseUrl } from '../config'
 import { useSession } from './session'
 
 const RECONNECT_TIMES = 2

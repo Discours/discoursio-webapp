@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { Show, createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js'
 
-import { getImageUrl } from '~/utils/getImageUrl'
+import { getImageUrl } from '~/lib/getImageUrl'
 import { useEscKeyDownHandler } from '~/utils/useEscKeyDownHandler'
 import { Icon } from '../Icon'
 

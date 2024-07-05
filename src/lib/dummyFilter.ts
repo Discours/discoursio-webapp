@@ -1,7 +1,5 @@
 import type { Author, Topic } from '~/graphql/schema/core.gen'
-
-import { isAuthor } from './isAuthor'
-import { translit } from './ru2en'
+import { translit } from '../intl/translit'
 
 const prepareQuery = (searchQuery: string, lang: string) => {
   const q = searchQuery.toLowerCase()
@@ -33,7 +31,7 @@ export const dummyFilter = <T extends Topic | Author>(
       return stringMatches(item?.title || '', q, lang)
     }
 
-    if (isAuthor(item)) {
+    if ('name' in item) {
       return stringMatches(item?.name || '', q, lang) || (item.bio && stringMatches(item.bio, q, lang))
     }
 

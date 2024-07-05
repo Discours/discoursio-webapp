@@ -2,7 +2,7 @@ import { Shout } from '~/graphql/schema/core.gen'
 
 const MAX_DESCRIPTION_LENGTH = 150
 
-export const getDescription = (body: string): string => {
+export const getArticleDescription = (body: string): string => {
   if (!body) {
     return ''
   }
@@ -20,6 +20,6 @@ export const getDescription = (body: string): string => {
   return description.trim()
 }
 
-export const getKeywords = (shout: Shout): string => {
+export const getArticleKeywords = (shout: Shout): string => {
   return (shout.topics || [])?.map((topic) => topic?.title).join(', ')
 }

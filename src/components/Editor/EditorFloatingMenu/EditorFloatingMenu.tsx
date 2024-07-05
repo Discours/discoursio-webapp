@@ -1,11 +1,11 @@
 import type { Editor } from '@tiptap/core'
 import { Show, createEffect, createSignal } from 'solid-js'
 
+import { renderUploadedImage } from '~/components/Editor/renderUploadedImage'
 import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
 import { UploadedFile } from '~/types/upload'
-import { renderUploadedImage } from '~/utils/renderUploadedImage'
 import { useOutsideClickHandler } from '~/utils/useOutsideClickHandler'
 import { Modal } from '../../Nav/Modal'
 import { InlineForm } from '../InlineForm'

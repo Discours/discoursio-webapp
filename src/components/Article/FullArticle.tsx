@@ -10,11 +10,11 @@ import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
 import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
+import { isCyrillic } from '~/intl/translate'
+import { getImageUrl, getOpenGraphImageUrl } from '~/lib/getImageUrl'
 import { MediaItem } from '~/types/mediaitem'
 import { capitalize } from '~/utils/capitalize'
-import { getImageUrl, getOpenGraphImageUrl } from '~/utils/getImageUrl'
-import { getDescription, getKeywords } from '~/utils/meta'
-import { isCyrillic } from '~/utils/translate'
+import { getArticleDescription, getArticleKeywords } from '~/utils/meta'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
@@ -333,9 +333,9 @@ export const FullArticle = (props: Props) => {
     width: 1200
   })
 
-  const description = getDescription(props.article.description || body() || media()[0]?.body)
+  const description = getArticleDescription(props.article.description || body() || media()[0]?.body)
   const ogTitle = props.article.title
-  const keywords = getKeywords(props.article)
+  const keywords = getArticleKeywords(props.article)
   const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })
   const getAuthorName = (a: Author) => {
     return lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replace(/-/, ' ')) : a.name

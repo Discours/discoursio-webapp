@@ -1,7 +1,7 @@
 import { Client, ClientOptions, cacheExchange, createClient, fetchExchange } from '@urql/core'
 import { createContext, createEffect, createSignal, on, useContext } from 'solid-js'
 import { JSX } from 'solid-js/jsx-runtime'
-import { chatApiUrl, coreApiUrl } from '../config/config'
+import { chatApiUrl, coreApiUrl } from '../config'
 import { useSession } from './session'
 
 type GraphQLClientContextType = Record<string, Client>

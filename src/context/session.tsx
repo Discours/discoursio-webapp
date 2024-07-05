@@ -25,7 +25,7 @@ import {
   useContext
 } from 'solid-js'
 import { type AuthModalSource, useSnackbar, useUI } from '~/context/ui'
-import { authApiUrl } from '../config/config'
+import { authApiUrl } from '../config'
 import { useLocalize } from './localize'
 
 const defaultConfig: ConfigType = {

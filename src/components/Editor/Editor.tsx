@@ -34,7 +34,7 @@ import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useSnackbar } from '~/context/ui'
-import { handleImageUpload } from '~/utils/handleImageUpload'
+import { handleImageUpload } from '~/lib/handleImageUpload'
 
 import { BlockquoteBubbleMenu, FigureBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'

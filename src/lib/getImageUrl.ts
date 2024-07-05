@@ -1,4 +1,4 @@
-import { cdnUrl, thumborUrl } from '../config/config'
+import { cdnUrl, thumborUrl } from '../config'
 
 const URL_CONFIG = {
   cdnUrl: cdnUrl,

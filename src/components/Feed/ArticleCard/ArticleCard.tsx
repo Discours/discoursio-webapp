@@ -8,7 +8,7 @@ import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
 import { capitalize } from '~/utils/capitalize'
-import { getDescription } from '~/utils/meta'
+import { getArticleDescription } from '~/utils/meta'
 import { CoverImage } from '../../Article/CoverImage'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
@@ -109,7 +109,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
-  const description = getDescription(props.article?.body)
+  const description = getArticleDescription(props.article?.body)
   const aspectRatio: Accessor<string> = () => LAYOUT_ASPECT[props.article?.layout as string]
   const [mainTopicTitle, mainTopicSlug] = getMainTopicTitle(props.article, lang())
   const { title, subtitle } = getTitleAndSubtitle(props.article)

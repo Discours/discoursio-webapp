@@ -2,7 +2,7 @@ import { Meta } from '@solidjs/meta'
 import { Donate } from '~/components/Discours/Donate'
 import { StaticPage } from '~/components/Views/StaticPage'
 import { useLocalize } from '~/context/localize'
-import { getImageUrl } from '~/utils/getImageUrl'
+import { getImageUrl } from '~/lib/getImageUrl'
 
 export const SupportPage = () => {
   const { t } = useLocalize()

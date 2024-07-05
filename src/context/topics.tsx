@@ -12,8 +12,8 @@ import {
 } from 'solid-js'
 import { loadTopics } from '~/graphql/api/public'
 import { Topic } from '~/graphql/schema/core.gen'
-import { getRandomTopicsFromArray } from '~/utils/getRandomTopicsFromArray'
-import { byTopicStatDesc } from '../utils/sortby'
+import { getRandomTopicsFromArray } from '~/lib/getRandomTopicsFromArray'
+import { byTopicStatDesc } from '../lib/sortby'
 
 type TopicsContextType = {
   topicEntities: Accessor<{ [topicSlug: string]: Topic }>

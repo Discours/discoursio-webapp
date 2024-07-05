@@ -9,9 +9,8 @@ import { FollowsFilter, useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { FollowingEntity, Topic } from '~/graphql/schema/core.gen'
-import { isAuthor } from '~/utils/isAuthor'
-import { translit } from '~/utils/ru2en'
-import { isCyrillic } from '~/utils/translate'
+import { isCyrillic } from '~/intl/translate'
+import { translit } from '~/intl/translit'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
@@ -164,10 +163,10 @@ export const AuthorCard = (props: Props) => {
           <div class="col-24">
             <For each={authorSubs()}>
               {(subscription) =>
-                isAuthor(subscription) ? (
-                  <AuthorBadge author={subscription} subscriptionsMode={true} />
+                'name' in subscription ? (
+                  <AuthorBadge author={subscription as Author} subscriptionsMode={true} />
                 ) : (
-                  <TopicBadge topic={subscription} subscriptionsMode={true} />
+                  <TopicBadge topic={subscription as Topic} subscriptionsMode={true} />
                 )
               }
             </For>

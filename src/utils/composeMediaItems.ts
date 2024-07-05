@@ -1,4 +1,4 @@
-const removeFileExtension = (fileName: string) => {
+const removeMediaFileExtension = (fileName: string) => {
   return fileName.replace(/\.(wav|flac|mp3|aac|jpg|jpeg|png|gif)$/i, '')
 }
 
@@ -10,7 +10,7 @@ export const composeMediaItems = (
     return {
       url: fileData.url,
       source: '',
-      title: fileData.originalFilename ? removeFileExtension(fileData.originalFilename) : '',
+      title: fileData.originalFilename ? removeMediaFileExtension(fileData.originalFilename) : '',
       body: '',
       ...optionalParams
     }

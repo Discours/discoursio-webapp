@@ -6,14 +6,14 @@ import { AuthGuard } from '~/components/AuthGuard'
 import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
 import { PageLayout } from '~/components/_shared/PageLayout'
-import enKeywords from '~/config/locales/en/keywords.json'
-import ruKeywords from '~/config/locales/ru/keywords.json'
 import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import createShoutMutation from '~/graphql/mutation/core/article-create'
+import enKeywords from '~/intl/locales/en/keywords.json'
+import ruKeywords from '~/intl/locales/ru/keywords.json'
+import { getImageUrl } from '~/lib/getImageUrl'
 import styles from '~/styles/Create.module.scss'
 import { LayoutType } from '~/types/common'
-import { getImageUrl } from '~/utils/getImageUrl'
 
 export default () => {
   const { t, lang } = useLocalize()

@@ -1,7 +1,7 @@
 import { Meta } from '@solidjs/meta'
 import { StaticPage } from '~/components/Views/StaticPage'
 import { useLocalize } from '~/context/localize'
-import { getImageUrl } from '~/utils/getImageUrl'
+import { getImageUrl } from '~/lib/getImageUrl'
 
 export const PartnersPage = () => {
   const { t } = useLocalize()

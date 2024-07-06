@@ -52,10 +52,10 @@ export const CommentsTree = (props: Props) => {
   })
   const { seen } = useFeed()
   const shoutLastSeen = createMemo(() => seen()[props.shoutSlug] ?? 0)
-  const currentDate = new Date()
-  const setCookie = () => localStorage?.setItem(`${props.shoutSlug}`, `${currentDate}`)
 
   onMount(() => {
+    const currentDate = new Date()
+    const setCookie = () => localStorage?.setItem(`${props.shoutSlug}`, `${currentDate}`)
     if (!shoutLastSeen()) {
       setCookie()
     } else if (currentDate.getTime() > shoutLastSeen()) {

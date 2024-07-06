@@ -10,14 +10,13 @@ type Props = {
   class?: string
 }
 
-const editorDarkModeSelected = localStorage?.getItem('editorDarkMode')
-const editorDarkModeAttr = document.documentElement.getAttribute('editorDarkMode')
-
 export const DarkModeToggle = (props: Props) => {
   const { t } = useLocalize()
   const [editorDarkMode, setEditorDarkMode] = createSignal(false)
 
   onMount(() => {
+    const editorDarkModeSelected = localStorage?.getItem('editorDarkMode')
+    const editorDarkModeAttr = document.documentElement.getAttribute('editorDarkMode')
     if (editorDarkModeSelected === 'true') {
       setEditorDarkMode(true)
       document.documentElement.dataset.editorDarkMode = 'true'

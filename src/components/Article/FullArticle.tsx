@@ -91,7 +91,7 @@ export const FullArticle = (props: Props) => {
 
   const mainTopic = createMemo(() => {
     const mainTopicSlug = (props.article?.topics?.length || 0) > 0 ? props.article.main_topic : null
-    const mt = props.article.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
+    const mt = props.article?.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
     if (mt) {
       mt.title = lang() === 'en' ? capitalize(mt.slug.replace(/-/, ' ')) : mt.title
       return mt
@@ -107,10 +107,10 @@ export const FullArticle = (props: Props) => {
   }
 
   const body = createMemo(() => {
-    if (props.article.layout === 'literature') {
+    if (props.article?.layout === 'literature') {
       try {
         if (props.article?.media) {
-          const media = JSON.parse(props.article.media)
+          const media = JSON.parse(props.article?.media)
           if (media.length > 0) {
             return media[0].body
           }
@@ -119,7 +119,7 @@ export const FullArticle = (props: Props) => {
         console.error(error)
       }
     }
-    return props.article.body
+    return props.article?.body || ''
   })
 
   const imageUrls = createMemo(() => {
@@ -362,19 +362,19 @@ export const FullArticle = (props: Props) => {
             onClick={handleArticleBodyClick}
           >
             {/*TODO: Check styles.shoutTopic*/}
-            <Show when={props.article.layout !== 'audio'}>
+            <Show when={props.article?.layout !== 'audio'}>
               <div class={styles.shoutHeader}>
                 <Show when={mainTopic()}>
                   <CardTopic title={mainTopic()?.title || ''} slug={mainTopic()?.slug || ''} />
                 </Show>
 
-                <h1>{props.article.title}</h1>
-                <Show when={props.article.subtitle}>
-                  <h4>{props.article.subtitle}</h4>
+                <h1>{props.article?.title || ''}</h1>
+                <Show when={props.article?.subtitle}>
+                  <h4>{props.article?.subtitle || ''}</h4>
                 </Show>
 
                 <div class={styles.shoutAuthor}>
-                  <For each={props.article.authors}>
+                  <For each={props.article?.authors}>
                     {(a: Maybe<Author>, index: () => number) => (
                       <>
                         <Show when={index() > 0}>, </Show>
@@ -385,39 +385,39 @@ export const FullArticle = (props: Props) => {
                 </div>
                 <Show
                   when={
-                    props.article.cover &&
-                    props.article.layout !== 'video' &&
-                    props.article.layout !== 'image'
+                    props.article?.cover &&
+                    props.article?.layout !== 'video' &&
+                    props.article?.layout !== 'image'
                   }
                 >
                   <figure class="img-align-column">
                     <Image
                       width={800}
-                      alt={props.article.cover_caption || ''}
-                      src={props.article.cover || ''}
+                      alt={props.article?.cover_caption || ''}
+                      src={props.article?.cover || ''}
                     />
-                    <figcaption innerHTML={props.article.cover_caption || ''} />
+                    <figcaption innerHTML={props.article?.cover_caption || ''} />
                   </figure>
                 </Show>
               </div>
             </Show>
-            <Show when={props.article.lead}>
-              <section class={styles.lead} innerHTML={props.article.lead || ''} />
+            <Show when={props.article?.lead}>
+              <section class={styles.lead} innerHTML={props.article?.lead || ''} />
             </Show>
-            <Show when={props.article.layout === 'audio'}>
+            <Show when={props.article?.layout === 'audio'}>
               <AudioHeader
-                title={props.article.title}
-                cover={props.article.cover || ''}
+                title={props.article?.title || ''}
+                cover={props.article?.cover || ''}
                 artistData={media()?.[0]}
                 topic={mainTopic() as Topic}
               />
               <Show when={media().length > 0}>
                 <div class="media-items">
-                  <AudioPlayer media={media()} articleSlug={props.article.slug} body={body()} />
+                  <AudioPlayer media={media()} articleSlug={props.article?.slug || ''} body={body()} />
                 </div>
               </Show>
             </Show>
-            <Show when={media() && props.article.layout === 'video'}>
+            <Show when={media() && props.article?.layout === 'video'}>
               <div class="media-items">
                 <For each={media() || []}>
                   {(m: MediaItem) => (
@@ -576,9 +576,9 @@ export const FullArticle = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={props.article.topics?.length}>
+            <Show when={props.article?.topics?.length}>
               <div class={styles.topicsList}>
-                <For each={props.article.topics}>
+                <For each={props.article?.topics || []}>
                   {(topic) => (
                     <div class={styles.shoutTopic}>
                       <A href={`/topic/${topic?.slug || ''}`}>

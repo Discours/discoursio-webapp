@@ -47,7 +47,7 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
   })
   createEffect(
     on(lang, (lng: Language) => {
-      localStorage.setItem('lng', lng || 'ru')
+      localStorage?.setItem('lng', lng || 'ru')
       i18next.changeLanguage(lng || 'ru')
     })
   )

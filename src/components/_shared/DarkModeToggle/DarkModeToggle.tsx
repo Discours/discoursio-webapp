@@ -10,7 +10,7 @@ type Props = {
   class?: string
 }
 
-const editorDarkModeSelected = localStorage.getItem('editorDarkMode')
+const editorDarkModeSelected = localStorage?.getItem('editorDarkMode')
 const editorDarkModeAttr = document.documentElement.getAttribute('editorDarkMode')
 
 export const DarkModeToggle = (props: Props) => {
@@ -27,7 +27,7 @@ export const DarkModeToggle = (props: Props) => {
     }
 
     if (!(editorDarkModeAttr || editorDarkModeSelected)) {
-      localStorage.setItem('editorDarkMode', 'false')
+      localStorage?.setItem('editorDarkMode', 'false')
       document.documentElement.dataset.editorDarkMode = 'false'
     }
 
@@ -39,7 +39,7 @@ export const DarkModeToggle = (props: Props) => {
 
   const handleSwitchTheme = () => {
     setEditorDarkMode(!editorDarkMode())
-    localStorage.setItem('editorDarkMode', editorDarkMode() ? 'true' : 'false')
+    localStorage?.setItem('editorDarkMode', editorDarkMode() ? 'true' : 'false')
     document.documentElement.dataset.editorDarkMode = editorDarkMode() ? 'true' : 'false'
   }
 

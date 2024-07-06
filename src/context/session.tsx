@@ -159,7 +159,7 @@ export const SessionProvider = (props: {
         clearSearchParams()
         // Set session expiration time in local storage
         const expires_at = new Date(Date.now() + s.data.expires_in * 1000)
-        localStorage.setItem('expires_at', `${expires_at.getTime()}`)
+        localStorage?.setItem('expires_at', `${expires_at.getTime()}`)
 
         // Set up session expiration check timer
         minuteLater = setTimeout(checkSessionIsExpired, 60 * 1000)
@@ -191,7 +191,7 @@ export const SessionProvider = (props: {
   })
 
   const checkSessionIsExpired = () => {
-    const expires_at_data = localStorage.getItem('expires_at')
+    const expires_at_data = localStorage?.getItem('expires_at')
 
     if (expires_at_data) {
       const expires_at = Number.parseFloat(expires_at_data)

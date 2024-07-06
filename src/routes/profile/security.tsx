@@ -16,7 +16,7 @@ import styles from './Settings.module.scss'
 
 type FormField = 'oldPassword' | 'newPassword' | 'newPasswordConfirm' | 'email'
 type FormData = Record<FormField, string | undefined>
-export const ProfileSecurityPage = () => {
+export default () => {
   const { t } = useLocalize()
   const { updateProfile, session, isSessionLoaded } = useSession()
   const { showSnackbar } = useSnackbar()
@@ -316,5 +316,3 @@ export const ProfileSecurityPage = () => {
     </PageLayout>
   )
 }
-
-export default ProfileSecurityPage

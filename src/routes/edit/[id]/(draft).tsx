@@ -27,7 +27,7 @@ export const getContentTypeTitle = (layout: LayoutType) => {
   }
 }
 
-export const EditPage = () => {
+export default () => {
   const { t } = useLocalize()
   const { session } = useSession()
   const snackbar = useSnackbar()
@@ -70,5 +70,3 @@ export const EditPage = () => {
     </PageLayout>
   )
 }
-
-export default EditPage

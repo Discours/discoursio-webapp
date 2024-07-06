@@ -125,7 +125,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     return sortedTopAuthors
   })
 
-  const loadAuthorsPage = async (args: QueryLoad_Authors_ByArgs): Promise<void> => {
+  const loadAuthorsPaginated = async (args: QueryLoad_Authors_ByArgs): Promise<void> => {
     try {
       const fetcher = await loadAuthors(args)
       const data = await fetcher()
@@ -179,7 +179,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     addAuthors,
     addAuthor,
     loadAuthor,
-    loadAuthors: loadAuthorsPage,
+    loadAuthors: loadAuthorsPaginated,
     topAuthors,
     authorsByTopic,
     setAuthorsSort

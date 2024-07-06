@@ -1,16 +1,16 @@
 import { clsx } from 'clsx'
 import { Show } from 'solid-js'
-
+import { isServer } from 'solid-js/web'
 import { DropArea } from '~/components/_shared/DropArea'
 import { useLocalize } from '~/context/localize'
 import { MediaItem } from '~/types/mediaitem'
 import { composeMediaItems } from '~/utils/composeMediaItems'
 import { AudioPlayer } from '../../Article/AudioPlayer'
-
-// import { Buffer } from 'node:buffer'
 import styles from './AudioUploader.module.scss'
 
-if (window) window.Buffer = Buffer
+
+if (!isServer && window) window.Buffer = Buffer
+console.debug('buffer patch passed')
 
 type Props = {
   class?: string

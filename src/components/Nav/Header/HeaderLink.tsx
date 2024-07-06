@@ -20,7 +20,7 @@ export const Link = (props: Props) => {
       classList={{ 'view-switcher__item--selected': props.href === `/${loc.pathname}` }}
     >
       <ConditionalWrapper
-        condition={props.href === `/${loc.pathname}`}
+        condition={props.href !== `/${loc.pathname}`}
         wrapper={(children) => <A href={props.href || '/'}>{children}</A>}
       >
         <span

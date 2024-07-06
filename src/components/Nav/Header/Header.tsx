@@ -1,4 +1,4 @@
-import { A, redirect, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
+import { A, redirect, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { useLocalize } from '~/context/localize'
@@ -54,8 +54,6 @@ export const Header = (props: Props) => {
   const [isZineVisible, setIsZineVisible] = createSignal(false)
   const [isFeedVisible, setIsFeedVisible] = createSignal(false)
   const { session } = useSession()
-  const loc = useLocation()
-  const navigate = useNavigate()
   const toggleFixed = () => setFixed(!fixed())
 
   const tag = (topic: Topic) =>
@@ -148,11 +146,6 @@ export const Header = (props: Props) => {
     }, time)
   }
 
-  const handleToggleMenuByLink = (event: MouseEvent, route: string) => {
-    event.preventDefault()
-    if (fixed()) toggleFixed()
-    if (loc.pathname !== route) navigate(route)
-  }
   return (
     <header
       class={styles.mainHeader}
@@ -198,14 +191,13 @@ export const Header = (props: Props) => {
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
             <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
-              <ul class="view-switcher">
+              <ul class="view-switcher" onClick={() => !fixed() && toggleFixed()}>
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
                   onMouseOut={hideSubnavigation}
                   href="/"
                   active={isZineVisible()}
                   body={t('Journal')}
-                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, '')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
@@ -213,7 +205,6 @@ export const Header = (props: Props) => {
                   href="/feed"
                   active={isFeedVisible()}
                   body={t('Feed')}
-                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'feed')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
@@ -221,14 +212,12 @@ export const Header = (props: Props) => {
                   href="/topic"
                   active={isTopicsVisible()}
                   body={t('Topics')}
-                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'topic')}
                 />
                 <Link
                   onMouseOver={(event?: MouseEvent) => hideSubnavigation(event, 0)}
                   onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
                   href="/author"
                   body={t('Authors')}
-                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'author')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
@@ -236,7 +225,6 @@ export const Header = (props: Props) => {
                   href="/guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}
-                  onClick={(event: MouseEvent) => handleToggleMenuByLink(event, 'guide')}
                 />
               </ul>
 

@@ -1,7 +1,7 @@
 import { Meta } from '@solidjs/meta'
 import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
 import { SearchField } from '~/components/_shared/SearchField'
 import { useAuthors } from '~/context/authors'
@@ -31,10 +31,12 @@ export const AllAuthors = (props: Props) => {
   const { t, lang } = useLocalize()
   const [searchQuery, setSearchQuery] = createSignal('')
   const alphabet = createMemo(() => ABC[lang()] || ABC['ru'])
-  const [searchParams] = useSearchParams<{ by?: string }>()
+  const [searchParams, changeSearchParams] = useSearchParams<{ by?: string }>()
   const { authorsSorted, addAuthors, setAuthorsSort } = useAuthors()
-  createEffect(on(() => searchParams?.by || 'name', setAuthorsSort, {}))
-  createEffect(on(() => props.authors || [], addAuthors, {}))
+
+  onMount(() => !searchParams?.by && changeSearchParams({ by: 'name' }))
+  createEffect(on(() => searchParams?.by || 'name', setAuthorsSort || ((_) => null), {}))
+  createEffect(on(() => props.authors || [], addAuthors || ((_) => null), {}))
 
   const filteredAuthors = createMemo(() => {
     const query = searchQuery().toLowerCase()
@@ -165,7 +167,7 @@ export const AllAuthors = (props: Props) => {
           </Show>
           <Show when={searchParams?.by !== 'name' && props.isLoaded}>
             <AuthorsList
-              allAuthorsLength={authorsSorted()?.length || 0}
+              allAuthorsLength={authorsSorted?.()?.length || 0}
               searchQuery={searchQuery()}
               query={searchParams?.by === 'followers' ? 'followers' : 'shouts'}
             />

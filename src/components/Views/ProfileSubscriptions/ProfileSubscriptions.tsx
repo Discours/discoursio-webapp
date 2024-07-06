@@ -1,18 +1,16 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on } from 'solid-js'
-
 import { Loading } from '~/components/_shared/Loading'
 import { SearchField } from '~/components/_shared/SearchField'
 import { FollowsFilter, useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
 import { Author, Topic } from '~/graphql/schema/core.gen'
 import { dummyFilter } from '~/lib/dummyFilter'
+import stylesSettings from '../../../styles/FeedSettings.module.scss'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
+import styles from '../../ProfileSettings/Seetings.module.scss'
 import { TopicBadge } from '../../Topic/TopicBadge'
-
-import styles from '../../../pages/profile/Settings.module.scss'
-import stylesSettings from '../../../styles/FeedSettings.module.scss'
 
 export const ProfileSubscriptions = () => {
   const { t, lang } = useLocalize()

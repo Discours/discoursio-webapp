@@ -2,12 +2,15 @@ import { cache } from '@solidjs/router'
 import { defaultClient } from '~/context/graphql'
 import loadShoutsByQuery from '~/graphql/query/core/articles-load-by'
 import loadShoutsSearchQuery from '~/graphql/query/core/articles-load-search'
+import getAuthorQuery from '~/graphql/query/core/author-by'
+import loadAuthorsAllQuery from '~/graphql/query/core/authors-all'
 import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
 import loadReactionsByQuery from '~/graphql/query/core/reactions-load-by'
 import loadTopicsQuery from '~/graphql/query/core/topics-all'
 import {
   Author,
   LoadShoutsOptions,
+  QueryGet_AuthorArgs,
   QueryGet_ShoutArgs,
   QueryLoad_Authors_ByArgs,
   QueryLoad_Reactions_ByArgs,
@@ -29,9 +32,17 @@ export const loadAuthors = (options: QueryLoad_Authors_ByArgs) => {
   const filter = new URLSearchParams(options.by as Record<string, string>)
   return cache(async () => {
     const resp = await defaultClient.query(loadAuthorsByQuery, { ...options }).toPromise()
-    const result = resp?.data?.load_shouts_by
+    const result = resp?.data?.load_authors_by
     if (result) return result as Author[]
   }, `authors-${filter}-${page}`)
+}
+
+export const loadAuthorsAll = () => {
+  return cache(async () => {
+    const resp = await defaultClient.query(loadAuthorsAllQuery, {}).toPromise()
+    const result = resp?.data?.get_authors_all
+    if (result) return result as Author[]
+  }, 'authors-all')
 }
 
 export const loadShouts = (options: LoadShoutsOptions) => {
@@ -62,6 +73,17 @@ export const getShout = (options: QueryGet_ShoutArgs) => {
       if (result) return result as Shout
     },
     `shout-${options?.slug || ''}`
+  )
+}
+
+export const getAuthor = (options: QueryGet_AuthorArgs) => {
+  return cache(
+    async () => {
+      const resp = await defaultClient.query(getAuthorQuery, { ...options }).toPromise()
+      const result = resp?.data?.get_author
+      if (result) return result as Author
+    },
+    `author-${options?.slug || options?.author_id}`
   )
 }
 

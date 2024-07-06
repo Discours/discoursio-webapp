@@ -1,10 +1,8 @@
 import { createLazyMemo } from '@solid-primitives/memo'
 import { makePersisted } from '@solid-primitives/storage'
 import { Accessor, JSX, createContext, createSignal, useContext } from 'solid-js'
-import getShoutBySlug from '~/graphql/query/core/article-load'
-import loadShoutsByQuery from '~/graphql/query/core/articles-load-by'
-import loadShoutsFeed from '~/graphql/query/core/articles-load-feed'
-import loadShoutsSearchQuery from '~/graphql/query/core/articles-load-search'
+import { loadFollowedShouts } from '~/graphql/api/private'
+import { loadShoutsSearch as fetchShoutsSearch, getShout, loadShouts } from '~/graphql/api/public'
 import {
   Author,
   LoadShoutsOptions,
@@ -51,7 +49,6 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
   const [topFeed, setTopFeed] = createSignal<Shout[]>([])
   const [topMonthFeed, setTopMonthFeed] = createSignal<Shout[]>([])
   const [feedByLayout, _setFeedByLayout] = createSignal<{ [layout: string]: Shout[] }>({})
-  const { query } = useGraphQL()
   const [seen, setSeen] = makePersisted(createSignal<{ [slug: string]: number }>({}), {
     name: 'discoursio-seen'
   })
@@ -133,9 +130,8 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
 
   // Load a single shout by slug and update the articleEntities and sortedFeed state
   const loadShout = async (slug: string): Promise<void> => {
-    const resp = await query(getShoutBySlug, { slug }).toPromise()
-    if (!resp) return
-    const newArticle = resp?.data?.get_shout as Shout
+    const fetcher = await getShout({ slug })
+    const newArticle = (await fetcher()) as Shout
     addFeed([newArticle])
     const newArticleIndex = sortedFeed().findIndex((s) => s.id === newArticle.id)
     if (newArticleIndex >= 0) {
@@ -149,36 +145,26 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
   const loadShoutsBy = async (
     options: LoadShoutsOptions
   ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
-    const resp = await query(loadShoutsByQuery, { options }).toPromise()
-    const result = resp?.data?.load_shouts_by || []
+    const fetcher = await loadShouts(options)
+    const result = (await fetcher()) || []
     const hasMore = result.length !== options.limit + 1 && result.length !== 0
-
-    if (hasMore) {
-      result.splice(-1)
-    }
-
+    if (hasMore) result.splice(-1)
     addFeed(result)
-
     return { hasMore, newShouts: result }
   }
-
+  const client = useGraphQL()
   // Load the user's feed based on the provided options and update the articleEntities and sortedFeed state
   const loadMyFeed = async (
     options: LoadShoutsOptions
   ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
     if (!options.limit) options.limit = 0
     options.limit += 1
-    const resp = await query(loadShoutsFeed, options).toPromise()
-    const result = resp?.data?.load_shouts_feed
+    const fetcher = await loadFollowedShouts(client, options)
+    const result = (await fetcher()) || []
     const hasMore = result.length === options.limit + 1
-
-    if (hasMore) {
-      resp.data.splice(-1)
-    }
-
-    addFeed(resp.data || [])
-
-    return { hasMore, newShouts: resp.data.load_shouts_by }
+    if (hasMore) result.splice(-1)
+    addFeed(result || [])
+    return { hasMore, newShouts: result }
   }
 
   // Load shouts based on the search query and update the articleEntities and sortedFeed state
@@ -186,16 +172,11 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
     options: QueryLoad_Shouts_SearchArgs
   ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
     options.limit = options?.limit || 0 + 1
-    const resp = await query(loadShoutsSearchQuery, options).toPromise()
-    const result = resp?.data?.load_shouts_search || []
+    const fetcher = await fetchShoutsSearch(options)
+    const result = (await fetcher()) || []
     const hasMore = result.length === (options?.limit || 0) + 1
-
-    if (hasMore) {
-      result.splice(-1)
-    }
-
+    if (hasMore) result.splice(-1)
     addFeed(result)
-
     return { hasMore, newShouts: result }
   }
 
@@ -216,8 +197,8 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
       order_by: 'likes_stat',
       limit: 10
     }
-    const resp = await query(loadShoutsByQuery, options).toPromise()
-    const result = resp?.data?.load_shouts_by || []
+    const fetcher = await loadShouts(options)
+    const result = (await fetcher()) || []
     addFeed(result)
     setTopMonthFeed(result)
   }
@@ -228,8 +209,8 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
       order_by: 'likes_stat',
       limit: 10
     }
-    const resp = await query(loadShoutsByQuery, options).toPromise()
-    const result = resp?.data?.load_shouts_by || []
+    const fetcher = await loadShouts(options)
+    const result = (await fetcher()) || []
     addFeed(result)
     setTopFeed(result)
   }

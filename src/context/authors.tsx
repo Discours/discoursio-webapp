@@ -8,13 +8,17 @@ import {
   on,
   useContext
 } from 'solid-js'
-import loadAuthorByQuery from '~/graphql/query/core/author-by'
-import loadAuthorsAllQuery from '~/graphql/query/core/authors-all'
-import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
-import { Author, Maybe, QueryLoad_Authors_ByArgs, Shout, Topic } from '~/graphql/schema/core.gen'
+import { getAuthor, loadAuthors, loadAuthorsAll } from '~/graphql/api/public'
+import {
+  Author,
+  Maybe,
+  QueryGet_AuthorArgs,
+  QueryLoad_Authors_ByArgs,
+  Shout,
+  Topic
+} from '~/graphql/schema/core.gen'
 import { byStat } from '~/lib/sortby'
 import { useFeed } from './feed'
-import { useGraphQL } from './graphql'
 
 const TOP_AUTHORS_COUNT = 5
 
@@ -35,7 +39,7 @@ type AuthorsContextType = {
   authorsSorted: Accessor<Author[]>
   addAuthors: (authors: Author[]) => void
   addAuthor: (author: Author) => void
-  loadAuthor: (slug: string) => Promise<void>
+  loadAuthor: (args: QueryGet_AuthorArgs) => Promise<void>
   loadAuthors: (args: QueryLoad_Authors_ByArgs) => Promise<void>
   topAuthors: Accessor<Author[]>
   authorsByTopic: Accessor<{ [topicSlug: string]: Author[] }>
@@ -52,7 +56,6 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
   const [authorsSorted, setAuthorsSorted] = createSignal<Author[]>([])
   const [sortBy, setSortBy] = createSignal<SortFunction<Author>>()
   const { feedByAuthor } = useFeed()
-  const { query } = useGraphQL()
   const setAuthorsSort = (stat: string) => setSortBy((_) => byStat(stat) as SortFunction<Author>)
 
   // Эффект для отслеживания изменений сигнала sortBy и обновления authorsSorted
@@ -69,6 +72,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
   )
 
   const addAuthors = (newAuthors: Author[]) => {
+    console.debug('[context.authors] storing new authors:', newAuthors)
     setAuthors((prevAuthors) => {
       const updatedAuthors = { ...prevAuthors }
       newAuthors.forEach((author) => {
@@ -86,13 +90,11 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     })
   }
 
-  const loadAuthor = async (slug: string): Promise<void> => {
+  const loadAuthor = async (opts: QueryGet_AuthorArgs): Promise<void> => {
     try {
-      const resp = await query(loadAuthorByQuery, { slug }).toPromise()
-      if (resp) {
-        const author = resp.data.get_author
-        if (author?.id) addAuthor(author)
-      }
+      const fetcher = await getAuthor(opts)
+      const author = await fetcher()
+      if (author) addAuthor(author as Author)
     } catch (error) {
       console.error('Error loading author:', error)
       throw error
@@ -123,15 +125,13 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     return sortedTopAuthors
   })
 
-  const loadAuthors = async (args: QueryLoad_Authors_ByArgs): Promise<void> => {
+  const loadAuthorsPage = async (args: QueryLoad_Authors_ByArgs): Promise<void> => {
     try {
-      const resp = await query(loadAuthorsByQuery, { ...args }).toPromise()
-      if (resp) {
-        const author = resp.data.get_author
-        if (author?.id) addAuthor(author)
-      }
+      const fetcher = await loadAuthors(args)
+      const data = await fetcher()
+      if (data) addAuthors(data as Author[])
     } catch (error) {
-      console.error('Error loading author:', error)
+      console.error('Error loading authors:', error)
       throw error
     }
   }
@@ -165,9 +165,11 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     return result
   })
 
-  const loadAllAuthors = async (): Promise<Author[]> => {
-    const resp = await query(loadAuthorsAllQuery, {}).toPromise()
-    return resp?.data?.get_authors_all || []
+  const loadAllAuthors = async () => {
+    const fetcher = loadAuthorsAll()
+    const data = await fetcher()
+    addAuthors(data || [])
+    return data || []
   }
 
   const contextValue: AuthorsContextType = {
@@ -177,7 +179,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     addAuthors,
     addAuthor,
     loadAuthor,
-    loadAuthors,
+    loadAuthors: loadAuthorsPage,
     topAuthors,
     authorsByTopic,
     setAuthorsSort

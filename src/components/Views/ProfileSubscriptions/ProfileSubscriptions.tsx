@@ -9,7 +9,7 @@ import { dummyFilter } from '~/lib/dummyFilter'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
 import { AuthorBadge } from '../../Author/AuthorBadge'
 import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
-import styles from '../../ProfileSettings/Seetings.module.scss'
+import styles from '../../ProfileSettings/Settings.module.scss'
 import { TopicBadge } from '../../Topic/TopicBadge'
 
 export const ProfileSubscriptions = () => {

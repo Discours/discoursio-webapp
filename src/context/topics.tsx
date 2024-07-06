@@ -44,7 +44,7 @@ const STORE_NAME = 'topics'
 const CACHE_LIFETIME = 24 * 60 * 60 * 1000 // один день в миллисекундах
 
 const setupIndexedDB = async () => {
-  if (!('indexedDB' in window)) {
+  if (window && !('indexedDB' in window)) {
     console.error("This browser doesn't support IndexedDB")
     return
   }

@@ -55,7 +55,7 @@ const AUTO_SAVE_DELAY = 3000
 
 const handleScrollTopButtonClick = (ev: MouseEvent | TouchEvent) => {
   ev.preventDefault()
-  window.scrollTo({
+  window?.scrollTo({
     top: 0,
     behavior: 'smooth'
   })

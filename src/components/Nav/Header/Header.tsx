@@ -71,7 +71,7 @@ export const Header = (props: Props) => {
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
 
     if (fixed() || modal() !== null) {
-      windowScrollTop = window.scrollY
+      windowScrollTop = window?.scrollY || 0
       if (mainContent) mainContent.style.marginTop = `-${windowScrollTop}px`
     }
 
@@ -79,7 +79,7 @@ export const Header = (props: Props) => {
     document.body.classList.toggle(styles.fixed, fixed() && !modal())
 
     if (!(fixed() || modal())) {
-      window.scrollTo(0, windowScrollTop)
+      window?.scrollTo(0, windowScrollTop)
       if (mainContent) mainContent.style.marginTop = ''
     }
   })

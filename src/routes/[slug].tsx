@@ -48,9 +48,9 @@ export default (props: RouteSectionProps<{ article: Shout }>) => {
       (a?: Shout) => {
         if (!a) return
         console.debug('[routes.slug] article found')
-        window.gtag?.('event', 'page_view', {
+        window?.gtag?.('event', 'page_view', {
           page_title: a.title,
-          page_location: window.location.href,
+          page_location: window?.location.href || '',
           page_path: loc.pathname
         })
       },

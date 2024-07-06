@@ -1,5 +1,5 @@
 import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
-import { ErrorBoundary, Suspense, createMemo, createReaction } from 'solid-js'
+import { ErrorBoundary, Suspense, createEffect, createMemo } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { TopicView } from '~/components/Views/Topic'
 import { Loading } from '~/components/_shared/Loading'
@@ -34,16 +34,12 @@ export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
   const { t } = useLocalize()
   const topic = createMemo(() => topicEntities?.()[params.slug])
   const title = createMemo(() => `${t('Discours')} :: ${topic()?.title || ''}`)
-
-  // docs: `a side effect that is run the first time the expression
-  // wrapped by the returned tracking function is notified of a change`
-  createReaction(() => {
-    if (topic()) {
-      console.debug('[routes.slug] article signal changed once')
-      window.gtag?.('event', 'page_view', {
+  createEffect(() => {
+    if (topic() && window) {
+      window?.gtag?.('event', 'page_view', {
         page_title: topic()?.title,
-        page_location: window.location.href,
-        page_path: window.location.pathname
+        page_location: window?.location.href,
+        page_path: window?.location.pathname
       })
     }
   })

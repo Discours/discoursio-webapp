@@ -75,7 +75,7 @@ export const NotificationsPanel = (props: Props) => {
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
 
     if (props.isOpen && mainContent && window) {
-      windowScrollTop = window.scrollY
+      windowScrollTop = window?.scrollY || 0
       mainContent.style.marginTop = `-${windowScrollTop}px`
     }
 
@@ -83,7 +83,7 @@ export const NotificationsPanel = (props: Props) => {
 
     if (!props.isOpen && mainContent && window) {
       mainContent.style.marginTop = ''
-      window.scrollTo(0, windowScrollTop)
+      window?.scrollTo(0, windowScrollTop)
     }
   })
 

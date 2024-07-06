@@ -20,14 +20,13 @@ const isInViewport = (el: Element): boolean => {
   return rect.top <= DEFAULT_HEADER_OFFSET + 24 // default offset + 1.5em (default header margin-top)
 }
 const scrollToHeader = (element: HTMLElement) => {
-  if (window)
-    window.scrollTo({
-      behavior: 'smooth',
-      top:
-        element.getBoundingClientRect().top -
-        document.body.getBoundingClientRect().top -
-        DEFAULT_HEADER_OFFSET
-    })
+  window?.scrollTo({
+    behavior: 'smooth',
+    top:
+      element.getBoundingClientRect().top -
+      document?.body.getBoundingClientRect().top -
+      DEFAULT_HEADER_OFFSET
+  })
 }
 
 export const TableOfContents = (props: Props) => {

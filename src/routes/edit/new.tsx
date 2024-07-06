@@ -78,7 +78,7 @@ export default () => {
               </div>
             </li>
           </ul>
-          <Button value={t('Back')} onClick={() => window.history.back()} />
+          <Button value={t('Back')} onClick={() => window?.history.back()} />
         </article>
       </AuthGuard>
     </PageLayout>

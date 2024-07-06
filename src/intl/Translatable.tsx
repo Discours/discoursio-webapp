@@ -35,15 +35,15 @@ export default function TranslationWrapper(props: TranslationWrapperProps): JSX.
   const [isTranslating, setIsTranslating] = createSignal(false)
 
   onMount(async () => {
-    if ('translation' in window) {
-      const translation = (window as Window).translation
+    if (window && 'translation' in window) {
+      const translation = (window as Window)?.translation
 
       const canTranslate = await translation?.canTranslate({
         sourceLanguage: props.sourceLanguage || 'ru',
         targetLanguage: props.targetLanguage
       })
 
-      if (canTranslate !== 'no') {
+      if (translation && canTranslate !== 'no') {
         setIsTranslating(true)
 
         try {

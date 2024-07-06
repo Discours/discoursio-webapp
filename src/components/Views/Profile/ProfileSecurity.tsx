@@ -87,8 +87,8 @@ export const ProfileSecurityView = (_props: any) => {
     handleInputChange('newPasswordConfirm', value)
     if (newPasswordRepeatRef && value !== formData()['newPassword']) {
       const rect = newPasswordRepeatRef.getBoundingClientRect()
-      const topPosition = window.scrollY + rect.top - DEFAULT_HEADER_OFFSET * 2
-      window.scrollTo({
+      const topPosition = (window?.scrollY || 0) + rect.top - DEFAULT_HEADER_OFFSET * 2
+      window?.scrollTo({
         top: topPosition,
         left: 0,
         behavior: 'smooth'
@@ -117,8 +117,8 @@ export const ProfileSecurityView = (_props: any) => {
           setOldPasswordError(t('Incorrect old password'))
           showSnackbar({ type: 'error', body: t('Incorrect old password') })
           const rect = oldPasswordRef.getBoundingClientRect()
-          const topPosition = window.scrollY + rect.top - DEFAULT_HEADER_OFFSET * 2
-          window.scrollTo({
+          const topPosition = (window?.scrollY || 0) + rect.top - DEFAULT_HEADER_OFFSET * 2
+          window?.scrollTo({
             top: topPosition,
             left: 0,
             behavior: 'smooth'

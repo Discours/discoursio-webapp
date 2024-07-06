@@ -40,10 +40,10 @@ export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
   createReaction(() => {
     if (author()) {
       console.debug('[routes.slug] article signal changed once')
-      window.gtag?.('event', 'page_view', {
+      window?.gtag?.('event', 'page_view', {
         page_title: author()?.name || '',
-        page_location: window.location.href,
-        page_path: window.location.pathname
+        page_location: window?.location.href || '',
+        page_path: window?.location.pathname || ''
       })
     }
   })

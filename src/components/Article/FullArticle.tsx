@@ -57,12 +57,12 @@ export type ArticlePageSearchParams = {
 
 const scrollTo = (el: HTMLElement) => {
   const { top } = el.getBoundingClientRect()
-  if (window)
-    window.scrollTo({
-      top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
-      left: 0,
-      behavior: 'smooth'
-    })
+
+  window?.scrollTo({
+    top: top + window.scrollY - DEFAULT_HEADER_OFFSET,
+    left: 0,
+    behavior: 'smooth'
+  })
 }
 
 const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
@@ -270,7 +270,8 @@ export const FullArticle = (props: Props) => {
   // Check iframes size
   let articleContainer: HTMLElement | undefined
   const updateIframeSizes = () => {
-    if (!(articleContainer && props.article.body && window)) return
+    if (!window) return
+    if (!(articleContainer && props.article.body)) return
     const iframes = articleContainer?.querySelectorAll('iframe')
     if (!iframes) return
     const containerWidth = articleContainer?.offsetWidth

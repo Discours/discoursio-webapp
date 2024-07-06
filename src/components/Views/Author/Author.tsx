@@ -46,7 +46,7 @@ export const AuthorView = (props: Props) => {
   const { followers: myFollowers, follows: myFollows } = useFollowing()
   const { session } = useSession()
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const [slug, setSlug] = createSignal(props.authorSlug)
+  const [authorSlug, setSlug] = createSignal(props.authorSlug)
   const { sortedFeed } = useFeed()
   const { modal, hideModal } = useUI()
   const loc = useLocation()
@@ -76,8 +76,8 @@ export const AuthorView = (props: Props) => {
   // 1 // проверяет не собственный ли это профиль, иначе - загружает
   const [isFetching, setIsFetching] = createSignal(false)
   createEffect(
-    on([() => session()?.user?.app_data?.profile, () => props.authorSlug || ''], async ([me, s]) => {
-      const my = s && me?.slug === s
+    on([() => session()?.user?.app_data?.profile, () => props.authorSlug || ''], async ([me, slug]) => {
+      const my = slug && me?.slug === slug
       if (my) {
         console.debug('[Author] my profile precached')
         if (me) {
@@ -85,10 +85,10 @@ export const AuthorView = (props: Props) => {
           if (myFollowers()) setFollowers((myFollowers() || []) as Author[])
           changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
         }
-      } else if (s && !isFetching()) {
+      } else if (slug && !isFetching()) {
         setIsFetching(true)
-        setSlug(s)
-        await loadAuthor(s)
+        setSlug(slug)
+        await loadAuthor({ slug })
         setIsFetching(false) // Сброс состояния загрузки после завершения
       }
     })
@@ -96,19 +96,19 @@ export const AuthorView = (props: Props) => {
   // 3 // after fetch loading following data
   createEffect(
     on(
-      [followers, () => authorsEntities()[slug()]],
+      [followers, () => authorsEntities()[authorSlug()]],
       async ([current, found]) => {
         if (current) return
         if (!found) return
         setAuthor(found)
-        console.info(`[Author] profile for @${slug()} fetched`)
-        const followsResp = await query(getAuthorFollowsQuery, { slug: slug() }).toPromise()
+        console.info(`[Author] profile for @${authorSlug()} fetched`)
+        const followsResp = await query(getAuthorFollowsQuery, { slug: authorSlug() }).toPromise()
         const follows = followsResp?.data?.get_author_followers || {}
         changeFollowing([...(follows?.authors || []), ...(follows?.topics || [])])
-        console.info(`[Author] follows for @${slug()} fetched`)
-        const followersResp = await query(getAuthorFollowersQuery, { slug: slug() }).toPromise()
+        console.info(`[Author] follows for @${authorSlug()} fetched`)
+        const followersResp = await query(getAuthorFollowersQuery, { slug: authorSlug() }).toPromise()
         setFollowers(followersResp?.data?.get_author_followers || [])
-        console.info(`[Author] followers for @${slug()} fetched`)
+        console.info(`[Author] followers for @${authorSlug()} fetched`)
         setIsFetching(false)
       },
       { defer: true }

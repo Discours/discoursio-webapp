@@ -10,6 +10,7 @@ import type { Author } from '~/graphql/schema/core.gen'
 import enKeywords from '~/intl/locales/en/keywords.json'
 import ruKeywords from '~/intl/locales/ru/keywords.json'
 import { authorLetterReduce, translateAuthor } from '~/intl/translate'
+import { dummyFilter } from '~/lib/dummyFilter'
 import { getImageUrl } from '~/lib/getImageUrl'
 import { scrollHandler } from '~/utils/scroll'
 import { AuthorsList } from '../../AuthorsList'
@@ -27,23 +28,29 @@ export const ABC = {
   en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
 }
 
+// useAuthors sorted from context, set filter/sort
+
 export const AllAuthors = (props: Props) => {
   const { t, lang } = useLocalize()
-  const [searchQuery, setSearchQuery] = createSignal('')
   const alphabet = createMemo(() => ABC[lang()] || ABC['ru'])
   const [searchParams, changeSearchParams] = useSearchParams<{ by?: string }>()
-  const { authorsSorted, addAuthors, setAuthorsSort } = useAuthors()
+  const { authorsSorted, setAuthorsSort } = useAuthors()
+  const authors = createMemo(() => props.authors || authorsSorted())
 
+  // filter
+  const [searchQuery, setSearchQuery] = createSignal('')
+  const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
+  createEffect(() =>
+    authors() && setFilteredAuthors((_prev: Author[]) => dummyFilter(authors(), searchQuery(), lang()) as Author[])
+  )
+
+  // sort by
   onMount(() => !searchParams?.by && changeSearchParams({ by: 'name' }))
   createEffect(on(() => searchParams?.by || 'name', setAuthorsSort || ((_) => null), {}))
-  createEffect(on(() => props.authors || [], addAuthors || ((_) => null), {}))
 
-  const filteredAuthors = createMemo(() => {
-    const query = searchQuery().toLowerCase()
-    return authorsSorted?.()?.filter((a: Author) => a?.name?.toLowerCase().includes(query)) || []
-  })
-
+  // store by first char
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
+    console.debug('[components.AllAuthors] byLetterFiltered')
     return (
       filteredAuthors()?.reduce(
         (acc, author: Author) => authorLetterReduce(acc, author, lang()),
@@ -65,7 +72,7 @@ export const AllAuthors = (props: Props) => {
   const description = createMemo(() => t('List of authors of the open editorial community'))
 
   return (
-    <div class={clsx(styles.allAuthorsPage, 'wide-container')}>
+    <div class={clsx([styles.allAuthorsPage, 'wide-container'])}>
       <Meta name="descprition" content={description() || ''} />
       <Meta name="keywords" content={lang() === 'ru' ? ruKeywords[''] : enKeywords['']} />
       <Meta name="og:type" content="article" />
@@ -165,9 +172,9 @@ export const AllAuthors = (props: Props) => {
               )}
             </For>
           </Show>
-          <Show when={searchParams?.by !== 'name' && props.isLoaded}>
+          <Show when={authors().length && searchParams?.by !== 'name' && props.isLoaded}>
             <AuthorsList
-              allAuthorsLength={authorsSorted?.()?.length || 0}
+              allAuthorsLength={authors().length}
               searchQuery={searchQuery()}
               query={searchParams?.by === 'followers' ? 'followers' : 'shouts'}
             />

@@ -1,15 +1,16 @@
-import { createPopper } from '@popperjs/core'
-import { clsx } from 'clsx'
 // import { install } from 'ga-gtag'
+import { createPopper } from '@popperjs/core'
+import { Link, Meta } from '@solidjs/meta'
+import { A, useSearchParams } from '@solidjs/router'
+import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
-
-import { Link, Meta } from '@solidjs/meta'
+import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
-import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
+import type { Author, Maybe, QueryLoad_Reactions_ByArgs, Shout, Topic } from '~/graphql/schema/core.gen'
 import { isCyrillic } from '~/intl/translate'
 import { getImageUrl, getOpenGraphImageUrl } from '~/lib/getImageUrl'
 import { MediaItem } from '~/types/mediaitem'
@@ -34,8 +35,6 @@ import { CommentsTree } from './CommentsTree'
 import { SharePopup, getShareUrl } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
 
-import { A, useSearchParams } from '@solidjs/router'
-import { useFeed } from '~/context/feed'
 import stylesHeader from '../Nav/Header/Header.module.scss'
 import styles from './Article.module.scss'
 
@@ -79,24 +78,24 @@ export const FullArticle = (props: Props) => {
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { addSeen } = useFeed()
 
-  const formattedDate = createMemo(() => formatDate(new Date((props.article?.published_at || 0) * 1000)))
+  const formattedDate = createMemo(() => formatDate(new Date((props.article.published_at || 0) * 1000)))
 
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
-      (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
-        props.article?.created_by?.id === author().id ||
+      (props.article.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
+        props.article.created_by?.id === author().id ||
         session()?.user?.roles?.includes('editor'))
   )
 
   const mainTopic = createMemo(() => {
-    const mainTopicSlug = (props.article?.topics?.length || 0) > 0 ? props.article.main_topic : null
-    const mt = props.article?.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
+    const mainTopicSlug = (props.article.topics?.length || 0) > 0 ? props.article.main_topic : null
+    const mt = props.article.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
     if (mt) {
       mt.title = lang() === 'en' ? capitalize(mt.slug.replace(/-/, ' ')) : mt.title
       return mt
     }
-    return props.article?.topics?.[0]
+    return props.article.topics?.[0]
   })
 
   const handleBookmarkButtonClick = (ev: MouseEvent | undefined) => {
@@ -107,10 +106,10 @@ export const FullArticle = (props: Props) => {
   }
 
   const body = createMemo(() => {
-    if (props.article?.layout === 'literature') {
+    if (props.article.layout === 'literature') {
       try {
-        if (props.article?.media) {
-          const media = JSON.parse(props.article?.media)
+        if (props.article.media) {
+          const media = JSON.parse(props.article.media)
           if (media.length > 0) {
             return media[0].body
           }
@@ -119,7 +118,7 @@ export const FullArticle = (props: Props) => {
         console.error(error)
       }
     }
-    return props.article?.body || ''
+    return props.article.body || ''
   })
 
   const imageUrls = createMemo(() => {
@@ -145,7 +144,7 @@ export const FullArticle = (props: Props) => {
 
   const media = createMemo<MediaItem[]>(() => {
     try {
-      return JSON.parse(props.article?.media || '[]')
+      return JSON.parse(props.article.media || '[]')
     } catch {
       return []
     }
@@ -304,7 +303,8 @@ export const FullArticle = (props: Props) => {
 
   onMount(async () => {
     // install('G-LQ4B87H8C2')
-    await loadReactionsBy({ by: { shout: props.article.slug } })
+    const opts: QueryLoad_Reactions_ByArgs = { by: { shout: props.article.slug }, limit: 999, offset: 0 }
+    const _rrr = await loadReactionsBy(opts)
     addSeen(props.article.slug)
     setIsReactionsLoaded(true)
     document.title = props.article.title
@@ -326,18 +326,18 @@ export const FullArticle = (props: Props) => {
     })
   })
 
-  const cover = props.article.cover ?? 'production/image/logo_image.png'
+  const cover = props.article.cover || 'production/image/logo_image.png'
   const ogImage = getOpenGraphImageUrl(cover, {
     title: props.article.title,
     topic: mainTopic()?.title || '',
-    author: props.article?.authors?.[0]?.name || '',
+    author: props.article.authors?.[0]?.name || '',
     width: 1200
   })
 
   const description = getArticleDescription(props.article.description || body() || media()[0]?.body)
   const ogTitle = props.article.title
   const keywords = getArticleKeywords(props.article)
-  const shareUrl = getShareUrl({ pathname: `/${props.article.slug}` })
+  const shareUrl = getShareUrl({ pathname: `/${props.article.slug || ''}` })
   const getAuthorName = (a: Author) => {
     return lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replace(/-/, ' ')) : a.name
   }
@@ -363,19 +363,19 @@ export const FullArticle = (props: Props) => {
             onClick={handleArticleBodyClick}
           >
             {/*TODO: Check styles.shoutTopic*/}
-            <Show when={props.article?.layout !== 'audio'}>
+            <Show when={props.article.layout !== 'audio'}>
               <div class={styles.shoutHeader}>
                 <Show when={mainTopic()}>
                   <CardTopic title={mainTopic()?.title || ''} slug={mainTopic()?.slug || ''} />
                 </Show>
 
-                <h1>{props.article?.title || ''}</h1>
-                <Show when={props.article?.subtitle}>
-                  <h4>{props.article?.subtitle || ''}</h4>
+                <h1>{props.article.title || ''}</h1>
+                <Show when={props.article.subtitle}>
+                  <h4>{props.article.subtitle || ''}</h4>
                 </Show>
 
                 <div class={styles.shoutAuthor}>
-                  <For each={props.article?.authors}>
+                  <For each={props.article.authors}>
                     {(a: Maybe<Author>, index: () => number) => (
                       <>
                         <Show when={index() > 0}>, </Show>
@@ -386,39 +386,39 @@ export const FullArticle = (props: Props) => {
                 </div>
                 <Show
                   when={
-                    props.article?.cover &&
-                    props.article?.layout !== 'video' &&
-                    props.article?.layout !== 'image'
+                    props.article.cover &&
+                    props.article.layout !== 'video' &&
+                    props.article.layout !== 'image'
                   }
                 >
                   <figure class="img-align-column">
                     <Image
                       width={800}
-                      alt={props.article?.cover_caption || ''}
-                      src={props.article?.cover || ''}
+                      alt={props.article.cover_caption || ''}
+                      src={props.article.cover || ''}
                     />
-                    <figcaption innerHTML={props.article?.cover_caption || ''} />
+                    <figcaption innerHTML={props.article.cover_caption || ''} />
                   </figure>
                 </Show>
               </div>
             </Show>
-            <Show when={props.article?.lead}>
-              <section class={styles.lead} innerHTML={props.article?.lead || ''} />
+            <Show when={props.article.lead}>
+              <section class={styles.lead} innerHTML={props.article.lead || ''} />
             </Show>
-            <Show when={props.article?.layout === 'audio'}>
+            <Show when={props.article.layout === 'audio'}>
               <AudioHeader
-                title={props.article?.title || ''}
-                cover={props.article?.cover || ''}
+                title={props.article.title || ''}
+                cover={props.article.cover || ''}
                 artistData={media()?.[0]}
                 topic={mainTopic() as Topic}
               />
               <Show when={media().length > 0}>
                 <div class="media-items">
-                  <AudioPlayer media={media()} articleSlug={props.article?.slug || ''} body={body()} />
+                  <AudioPlayer media={media()} articleSlug={props.article.slug || ''} body={body()} />
                 </div>
               </Show>
             </Show>
-            <Show when={media() && props.article?.layout === 'video'}>
+            <Show when={media() && props.article.layout === 'video'}>
               <div class="media-items">
                 <For each={media() || []}>
                   {(m: MediaItem) => (
@@ -542,7 +542,7 @@ export const FullArticle = (props: Props) => {
                 <Popover content={t('Edit')}>
                   {(triggerRef: (el: HTMLElement) => void) => (
                     <div class={styles.shoutStatsItem} ref={triggerRef}>
-                      <A href={`/edit/${props.article?.id}`} class={styles.shoutStatsItemInner}>
+                      <A href={`/edit/${props.article.id}`} class={styles.shoutStatsItemInner}>
                         <Icon name="pencil-outline" class={styles.icon} />
                         <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
                       </A>
@@ -577,9 +577,9 @@ export const FullArticle = (props: Props) => {
               </div>
             </Show>
 
-            <Show when={props.article?.topics?.length}>
+            <Show when={props.article.topics?.length}>
               <div class={styles.topicsList}>
-                <For each={props.article?.topics || []}>
+                <For each={props.article.topics || []}>
                   {(topic) => (
                     <div class={styles.shoutTopic}>
                       <A href={`/topic/${topic?.slug || ''}`}>

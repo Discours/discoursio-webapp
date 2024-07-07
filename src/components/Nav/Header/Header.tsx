@@ -191,7 +191,7 @@ export const Header = (props: Props) => {
               <div class={styles.articleHeader}>{props.title}</div>
             </Show>
             <div class={clsx(styles.mainNavigation, { [styles.fixed]: fixed() })}>
-              <ul class="view-switcher" onClick={() => !fixed() && toggleFixed()}>
+              <ul class="view-switcher">
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
                   onMouseOut={hideSubnavigation}

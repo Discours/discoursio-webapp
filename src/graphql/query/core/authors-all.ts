@@ -1,7 +1,7 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query {
+  query GetAuthorsAllQuery {
     get_authors_all {
       id
       slug

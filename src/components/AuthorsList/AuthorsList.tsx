@@ -1,12 +1,12 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on } from 'solid-js'
 import { useAuthors } from '~/context/authors'
-import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
-import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
+import { loadAuthors } from '~/graphql/api/public'
 import { Author } from '~/graphql/schema/core.gen'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { InlineLoader } from '../InlineLoader'
+import { AUTHORS_PER_PAGE } from '../Views/AllAuthors/AllAuthors'
 import { Button } from '../_shared/Button'
 import styles from './AuthorsList.module.scss'
 
@@ -17,7 +17,7 @@ type Props = {
   allAuthorsLength?: number
 }
 
-const PAGE_SIZE = 20
+// pagination handling, loadAuthors cached from api, addAuthors to context
 
 export const AuthorsList = (props: Props) => {
   const { t } = useLocalize()
@@ -27,18 +27,17 @@ export const AuthorsList = (props: Props) => {
   const [loading, setLoading] = createSignal(false)
   const [currentPage, setCurrentPage] = createSignal({ shouts: 0, followers: 0 })
   const [allLoaded, setAllLoaded] = createSignal(false)
-  const { query } = useGraphQL()
 
   const fetchAuthors = async (queryType: Props['query'], page: number) => {
     setLoading(true)
-    const offset = PAGE_SIZE * page
-    const resp = await query(loadAuthorsByQuery, {
+    const offset = AUTHORS_PER_PAGE * page
+    const fetcher = await loadAuthors({
       by: { order: queryType },
-      limit: PAGE_SIZE,
+      limit: AUTHORS_PER_PAGE,
       offset
     })
-    const result = resp?.data?.load_authors_by
-    if ((result?.length || 0) > 0) {
+    const result = await fetcher()
+    if (result) {
       addAuthors([...result])
       if (queryType === 'shouts') {
         setAuthorsByShouts((prev) => [...(prev || []), ...result])
@@ -70,17 +69,7 @@ export const AuthorsList = (props: Props) => {
   )
 
   const authorsList = () => (props.query === 'shouts' ? authorsByShouts() : authorsByFollowers())
-
-  // TODO: do it with backend
-  // createEffect(() => {
-  //   if (props.searchQuery) {
-  //     // search logic
-  //   }
-  // })
-
-  createEffect(() => {
-    setAllLoaded(props.allAuthorsLength === authorsList.length)
-  })
+  createEffect(() => setAllLoaded(props.allAuthorsLength === authorsList.length))
 
   return (
     <div class={clsx(styles.AuthorsList, props.class)}>

@@ -220,7 +220,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <A href={`/article${props.article?.slug || ''}`}>
+          <A href={`/${props.article?.slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer} innerHTML={title} />

@@ -2,10 +2,10 @@ import type { JSX } from 'solid-js'
 
 import { createContext, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
+import { loadReactions } from '~/graphql/api/public'
 import createReactionMutation from '~/graphql/mutation/core/reaction-create'
 import destroyReactionMutation from '~/graphql/mutation/core/reaction-destroy'
 import updateReactionMutation from '~/graphql/mutation/core/reaction-update'
-import getReactionsByQuery from '~/graphql/query/core/reactions-load-by'
 import {
   MutationCreate_ReactionArgs,
   MutationUpdate_ReactionArgs,
@@ -37,11 +37,11 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionsByShout, setReactionsByShout] = createStore<Record<number, Reaction[]>>({})
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
-  const { query, mutation } = useGraphQL()
+  const { mutation } = useGraphQL()
 
   const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
-    const resp = await query(getReactionsByQuery, opts)
-    const result = resp?.data?.load_reactions_by || []
+    const fetcher = await loadReactions({ ...opts })
+    const result = (await fetcher()) || []
     const newReactionsByShout: Record<string, Reaction[]> = {}
     const newReactionEntities = result.reduce(
       (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {

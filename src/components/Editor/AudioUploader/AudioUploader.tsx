@@ -8,9 +8,8 @@ import { composeMediaItems } from '~/utils/composeMediaItems'
 import { AudioPlayer } from '../../Article/AudioPlayer'
 import styles from './AudioUploader.module.scss'
 
-
 if (!isServer && window) window.Buffer = Buffer
-console.debug('buffer patch passed')
+// console.debug('buffer patch passed')
 
 type Props = {
   class?: string

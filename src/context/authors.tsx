@@ -173,13 +173,13 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
   }
 
   const contextValue: AuthorsContextType = {
-    loadAllAuthors,
     authorsEntities,
     authorsSorted,
     addAuthors,
     addAuthor,
     loadAuthor,
-    loadAuthors: loadAuthorsPaginated,
+    loadAuthors: loadAuthorsPaginated, // with stat
+    loadAllAuthors, // without stat
     topAuthors,
     authorsByTopic,
     setAuthorsSort

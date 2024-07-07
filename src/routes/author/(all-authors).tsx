@@ -23,17 +23,17 @@ const fetchAllAuthors = async () => {
 
 export const route = {
   load: async ({ location: { query } }: RouteLoadFuncArgs) => {
-      const by = query.by
-      const isAll = !by || by === 'name'
-      return {
-        authors: isAll && await fetchAllAuthors(),
-        topFollowedAuthors: await fetchAuthorsWithStat(10, 'followers'),
-        topShoutsAuthors: await fetchAuthorsWithStat(10, 'shouts')
-      } as AllAuthorsData
+    const by = query.by
+    const isAll = !by || by === 'name'
+    return {
+      authors: isAll && (await fetchAllAuthors()),
+      topFollowedAuthors: await fetchAuthorsWithStat(10, 'followers'),
+      topShoutsAuthors: await fetchAuthorsWithStat(10, 'shouts')
+    } as AllAuthorsData
   }
 } satisfies RouteDefinition
 
-type AllAuthorsData = { authors: Author[], topFollowedAuthors: Author[], topShoutsAuthors: Author[] }
+type AllAuthorsData = { authors: Author[]; topFollowedAuthors: Author[]; topShoutsAuthors: Author[] }
 
 // addAuthors to context
 
@@ -52,16 +52,20 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
   })
 
   // update context when data is loaded
-  createEffect(on([data, () => addAuthors],
-    ([data, aa])=> {
-      if(data && aa) {
-        aa(data.authors as Author[])
-        aa(data.topFollowedAuthors as Author[])
-        aa(data.topShoutsAuthors as Author[])
-        console.debug('[routes.author] added all authors:', data.authors)
-      }
-    }, { defer: true}
-  ))
+  createEffect(
+    on(
+      [data, () => addAuthors],
+      ([data, aa]) => {
+        if (data && aa) {
+          aa(data.authors as Author[])
+          aa(data.topFollowedAuthors as Author[])
+          aa(data.topShoutsAuthors as Author[])
+          console.debug('[routes.author] added all authors:', data.authors)
+        }
+      },
+      { defer: true }
+    )
+  )
 
   return (
     <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('All authors')}`}>
@@ -71,7 +75,8 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
             isLoaded={Boolean(data()?.authors)}
             authors={data()?.authors || []}
             topFollowedAuthors={data()?.topFollowedAuthors}
-            topWritingAuthors={data()?.topShoutsAuthors}/>
+            topWritingAuthors={data()?.topShoutsAuthors}
+          />
         </Suspense>
       </ReactionsProvider>
     </PageLayout>

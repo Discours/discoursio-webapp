@@ -40,8 +40,10 @@ export const AllAuthors = (props: Props) => {
   // filter
   const [searchQuery, setSearchQuery] = createSignal('')
   const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
-  createEffect(() =>
-    authors() && setFilteredAuthors((_prev: Author[]) => dummyFilter(authors(), searchQuery(), lang()) as Author[])
+  createEffect(
+    () =>
+      authors() &&
+      setFilteredAuthors((_prev: Author[]) => dummyFilter(authors(), searchQuery(), lang()) as Author[])
   )
 
   // sort by

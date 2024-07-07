@@ -1,4 +1,11 @@
-import { RouteDefinition, RouteSectionProps, createAsync, redirect, useLocation, useParams } from '@solidjs/router'
+import {
+  RouteDefinition,
+  RouteSectionProps,
+  createAsync,
+  redirect,
+  useLocation,
+  useParams
+} from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
 import { ErrorBoundary, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
@@ -12,7 +19,6 @@ import { FullArticle } from '../components/Article/FullArticle'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { ReactionsProvider } from '../context/reactions'
 
-
 const fetchShout = async (slug: string): Promise<Shout> => {
   const shoutLoader = getShout({ slug })
   const shout = await shoutLoader()
@@ -21,7 +27,6 @@ const fetchShout = async (slug: string): Promise<Shout> => {
   }
   return shout
 }
-
 
 export const route: RouteDefinition = {
   load: async ({ params }) => {
@@ -46,12 +51,14 @@ export default (props: RouteSectionProps<{ article: Shout }>) => {
 
   const article = createAsync(async () => {
     if (params.slug && articleEntities?.()) {
-      return articleEntities()?.[params.slug] || props.data.article || await fetchShout(params.slug)
+      return articleEntities()?.[params.slug] || props.data.article || (await fetchShout(params.slug))
     }
     throw redirect('/404', { status: 404 })
   })
 
-  const title = createMemo(() => `${article()?.authors?.[0]?.name || t('Discours')} :: ${article()?.title || ''}`)
+  const title = createMemo(
+    () => `${article()?.authors?.[0]?.name || t('Discours')} :: ${article()?.title || ''}`
+  )
 
   onMount(async () => {
     if (gaIdentity && article()?.id) {
@@ -64,14 +71,20 @@ export default (props: RouteSectionProps<{ article: Shout }>) => {
     }
   })
 
-  createEffect(on(article, (a?: Shout) => {
-    if (!a) return
-    window?.gtag?.('event', 'page_view', {
-      page_title: a.title,
-      page_location: window?.location.href || '',
-      page_path: loc.pathname
-    })
-  }, { defer: true }))
+  createEffect(
+    on(
+      article,
+      (a?: Shout) => {
+        if (!a) return
+        window?.gtag?.('event', 'page_view', {
+          page_title: a.title,
+          page_location: window?.location.href || '',
+          page_path: loc.pathname
+        })
+      },
+      { defer: true }
+    )
+  )
 
   return (
     <ErrorBoundary fallback={() => <HttpStatusCode code={404} />}>

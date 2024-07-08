@@ -172,7 +172,20 @@ export const dictionaryBefore = [
   'коль',
   'чуть',
   'чуть ли не',
-  'чуть не'
+  'чуть не',
+  'a',
+  'to',
+  'in',
+  'into',
+  'from',
+  'get',
+  'of',
+  'out',
+  'the',
+  'is',
+  'are',
+  'be',
+  'at'
 ]
 
 export const dictionaryAfter = [

@@ -46,3 +46,18 @@ If workers is no needed use:
 - `npx playwright test --project=webkit --workers 4`
 
 For more information on how to write tests using Playwright - [Playwright documentation](https://playwright.dev/docs/intro).
+
+## 🚀 Tests in CI Mode
+
+Tests are executed within a GitHub workflow. We organize our tests into two main directories:
+
+- `tests`: Contains tests that do not require authentication.
+- `tests-with-auth`: Houses tests that interact with authenticated parts of the application.
+
+🔧 **Configuration:**
+
+Playwright is configured to utilize the `BASE_URL` environment variable. Ensure this is properly set in your CI configuration to point to the correct environment.
+
+📝 **Note:**
+
+After pages have been adjusted to work with authentication, all tests should be moved to the `tests` directory to streamline the testing process.

@@ -47,6 +47,7 @@ test.beforeAll(async ({ browser }) => {
   console.log('Waiting for the server to start...')
   await new Promise((resolve) => setTimeout(resolve, 5000))
   const baseURL = process.env.BASE_URL || 'https://localhost:3000'
+  console.log('Base URL:', baseURL)
   await waitForServer(baseURL)
   context = await browser.newContext()
   page = await context.newPage()

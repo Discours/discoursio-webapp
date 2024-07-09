@@ -61,10 +61,10 @@ test.afterAll(async () => {
 
 const pagesTitles = {
   '/': /Дискурс/,
-  '/feed': /Лента/,
+  '/feed': /Дискурс :: Лента/,
   '/support': /Поддержите Дискурс/,
-  '/author': /Авторы/,
-  '/topic': /Темы и сюжеты/
+  '/author': /Дискурс :: Все авторы/,
+  '/topic': /Дискурс :: Темы и сюжеты/
 }
 test.describe('Pages open', () => {
   Object.keys(pagesTitles).forEach((res: string) => {

@@ -5,7 +5,6 @@ import { TopicView } from '~/components/Views/Topic'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
-import { ReactionsProvider } from '~/context/reactions'
 import { useTopics } from '~/context/topics'
 import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
@@ -66,13 +65,11 @@ export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
           slug={topic()?.slug}
           cover={cover()}
         >
-          <ReactionsProvider>
             <TopicView
               topic={topic() as Topic}
               topicSlug={props.params.slug}
               shouts={articles() as Shout[]}
             />
-          </ReactionsProvider>
         </PageLayout>
       </Suspense>
     </ErrorBoundary>

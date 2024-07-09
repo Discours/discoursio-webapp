@@ -1,19 +1,10 @@
-import { RouteSectionProps, createAsync, useParams, useSearchParams } from '@solidjs/router'
+import { RouteSectionProps, createAsync, useSearchParams } from '@solidjs/router'
 import { Client } from '@urql/core'
 import { Show, createEffect, createSignal } from 'solid-js'
 import { Feed } from '~/components/Views/Feed'
 import { PageLayout } from '~/components/_shared/PageLayout'
-import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
-import { useSession } from '~/context/session'
-import {
-  loadBookmarkedShouts,
-  loadCoauthoredShouts,
-  loadDiscussedShouts,
-  loadFollowedShouts,
-  loadUnratedShouts
-} from '~/graphql/api/private'
 import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { SHOUTS_PER_PAGE } from '../(home)'
@@ -55,38 +46,6 @@ const fetchPublishedShouts = async (offset?: number, _client?: Client) => {
   return await shoutsLoader()
 }
 
-const fetchBookmarkedShouts = async (offset?: number, client?: Client) => {
-  const shoutsLoader = loadBookmarkedShouts(client, { limit: SHOUTS_PER_PAGE, offset })
-  return await shoutsLoader()
-}
-
-const fetchUnratedShouts = async (offset?: number, client?: Client) => {
-  const shoutsLoader = loadUnratedShouts(client, { limit: SHOUTS_PER_PAGE, offset })
-  return await shoutsLoader()
-}
-
-const fetchFollowedShouts = async (offset?: number, client?: Client) => {
-  const shoutsLoader = loadFollowedShouts(client, { limit: SHOUTS_PER_PAGE, offset })
-  return await shoutsLoader()
-}
-
-const fetchDiscussedShouts = async (offset?: number, client?: Client) => {
-  const shoutsLoader = loadDiscussedShouts(client, { limit: SHOUTS_PER_PAGE, offset })
-  return await shoutsLoader()
-}
-
-const fetchCoauthoredShouts = async (offset?: number, client?: Client) => {
-  const shoutsLoader = loadCoauthoredShouts(client, { limit: SHOUTS_PER_PAGE, offset })
-  return await shoutsLoader()
-}
-
-const fetchersByMode = {
-  followed: fetchFollowedShouts,
-  bookmarked: fetchBookmarkedShouts,
-  discussed: fetchDiscussedShouts,
-  coauthored: fetchCoauthoredShouts,
-  unrated: fetchUnratedShouts
-}
 
 export const route = {
   load: async ({ location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
@@ -99,9 +58,6 @@ export const route = {
 export default (props: RouteSectionProps<Shout[]>) => {
   const [searchParams] = useSearchParams<FeedSearchParams>()
   const { t } = useLocalize()
-  const params = useParams()
-  const client = useGraphQL()
-  const { session } = useSession()
   const [offset, setOffset] = createSignal<number>(0)
   const shouts = createAsync(async () => ({ ...props.data }) || (await loadMore()))
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal<boolean>(true)
@@ -118,10 +74,7 @@ export default (props: RouteSectionProps<Shout[]>) => {
       const period = searchParams?.by || 'month'
       options.filters = { after: getFromDate(period as FeedPeriod) }
     }
-    if (!session()) return await fetchPublishedShouts(newOffset)
-    const fetcher = fetchersByMode[params.feed as keyof typeof fetchersByMode]
-    if (!fetcher) return await fetchPublishedShouts(newOffset)
-    return await fetcher(newOffset, client)
+    return await fetchPublishedShouts(newOffset)
   }
   createEffect(() => setIsLoadMoreButtonVisible(offset() < (shouts()?.length || 0)))
   return (

@@ -4,7 +4,6 @@ import { AllTopics } from '~/components/Views/AllTopics'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
-import { ReactionsProvider } from '~/context/reactions'
 import { useTopics } from '~/context/topics'
 import { loadTopics } from '~/graphql/api/public'
 import { Topic } from '~/graphql/schema/core.gen'
@@ -29,11 +28,9 @@ export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
       headerTitle={`${t('Discours')} :: ${t('All topics')}`}
       desc="Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about"
     >
-      <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <AllTopics topics={topics() as Topic[]} />
         </Suspense>
-      </ReactionsProvider>
     </PageLayout>
   )
 }

@@ -6,7 +6,6 @@ import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
-import { ReactionsProvider } from '~/context/reactions'
 import { loadAuthors, loadAuthorsAll } from '~/graphql/api/public'
 import { Author, AuthorsBy } from '~/graphql/schema/core.gen'
 
@@ -73,7 +72,6 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
       title={`${t('Discours')} :: ${t('All authors')}`}
       desc="List of authors of the open editorial community"
     >
-      <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <AllAuthors
             isLoaded={Boolean(data()?.authors)}
@@ -82,7 +80,6 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
             authorsByShouts={data()?.authorsByShouts}
           />
         </Suspense>
-      </ReactionsProvider>
     </PageLayout>
   )
 }

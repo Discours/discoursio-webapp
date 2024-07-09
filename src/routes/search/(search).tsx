@@ -5,7 +5,6 @@ import { SearchView } from '~/components/Views/Search'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
-import { ReactionsProvider } from '~/context/reactions'
 import { loadShoutsSearch } from '~/graphql/api/public'
 import { QueryLoad_Shouts_SearchArgs, SearchResult } from '~/graphql/schema/core.gen'
 
@@ -49,7 +48,6 @@ export default () => {
 
   return (
     <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Search')}`}>
-      <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <Show when={isLoaded()} fallback={<Loading />}>
             <Show
@@ -64,7 +62,6 @@ export default () => {
             </Show>
           </Show>
         </Suspense>
-      </ReactionsProvider>
     </PageLayout>
   )
 }

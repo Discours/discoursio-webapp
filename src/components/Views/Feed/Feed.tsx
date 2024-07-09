@@ -1,6 +1,6 @@
 import { A, createAsync, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 import { DropDown } from '~/components/_shared/DropDown'
 import { Option } from '~/components/_shared/DropDown/DropDown'
 import { Icon } from '~/components/_shared/Icon'
@@ -17,7 +17,7 @@ import { useUI } from '~/context/ui'
 import { loadUnratedShouts } from '~/graphql/api/private'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
 import { byCreated } from '~/lib/sortby'
-import { FeedSearchParams } from '~/routes/feed/[feed]'
+import { FeedSearchParams } from '~/routes/feed/(feed)'
 import { CommentDate } from '../../Article/CommentDate'
 import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorBadge } from '../../Author/AuthorBadge'
@@ -64,16 +64,24 @@ export const FeedView = (props: FeedProps) => {
     setTopComments(comments.sort(byCreated).reverse())
   }
 
-  onMount(() => {
-    setIsLoading(true)
-    Promise.all([
-      loadTopComments(),
-      loadReactionsBy({ by: { shouts: props.shouts.map((s) => s.slug) } })
-    ]).finally(() => {
-      setIsRightColumnLoaded(true)
-      setIsLoading(false)
-    })
-  })
+  createEffect(
+    on(
+      () => props.shouts,
+      (sss: Shout[]) => {
+        if (sss) {
+          setIsLoading(true)
+          Promise.all([
+            loadTopComments(),
+            loadReactionsBy({ by: { shouts: sss.map((s: Shout) => s.slug) } })
+          ]).finally(() => {
+            setIsRightColumnLoaded(true)
+            setIsLoading(false)
+          })
+        }
+      },
+      { defer: true }
+    )
+  )
 
   const [shareData, setShareData] = createSignal<Shout | undefined>()
   const handleShare = (shared: Shout | undefined) => {

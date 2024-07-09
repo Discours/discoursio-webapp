@@ -9,7 +9,6 @@ import { HomeView, HomeViewProps } from '../components/Views/Home'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
-import { ReactionsProvider } from '../context/reactions'
 
 export const SHOUTS_PER_PAGE = 20
 
@@ -115,18 +114,16 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
 
   return (
     <PageLayout withPadding={true} title={t('Discours')} key={'home'}>
-      <ReactionsProvider>
-        <Suspense fallback={<Loading />}>
-          <HomeView {...(data() as HomeViewProps)} />
-          <Show when={canLoadMoreFeatured()}>
-            <p class="load-more-container">
-              <button class="button" onClick={loadMoreFeatured}>
-                {t('Load more')}
-              </button>
-            </p>
-          </Show>
-        </Suspense>
-      </ReactionsProvider>
+      <Suspense fallback={<Loading />}>
+        <HomeView {...(data() as HomeViewProps)} />
+        <Show when={canLoadMoreFeatured()}>
+          <p class="load-more-container">
+            <button class="button" onClick={loadMoreFeatured}>
+              {t('Load more')}
+            </button>
+          </p>
+        </Show>
+      </Suspense>
     </PageLayout>
   )
 }

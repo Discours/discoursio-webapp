@@ -105,7 +105,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const updateReaction = async (input: MutationUpdate_ReactionArgs): Promise<Reaction> => {
     const resp = await mutation(updateReactionMutation, input).toPromise()
     const result = resp?.data?.update_reaction
-    if (!result) throw Error('cannot update reaction')
+    if (!result) throw new Error('cannot update reaction')
     const { error, reaction } = result
     if (error) await showSnackbar({ type: 'error', body: t(error) })
     if (reaction) setReactionEntities(reaction.id, reaction)

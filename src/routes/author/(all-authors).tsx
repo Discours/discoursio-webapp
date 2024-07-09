@@ -2,7 +2,6 @@ import { RouteDefinition, RouteLoadFuncArgs, type RouteSectionProps, createAsync
 import { Suspense, createEffect, on } from 'solid-js'
 import { AllAuthors } from '~/components/Views/AllAuthors'
 import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
-import styles from '~/components/Views/AllAuthors/AllAuthors.module.scss'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
@@ -72,7 +71,6 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
     <PageLayout
       withPadding={true}
       title={`${t('Discours')} :: ${t('All authors')}`}
-      class={styles.allAuthorsPage}
       desc="List of authors of the open editorial community"
     >
       <ReactionsProvider>

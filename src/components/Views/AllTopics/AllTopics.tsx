@@ -90,13 +90,13 @@ export const AllTopics = (props: Props) => {
     </div>
   )
   const AllTopicAlphabeticallyHead = () => (
-    <div class="col-lg-18 col-xl-15">
+    <div class="col-lg-20 col-xl-18">
       <ul class={clsx('nodash', styles.alphabet)}>
-        <For each={Array.from(alphabet())}>
+        <For each={[...alphabet()]}>
           {(letter, index) => (
             <li>
               <Show when={letter in byLetter()} fallback={letter}>
-                <A
+                <a
                   href={`/topic?by=title#letter-${index()}`}
                   onClick={(event) => {
                     event.preventDefault()
@@ -104,7 +104,7 @@ export const AllTopics = (props: Props) => {
                   }}
                 >
                   {letter}
-                </A>
+                </a>
               </Show>
             </li>
           )}

@@ -20,7 +20,7 @@ export default () => {
     const result = await client.query(getShoutDraft, { shout_id: params.id }).toPromise()
     if (result) {
       const { shout: loadedShout, error } = result.data.get_my_shout
-      if (error) throw Error(error)
+      if (error) throw new Error(error)
       setShout(loadedShout)
     }
   }

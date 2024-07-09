@@ -73,7 +73,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
               setConnected(false)
               if (retried() < RECONNECT_TIMES) {
                 setRetried((r) => r + 1)
-              } else throw Error('failed')
+              } else throw new Error('failed')
             }
           } catch (error) {
             console.error('[context.connect] SSE init failed:', error)

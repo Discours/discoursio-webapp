@@ -9,6 +9,7 @@ import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { loadShouts } from '~/graphql/api/public'
 import { Author, LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
+import { getImageUrl } from '~/lib/getImageUrl'
 import { SHOUTS_PER_PAGE } from '../../(home)'
 
 const fetchAuthorShouts = async (slug: string, offset?: number) => {
@@ -47,6 +48,12 @@ export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
       })
     }
   })
+
+  const cover = createMemo(() =>
+    author()?.pic
+      ? getImageUrl(author()?.pic || '', { width: 1200 })
+      : getImageUrl('production/image/logo_image.png')
+  )
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>
@@ -54,8 +61,8 @@ export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
           title={`${t('Discours')} :: ${title()}`}
           headerTitle={author()?.name || ''}
           slug={author()?.slug}
-          articleBody={author()?.about || author()?.bio || ''}
-          cover={author()?.pic || ''}
+          desc={author()?.about || author()?.bio || ''}
+          cover={cover()}
         >
           <ReactionsProvider>
             <AuthorView

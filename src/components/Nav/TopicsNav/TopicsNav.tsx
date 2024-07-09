@@ -3,9 +3,9 @@ import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'
 
 import { A, useMatch } from '@solidjs/router'
-import styles from './Topics.module.scss'
+import styles from './TopicsNav.module.scss'
 
-export const Topics = () => {
+export const TopicsNav = () => {
   const { t } = useLocalize()
   const matchExpo = useMatch(() => '/expo')
   return (

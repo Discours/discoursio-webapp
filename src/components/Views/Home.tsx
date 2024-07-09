@@ -1,13 +1,9 @@
 import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
-
-import { Meta } from '@solidjs/meta'
 import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import { loadShouts } from '~/graphql/api/public'
 import { Author, Shout, Topic } from '~/graphql/schema/core.gen'
-import enKeywords from '~/intl/locales/en/keywords.json'
-import ruKeywords from '~/intl/locales/ru/keywords.json'
 import { SHOUTS_PER_PAGE } from '~/routes/(home)'
 import { capitalize } from '~/utils/capitalize'
 import { splitToPages } from '~/utils/splitToPages'
@@ -20,7 +16,7 @@ import { Row2 } from '../Feed/Row2'
 import { Row3 } from '../Feed/Row3'
 import { Row5 } from '../Feed/Row5'
 import RowShort from '../Feed/RowShort'
-import { Topics } from '../Nav/Topics'
+import { TopicsNav } from '../Nav/TopicsNav'
 import { Icon } from '../_shared/Icon'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 import styles from './Home.module.scss'
@@ -40,7 +36,7 @@ export interface HomeViewProps {
 }
 
 export const HomeView = (props: HomeViewProps) => {
-  const { t, lang } = useLocalize()
+  const { t } = useLocalize()
   const { topAuthors, addAuthors } = useAuthors()
   const { topTopics, randomTopic } = useTopics()
   const [randomTopicArticles, setRandomTopicArticles] = createSignal<Shout[]>([])
@@ -75,9 +71,8 @@ export const HomeView = (props: HomeViewProps) => {
 
   return (
     <>
-      <Meta name="keywords" content={`${lang() === 'ru' ? ruKeywords[''] : enKeywords['']}`} />
       <Show when={(props.featuredShouts || []).length > 0}>
-        <Topics />
+        <TopicsNav />
         <Row5 articles={props.featuredShouts.slice(0, 5)} nodate={true} />
         <Hero />
         <Show when={props.featuredShouts?.length > SHOUTS_PER_PAGE}>

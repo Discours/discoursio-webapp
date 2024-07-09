@@ -1,4 +1,3 @@
-import { Meta } from '@solidjs/meta'
 import { A, createAsync, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createMemo, createSignal, onMount } from 'solid-js'
@@ -17,9 +16,6 @@ import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
 import { loadUnratedShouts } from '~/graphql/api/private'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
-import ruKeywords from '~/intl/locales/ru/keywords.json'
-import enKeywords from '~/intl/locales/ru/keywords.json'
-import { getImageUrl } from '~/lib/getImageUrl'
 import { byCreated } from '~/lib/sortby'
 import { FeedSearchParams } from '~/routes/feed/[feed]'
 import { CommentDate } from '../../Article/CommentDate'
@@ -41,7 +37,7 @@ export type FeedProps = {
 }
 
 export const FeedView = (props: FeedProps) => {
-  const { t, lang } = useLocalize()
+  const { t } = useLocalize()
   const loc = useLocation()
   const client = useGraphQL()
   const unrated = createAsync(async () => {
@@ -79,12 +75,6 @@ export const FeedView = (props: FeedProps) => {
     })
   })
 
-  const ogImage = getImageUrl('production/image/logo_image.png')
-  const description = createMemo(() =>
-    t('Independent media project about culture, science, art and society with horizontal editing')
-  )
-  const ogTitle = createMemo(() => t('Feed'))
-
   const [shareData, setShareData] = createSignal<Shout | undefined>()
   const handleShare = (shared: Shout | undefined) => {
     showModal('share')
@@ -92,17 +82,7 @@ export const FeedView = (props: FeedProps) => {
   }
 
   return (
-    <div class="wide-container feed">
-      <Meta name="descprition" content={description()} />
-      <Meta name="keywords" content={lang() === 'ru' ? ruKeywords[''] : enKeywords['']} />
-      <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle()} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="twitter:image" content={ogImage} />
-      <Meta name="og:description" content={description()} />
-      <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle()} />
-      <Meta name="twitter:description" content={description()} />
+    <div class="feed">
       <div class="row">
         <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
           <Sidebar />

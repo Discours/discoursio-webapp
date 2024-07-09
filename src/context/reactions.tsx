@@ -40,7 +40,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const { mutation } = useGraphQL()
 
   const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
-    const fetcher = await loadReactions({ ...opts })
+    const fetcher = await loadReactions(opts)
     const result = (await fetcher()) || []
     const newReactionsByShout: Record<string, Reaction[]> = {}
     const newReactionEntities = result.reduce(

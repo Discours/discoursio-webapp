@@ -1,4 +1,3 @@
-import { Meta } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
@@ -7,10 +6,7 @@ import { SearchField } from '~/components/_shared/SearchField'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import type { Topic } from '~/graphql/schema/core.gen'
-import enKeywords from '~/intl/locales/en/keywords.json'
-import ruKeywords from '~/intl/locales/ru/keywords.json'
 import { dummyFilter } from '~/lib/dummyFilter'
-import { getImageUrl } from '~/lib/getImageUrl'
 import { capitalize } from '~/utils/capitalize'
 import { scrollHandler } from '~/utils/scroll'
 import { TopicBadge } from '../../Topic/TopicBadge'
@@ -98,26 +94,9 @@ export const AllTopics = (props: Props) => {
       </div>
     </div>
   )
-
-  // meta
-  const ogImage = getImageUrl('production/image/logo_image.png')
-  const ogTitle = t('Themes and plots')
-  const description = t(
-    'Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about'
-  )
-
   return (
-    <div class={clsx(styles.allTopicsPage, 'wide-container')}>
-      <Meta name="descprition" content={description} />
-      <Meta name="keywords" content={lang() === 'ru' ? ruKeywords[''] : enKeywords['']} />
-      <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="twitter:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
-      <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
+    <>
+      <h1>{t('Themes and plots')}</h1>
       <Show when={Boolean(filteredResults())} fallback={<Loading />}>
         <div class="row">
           <div class="col-md-19 offset-md-5">
@@ -199,6 +178,6 @@ export const AllTopics = (props: Props) => {
           </div>
         </div>
       </Show>
-    </div>
+    </>
   )
 }

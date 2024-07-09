@@ -9,6 +9,8 @@ import { ReactionsProvider } from '~/context/reactions'
 import { useTopics } from '~/context/topics'
 import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
+import { getImageUrl } from '~/lib/getImageUrl'
+import { getArticleDescription } from '~/utils/meta'
 import { SHOUTS_PER_PAGE } from '../(home)'
 
 const fetchTopicShouts = async (slug: string, offset?: number) => {
@@ -43,15 +45,26 @@ export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
       })
     }
   })
+  const desc = createMemo(() =>
+    topic()?.body
+      ? getArticleDescription(topic()?.body || '')
+      : t('The most interesting publications on the topic', { topicName: title() })
+  )
+  const cover = createMemo(() =>
+    topic()?.pic
+      ? getImageUrl(topic()?.pic || '', { width: 1200 })
+      : getImageUrl('production/image/logo_image.png')
+  )
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>
         <PageLayout
+          key="topic"
           title={title()}
+          desc={desc()}
           headerTitle={topic()?.title || ''}
           slug={topic()?.slug}
-          articleBody={topic()?.body || ''}
-          cover={topic()?.pic || ''}
+          cover={cover()}
         >
           <ReactionsProvider>
             <TopicView

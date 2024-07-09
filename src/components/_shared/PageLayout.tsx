@@ -1,20 +1,24 @@
-import type { JSX } from 'solid-js'
-
-import { Title } from '@solidjs/meta'
+import { Meta, Title } from '@solidjs/meta'
+import { useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal } from 'solid-js'
-
+import type { JSX } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { useLocalize } from '~/context/localize'
+import { Shout } from '~/graphql/schema/core.gen'
+import enKeywords from '~/intl/locales/en/keywords.json'
+import ruKeywords from '~/intl/locales/ru/keywords.json'
+import { getImageUrl, getOpenGraphImageUrl } from '~/lib/getImageUrl'
+import { getArticleKeywords } from '~/utils/meta'
 import { FooterView } from '../Discours/Footer'
 import { Header } from '../Nav/Header'
-
-import '../../styles/app.scss'
 import styles from './PageLayout.module.scss'
 
-type Props = {
+type PageLayoutProps = {
   title: string
+  desc?: string
   headerTitle?: string
   slug?: string
-  articleBody?: string
+  article?: Shout
   cover?: string
   children: JSX.Element
   isHeaderFixed?: boolean
@@ -23,29 +27,56 @@ type Props = {
   withPadding?: boolean
   zeroBottomPadding?: boolean
   scrollToComments?: (value: boolean) => void
+  key?: string
 }
 
-export const PageLayout = (props: Props) => {
-  const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed
+export const PageLayout = (props: PageLayoutProps) => {
+  const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed // FIXME: выглядит как костылек
+  const loc = useLocation()
+  const { t, lang } = useLocalize()
+  const imageUrl = props.cover ? getImageUrl(props.cover) : 'production/image/logo_image.png'
+  const ogImage = createMemo(() =>
+    // NOTE: preview generation logic works only for one article view
+    props.article
+      ? getOpenGraphImageUrl(imageUrl, {
+          title: props.title,
+          topic: props.article?.topics?.[0]?.title || '',
+          author: props.article?.authors?.[0]?.name || '',
+          width: 1200
+        })
+      : imageUrl
+  )
+  const ogTitle = createMemo(() => t(props.title))
+  const description = createMemo(() => (props.desc ? t(props.desc) : ''))
+  const keypath = createMemo(() => (props.key || loc?.pathname.split('/')[0]) as keyof typeof ruKeywords)
+  const keywords = createMemo(
+    () =>
+      (props.article && getArticleKeywords(props.article as Shout)) ||
+      (lang() === 'ru' ? ruKeywords[keypath()] : enKeywords[keypath()])
+  )
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
-
-  createEffect(() => {
-    if (props.scrollToComments) {
-      props.scrollToComments(scrollToComments())
-    }
-  })
-
+  createEffect(() => props.scrollToComments?.(scrollToComments()))
   return (
     <>
       <Title>{props.title}</Title>
       <Header
         slug={props.slug}
         title={props.headerTitle}
-        articleBody={props.articleBody}
-        cover={props.articleBody}
+        desc={props.desc}
+        cover={imageUrl}
         isHeaderFixed={isHeaderFixed}
         scrollToComments={(value) => setScrollToComments(value)}
       />
+      <Meta name="descprition" content={description() || ''} />
+      <Meta name="keywords" content={keywords()} />
+      <Meta name="og:type" content="article" />
+      <Meta name="og:title" content={ogTitle() || ''} />
+      <Meta name="og:image" content={ogImage() || ''} />
+      <Meta name="twitter:image" content={ogImage() || ''} />
+      <Meta name="og:description" content={description() || ''} />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Meta name="twitter:title" content={ogTitle() || ''} />
+      <Meta name="twitter:description" content={description() || ''} />
       <main
         class={clsx('main-content', {
           [styles.withPadding]: props.withPadding,
@@ -53,7 +84,7 @@ export const PageLayout = (props: Props) => {
         })}
         classList={{ 'main-content--no-padding': !isHeaderFixed }}
       >
-        {props.children}
+        <div class={clsx([props.class, 'wide-container'])}>{props.children}</div>
       </main>
       <Show when={props.hideFooter !== true}>
         <FooterView />

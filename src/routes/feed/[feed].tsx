@@ -125,7 +125,12 @@ export default (props: RouteSectionProps<Shout[]>) => {
   }
   createEffect(() => setIsLoadMoreButtonVisible(offset() < (shouts()?.length || 0)))
   return (
-    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Feed')}`}>
+    <PageLayout
+      withPadding={true}
+      title={`${t('Discours')} :: ${t('Feed')}`}
+      key="feed"
+      desc="Independent media project about culture, science, art and society with horizontal editing"
+    >
       <ReactionsProvider>
         <Feed shouts={shouts() || []} />
       </ReactionsProvider>

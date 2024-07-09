@@ -1,7 +1,7 @@
 import type { Author, Topic } from '~/graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { Show, createEffect, createSignal } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal } from 'solid-js'
 
 import { useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
@@ -9,6 +9,7 @@ import { useSession } from '~/context/session'
 import { FollowingEntity } from '~/graphql/schema/core.gen'
 import { Button } from '../_shared/Button'
 
+import { capitalize } from '~/utils/capitalize'
 import { FollowingCounters } from '../_shared/FollowingCounters/FollowingCounters'
 import { Icon } from '../_shared/Icon'
 import styles from './Full.module.scss'
@@ -20,11 +21,21 @@ type Props = {
 }
 
 export const FullTopic = (props: Props) => {
-  const { t } = useLocalize()
+  const { t, lang } = useLocalize()
   const { follows, changeFollowing } = useFollowing()
   const { requireAuthentication } = useSession()
   const [followed, setFollowed] = createSignal()
 
+  const title = createMemo(
+    () =>
+      // FIXME: use title translation
+      `#${capitalize(
+        lang() === 'en'
+          ? props.topic.slug.replace(/-/, ' ')
+          : props.topic.title || props.topic.slug.replace(/-/, ' '),
+        true
+      )}`
+  )
   createEffect(() => {
     if (follows?.topics?.length !== 0) {
       const items = follows.topics || []
@@ -42,7 +53,7 @@ export const FullTopic = (props: Props) => {
 
   return (
     <div class={clsx(styles.topicHeader, 'col-md-16 col-lg-12 offset-md-4 offset-lg-6')}>
-      <h1>#{props.topic?.title}</h1>
+      <h1>{title()}</h1>
       <p class={styles.topicDescription} innerHTML={props.topic?.body || ''} />
 
       <div class={styles.topicDetails}>

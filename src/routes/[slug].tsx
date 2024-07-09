@@ -15,6 +15,7 @@ import { useLocalize } from '~/context/localize'
 import { getShout } from '~/graphql/api/public'
 import type { Shout } from '~/graphql/schema/core.gen'
 import { initGA, loadGAScript } from '~/utils/ga'
+import { getArticleKeywords } from '~/utils/meta'
 import { FullArticle } from '../components/Article/FullArticle'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { ReactionsProvider } from '../context/reactions'
@@ -91,9 +92,9 @@ export default (props: RouteSectionProps<{ article: Shout }>) => {
       <Show when={article()?.id} fallback={<Loading />}>
         <PageLayout
           title={title()}
+          desc={getArticleKeywords(article() as Shout)}
           headerTitle={article()?.title || ''}
           slug={article()?.slug}
-          articleBody={article()?.body}
           cover={article()?.cover || ''}
           scrollToComments={(value) => setScrollToComments(value)}
         >

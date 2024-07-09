@@ -2,6 +2,7 @@ import { RouteDefinition, RouteLoadFuncArgs, type RouteSectionProps, createAsync
 import { Suspense, createEffect, on } from 'solid-js'
 import { AllAuthors } from '~/components/Views/AllAuthors'
 import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
+import styles from '~/components/Views/AllAuthors/AllAuthors.module.scss'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
@@ -27,13 +28,13 @@ export const route = {
     const isAll = !by || by === 'name'
     return {
       authors: isAll && (await fetchAllAuthors()),
-      topFollowedAuthors: await fetchAuthorsWithStat(10, 'followers'),
-      topShoutsAuthors: await fetchAuthorsWithStat(10, 'shouts')
+      authorsByFollowers: await fetchAuthorsWithStat(10, 'followers'),
+      authorsByShouts: await fetchAuthorsWithStat(10, 'shouts')
     } as AllAuthorsData
   }
 } satisfies RouteDefinition
 
-type AllAuthorsData = { authors: Author[]; topFollowedAuthors: Author[]; topShoutsAuthors: Author[] }
+type AllAuthorsData = { authors: Author[]; authorsByFollowers: Author[]; authorsByShouts: Author[] }
 
 // addAuthors to context
 
@@ -46,8 +47,8 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
     if (props.data) return props.data
     return {
       authors: await fetchAllAuthors(),
-      topFollowedAuthors: await fetchAuthorsWithStat(10, 'followers'),
-      topShoutsAuthors: await fetchAuthorsWithStat(10, 'shouts')
+      authorsByFollowers: await fetchAuthorsWithStat(10, 'followers'),
+      authorsByShouts: await fetchAuthorsWithStat(10, 'shouts')
     } as AllAuthorsData
   })
 
@@ -58,8 +59,8 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
       ([data, aa]) => {
         if (data && aa) {
           aa(data.authors as Author[])
-          aa(data.topFollowedAuthors as Author[])
-          aa(data.topShoutsAuthors as Author[])
+          aa(data.authorsByFollowers as Author[])
+          aa(data.authorsByShouts as Author[])
           console.debug('[routes.author] added all authors:', data.authors)
         }
       },
@@ -68,14 +69,19 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
   )
 
   return (
-    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('All authors')}`}>
+    <PageLayout
+      withPadding={true}
+      title={`${t('Discours')} :: ${t('All authors')}`}
+      class={styles.allAuthorsPage}
+      desc="List of authors of the open editorial community"
+    >
       <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <AllAuthors
             isLoaded={Boolean(data()?.authors)}
             authors={data()?.authors || []}
-            topFollowedAuthors={data()?.topFollowedAuthors}
-            topWritingAuthors={data()?.topShoutsAuthors}
+            authorsByFollowers={data()?.authorsByFollowers}
+            authorsByShouts={data()?.authorsByShouts}
           />
         </Suspense>
       </ReactionsProvider>

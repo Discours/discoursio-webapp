@@ -1,7 +1,5 @@
-import { Meta } from '@solidjs/meta'
 import { useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { createMemo } from 'solid-js'
 import { AuthGuard } from '~/components/AuthGuard'
 import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
@@ -9,19 +7,11 @@ import { PageLayout } from '~/components/_shared/PageLayout'
 import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import createShoutMutation from '~/graphql/mutation/core/article-create'
-import enKeywords from '~/intl/locales/en/keywords.json'
-import ruKeywords from '~/intl/locales/ru/keywords.json'
-import { getImageUrl } from '~/lib/getImageUrl'
 import styles from '~/styles/Create.module.scss'
 import { LayoutType } from '~/types/common'
 
 export default () => {
-  const { t, lang } = useLocalize()
-  const ogImage = getImageUrl('production/image/logo_image.png')
-  const ogTitle = createMemo(() => t('Choose a post type'))
-  const description = createMemo(() =>
-    t('Participate in the Discours: share information, join the editorial team')
-  )
+  const { t } = useLocalize()
   const client = useGraphQL()
   const navigate = useNavigate()
   const handleCreate = async (layout: LayoutType) => {
@@ -32,17 +22,11 @@ export default () => {
     }
   }
   return (
-    <PageLayout title={`${t('Discours')} :: ${ogTitle()}`}>
-      <Meta name="descprition" content={description()} />
-      <Meta name="keywords" content={lang() === 'ru' ? ruKeywords[''] : enKeywords['']} />
-      <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle()} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="twitter:image" content={ogImage} />
-      <Meta name="og:description" content={description()} />
-      <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle()} />
-      <Meta name="twitter:description" content={description()} />
+    <PageLayout
+      title={`${t('Discours')} :: ${t('Choose a post type')}`}
+      key="home"
+      desc="Participate in the Discours: share information, join the editorial team"
+    >
       <AuthGuard>
         <article class={clsx('wide-container', 'container--static-page', styles.Create)}>
           <h1>{t('Choose a post type')}</h1>

@@ -1,4 +1,3 @@
-import { Meta, Title } from '@solidjs/meta'
 import { A, useLocation, useParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
@@ -10,14 +9,12 @@ import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
+import { loadReactions } from '~/graphql/api/public'
 import loadShoutsQuery from '~/graphql/query/core/articles-load-by'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
-import loadReactionsBy from '~/graphql/query/core/reactions-load-by'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/lib/getImageUrl'
 import { byCreated } from '~/lib/sortby'
-import { getArticleDescription } from '~/utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { splitToPages } from '~/utils/splitToPages'
 import stylesArticle from '../../Article/Article.module.scss'
@@ -57,7 +54,7 @@ export const AuthorView = (props: Props) => {
   const [followers, setFollowers] = createSignal<Author[]>([] as Author[])
   const [following, changeFollowing] = createSignal<Array<Author | Topic>>([] as Array<Author | Topic>) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
-  const [commented, setCommented] = createSignal<Reaction[]>()
+  const [commented, setCommented] = createSignal<Reaction[]>([])
   const { query } = useGraphQL()
 
   // пагинация загрузки ленты постов
@@ -123,11 +120,11 @@ export const AuthorView = (props: Props) => {
         if (!commented() && profile) {
           await loadMore()
 
-          const resp = await query(loadReactionsBy, {
+          const commentsFetcher = loadReactions({
             by: { comment: true, created_by: profile.id }
-          }).toPromise()
-          const ccc = resp?.data?.load_reactions_by
-          if (ccc) setCommented(ccc)
+          })
+          const ccc = await commentsFetcher()
+          if (ccc) setCommented((_) => ccc || [])
         }
       }
       // { defer: true },
@@ -150,31 +147,12 @@ export const AuthorView = (props: Props) => {
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
-
-  const ogImage = createMemo(() =>
-    author()?.pic
-      ? getImageUrl(author()?.pic || '', { width: 1200 })
-      : getImageUrl('production/image/logo_image.png')
-  )
-  const description = createMemo(() => getArticleDescription(author()?.bio || ''))
   const handleDeleteComment = (id: number) => {
     setCommented((prev) => (prev || []).filter((comment) => comment.id !== id))
   }
 
   return (
     <div class={styles.authorPage}>
-      <Show when={author()}>
-        <Title>{author()?.name}</Title>
-        <Meta name="descprition" content={description()} />
-        <Meta name="og:type" content="profile" />
-        <Meta name="og:title" content={author()?.name || ''} />
-        <Meta name="og:image" content={ogImage()} />
-        <Meta name="og:description" content={description()} />
-        <Meta name="twitter:card" content="summary_large_image" />
-        <Meta name="twitter:title" content={author()?.name || ''} />
-        <Meta name="twitter:description" content={description()} />
-        <Meta name="twitter:image" content={ogImage()} />
-      </Show>
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>

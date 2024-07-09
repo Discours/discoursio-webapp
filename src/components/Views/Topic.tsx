@@ -1,10 +1,6 @@
-import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
-
-import { Meta } from '@solidjs/meta'
+import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
-
-import { useSearchParams } from '@solidjs/router'
 import { useAuthors } from '~/context/authors'
 import { useFeed } from '~/context/feed'
 import { useGraphQL } from '~/context/graphql'
@@ -14,12 +10,8 @@ import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-t
 import loadShoutsRandomQuery from '~/graphql/query/core/articles-load-random-topic'
 import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
 import getTopicFollowersQuery from '~/graphql/query/core/topic-followers'
-import enKeywords from '~/intl/locales/en/keywords.json'
-import ruKeywords from '~/intl/locales/ru/keywords.json'
-import { getImageUrl } from '~/lib/getImageUrl'
-import { capitalize } from '~/utils/capitalize'
+import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { getUnixtime } from '~/utils/getServerDate'
-import { getArticleDescription } from '~/utils/meta'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { splitToPages } from '~/utils/splitToPages'
 import styles from '../../styles/Topic.module.scss'
@@ -45,7 +37,7 @@ export const PRERENDERED_ARTICLES_COUNT = 28
 const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const TopicView = (props: Props) => {
-  const { t, lang } = useLocalize()
+  const { t } = useLocalize()
   const { query } = useGraphQL()
   const [searchParams, changeSearchParams] = useSearchParams<TopicsPageSearchParams>()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
@@ -55,7 +47,6 @@ export const TopicView = (props: Props) => {
   const { authorsByTopic } = useAuthors()
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
-
   const [topic, setTopic] = createSignal<Topic>()
   createEffect(
     on([() => props.topicSlug, topic, topicEntities], async ([slug, t, ttt]) => {
@@ -113,16 +104,6 @@ export const TopicView = (props: Props) => {
     }
   }
 
-  const title = createMemo(
-    () =>
-      `#${capitalize(
-        lang() === 'en'
-          ? (topic() as Topic)?.slug.replace(/-/, ' ')
-          : (topic() as Topic)?.title || (topic() as Topic)?.slug.replace(/-/, ' '),
-        true
-      )}`
-  )
-
   const loadMore = async () => {
     saveScrollPosition()
 
@@ -154,31 +135,8 @@ export const TopicView = (props: Props) => {
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
-
-  const ogImage = () =>
-    topic()?.pic
-      ? getImageUrl(topic()?.pic || '', { width: 1200 })
-      : getImageUrl('production/image/logo_image.png')
-  const description = () =>
-    topic()?.body
-      ? getArticleDescription(topic()?.body || '')
-      : t('The most interesting publications on the topic', { topicName: title() })
-
   return (
     <div class={styles.topicPage}>
-      <Meta name="descprition" content={description()} />
-      <Meta
-        name="keywords"
-        content={`${title()}, ${lang() === 'ru' ? ruKeywords['topic'] : enKeywords['topic']}`}
-      />
-      <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={title()} />
-      <Meta name="og:image" content={ogImage()} />
-      <Meta name="twitter:image" content={ogImage()} />
-      <Meta name="og:description" content={description()} />
-      <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={title()} />
-      <Meta name="twitter:description" content={description()} />
       <FullTopic topic={topic() as Topic} followers={followers()} authors={topicAuthors()} />
       <div class="wide-container">
         <div class={clsx(styles.groupControls, 'row group__controls')}>

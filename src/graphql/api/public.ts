@@ -60,7 +60,7 @@ export const loadReactions = (options: QueryLoad_Reactions_ByArgs) => {
   const filter = new URLSearchParams(options.by as Record<string, string>)
   console.debug(options)
   return cache(async () => {
-    const resp = await defaultClient.query(loadReactionsByQuery, { ...options }).toPromise()
+    const resp = await defaultClient.query(loadReactionsByQuery, options).toPromise()
     const result = resp?.data?.load_reactions_by
     if (result) return result as Reaction[]
   }, `reactions-${filter}-${page}`)

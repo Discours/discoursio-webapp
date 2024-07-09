@@ -114,7 +114,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
   onMount(async () => await loadMoreFeatured())
 
   return (
-    <PageLayout withPadding={true} title={t('Discours')}>
+    <PageLayout withPadding={true} title={t('Discours')} key={'home'}>
       <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <HomeView {...(data() as HomeViewProps)} />

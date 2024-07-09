@@ -1,6 +1,6 @@
 import { Params, RouteSectionProps, createAsync, useParams } from '@solidjs/router'
 import { createEffect, createMemo, on } from 'solid-js'
-import { Topics } from '~/components/Nav/Topics'
+import { TopicsNav } from '~/components/Nav/TopicsNav'
 import { Expo } from '~/components/Views/Expo'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
@@ -61,7 +61,7 @@ export default (props: RouteSectionProps<Shout[]>) => {
 
   return (
     <PageLayout withPadding={true} zeroBottomPadding={true} title={`${t('Discours')} :: ${title()}`}>
-      <Topics />
+      <TopicsNav />
       <Expo shouts={shouts() || []} layout={layout() as LayoutType} />
     </PageLayout>
   )

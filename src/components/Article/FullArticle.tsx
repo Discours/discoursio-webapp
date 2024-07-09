@@ -1,6 +1,6 @@
 // import { install } from 'ga-gtag'
 import { createPopper } from '@popperjs/core'
-import { Link, Meta } from '@solidjs/meta'
+import { Link } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
@@ -12,10 +12,9 @@ import { useSession } from '~/context/session'
 import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
 import type { Author, Maybe, QueryLoad_Reactions_ByArgs, Shout, Topic } from '~/graphql/schema/core.gen'
 import { isCyrillic } from '~/intl/translate'
-import { getImageUrl, getOpenGraphImageUrl } from '~/lib/getImageUrl'
+import { getImageUrl } from '~/lib/getImageUrl'
 import { MediaItem } from '~/types/mediaitem'
 import { capitalize } from '~/utils/capitalize'
-import { getArticleDescription, getArticleKeywords } from '~/utils/meta'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
@@ -302,7 +301,6 @@ export const FullArticle = (props: Props) => {
   )
 
   onMount(async () => {
-    // install('G-LQ4B87H8C2')
     const opts: QueryLoad_Reactions_ByArgs = { by: { shout: props.article.slug }, limit: 999, offset: 0 }
     const _rrr = await loadReactionsBy(opts)
     addSeen(props.article.slug)
@@ -326,34 +324,11 @@ export const FullArticle = (props: Props) => {
     })
   })
 
-  const cover = props.article.cover || 'production/image/logo_image.png'
-  const ogImage = getOpenGraphImageUrl(cover, {
-    title: props.article.title,
-    topic: mainTopic()?.title || '',
-    author: props.article.authors?.[0]?.name || '',
-    width: 1200
-  })
-
-  const description = getArticleDescription(props.article.description || body() || media()[0]?.body)
-  const ogTitle = props.article.title
-  const keywords = getArticleKeywords(props.article)
   const shareUrl = getShareUrl({ pathname: `/${props.article.slug || ''}` })
-  const getAuthorName = (a: Author) => {
-    return lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replace(/-/, ' ')) : a.name
-  }
+  const getAuthorName = (a: Author) =>
+    lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replace(/-/, ' ')) : a.name
   return (
     <>
-      <Meta name="descprition" content={description} />
-      <Meta name="keywords" content={keywords} />
-      <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
-      <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
-      <Meta name="twitter:image" content={ogImage} />
-
       <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
       <div class="wide-container">
         <div class="row position-relative">
@@ -522,7 +497,7 @@ export const FullArticle = (props: Props) => {
                   <div class={styles.shoutStatsItem} ref={triggerRef}>
                     <SharePopup
                       title={props.article.title}
-                      description={description}
+                      description={props.article.description || body() || media()[0]?.body}
                       imageUrl={props.article.cover || ''}
                       shareUrl={shareUrl}
                       containerCssClass={stylesHeader.control}
@@ -623,7 +598,7 @@ export const FullArticle = (props: Props) => {
       </Modal>
       <ShareModal
         title={props.article.title}
-        description={description}
+        description={props.article.description || body() || media()[0]?.body}
         imageUrl={props.article.cover || ''}
         shareUrl={shareUrl}
       />

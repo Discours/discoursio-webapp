@@ -22,7 +22,12 @@ export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
   const { addTopics } = useTopics()
   createEffect(() => addTopics(topics() || []))
   return (
-    <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('All topics')}`}>
+    <PageLayout
+      withPadding={true}
+      key="topics"
+      title={`${t('Discours')} :: ${t('All topics')}`}
+      desc="Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about"
+    >
       <ReactionsProvider>
         <Suspense fallback={<Loading />}>
           <AllTopics topics={topics() as Topic[]} />

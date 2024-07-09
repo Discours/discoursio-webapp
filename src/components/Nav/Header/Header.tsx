@@ -7,7 +7,6 @@ import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
 import type { Topic } from '../../../graphql/schema/core.gen'
 import { getRandomTopicsFromArray } from '../../../lib/getRandomTopicsFromArray'
-import { getArticleDescription } from '../../../utils/meta'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Icon } from '../../_shared/Icon'
 import { Newsletter } from '../../_shared/Newsletter'
@@ -24,7 +23,7 @@ type Props = {
   title?: string
   slug?: string
   isHeaderFixed?: boolean
-  articleBody?: string
+  desc?: string
   cover?: string
   scrollToComments?: (value: boolean) => void
 }
@@ -324,10 +323,8 @@ export const Header = (props: Props) => {
                 title={props.title || ''}
                 imageUrl={props.cover || ''}
                 shareUrl={getShareUrl()}
-                description={getArticleDescription(props.articleBody?.slice(0, 100) || '')}
-                onVisibilityChange={(isVisible) => {
-                  setIsSharePopupVisible(isVisible)
-                }}
+                description={props.desc || ''}
+                onVisibilityChange={setIsSharePopupVisible}
                 containerCssClass={styles.control}
                 trigger={
                   <>

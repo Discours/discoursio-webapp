@@ -1,4 +1,3 @@
-// import { install } from 'ga-gtag'
 import { createPopper } from '@popperjs/core'
 import { Link } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
@@ -10,7 +9,8 @@ import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
-import type { Author, Maybe, QueryLoad_Reactions_ByArgs, Shout, Topic } from '~/graphql/schema/core.gen'
+import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
+import { processPrepositions } from '~/intl/prepositions'
 import { isCyrillic } from '~/intl/translate'
 import { getImageUrl } from '~/lib/getImageUrl'
 import { MediaItem } from '~/types/mediaitem'
@@ -18,6 +18,7 @@ import { capitalize } from '~/utils/capitalize'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
+import stylesHeader from '../Nav/Header/Header.module.scss'
 import { Modal } from '../Nav/Modal'
 import { TableOfContents } from '../TableOfContents'
 import { Icon } from '../_shared/Icon'
@@ -28,14 +29,12 @@ import { Popover } from '../_shared/Popover'
 import { ShareModal } from '../_shared/ShareModal'
 import { ImageSwiper } from '../_shared/SolidSwiper'
 import { VideoPlayer } from '../_shared/VideoPlayer'
+import styles from './Article.module.scss'
 import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
 import { CommentsTree } from './CommentsTree'
 import { SharePopup, getShareUrl } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
-
-import stylesHeader from '../Nav/Header/Header.module.scss'
-import styles from './Article.module.scss'
 
 type Props = {
   article: Shout
@@ -64,6 +63,8 @@ const scrollTo = (el: HTMLElement) => {
 }
 
 const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
+const COMMENTS_PER_PAGE = 30
+const VOTES_PER_PAGE = 50
 
 export const FullArticle = (props: Props) => {
   const [searchParams, changeSearchParams] = useSearchParams<ArticlePageSearchParams>()
@@ -76,8 +77,28 @@ export const FullArticle = (props: Props) => {
   const { session, requireAuthentication } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { addSeen } = useFeed()
-
   const formattedDate = createMemo(() => formatDate(new Date((props.article.published_at || 0) * 1000)))
+
+  const [pages, setPages] = createSignal<Record<string, number>>({})
+  createEffect(
+    on(
+      pages,
+      async (p: Record<string, number>) => {
+        await loadReactionsBy({
+          by: { shout: props.article.slug, comment: true },
+          limit: COMMENTS_PER_PAGE,
+          offset: COMMENTS_PER_PAGE * p.comments || 0
+        })
+        await loadReactionsBy({
+          by: { shout: props.article.slug, rating: true },
+          limit: VOTES_PER_PAGE,
+          offset: VOTES_PER_PAGE * p.rating || 0
+        })
+        setIsReactionsLoaded(true)
+      },
+      { defer: true }
+    )
+  )
 
   const canEdit = createMemo(
     () =>
@@ -110,14 +131,14 @@ export const FullArticle = (props: Props) => {
         if (props.article.media) {
           const media = JSON.parse(props.article.media)
           if (media.length > 0) {
-            return media[0].body
+            return processPrepositions(media[0].body)
           }
         }
       } catch (error) {
         console.error(error)
       }
     }
-    return props.article.body || ''
+    return processPrepositions(props.article.body) || ''
   })
 
   const imageUrls = createMemo(() => {
@@ -141,13 +162,7 @@ export const FullArticle = (props: Props) => {
     return Array.from(imageElements).map((img) => img.src)
   })
 
-  const media = createMemo<MediaItem[]>(() => {
-    try {
-      return JSON.parse(props.article.media || '[]')
-    } catch {
-      return []
-    }
-  })
+  const media = createMemo<MediaItem[]>(() => JSON.parse(props.article.media || '[]'))
 
   let commentsRef: HTMLDivElement | undefined
 
@@ -291,40 +306,25 @@ export const FullArticle = (props: Props) => {
     })
   }
 
-  createEffect(
-    on(
-      () => props.article,
-      () => {
-        updateIframeSizes()
-      }
-    )
-  )
-
-  onMount(async () => {
-    const opts: QueryLoad_Reactions_ByArgs = { by: { shout: props.article.slug }, limit: 999, offset: 0 }
-    const _rrr = await loadReactionsBy(opts)
+  onMount(() => {
+    console.debug(props.article)
+    setPages((_) => ({comments: 0, rating: 0}))
     addSeen(props.article.slug)
-    setIsReactionsLoaded(true)
     document.title = props.article.title
+    updateIframeSizes()
     window?.addEventListener('resize', updateIframeSizes)
-
     onCleanup(() => window.removeEventListener('resize', updateIframeSizes))
-
-    createEffect(() => {
-      if (props.scrollToComments && commentsRef) {
-        scrollTo(commentsRef)
-      }
-    })
-
-    createEffect(() => {
-      if (searchParams?.scrollTo === 'comments' && commentsRef) {
-        requestAnimationFrame(() => commentsRef && scrollTo(commentsRef))
-        changeSearchParams({ scrollTo: undefined })
-      }
-    })
   })
 
-  const shareUrl = getShareUrl({ pathname: `/${props.article.slug || ''}` })
+  createEffect(() => props.scrollToComments && commentsRef && scrollTo(commentsRef))
+  createEffect(() => {
+    if (searchParams?.scrollTo === 'comments' && commentsRef) {
+      requestAnimationFrame(() => commentsRef && scrollTo(commentsRef))
+      changeSearchParams({ scrollTo: undefined })
+    }
+  })
+
+  const shareUrl = createMemo(() => getShareUrl({ pathname: `/${props.article.slug || ''}` }))
   const getAuthorName = (a: Author) =>
     lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replace(/-/, ' ')) : a.name
   return (
@@ -346,7 +346,7 @@ export const FullArticle = (props: Props) => {
 
                 <h1>{props.article.title || ''}</h1>
                 <Show when={props.article.subtitle}>
-                  <h4>{props.article.subtitle || ''}</h4>
+                  <h4>{processPrepositions(props.article.subtitle || '')}</h4>
                 </Show>
 
                 <div class={styles.shoutAuthor}>
@@ -378,7 +378,7 @@ export const FullArticle = (props: Props) => {
               </div>
             </Show>
             <Show when={props.article.lead}>
-              <section class={styles.lead} innerHTML={props.article.lead || ''} />
+              <section class={styles.lead} innerHTML={processPrepositions(props.article.lead || '')} />
             </Show>
             <Show when={props.article.layout === 'audio'}>
               <AudioHeader
@@ -499,7 +499,7 @@ export const FullArticle = (props: Props) => {
                       title={props.article.title}
                       description={props.article.description || body() || media()[0]?.body}
                       imageUrl={props.article.cover || ''}
-                      shareUrl={shareUrl}
+                      shareUrl={shareUrl()}
                       containerCssClass={stylesHeader.control}
                       onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
                       trigger={
@@ -600,7 +600,7 @@ export const FullArticle = (props: Props) => {
         title={props.article.title}
         description={props.article.description || body() || media()[0]?.body}
         imageUrl={props.article.cover || ''}
-        shareUrl={shareUrl}
+        shareUrl={shareUrl()}
       />
     </>
   )

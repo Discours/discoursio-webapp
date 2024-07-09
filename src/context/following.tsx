@@ -33,7 +33,21 @@ interface FollowingContextType {
   unfollow: (what: FollowingEntity, slug: string) => Promise<void>
 }
 
-const FollowingContext = createContext<FollowingContextType>({} as FollowingContextType)
+const defaultFollowing = {
+  slug: '',
+  type: 'follow'
+} as FollowingData
+
+const FollowingContext = createContext<FollowingContextType>({
+  following: () => defaultFollowing,
+  followers: () => [],
+  loading: () => false,
+  setFollows: (_follows: AuthorFollowsResult) => undefined,
+  follows: {},
+  loadFollows: () => undefined,
+  follow: (_what: FollowingEntity, _slug: string) => undefined,
+  unfollow: (_what: FollowingEntity, _slug: string) => undefined
+} as unknown as FollowingContextType)
 
 export function useFollowing() {
   return useContext(FollowingContext)
@@ -50,8 +64,6 @@ const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
   authors: [] as Author[],
   communities: [] as Community[]
 }
-
-const defaultFollowing = { slug: '', type: 'follow' } as FollowingData
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)

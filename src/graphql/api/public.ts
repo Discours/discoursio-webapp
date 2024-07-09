@@ -1,5 +1,6 @@
 import { cache } from '@solidjs/router'
 import { defaultClient } from '~/context/graphql'
+import getShoutQuery from '~/graphql/query/core/article-load'
 import loadShoutsByQuery from '~/graphql/query/core/articles-load-by'
 import loadShoutsSearchQuery from '~/graphql/query/core/articles-load-search'
 import getAuthorQuery from '~/graphql/query/core/author-by'
@@ -69,10 +70,10 @@ export const loadReactions = (options: QueryLoad_Reactions_ByArgs) => {
 }
 
 export const getShout = (options: QueryGet_ShoutArgs) => {
-  console.debug('[lib.api] get shout options', options)
+  // console.debug('[lib.api] get shout options', options)
   return cache(
     async () => {
-      const resp = await defaultClient.query(loadReactionsByQuery, { ...options }).toPromise()
+      const resp = await defaultClient.query(getShoutQuery, { ...options }).toPromise()
       const result = resp?.data?.get_shout
       if (result) return result as Shout
     },

@@ -77,7 +77,7 @@ export default (
     <ErrorBoundary fallback={() => <HttpStatusCode code={500} />}>
       <Suspense fallback={<Loading />}>
         <Show
-          when={!article()?.id}
+          when={article()?.id}
           fallback={
             <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
               <FourOuFourView />

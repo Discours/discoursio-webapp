@@ -121,14 +121,14 @@ export const AllTopics = (props: Props) => {
             <div class="col-lg-20">
               <div class="row">
                 <For each={byLetter()[letter]}>
-                    {(topic) => (
-                      <div class={clsx(styles.topicTitle, 'col-sm-12 col-md-8')}>
-                        <A href={`/topic/${topic.slug}`}>{topic.title || topic.slug}</A>
-                        <Show when={topic.stat?.shouts || 0}>
-                          <span class={styles.articlesCounter}>{topic.stat?.shouts || 0}</span>
-                        </Show>
-                      </div>
-                    )}
+                  {(topic) => (
+                    <div class={clsx(styles.topicTitle, 'col-sm-12 col-md-8')}>
+                      <A href={`/topic/${topic.slug}`}>{topic.title || topic.slug}</A>
+                      <Show when={topic.stat?.shouts || 0}>
+                        <span class={styles.articlesCounter}>{topic.stat?.shouts || 0}</span>
+                      </Show>
+                    </div>
+                  )}
                 </For>
               </div>
             </div>
@@ -159,7 +159,6 @@ export const AllTopics = (props: Props) => {
                   </div>
                 </div>
               </Show>
-
             </Show>
           </div>
         </div>

@@ -9,7 +9,8 @@ export default defineConfig({
   ssr: true,
   server: {
     preset: isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node',
-    port: 3000
+    port: 3000,
+    https: true
   },
   devOverlay: true,
   build: {
@@ -43,6 +44,9 @@ export default defineConfig({
     build: {
       chunkSizeWarningLimit: 1024,
       target: 'esnext'
+    },
+    server: {
+      https: true
     }
   }
 } as SolidStartInlineConfig)

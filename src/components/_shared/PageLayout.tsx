@@ -46,7 +46,6 @@ export const PageLayout = (props: PageLayoutProps) => {
         })
       : imageUrl
   )
-  const ogTitle = createMemo(() => t(props.title))
   const description = createMemo(() => (props.desc ? t(props.desc) : ''))
   const keypath = createMemo(() => (props.key || loc?.pathname.split('/')[0]) as keyof typeof ruKeywords)
   const keywords = createMemo(
@@ -58,7 +57,7 @@ export const PageLayout = (props: PageLayoutProps) => {
   createEffect(() => props.scrollToComments?.(scrollToComments()))
   return (
     <>
-      <Title>{props.title}</Title>
+      <Title>{props.article?.title || t(props.title)}</Title>
       <Header
         slug={props.slug}
         title={props.headerTitle}
@@ -70,12 +69,12 @@ export const PageLayout = (props: PageLayoutProps) => {
       <Meta name="descprition" content={description() || ''} />
       <Meta name="keywords" content={keywords()} />
       <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle() || ''} />
+      <Meta name="og:title" content={props.article?.title || t(props.title) || ''} />
       <Meta name="og:image" content={ogImage() || ''} />
       <Meta name="twitter:image" content={ogImage() || ''} />
       <Meta name="og:description" content={description() || ''} />
       <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle() || ''} />
+      <Meta name="twitter:title" content={props.article?.title || t(props.title) || ''} />
       <Meta name="twitter:description" content={description() || ''} />
       <main
         class={clsx('main-content', {

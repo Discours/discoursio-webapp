@@ -7,7 +7,6 @@ import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import type { Topic } from '~/graphql/schema/core.gen'
 import { dummyFilter } from '~/lib/dummyFilter'
-import { capitalize } from '~/utils/capitalize'
 import { scrollHandler } from '~/utils/scroll'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import styles from './AllTopics.module.scss'
@@ -57,10 +56,6 @@ export const AllTopics = (props: Props) => {
     return keys
   })
 
-  // limit/offset based pagination aka 'show more' logic
-  const [limit, setLimit] = createSignal(TOPICS_PER_PAGE)
-  const showMore = () => setLimit((oldLimit) => oldLimit + TOPICS_PER_PAGE)
-
   // filter
   const [searchQuery, setSearchQuery] = createSignal('')
   const [filteredResults, setFilteredResults] = createSignal<Topic[]>([])
@@ -94,9 +89,56 @@ export const AllTopics = (props: Props) => {
       </div>
     </div>
   )
+  const AllTopicAlphabeticallyHead = () => (
+    <div class="col-lg-18 col-xl-15">
+      <ul class={clsx('nodash', styles.alphabet)}>
+        <For each={Array.from(alphabet())}>
+          {(letter, index) => (
+            <li>
+              <Show when={letter in byLetter()} fallback={letter}>
+                <A
+                  href={`/topic?by=title#letter-${index()}`}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    scrollHandler(`letter-${index()}`)
+                  }}
+                >
+                  {letter}
+                </A>
+              </Show>
+            </li>
+          )}
+        </For>
+      </ul>
+    </div>
+  )
+  const AllTopicAlphabetically = () => (
+    <For each={sortedKeys()}>
+      {(letter) => (
+        <div class={clsx(styles.group, 'group')}>
+          <h2 id={`letter-${alphabet().indexOf(letter)}`}>{letter}</h2>
+          <div class="row">
+            <div class="col-lg-20">
+              <div class="row">
+                <For each={byLetter()[letter]}>
+                    {(topic) => (
+                      <div class={clsx(styles.topicTitle, 'col-sm-12 col-md-8')}>
+                        <A href={`/topic/${topic.slug}`}>{topic.title || topic.slug}</A>
+                        <Show when={topic.stat?.shouts || 0}>
+                          <span class={styles.articlesCounter}>{topic.stat?.shouts || 0}</span>
+                        </Show>
+                      </div>
+                    )}
+                </For>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </For>
+  )
   return (
     <>
-      <h1>{t('Themes and plots')}</h1>
       <Show when={Boolean(filteredResults())} fallback={<Loading />}>
         <div class="row">
           <div class="col-md-19 offset-md-5">
@@ -104,76 +146,20 @@ export const AllTopics = (props: Props) => {
 
             <Show when={filteredResults().length > 0}>
               <Show when={searchParams?.by === 'title'}>
-                <div class="col-lg-18 col-xl-15">
-                  <ul class={clsx('nodash', styles.alphabet)}>
-                    <For each={Array.from(alphabet())}>
-                      {(letter, index) => (
-                        <li>
-                          <Show when={letter in byLetter()} fallback={letter}>
-                            <A
-                              href={`/topic?by=title#letter-${index()}`}
-                              onClick={(event) => {
-                                event.preventDefault()
-                                scrollHandler(`letter-${index()}`)
-                              }}
-                            >
-                              {letter}
-                            </A>
-                          </Show>
-                        </li>
-                      )}
-                    </For>
-                  </ul>
-                </div>
-
-                <For each={sortedKeys()}>
-                  {(letter) => (
-                    <div class={clsx(styles.group, 'group')}>
-                      <h2 id={`letter-${alphabet().indexOf(letter)}`}>{letter}</h2>
-                      <div class="row">
-                        <div class="col-lg-20">
-                          <div class="row">
-                            <For each={byLetter()[letter]}>
-                              {(topic) => (
-                                <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
-                                  <A href={`/topic/${topic.slug}`}>
-                                    {lang() === 'en'
-                                      ? capitalize(topic.slug.replaceAll('-', ' '))
-                                      : topic.title}
-                                  </A>
-                                  <span class={styles.articlesCounter}>{topic.stat?.shouts || 0}</span>
-                                </div>
-                              )}
-                            </For>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </For>
+                <AllTopicAlphabeticallyHead />
+                <AllTopicAlphabetically />
               </Show>
 
               <Show when={searchParams?.by && searchParams?.by !== 'title'}>
                 <div class="row">
                   <div class="col-lg-18 col-xl-15 py-4">
-                    <For each={filteredResults().slice(0, limit())}>
-                      {(topic) => (
-                        <>
-                          <TopicBadge topic={topic} showStat={true} />
-                        </>
-                      )}
+                    <For each={filteredResults()}>
+                      {(topic) => <TopicBadge topic={topic} showStat={true} />}
                     </For>
                   </div>
                 </div>
               </Show>
 
-              <Show when={filteredResults().length > limit() && searchParams?.by !== 'title'}>
-                <div class={clsx(styles.loadMoreContainer, 'col-24 col-md-20 col-lg-14 offset-md-2')}>
-                  <button class={clsx('button', styles.loadMoreButton)} onClick={showMore}>
-                    {t('Load more')}
-                  </button>
-                </div>
-              </Show>
             </Show>
           </div>
         </div>

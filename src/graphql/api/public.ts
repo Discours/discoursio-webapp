@@ -56,18 +56,20 @@ export const loadShouts = (options: LoadShoutsOptions) => {
 }
 
 export const loadReactions = (options: QueryLoad_Reactions_ByArgs) => {
+  const kind = options.by?.comment ? 'comments' : options.by?.rating ? 'votes' : 'reactions'
+  const allorone = options.by?.shout ? `shout-${options.by.shout}` : 'all'
   const page = `${options.offset || 0}-${(options?.limit || 0) + (options.offset || 0)}`
   const filter = new URLSearchParams(options.by as Record<string, string>)
-  console.debug(options)
+  // console.debug(options)
   return cache(async () => {
     const resp = await defaultClient.query(loadReactionsByQuery, options).toPromise()
     const result = resp?.data?.load_reactions_by
     if (result) return result as Reaction[]
-  }, `reactions-${filter}-${page}`)
+  }, `${allorone}-${kind}-${filter}-${page}`)
 }
 
 export const getShout = (options: QueryGet_ShoutArgs) => {
-  // console.debug('[lib.api] get shout cached fetcher returned', defaultClient)
+  console.debug('[lib.api] get shout options', options)
   return cache(
     async () => {
       const resp = await defaultClient.query(loadReactionsByQuery, { ...options }).toPromise()

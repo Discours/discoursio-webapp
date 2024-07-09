@@ -1,61 +1,47 @@
-import {
-  RouteDefinition,
-  RouteSectionProps,
-  createAsync,
-  redirect,
-  useLocation,
-  useParams
-} from '@solidjs/router'
+import { RouteDefinition, RouteSectionProps, createAsync, useLocation, useParams } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { ErrorBoundary, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import {
+  ErrorBoundary,
+  Show,
+  Suspense,
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  onMount
+} from 'solid-js'
+import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
-import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { getShout } from '~/graphql/api/public'
-import type { Shout } from '~/graphql/schema/core.gen'
+import type { Reaction, Shout } from '~/graphql/schema/core.gen'
 import { initGA, loadGAScript } from '~/utils/ga'
 import { getArticleKeywords } from '~/utils/meta'
 import { FullArticle } from '../components/Article/FullArticle'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { ReactionsProvider } from '../context/reactions'
 
-const fetchShout = async (slug: string): Promise<Shout> => {
+const fetchShout = async (slug: string): Promise<Shout | undefined> => {
   const shoutLoader = getShout({ slug })
-  const shout = await shoutLoader()
-  if (!shout) {
-    throw new Error('Shout not found')
-  }
-  return shout
+  const result = await shoutLoader()
+  return result
 }
 
 export const route: RouteDefinition = {
-  load: async ({ params }) => {
-    try {
-      return await fetchShout(params.slug)
-    } catch (error) {
-      console.error('Error loading shout:', error)
-      throw new Response(null, {
-        status: 404,
-        statusText: 'Not Found'
-      })
-    }
-  }
+  load: async ({ params }) => ({
+    article: await fetchShout(params.slug)
+  })
 }
 
-export default (props: RouteSectionProps<{ article: Shout }>) => {
+export default (
+  props: RouteSectionProps<{ article?: Shout; comments?: Reaction[]; votes?: Reaction[] }>
+) => {
   const params = useParams()
   const loc = useLocation()
-  const { articleEntities } = useFeed()
   const { t } = useLocalize()
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
-
-  const article = createAsync(async () => {
-    if (params.slug && articleEntities?.()) {
-      return articleEntities()?.[params.slug] || props.data.article || (await fetchShout(params.slug))
-    }
-    throw redirect('/404', { status: 404 })
-  })
+  const article = createAsync(async () => props.data.article || (await fetchShout(params.slug)))
 
   const title = createMemo(
     () => `${article()?.authors?.[0]?.name || t('Discours')} :: ${article()?.title || ''}`
@@ -76,7 +62,7 @@ export default (props: RouteSectionProps<{ article: Shout }>) => {
     on(
       article,
       (a?: Shout) => {
-        if (!a) return
+        if (!a?.id) return
         window?.gtag?.('event', 'page_view', {
           page_title: a.title,
           page_location: window?.location.href || '',
@@ -88,21 +74,31 @@ export default (props: RouteSectionProps<{ article: Shout }>) => {
   )
 
   return (
-    <ErrorBoundary fallback={() => <HttpStatusCode code={404} />}>
-      <Show when={article()?.id} fallback={<Loading />}>
-        <PageLayout
-          title={title()}
-          desc={getArticleKeywords(article() as Shout)}
-          headerTitle={article()?.title || ''}
-          slug={article()?.slug}
-          cover={article()?.cover || ''}
-          scrollToComments={(value) => setScrollToComments(value)}
+    <ErrorBoundary fallback={() => <HttpStatusCode code={500} />}>
+      <Suspense fallback={<Loading />}>
+        <Show
+          when={!article()?.id}
+          fallback={
+            <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
+              <FourOuFourView />
+              <HttpStatusCode code={404} />
+            </PageLayout>
+          }
         >
-          <ReactionsProvider>
-            <FullArticle article={article() as Shout} scrollToComments={scrollToComments()} />
-          </ReactionsProvider>
-        </PageLayout>
-      </Show>
+          <PageLayout
+            title={title()}
+            desc={getArticleKeywords(article() as Shout)}
+            headerTitle={article()?.title || ''}
+            slug={article()?.slug}
+            cover={article()?.cover || ''}
+            scrollToComments={(value) => setScrollToComments(value)}
+          >
+            <ReactionsProvider>
+              <FullArticle article={article() as Shout} scrollToComments={scrollToComments()} />
+            </ReactionsProvider>
+          </PageLayout>
+        </Show>
+      </Suspense>
     </ErrorBoundary>
   )
 }

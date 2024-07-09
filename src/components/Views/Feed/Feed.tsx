@@ -1,6 +1,6 @@
 import { A, createAsync, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { DropDown } from '~/components/_shared/DropDown'
 import { Option } from '~/components/_shared/DropDown/DropDown'
 import { Icon } from '~/components/_shared/Icon'

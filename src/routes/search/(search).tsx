@@ -48,20 +48,20 @@ export default () => {
 
   return (
     <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Search')}`}>
-        <Suspense fallback={<Loading />}>
-          <Show when={isLoaded()} fallback={<Loading />}>
-            <Show
-              when={searchResults().length > 0}
-              fallback={
-                <Show when={hasSearched()} fallback={<div>{t('Enter your search query')}</div>}>
-                  <div>{t('No results found')}</div>
-                </Show>
-              }
-            >
-              <SearchView results={searchResults() as SearchResult[]} query={searchParams?.q || ''} />
-            </Show>
+      <Suspense fallback={<Loading />}>
+        <Show when={isLoaded()} fallback={<Loading />}>
+          <Show
+            when={searchResults().length > 0}
+            fallback={
+              <Show when={hasSearched()} fallback={<div>{t('Enter your search query')}</div>}>
+                <div>{t('No results found')}</div>
+              </Show>
+            }
+          >
+            <SearchView results={searchResults() as SearchResult[]} query={searchParams?.q || ''} />
           </Show>
-        </Suspense>
+        </Show>
+      </Suspense>
     </PageLayout>
   )
 }

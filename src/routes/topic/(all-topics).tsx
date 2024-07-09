@@ -28,9 +28,9 @@ export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
       headerTitle={`${t('Discours')} :: ${t('All topics')}`}
       desc="Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about"
     >
-        <Suspense fallback={<Loading />}>
-          <AllTopics topics={topics() as Topic[]} />
-        </Suspense>
+      <Suspense fallback={<Loading />}>
+        <AllTopics topics={topics() as Topic[]} />
+      </Suspense>
     </PageLayout>
   )
 }

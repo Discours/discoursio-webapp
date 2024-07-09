@@ -72,14 +72,14 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
       title={`${t('Discours')} :: ${t('All authors')}`}
       desc="List of authors of the open editorial community"
     >
-        <Suspense fallback={<Loading />}>
-          <AllAuthors
-            isLoaded={Boolean(data()?.authors)}
-            authors={data()?.authors || []}
-            authorsByFollowers={data()?.authorsByFollowers}
-            authorsByShouts={data()?.authorsByShouts}
-          />
-        </Suspense>
+      <Suspense fallback={<Loading />}>
+        <AllAuthors
+          isLoaded={Boolean(data()?.authors)}
+          authors={data()?.authors || []}
+          authorsByFollowers={data()?.authorsByFollowers}
+          authorsByShouts={data()?.authorsByShouts}
+        />
+      </Suspense>
     </PageLayout>
   )
 }

@@ -65,11 +65,11 @@ export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
           slug={topic()?.slug}
           cover={cover()}
         >
-            <TopicView
-              topic={topic() as Topic}
-              topicSlug={props.params.slug}
-              shouts={articles() as Shout[]}
-            />
+          <TopicView
+            topic={topic() as Topic}
+            topicSlug={props.params.slug}
+            shouts={articles() as Shout[]}
+          />
         </PageLayout>
       </Suspense>
     </ErrorBoundary>

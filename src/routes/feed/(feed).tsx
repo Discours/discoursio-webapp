@@ -46,7 +46,6 @@ const fetchPublishedShouts = async (offset?: number, _client?: Client) => {
   return await shoutsLoader()
 }
 
-
 export const route = {
   load: async ({ location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
     const offset: number = Number.parseInt(query.offset, 10)

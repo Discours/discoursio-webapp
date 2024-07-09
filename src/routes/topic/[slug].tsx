@@ -28,7 +28,9 @@ export const route = {
 
 export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
   const params = useParams()
-  const articles = createAsync(async () => props.data.articles || (await fetchTopicShouts(params.slug)) || [])
+  const articles = createAsync(
+    async () => props.data.articles || (await fetchTopicShouts(params.slug)) || []
+  )
   const { topicEntities } = useTopics()
   const { t } = useLocalize()
   const topic = createMemo(() => topicEntities?.()[params.slug])

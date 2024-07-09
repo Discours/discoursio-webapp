@@ -308,7 +308,7 @@ export const FullArticle = (props: Props) => {
 
   onMount(() => {
     console.debug(props.article)
-    setPages((_) => ({comments: 0, rating: 0}))
+    setPages((_) => ({ comments: 0, rating: 0 }))
     addSeen(props.article.slug)
     document.title = props.article.title
     updateIframeSizes()

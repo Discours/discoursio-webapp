@@ -1,5 +1,5 @@
 import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
-import { ErrorBoundary, Suspense, createMemo, createReaction } from 'solid-js'
+import { ErrorBoundary, Suspense, createEffect, createMemo } from 'solid-js'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
@@ -7,8 +7,14 @@ import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
-import { loadShouts } from '~/graphql/api/public'
-import { Author, LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
+import { loadAuthors, loadShouts, loadTopics } from '~/graphql/api/public'
+import {
+  Author,
+  LoadShoutsOptions,
+  QueryLoad_Authors_ByArgs,
+  Shout,
+  Topic
+} from '~/graphql/schema/core.gen'
 import { getImageUrl } from '~/lib/getImageUrl'
 import { SHOUTS_PER_PAGE } from '../../(home)'
 
@@ -18,29 +24,49 @@ const fetchAuthorShouts = async (slug: string, offset?: number) => {
   return await shoutsLoader()
 }
 
+const fetchAllTopics = async () => {
+  const topicsFetcher = loadTopics()
+  return await topicsFetcher()
+}
+
+const fetchAuthor = async (slug: string) => {
+  const authorFetcher = loadAuthors({ by: { slug }, limit: 1 } as QueryLoad_Authors_ByArgs)
+  const aaa = await authorFetcher()
+  return aaa?.[0]
+}
+
 export const route = {
   load: async ({ params, location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
     const offset: number = Number.parseInt(query.offset, 10)
     const result = await fetchAuthorShouts(params.slug, offset)
-    return result
+    return {
+      author: await fetchAuthor(params.slug),
+      shouts: result || [],
+      topics: await fetchAllTopics()
+    }
   }
 }
 
-export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
+export default (props: RouteSectionProps<{ articles: Shout[]; author: Author; topics: Topic[] }>) => {
   const params = useParams()
+  const { addAuthor } = useAuthors()
   const articles = createAsync(
     async () => props.data.articles || (await fetchAuthorShouts(params.slug)) || []
   )
-  const { authorsEntities } = useAuthors()
+  const author = createAsync(async () => {
+    const a = props.data.author || (await fetchAuthor(params.slug))
+    addAuthor(a)
+    return a
+  })
+  const topics = createAsync(async () => props.data.topics || (await fetchAllTopics()))
   const { t } = useLocalize()
-  const author = createMemo(() => authorsEntities?.()[params.slug])
   const title = createMemo(() => `${author()?.name || ''}`)
 
   // docs: `a side effect that is run the first time the expression
   // wrapped by the returned tracking function is notified of a change`
-  createReaction(() => {
+  createEffect(() => {
     if (author()) {
-      console.debug('[routes.slug] article signal changed once')
+      console.debug('[routes] author/[slug] author loaded fx')
       window?.gtag?.('event', 'page_view', {
         page_title: author()?.name || '',
         page_location: window?.location.href || '',
@@ -69,7 +95,8 @@ export default (props: RouteSectionProps<{ articles: Shout[] }>) => {
               author={author() as Author}
               authorSlug={params.slug}
               shouts={articles() as Shout[]}
-              selectedTab={params.tab || ''}
+              selectedTab={params.tab || 'shouts'}
+              topics={topics()}
             />
           </ReactionsProvider>
         </PageLayout>

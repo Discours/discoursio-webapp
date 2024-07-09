@@ -7,6 +7,7 @@ import getAuthorQuery from '~/graphql/query/core/author-by'
 import loadAuthorsAllQuery from '~/graphql/query/core/authors-all'
 import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
 import loadReactionsByQuery from '~/graphql/query/core/reactions-load-by'
+import loadFollowersByTopicQuery from '~/graphql/query/core/topic-followers'
 import loadTopicsQuery from '~/graphql/query/core/topics-all'
 import {
   Author,
@@ -99,4 +100,13 @@ export const loadShoutsSearch = (options: QueryLoad_Shouts_SearchArgs) => {
     const result = resp?.data?.load_shouts_search
     if (result) return result as Shout[]
   }, `search-${options.text}-${page}`)
+}
+
+export const loadFollowersByTopic = (slug: string) => {
+  // TODO: paginate topic followers
+  return cache(async () => {
+    const resp = await defaultClient.query(loadFollowersByTopicQuery, { slug }).toPromise()
+    const result = resp?.data?.load_authors_by
+    if (result) return result as Author[]
+  }, `topic-${slug}`)
 }

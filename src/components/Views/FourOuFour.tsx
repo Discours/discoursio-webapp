@@ -9,6 +9,7 @@ import styles from '../../styles/FourOuFour.module.scss'
 type EvType = Event & { submitter: HTMLElement } & { currentTarget: HTMLFormElement; target: Element }
 
 export const FourOuFourView = () => {
+  console.debug('[components.404] init context...')
   let queryInput: HTMLInputElement | null
   const navigate = useNavigate()
   const search = (_ev: EvType) => navigate(`/search?q=${queryInput?.value || ''}`)

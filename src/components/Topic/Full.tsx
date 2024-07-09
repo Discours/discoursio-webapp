@@ -26,16 +26,15 @@ export const FullTopic = (props: Props) => {
   const { requireAuthentication } = useSession()
   const [followed, setFollowed] = createSignal()
 
-  const title = createMemo(
-    () =>
-      // FIXME: use title translation
-      `#${capitalize(
-        lang() === 'en'
-          ? props.topic.slug.replace(/-/, ' ')
-          : props.topic.title || props.topic.slug.replace(/-/, ' '),
-        true
-      )}`
-  )
+  const title = createMemo(() => {
+    /* FIXME: use title translation*/
+    return `#${capitalize(
+      lang() === 'en'
+        ? props.topic.slug.replace(/-/, ' ')
+        : props.topic.title || props.topic.slug.replace(/-/, ' '),
+      true
+    )}`
+  })
   createEffect(() => {
     if (follows?.topics?.length !== 0) {
       const items = follows.topics || []

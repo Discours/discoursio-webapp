@@ -8,7 +8,6 @@ import { useFollowing } from '~/context/following'
 import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
-import { useUI } from '~/context/ui'
 import { loadReactions } from '~/graphql/api/public'
 import loadShoutsQuery from '~/graphql/query/core/articles-load-by'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
@@ -31,6 +30,7 @@ type Props = {
   authorSlug: string
   shouts?: Shout[]
   author?: Author
+  topics?: Topic[]
   selectedTab: string
 }
 
@@ -38,6 +38,7 @@ export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
+  console.debug('[components.AuthorView] reactive context init...')
   const { t } = useLocalize()
   const params = useParams()
   const { followers: myFollowers, follows: myFollows } = useFollowing()
@@ -45,7 +46,6 @@ export const AuthorView = (props: Props) => {
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const [authorSlug, setSlug] = createSignal(props.authorSlug)
   const { sortedFeed } = useFeed()
-  const { modal, hideModal } = useUI()
   const loc = useLocation()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
@@ -90,10 +90,11 @@ export const AuthorView = (props: Props) => {
       }
     })
   )
-  // 3 // after fetch loading following data
+
+  // 2 // догружает подписки автора
   createEffect(
     on(
-      [followers, () => authorsEntities()[authorSlug()]],
+      [followers, () => props.author || authorsEntities()[authorSlug()]],
       async ([current, found]) => {
         if (current) return
         if (!found) return
@@ -112,7 +113,7 @@ export const AuthorView = (props: Props) => {
     )
   )
 
-  // догружает ленту и комментарии
+  // 3 // догружает ленту и комментарии
   createEffect(
     on(
       () => author() as Author,
@@ -139,17 +140,14 @@ export const AuthorView = (props: Props) => {
     }
   }
 
-  onMount(() => {
-    if (!modal()) hideModal()
-    checkBioHeight()
-  })
-
   const pages = createMemo<Shout[][]>(() =>
     splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
   const handleDeleteComment = (id: number) => {
     setCommented((prev) => (prev || []).filter((comment) => comment.id !== id))
   }
+
+  onMount(checkBioHeight)
 
   return (
     <div class={styles.authorPage}>

@@ -11,6 +11,7 @@ import { useLocalize } from '~/context/localize'
 import type { Author } from '~/graphql/schema/core.gen'
 import { authorLetterReduce, translateAuthor } from '~/intl/translate'
 import { dummyFilter } from '~/lib/dummyFilter'
+import { byFirstChar, byStat } from '~/lib/sortby'
 import { scrollHandler } from '~/utils/scroll'
 import styles from './AllAuthors.module.scss'
 import stylesAuthorList from './AuthorsList.module.scss'
@@ -45,13 +46,13 @@ export const AllAuthors = (props: Props) => {
     let sortedAuthors = [...(props.authors || authorsSorted())] // Clone the array to avoid mutating the original
     console.log('Before Sorting:', sortedAuthors.slice(0, 5)) // Log the first 5 authors for comparison
     if (searchParams.by === 'name') {
-      sortedAuthors = sortedAuthors.sort((a, b) => (a.name||'').localeCompare(b.name||''))
+      sortedAuthors = sortedAuthors.sort(byFirstChar)
       console.log('Sorted by Name:', sortedAuthors.slice(0, 5))
     } else if (searchParams.by === 'shouts') {
-      sortedAuthors = sortedAuthors.sort((a, b) => (b.stat?.shouts || 0) - (a.stat?.shouts || 0))
+      sortedAuthors = sortedAuthors.sort(byStat('shouts'))
       console.log('Sorted by Shouts:', sortedAuthors.slice(0, 5))
     } else if (searchParams.by === 'followers') {
-      sortedAuthors = sortedAuthors.sort((a, b) => (b.stat?.followers || 0) - (a.stat?.followers || 0))
+      sortedAuthors = sortedAuthors.sort(byStat('followers'))
       console.log('Sorted by Followers:', sortedAuthors.slice(0, 5))
     }
     console.log('After Sorting:', sortedAuthors.slice(0, 5))

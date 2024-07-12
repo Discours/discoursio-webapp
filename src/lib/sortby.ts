@@ -1,7 +1,9 @@
 import type { Author, Maybe, Reaction, Shout, Topic, TopicStat } from '~/graphql/schema/core.gen'
 
-export const byFirstChar = (a: { name?: string; title?: string }, b: { name?: string; title?: string }) =>
-  (a.name || a.title || '').localeCompare(b.name || b.title || '')
+export const byFirstChar = (a: Author | Topic, b: Author | Topic) =>
+  ((a as Author).name || (a as Topic).title || '').localeCompare(
+    (b as Author).name || (b as Topic).title || ''
+  )
 
 export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
   return a?.created_at - b?.created_at

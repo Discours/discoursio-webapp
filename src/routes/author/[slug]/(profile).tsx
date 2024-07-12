@@ -93,7 +93,7 @@ export default (props: RouteSectionProps<{ articles: Shout[]; author: Author; to
               author={author() as Author}
               authorSlug={params.slug}
               shouts={articles() as Shout[]}
-              selectedTab={params.tab}
+              selectedTab={'shouts'}
               topics={topics()}
             />
           </ReactionsProvider>

@@ -45,7 +45,7 @@ export const AllAuthors = (props: Props) => {
     let sortedAuthors = [...(props.authors || authorsSorted())] // Clone the array to avoid mutating the original
     console.log('Before Sorting:', sortedAuthors.slice(0, 5)) // Log the first 5 authors for comparison
     if (searchParams.by === 'name') {
-      sortedAuthors = sortedAuthors.sort((a, b) => a.name.localeCompare(b.name))
+      sortedAuthors = sortedAuthors.sort((a, b) => (a.name||'').localeCompare(b.name||''))
       console.log('Sorted by Name:', sortedAuthors.slice(0, 5))
     } else if (searchParams.by === 'shouts') {
       sortedAuthors = sortedAuthors.sort((a, b) => (b.stat?.shouts || 0) - (a.stat?.shouts || 0))

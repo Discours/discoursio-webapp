@@ -3,7 +3,6 @@ dist/
 node_modules/
 npm-debug.log*
 pnpm-debug.log*
-.vscode
 .env
 .env.production
 .DS_Store

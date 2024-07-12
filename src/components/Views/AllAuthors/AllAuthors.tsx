@@ -1,6 +1,6 @@
 import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
 import { AuthorBadge } from '~/components/Author/AuthorBadge'
 import { InlineLoader } from '~/components/InlineLoader'
 import { Button } from '~/components/_shared/Button'
@@ -34,7 +34,7 @@ export const AllAuthors = (props: Props) => {
   const [searchParams, changeSearchParams] = useSearchParams<{ by?: string }>()
   const { authorsSorted, setAuthorsSort, loadAuthors } = useAuthors()
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [currentAuthors, setCurrentAuthors] = createSignal<Author[]>([])
+  const [_currentAuthors, setCurrentAuthors] = createSignal<Author[]>([])
 
   // UPDATE Fetch authors initially and when searchParams.by changes
   createEffect(() => {
@@ -51,8 +51,8 @@ export const AllAuthors = (props: Props) => {
       sortedAuthors = sortedAuthors.sort((a, b) => (b.stat?.shouts || 0) - (a.stat?.shouts || 0))
       console.log('Sorted by Shouts:', sortedAuthors.slice(0, 5))
     } else if (searchParams.by === 'followers') {
-      sortedAuthors = sortedAuthors.sort((a, b) => (b.stat?.followers || 0) - (a.stat?.followers || 0));
-      console.log('Sorted by Followers:', sortedAuthors.slice(0, 5));
+      sortedAuthors = sortedAuthors.sort((a, b) => (b.stat?.followers || 0) - (a.stat?.followers || 0))
+      console.log('Sorted by Followers:', sortedAuthors.slice(0, 5))
     }
     console.log('After Sorting:', sortedAuthors.slice(0, 5))
     return sortedAuthors
@@ -68,8 +68,8 @@ export const AllAuthors = (props: Props) => {
   // filter
   const [searchQuery, setSearchQuery] = createSignal('')
   const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
-  createEffect(() =>
-    authors() && setFilteredAuthors(dummyFilter(authors(), searchQuery(), lang()) as Author[])
+  createEffect(
+    () => authors() && setFilteredAuthors(dummyFilter(authors(), searchQuery(), lang()) as Author[])
   )
 
   // store by first char
@@ -116,10 +116,10 @@ export const AllAuthors = (props: Props) => {
   })
 
   const loadMoreAuthors = () => {
-    const by = searchParams?.by as 'followers' | 'shouts' | undefined;
-    if (!by) return;
-    const nextPage = currentPage()[by] + 1;
-    fetchAuthors(by, nextPage).then(() => setCurrentPage({ ...currentPage(), [by]: nextPage }));
+    const by = searchParams?.by as 'followers' | 'shouts' | undefined
+    if (!by) return
+    const nextPage = currentPage()[by] + 1
+    fetchAuthors(by, nextPage).then(() => setCurrentPage({ ...currentPage(), [by]: nextPage }))
   }
 
   const TabNavigator = () => (
@@ -133,21 +133,27 @@ export const AllAuthors = (props: Props) => {
               ['view-switcher__item--selected']: !searchParams?.by || searchParams?.by === 'shouts'
             })}
           >
-            <a href="#" onClick={() => changeSearchParams({ by: 'shouts' })}>{t('By shouts')}</a>
+            <a href="#" onClick={() => changeSearchParams({ by: 'shouts' })}>
+              {t('By shouts')}
+            </a>
           </li>
           <li
             class={clsx({
               ['view-switcher__item--selected']: searchParams?.by === 'followers'
             })}
           >
-            <a href="#" onClick={() => changeSearchParams({ by: 'followers' })}>{t('By popularity')}</a>
+            <a href="#" onClick={() => changeSearchParams({ by: 'followers' })}>
+              {t('By popularity')}
+            </a>
           </li>
           <li
             class={clsx({
               ['view-switcher__item--selected']: searchParams?.by === 'name'
             })}
           >
-            <a href="#" onClick={() => changeSearchParams({ by: 'name' })}>{t('By name')}</a>
+            <a href="#" onClick={() => changeSearchParams({ by: 'name' })}>
+              {t('By name')}
+            </a>
           </li>
           <Show when={searchParams?.by === 'name'}>
             <li class="view-switcher__search">

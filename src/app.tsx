@@ -4,6 +4,7 @@ import { FileRoutes } from '@solidjs/start/router'
 import { type JSX, Suspense } from 'solid-js'
 
 import { Loading } from './components/_shared/Loading'
+import { AuthorsProvider } from './context/authors'
 import { EditorProvider } from './context/editor'
 import { FeedProvider } from './context/feed'
 import { GraphQLClientProvider } from './context/graphql'
@@ -11,7 +12,6 @@ import { LocalizeProvider } from './context/localize'
 import { SessionProvider } from './context/session'
 import { TopicsProvider } from './context/topics'
 import { UIProvider } from './context/ui' // snackbar included
-import { AuthorsProvider } from './context/authors'
 import '~/styles/app.scss'
 
 export const Providers = (props: { children?: JSX.Element }) => {

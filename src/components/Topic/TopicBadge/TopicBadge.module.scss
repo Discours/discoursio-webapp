@@ -139,9 +139,6 @@
 .stats {
   @include font-size(1.5rem);
 
-  color: var(--secondary-color);
-  display: flex;
-
   @include media-breakpoint-down(md) {
     flex-wrap: wrap;
   }
@@ -149,6 +146,9 @@
   @include media-breakpoint-down(sm) {
     margin-top: 0.5em;
   }
+
+  color: var(--secondary-color);
+  display: flex;
 
   .statsItem {
     @include font-size(1.4rem);

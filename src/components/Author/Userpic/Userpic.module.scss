@@ -86,16 +86,16 @@
   }
 
   &.XL {
+    @include media-breakpoint-up(md) {
+      margin: 0;
+      max-width: 100%;
+    }
+
     aspect-ratio: 1/1;
     margin: 0 auto 1rem;
     max-width: 168px;
     height: auto;
     width: 100%;
-
-    @include media-breakpoint-up(md) {
-      margin: 0;
-      max-width: 100%;
-    }
 
     .letters {
       align-items: center;

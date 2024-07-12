@@ -7,9 +7,6 @@
 }
 
 .topic {
-  align-items: baseline;
-  margin-top: 3.2rem;
-
   @include media-breakpoint-down(sm) {
     margin: 0;
     position: relative;
@@ -31,6 +28,9 @@
       }
     }
   }
+
+  align-items: baseline;
+  margin-top: 3.2rem;
 }
 
 .topicDetails {
@@ -38,6 +38,12 @@
 }
 
 .topicInRow {
+  @include media-breakpoint-up(sm) {
+    .topicDescription {
+      margin-bottom: 0;
+    }
+  }
+
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -45,12 +51,6 @@
 
   button {
     margin-top: 0;
-  }
-
-  @include media-breakpoint-up(sm) {
-    .topicDescription {
-      margin-bottom: 0;
-    }
   }
 }
 
@@ -100,13 +100,13 @@
 }
 
 .controlContainer {
-  margin-bottom: 1.6rem;
-
   @include media-breakpoint-up(sm) {
     .topicCompact & {
       text-align: right;
     }
   }
+
+  margin-bottom: 1.6rem;
 }
 
 .topicCompact {

@@ -8,24 +8,24 @@
   }
 
   .groupControls {
-    margin-bottom: 2rem !important;
-    margin-top: 0 !important;
-
     @include media-breakpoint-up(md) {
       margin-bottom: 6rem !important;
     }
+
+    margin-bottom: 2rem !important;
+    margin-top: 0 !important;
   }
 }
 
 .authorHeader {
+  @include media-breakpoint-up(lg) {
+    margin-top: -3.2rem;
+  }
+
   border-bottom: 2px solid var(--default-color);
   margin-bottom: 2.4rem;
   margin-top: 1.8rem;
   padding-bottom: 4rem;
-
-  @include media-breakpoint-up(lg) {
-    margin-top: -3.2rem;
-  }
 }
 
 .ratingContainer {
@@ -44,13 +44,13 @@
 }
 
 .additionalControls {
-  display: none;
-  white-space: nowrap;
-
   @include media-breakpoint-up(md) {
     display: block;
     text-align: right;
   }
+
+  display: none;
+  white-space: nowrap;
 }
 
 .loadingWrapper {

@@ -51,13 +51,13 @@
   }
 
   &.horizontalAnchorCenter {
-    right: 0;
-
     @include media-breakpoint-up(md) {
       left: 50%;
       right: auto;
       transform: translateX(-50%);
     }
+
+    right: 0;
   }
 
   &.horizontalAnchorRight {

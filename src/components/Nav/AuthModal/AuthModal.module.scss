@@ -1,12 +1,12 @@
 .view {
+  @include media-breakpoint-up(md) {
+    min-height: 600px;
+  }
+
   background: var(--background-color);
   min-height: 550px;
   position: relative;
   justify-content: center;
-
-  @include media-breakpoint-up(md) {
-    min-height: 600px;
-  }
 
   input {
     font-size: 1.7rem;
@@ -41,6 +41,10 @@
 .authImage {
   @include font-size(1.5rem);
 
+  @include media-breakpoint-down(sm) {
+    display: none;
+  }
+
   background: var(--background-color-invert)
     url('https://images.discours.io/unsafe/1600x/production/image/auth-page.jpg') center no-repeat;
   background-size: cover;
@@ -48,10 +52,6 @@
   display: flex;
   padding: 3em;
   position: relative;
-
-  @include media-breakpoint-down(sm) {
-    display: none;
-  }
 
   h2 {
     text-transform: uppercase;
@@ -118,13 +118,13 @@
 }
 
 .auth {
-  display: flex;
-  flex-direction: column;
-  padding: $container-padding-x;
-
   @include media-breakpoint-up(lg) {
     padding: 4rem !important;
   }
+
+  display: flex;
+  flex-direction: column;
+  padding: $container-padding-x;
 }
 
 .submitButton {

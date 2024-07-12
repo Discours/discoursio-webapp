@@ -24,12 +24,12 @@
   }
 
   &:focus {
+    box-shadow: inset 0 0 0 3px #000;
+
     &::placeholder {
       opacity: 0;
       transition: opacity 0.2s ease;
     }
-
-    box-shadow: inset 0 0 0 3px #000;
   }
 
   &:valid,
@@ -49,18 +49,18 @@
 }
 
 .donateForm .btn {
+  @include media-breakpoint-down(sm) {
+    &:last-of-type {
+      margin-right: 0 !important;
+    }
+  }
+
   cursor: pointer;
   flex: 1;
   padding: 5px 10px;
   text-align: center;
   white-space: nowrap;
   transform: none !important;
-
-  @include media-breakpoint-down(sm) {
-    &:last-of-type {
-      margin-right: 0 !important;
-    }
-  }
 }
 
 .btnGroup {
@@ -82,22 +82,22 @@
 }
 
 .donateButtonsContainer {
+  @include media-breakpoint-down(sm) {
+    flex-wrap: wrap;
+  }
+
   align-items: center;
   display: flex;
   flex: 1;
   justify-content: space-between;
 
-  @include media-breakpoint-down(sm) {
-    flex-wrap: wrap;
-  }
-
   input,
   label {
-    margin: 0 8px;
-
     @include media-breakpoint-down(sm) {
       margin-bottom: 1em;
     }
+
+    margin: 0 8px;
   }
 
   input {

@@ -51,19 +51,18 @@
       @include font-size(1.4rem);
 
       appearance: textfield;
-
-      &::-webkit-outer-spin-button,
-      &::-webkit-inner-spin-button {
-        appearance: none;
-        margin: 0;
-      }
-
       font-weight: 600;
       padding: 0;
       margin: 14px 0 0;
       width: 100%;
       border: none;
       outline: none;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        appearance: none;
+        margin: 0;
+      }
 
       &::placeholder {
         color: var(--secondary-color);
@@ -131,6 +130,14 @@
 }
 
 .scrollTopButton {
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
+
+  @include media-breakpoint-up(xl) {
+    left: 0;
+  }
+
   pointer-events: none;
   user-select: none;
   cursor: pointer;
@@ -145,14 +152,6 @@
   &.visible {
     opacity: 1;
     pointer-events: all;
-  }
-
-  @include media-breakpoint-down(md) {
-    display: none;
-  }
-
-  @include media-breakpoint-up(xl) {
-    left: 0;
   }
 
   &:hover {

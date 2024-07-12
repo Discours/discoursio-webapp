@@ -1,19 +1,19 @@
 .group {
   @include font-size(1.6rem);
 
-  margin: 3em 0 9.6rem;
-
   @include media-breakpoint-down(sm) {
     margin-bottom: 6.4rem;
   }
 
-  h2 {
-    margin-bottom: 3.2rem;
-    text-transform: capitalize;
+  margin: 3em 0 9.6rem;
 
+  h2 {
     @include media-breakpoint-down(sm) {
       margin-bottom: 1.6rem;
     }
+
+    margin-bottom: 3.2rem;
+    text-transform: capitalize;
   }
 
   .topic {
@@ -35,12 +35,12 @@
   text-align: center;
 
   .loadMoreButton {
-    padding: 0.6em 3em;
-    width: 100%;
-
     @include media-breakpoint-up(sm) {
       width: auto;
     }
+
+    padding: 0.6em 3em;
+    width: 100%;
   }
 }
 
@@ -72,12 +72,12 @@
 }
 
 .viewSwitcher {
-  margin-bottom: 2rem;
-  width: 100%;
-
   @include media-breakpoint-down(sm) {
     overflow-x: auto;
   }
+
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 

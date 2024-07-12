@@ -5,14 +5,14 @@
   .confirmModalTitle {
     @include font-size(3.2rem);
 
+    @include media-breakpoint-up(sm) {
+      margin: 0 10%;
+    }
+
     color: var(--default-color);
     font-weight: 700;
     margin: 0 3rem;
     text-align: center;
-
-    @include media-breakpoint-up(sm) {
-      margin: 0 10%;
-    }
   }
 
   .confirmModalActions {

@@ -1,12 +1,12 @@
 .search-form {
-  display: flex;
-  margin-bottom: 2em;
-  margin-top: 2em;
-
   @include media-breakpoint-down(sm) {
     margin-left: divide(-$container-padding-x, 2);
     margin-right: divide(-$container-padding-x, 2);
   }
+
+  display: flex;
+  margin-bottom: 2em;
+  margin-top: 2em;
 
   input,
   button {

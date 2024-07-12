@@ -20,14 +20,18 @@
   z-index: 1;
 
   &:not([class*='col-']) {
-    width: 100%;
-
     @include media-breakpoint-up(sm) {
       width: 80%;
     }
+
+    width: 100%;
   }
 
   .close {
+    @include media-breakpoint-up(sm) {
+      right: 2rem;
+    }
+
     position: absolute;
     top: 2rem;
     cursor: pointer;
@@ -38,10 +42,6 @@
     right: 2.4rem;
     transition: opacity 0.3s;
     z-index: 1;
-
-    @include media-breakpoint-up(sm) {
-      right: 2rem;
-    }
 
     &:hover {
       opacity: 0.5;
@@ -59,10 +59,6 @@
   }
 
   &.narrow {
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-
     @include media-breakpoint-up(sm) {
       max-width: 600px;
     }
@@ -70,6 +66,10 @@
     @include media-breakpoint-up(md) {
       width: 65%;
     }
+
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
 
     .close {
       right: 1.6rem;
@@ -83,21 +83,20 @@
 }
 
 .modalInner {
+  @include media-breakpoint-up(sm) {
+    padding: 5rem;
+  }
+
   height: 100%;
   overflow: auto;
   padding: 5.4rem 2.4rem 2.4rem;
   position: relative;
   text-align: left;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 
-  @include media-breakpoint-up(sm) {
-    padding: 5rem;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 

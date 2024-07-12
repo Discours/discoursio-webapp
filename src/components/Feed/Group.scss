@@ -35,9 +35,6 @@
 }
 
 .floor--group {
-  background: #e8e5f0;
-  padding: 4rem 0 0;
-
   @include media-breakpoint-up(md) {
     padding-bottom: 3rem;
   }
@@ -49,4 +46,7 @@
       }
     }
   }
+
+  background: #e8e5f0;
+  padding: 4rem 0 0;
 }

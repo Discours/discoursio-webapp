@@ -1,15 +1,15 @@
 .shoutCard {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-  margin-bottom: 2.4rem;
-  position: relative;
-
   @include media-breakpoint-up(md) {
     &:last-child {
       margin-bottom: 0;
     }
   }
+
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  margin-bottom: 2.4rem;
+  position: relative;
 
   &:hover {
     .shoutCardCover {
@@ -437,18 +437,15 @@
 }
 
 .shoutCardWithCover {
-  aspect-ratio: 16/9;
-  width: 100%;
-
   @include media-breakpoint-down(xl) {
     aspect-ratio: auto;
     height: 100%;
   }
 
-  swiper-slide & {
-    aspect-ratio: 16/9;
-    margin-bottom: 0;
+  aspect-ratio: 16/9;
+  width: 100%;
 
+  swiper-slide & {
     @include media-breakpoint-down(lg) {
       aspect-ratio: 1/1;
     }
@@ -464,6 +461,9 @@
         padding-left: 10%;
       }
     }
+
+    aspect-ratio: 16/9;
+    margin-bottom: 0;
   }
 
   &.shoutCardNoImage {
@@ -501,15 +501,15 @@
   }
 
   .shoutCardContent {
+    @include media-breakpoint-down(xl) {
+      position: relative;
+    }
+
     display: flex;
     flex-direction: column;
     justify-content: end;
     padding: 30% 2.4rem 2.4rem;
     z-index: 1;
-
-    @include media-breakpoint-down(xl) {
-      position: relative;
-    }
   }
 
   .shoutCardCover {
@@ -656,12 +656,6 @@
 }
 
 .shoutCardVertical {
-  aspect-ratio: auto;
-  height: 100%;
-  min-height: 250px;
-  margin: 0;
-  padding: 0;
-
   @include media-breakpoint-up(sm) {
     aspect-ratio: 2/1;
   }
@@ -674,13 +668,19 @@
     aspect-ratio: 1/1.6;
   }
 
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 250px;
+  margin: 0;
+  padding: 0;
+
   .shoutCardTitle,
   .shoutCardSubtitle {
-    font-size: 2.2rem !important;
-
     @include media-breakpoint-between(lg, xl) {
       font-size: 1.8rem !important;
     }
+
+    font-size: 2.2rem !important;
   }
 
   .shoutCardContent {

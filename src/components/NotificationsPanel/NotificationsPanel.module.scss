@@ -16,6 +16,10 @@ $transition-duration: 200ms;
     width 0ms linear $transition-duration;
 
   .panel {
+    @include media-breakpoint-up(md) {
+      width: 50%;
+    }
+
     position: relative;
     background-color: var(--background-color);
     width: 100%;
@@ -24,10 +28,6 @@ $transition-duration: 200ms;
     transition: transform $transition-duration;
     display: flex;
     flex-direction: column;
-
-    @include media-breakpoint-up(md) {
-      width: 50%;
-    }
 
     .title {
       @include font-size(2rem);

@@ -11,6 +11,7 @@ import { LocalizeProvider } from './context/localize'
 import { SessionProvider } from './context/session'
 import { TopicsProvider } from './context/topics'
 import { UIProvider } from './context/ui' // snackbar included
+import { AuthorsProvider } from './context/authors'
 import '~/styles/app.scss'
 
 export const Providers = (props: { children?: JSX.Element }) => {
@@ -24,7 +25,9 @@ export const Providers = (props: { children?: JSX.Element }) => {
                 <Meta name="viewport" content="width=device-width, initial-scale=1" />
                 <UIProvider>
                   <EditorProvider>
-                    <Suspense fallback={<Loading />}>{props.children}</Suspense>
+                    <AuthorsProvider>
+                      <Suspense fallback={<Loading />}>{props.children}</Suspense>
+                    </AuthorsProvider>
                   </EditorProvider>
                 </UIProvider>
               </MetaProvider>

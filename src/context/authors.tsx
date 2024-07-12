@@ -56,7 +56,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
   const [authorsSorted, setAuthorsSorted] = createSignal<Author[]>([])
   const [sortBy, setSortBy] = createSignal<SortFunction<Author>>()
   const { feedByAuthor } = useFeed()
-  const setAuthorsSort = (stat: string) => setSortBy((_) => byStat(stat) as SortFunction<Author>)
+  const setAuthorsSort = (stat: string) => setSortBy(() => byStat(stat) as SortFunction<Author>)
 
   // Эффект для отслеживания изменений сигнала sortBy и обновления authorsSorted
   createEffect(
@@ -64,7 +64,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
       [sortBy, authorsEntities],
       ([sortfn, authorsdict]) => {
         if (sortfn) {
-          setAuthorsSorted?.([...filterAndSort(Object.values(authorsdict), sortfn)])
+          setAuthorsSorted([...filterAndSort(Object.values(authorsdict), sortfn)])
         }
       },
       { defer: true }
@@ -101,6 +101,17 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     }
   }
 
+  const loadAuthorsPaginated = async (args: QueryLoad_Authors_ByArgs): Promise<void> => {
+    try {
+      const fetcher = await loadAuthors(args)
+      const data = await fetcher()
+      if (data) addAuthors(data as Author[])
+    } catch (error) {
+      console.error('Error loading authors:', error)
+      throw error
+    }
+  }
+
   const topAuthors = createMemo(() => {
     const articlesByAuthorMap = feedByAuthor?.() || {}
 
@@ -124,17 +135,6 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
 
     return sortedTopAuthors
   })
-
-  const loadAuthorsPaginated = async (args: QueryLoad_Authors_ByArgs): Promise<void> => {
-    try {
-      const fetcher = await loadAuthors(args)
-      const data = await fetcher()
-      if (data) addAuthors(data as Author[])
-    } catch (error) {
-      console.error('Error loading authors:', error)
-      throw error
-    }
-  }
 
   const authorsByTopic = createMemo(() => {
     const articlesByAuthorMap = feedByAuthor?.() || {}

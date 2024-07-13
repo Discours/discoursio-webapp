@@ -30,7 +30,7 @@ const fetchAllTopics = async () => {
 }
 
 const fetchAuthor = async (slug: string) => {
-  const authorFetcher = loadAuthors({ by: { slug }, limit: 1 } as QueryLoad_Authors_ByArgs)
+  const authorFetcher = loadAuthors({ by: { slug }, limit: 1, offset: 0 } as QueryLoad_Authors_ByArgs)
   const aaa = await authorFetcher()
   return aaa?.[0]
 }
@@ -78,6 +78,8 @@ export default (props: RouteSectionProps<{ articles: Shout[]; author: Author; to
       ? getImageUrl(author()?.pic || '', { width: 1200 })
       : getImageUrl('production/image/logo_image.png')
   )
+
+  const selectedTab = createMemo(() => params.tab in ['followers', 'shouts'] ? params.tab : 'name')
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>
@@ -91,9 +93,9 @@ export default (props: RouteSectionProps<{ articles: Shout[]; author: Author; to
           <ReactionsProvider>
             <AuthorView
               author={author() as Author}
+              selectedTab={selectedTab()}
               authorSlug={params.slug}
               shouts={articles() as Shout[]}
-              selectedTab={params.tab}
               topics={topics()}
             />
           </ReactionsProvider>

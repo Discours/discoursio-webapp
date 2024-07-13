@@ -106,7 +106,7 @@ export const loadFollowersByTopic = (slug: string) => {
   // TODO: paginate topic followers
   return cache(async () => {
     const resp = await defaultClient.query(loadFollowersByTopicQuery, { slug }).toPromise()
-    const result = resp?.data?.load_authors_by
+    const result = resp?.data?.get_topic_followers
     if (result) return result as Author[]
   }, `topic-${slug}`)
 }

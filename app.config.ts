@@ -1,4 +1,6 @@
 import { SolidStartInlineConfig, defineConfig } from '@solidjs/start/config'
+import { visualizer } from "rollup-plugin-visualizer"
+import mkcert from 'vite-plugin-mkcert'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
 
@@ -20,6 +22,7 @@ export default defineConfig({
   vite: {
     envPrefix: 'PUBLIC_',
     plugins: [
+      mkcert(),
       nodePolyfills({
         include: ['path', 'stream', 'util'],
         exclude: ['http'],
@@ -43,7 +46,10 @@ export default defineConfig({
     },
     build: {
       chunkSizeWarningLimit: 1024,
-      target: 'esnext'
+      target: 'esnext',
+      rollupOptions: {
+        plugins: [visualizer(), ]
+      }
     },
     server: {
       https: true

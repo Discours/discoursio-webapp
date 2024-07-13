@@ -1,63 +1,59 @@
-## How to start
+## Рекомендации по настройке разработки
 
-Use Bun to manage packages.
+### Как начать
 
-```
-bun i
-```
+Используйте `bun i`, `npm i`, `pnpm i` или `yarn`, чтобы установить пакеты. Затем сгенерируйте сертификат и файл ключа для devserver с помощью `mkcert localhost`.
 
-## Useful commands  
-run checks  
+### Настройка переменных
+
+- Используйте файл `.env` для настройки переменных собственной среды разработки.
+- Переменные окружения с префиксом `PUBLIC_` широко используются в `/src/utils/config.ts`.
+
+### Полезные команды
+
+Запуск проверки соответствия типов и автоматически исправить ошибки стилей, порядок импорта, форматирование:
+
 ```
 bun run typecheck
-```
-fix styles, imports, formatting and autofixable linting errors:
-```
 bun run fix
 ```
 
-## Config of variables
 
-- All vars are already in place and wroted in   
-    ```
-    /src/utils/config.ts
-    ```
+## End-to-End (E2E) тесты
 
-# End-to-End (E2E) Tests
+End-to-end тесты написаны с использованием [Playwright](https://playwright.dev/).
 
-This directory contains end-to-end tests. These tests are written using [Playwright](https://playwright.dev/)
+### Структура
 
-## Structure
+- `/tests/*`: содержит файлы тестов
+- `/playwright.config.ts`: конфиг для Playwright
 
-- `/tests/*`: This directory contains the test files.
-- `/playwright.config.ts`: This is the configuration file for Playwright.
+### Начало работы
 
-## Getting Started
+Следуйте этим шагам:
 
-Follow these steps:
+1. **Установите зависимости**: Запустите `npm run e2e:install`, чтобы установить необходимые зависимости для выполнения тестов.
 
-1. **Install dependencies**: Run `pnpm e2e:install` to install the necessary dependencies for running the tests.
+2. **Запустите тесты**: После установки зависимостей используйте `npm run e2e:tests`.
 
-2. **Run the tests**: After using `pnpm e2e:tests`.
+### Дополнительная информация
 
-## Additional Information
-
-If workers is no needed use:
+Для параллельного исполнения:
 - `npx playwright test --project=webkit --workers 4`
 
-For more information on how to write tests using Playwright - [Playwright documentation](https://playwright.dev/docs/intro).
+Для получения дополнительной информации о написании тестов с использованием Playwright - [Документация Playwright](https://playwright.dev/docs/intro).
 
-## 🚀 Tests in CI Mode
+### 🚀 Тесты в режиме CI
 
-Tests are executed within a GitHub workflow. We organize our tests into two main directories:
+Тесты выполняются в рамках GitHub workflow. Мы организуем наши тесты в две основные директории:
 
-- `tests`: Contains tests that do not require authentication.
-- `tests-with-auth`: Houses tests that interact with authenticated parts of the application.
+- `tests`: Содержит тесты, которые не требуют аутентификации.
+- `tests-with-auth`: Содержит тесты, которые взаимодействуют с аутентифицированными частями приложения.
 
-🔧 **Configuration:**
+🔧 **Конфигурация:**
 
-Playwright is configured to utilize the `BASE_URL` environment variable. Ensure this is properly set in your CI configuration to point to the correct environment.
+Playwright настроен на использование переменной окружения `BASE_URL`. Убедитесь, что она правильно установлена в вашей конфигурации CI для указания на правильную среду.
 
-📝 **Note:**
+📝 **Примечание:**
 
-After pages have been adjusted to work with authentication, all tests should be moved to the `tests` directory to streamline the testing process.
+После того как страницы были настроены для работы с аутентификацией, все тесты должны быть перемещены в директорию `tests` для упрощения процесса тестирования.

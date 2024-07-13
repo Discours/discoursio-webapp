@@ -28,35 +28,42 @@ import styles from './Author.module.scss'
 
 type Props = {
   authorSlug: string
+  selectedTab: string
   shouts?: Shout[]
   author?: Author
   topics?: Topic[]
-  selectedTab: string
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: Props) => {
-  console.debug('[components.AuthorView] reactive context init...')
+  // contexts
   const { t } = useLocalize()
-  const params = useParams()
-  const { followers: myFollowers, follows: myFollows } = useFollowing()
-  const { session } = useSession()
-  const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const [authorSlug, setSlug] = createSignal(props.authorSlug)
-  const { sortedFeed } = useFeed()
   const loc = useLocation()
+  const params = useParams()
+  const { session } = useSession()
+  const { query } = useGraphQL()
+  const { sortedFeed } = useFeed()
+  const { loadAuthor, authorsEntities } = useAuthors()
+  const { followers: myFollowers, follows: myFollows } = useFollowing()
+
+  // signals
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
-  const { loadAuthor, authorsEntities } = useAuthors()
   const [author, setAuthor] = createSignal<Author>()
   const [followers, setFollowers] = createSignal<Author[]>([] as Author[])
   const [following, changeFollowing] = createSignal<Array<Author | Topic>>([] as Array<Author | Topic>) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const [commented, setCommented] = createSignal<Reaction[]>([])
-  const { query } = useGraphQL()
 
+  // derivatives
+  const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
+  const pages = createMemo<Shout[][]>(() =>
+    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+  )
+
+  // fx
   // пагинация загрузки ленты постов
   const loadMore = async () => {
     saveScrollPosition()
@@ -74,6 +81,7 @@ export const AuthorView = (props: Props) => {
   const [isFetching, setIsFetching] = createSignal(false)
   createEffect(
     on([() => session()?.user?.app_data?.profile, () => props.authorSlug || ''], async ([me, slug]) => {
+      console.debug('check if my profile')
       const my = slug && me?.slug === slug
       if (my) {
         console.debug('[Author] my profile precached')
@@ -84,29 +92,27 @@ export const AuthorView = (props: Props) => {
         }
       } else if (slug && !isFetching()) {
         setIsFetching(true)
-        setSlug(slug)
         await loadAuthor({ slug })
         setIsFetching(false) // Сброс состояния загрузки после завершения
       }
-    })
+    }, {defer: true})
   )
 
   // 2 // догружает подписки автора
   createEffect(
     on(
-      [followers, () => props.author || authorsEntities()[authorSlug()]],
-      async ([current, found]) => {
-        if (current) return
+      () => authorsEntities()[props.author?.slug || props.authorSlug || ''],
+      async (found) => {
         if (!found) return
         setAuthor(found)
-        console.info(`[Author] profile for @${authorSlug()} fetched`)
-        const followsResp = await query(getAuthorFollowsQuery, { slug: authorSlug() }).toPromise()
+        console.info(`[Author] profile for @${found.slug} fetched`)
+        const followsResp = await query(getAuthorFollowsQuery, { slug: found.slug }).toPromise()
         const follows = followsResp?.data?.get_author_followers || {}
         changeFollowing([...(follows?.authors || []), ...(follows?.topics || [])])
-        console.info(`[Author] follows for @${authorSlug()} fetched`)
-        const followersResp = await query(getAuthorFollowersQuery, { slug: authorSlug() }).toPromise()
+        console.info(`[Author] follows for @${found.slug} fetched`)
+        const followersResp = await query(getAuthorFollowersQuery, { slug: found.slug }).toPromise()
         setFollowers(followersResp?.data?.get_author_followers || [])
-        console.info(`[Author] followers for @${authorSlug()} fetched`)
+        console.info(`[Author] followers for @${found.slug} fetched`)
         setIsFetching(false)
       },
       { defer: true }
@@ -120,33 +126,32 @@ export const AuthorView = (props: Props) => {
       async (profile: Author) => {
         if (!commented() && profile) {
           await loadMore()
-
           const commentsFetcher = loadReactions({
             by: { comment: true, created_by: profile.id }
           })
           const ccc = await commentsFetcher()
           if (ccc) setCommented((_) => ccc || [])
         }
-      }
+      },
       // { defer: true },
     )
   )
 
+  // event handlers
   let bioContainerRef: HTMLDivElement
   let bioWrapperRef: HTMLDivElement
   const checkBioHeight = () => {
+    console.debug('[AuthorView] mounted, checking bio height...')
     if (bioContainerRef) {
       setShowExpandBioControl(bioContainerRef.offsetHeight > bioWrapperRef.offsetHeight)
     }
   }
 
-  const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
-  )
   const handleDeleteComment = (id: number) => {
     setCommented((prev) => (prev || []).filter((comment) => comment.id !== id))
   }
 
+  // on load
   onMount(checkBioHeight)
 
   return (

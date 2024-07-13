@@ -31,7 +31,8 @@ const TopicsContext = createContext<TopicsContextType>({
   topTopics: () => [] as Topic[],
   setTopicsSort: (_s: string) => undefined,
   addTopics: (_ttt: Topic[]) => undefined,
-  loadTopics: async () => [] as Topic[]
+  loadTopics: async () => [] as Topic[],
+  randomTopic: () => undefined
 } as TopicsContextType)
 
 export function useTopics() {

@@ -44,7 +44,7 @@ export const TopicsNav = () => {
           <A href="/topic/poetry">#{t('Poetry')}</A>
         </li>
         <li class={clsx(styles.item, styles.right)}>
-          <A href={'topics'}>
+          <A href={'/topic'}>
             <span>
               {t('All topics')}
               <Icon name="arrow-right-black" class={'icon'} />

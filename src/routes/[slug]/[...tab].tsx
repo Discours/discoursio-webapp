@@ -29,7 +29,7 @@ export const route: RouteDefinition = {
 
 type ArticlePageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author }
 
-export const ArticlePage = (props: RouteSectionProps<ArticlePageProps>) => {
+export function ArticlePage(props: RouteSectionProps<ArticlePageProps>) {
   const loc = useLocation()
   const { t } = useLocalize()
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)

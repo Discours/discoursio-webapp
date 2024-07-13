@@ -1,12 +1,14 @@
 import { A, redirect, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+
+import type { Topic } from '~/graphql/schema/core.gen'
+import { getRandomTopicsFromArray } from '~/lib/getRandomTopicsFromArray'
+
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
-import type { Topic } from '../../../graphql/schema/core.gen'
-import { getRandomTopicsFromArray } from '../../../lib/getRandomTopicsFromArray'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { Icon } from '../../_shared/Icon'
 import { Newsletter } from '../../_shared/Newsletter'

@@ -22,7 +22,7 @@ export default defineConfig({
   vite: {
     envPrefix: 'PUBLIC_',
     plugins: [
-      mkcert(),
+      !isVercel && mkcert(),
       nodePolyfills({
         include: ['path', 'stream', 'util'],
         exclude: ['http'],

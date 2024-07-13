@@ -5,7 +5,7 @@ import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { Author, Reaction, ReactionKind, ReactionSort } from '~/graphql/schema/core.gen'
-import { byCreated, byStat } from '~/lib/sortBy'
+import { byCreated, byStat } from '~/lib/sort'
 import { Button } from '../_shared/Button'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 

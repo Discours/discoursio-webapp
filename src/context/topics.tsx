@@ -13,7 +13,7 @@ import {
 import { loadTopics } from '~/graphql/api/public'
 import { Topic } from '~/graphql/schema/core.gen'
 import { getRandomTopicsFromArray } from '~/lib/getRandomTopicsFromArray'
-import { byTopicStatDesc } from '../lib/sortBy'
+import { byTopicStatDesc } from '../lib/sort'
 
 type TopicsContextType = {
   topicEntities: Accessor<{ [topicSlug: string]: Topic }>

@@ -57,10 +57,3 @@ export const byScore = () => {
     return 0
   }
 }
-// biome-ignore lint/suspicious/noExplicitAny: sort
-export const sortBy = (data: any, metric: string | ((a: any, b: any) => number) | undefined) => {
-  const x = [...data]
-  // @ts-ignore
-  x.sort(typeof metric === 'function' ? metric : byStat(metric))
-  return x
-}

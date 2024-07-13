@@ -10,7 +10,7 @@ import {
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
-import { byStat } from '../lib/sortBy'
+import { byStat } from '../lib/sort'
 import { useGraphQL } from './graphql'
 
 export const PRERENDERED_ARTICLES_COUNT = 5

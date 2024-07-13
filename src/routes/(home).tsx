@@ -2,7 +2,7 @@ import { type RouteDefinition, type RouteSectionProps, createAsync } from '@soli
 import { Show, Suspense, createEffect, createSignal, onMount } from 'solid-js'
 import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
-import { LoadShoutsOptions } from '~/graphql/schema/core.gen'
+import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { byStat } from '~/lib/sortby'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { HomeView, HomeViewProps } from '../components/Views/Home'
@@ -11,6 +11,7 @@ import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 
 export const SHOUTS_PER_PAGE = 20
+type SortFunction<Shout> = (a: Shout, b: Shout) => number
 
 const fetchAllTopics = async () => {
   const allTopicsLoader = loadTopics()
@@ -87,7 +88,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
       ...((await featuredShoutsLoader()) || props.data?.featuredShouts || [])
     ]
     const sortFn = byStat('viewed')
-    const topViewedShouts = featuredShouts?.sort(sortFn) || []
+    const topViewedShouts = featuredShouts?.sort(sortFn as SortFunction<Shout>) || []
     const result = {
       ...prev,
       ...props.data,

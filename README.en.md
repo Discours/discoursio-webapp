@@ -2,7 +2,7 @@
 
 ### How to start
 
-Use `bun i`, `npm i`, `pnpm i` or `yarn` to install packages. Then generate cert and key file for devserver with `mkcert localhost`.
+Use `bun i`, `npm i`, `pnpm i` or `yarn` to install packages.
 
 ### Config of variables
 

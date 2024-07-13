@@ -18,12 +18,10 @@ import {
   Topic
 } from '~/graphql/schema/core.gen'
 import { byStat } from '~/lib/sort'
+import { FilterFunction, SortFunction } from '~/types/common'
 import { useFeed } from './feed'
 
 const TOP_AUTHORS_COUNT = 5
-
-type FilterFunction<Author> = (a: Author) => boolean
-export type SortFunction<Author> = (a: Author, b: Author) => number
 
 // Универсальная функция фильтрации и сортировки
 function filterAndSort<Author>(

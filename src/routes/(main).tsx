@@ -4,6 +4,7 @@ import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { byStat } from '~/lib/sort'
+import { SortFunction } from '~/types/common'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { HomeView, HomeViewProps } from '../components/Views/Home'
 import { Loading } from '../components/_shared/Loading'
@@ -11,7 +12,6 @@ import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 
 export const SHOUTS_PER_PAGE = 20
-type SortFunction<Shout> = (a: Shout, b: Shout) => number
 
 const fetchAllTopics = async () => {
   const allTopicsLoader = loadTopics()

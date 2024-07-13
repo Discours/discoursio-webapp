@@ -25,7 +25,7 @@ export default defineConfig({
   server: {
     preset: isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node',
     port: 3000,
-    https: isBun
+    https: true
   },
   devOverlay: true,
   build: {

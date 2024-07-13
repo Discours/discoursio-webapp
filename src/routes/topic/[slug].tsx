@@ -10,8 +10,8 @@ import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { getImageUrl } from '~/lib/getImageUrl'
-import { getArticleDescription } from '~/utils/meta'
-import { SHOUTS_PER_PAGE } from '../(home)'
+import { descFromBody } from '~/utils/meta'
+import { SHOUTS_PER_PAGE } from '../(main)'
 
 const fetchTopicShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { topic: slug }, limit: SHOUTS_PER_PAGE, offset }
@@ -72,7 +72,7 @@ export default (props: RouteSectionProps<{ articles: Shout[]; topics: Topic[] }>
 
   const desc = createMemo(() =>
     topic()?.body
-      ? getArticleDescription(topic()?.body || '')
+      ? descFromBody(topic()?.body || '')
       : t('The most interesting publications on the topic', { topicName: title() })
   )
 

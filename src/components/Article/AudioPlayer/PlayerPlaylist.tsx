@@ -4,7 +4,7 @@ import { Icon } from '~/components/_shared/Icon'
 import { Popover } from '~/components/_shared/Popover'
 import { useLocalize } from '~/context/localize'
 import { MediaItem } from '~/types/mediaitem'
-import { getArticleDescription } from '~/utils/meta'
+import { descFromBody } from '~/utils/meta'
 import { SharePopup, getShareUrl } from '../SharePopup'
 
 import styles from './AudioPlayer.module.scss'
@@ -137,7 +137,7 @@ export const PlayerPlaylist = (props: Props) => {
                       >
                         <SharePopup
                           title={mi.title}
-                          description={getArticleDescription(props.body || '')}
+                          description={descFromBody(props.body || '')}
                           imageUrl={mi.pic || ''}
                           shareUrl={getShareUrl({ pathname: `/${props.articleSlug}` })}
                           trigger={

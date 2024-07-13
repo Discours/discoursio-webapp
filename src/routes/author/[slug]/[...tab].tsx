@@ -16,7 +16,7 @@ import {
   Topic
 } from '~/graphql/schema/core.gen'
 import { getImageUrl } from '~/lib/getImageUrl'
-import { SHOUTS_PER_PAGE } from '../../(home)'
+import { SHOUTS_PER_PAGE } from '../../(main)'
 
 const fetchAuthorShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { author: slug }, limit: SHOUTS_PER_PAGE, offset }
@@ -47,7 +47,9 @@ export const route = {
   }
 }
 
-export default (props: RouteSectionProps<{ articles: Shout[]; author: Author; topics: Topic[] }>) => {
+export type AuthorPageProps = { articles?: Shout[]; author?: Author; topics?: Topic[] }
+
+export const AuthorPage = (props: RouteSectionProps<AuthorPageProps>) => {
   const params = useParams()
   const { addAuthor } = useAuthors()
   const articles = createAsync(
@@ -55,7 +57,7 @@ export default (props: RouteSectionProps<{ articles: Shout[]; author: Author; to
   )
   const author = createAsync(async () => {
     const a = props.data.author || (await fetchAuthor(params.slug))
-    addAuthor(a)
+    a && addAuthor(a)
     return a
   })
   const topics = createAsync(async () => props.data.topics || (await fetchAllTopics()))
@@ -104,3 +106,5 @@ export default (props: RouteSectionProps<{ articles: Shout[]; author: Author; to
     </ErrorBoundary>
   )
 }
+
+export default AuthorPage

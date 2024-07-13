@@ -7,7 +7,7 @@ import { useLocalize } from '~/context/localize'
 import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { LayoutType } from '~/types/common'
-import { SHOUTS_PER_PAGE } from '../(home)'
+import { SHOUTS_PER_PAGE } from '../(main)'
 
 const fetchExpoShouts = async (layouts: string[]) => {
   const result = await loadShouts({

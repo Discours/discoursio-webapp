@@ -8,7 +8,7 @@ import { Shout } from '~/graphql/schema/core.gen'
 import enKeywords from '~/intl/locales/en/keywords.json'
 import ruKeywords from '~/intl/locales/ru/keywords.json'
 import { getImageUrl, getOpenGraphImageUrl } from '~/lib/getImageUrl'
-import { getArticleKeywords } from '~/utils/meta'
+import { descFromBody } from '~/utils/meta'
 import { FooterView } from '../Discours/Footer'
 import { Header } from '../Nav/Header'
 import styles from './PageLayout.module.scss'
@@ -50,7 +50,7 @@ export const PageLayout = (props: PageLayoutProps) => {
   const keypath = createMemo(() => (props.key || loc?.pathname.split('/')[0]) as keyof typeof ruKeywords)
   const keywords = createMemo(
     () =>
-      (props.article && getArticleKeywords(props.article as Shout)) ||
+      (props.article && descFromBody(props.article.body)) ||
       (lang() === 'ru' ? ruKeywords[keypath()] : enKeywords[keypath()])
   )
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)

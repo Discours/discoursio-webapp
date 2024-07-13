@@ -7,7 +7,7 @@ import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
-import { SHOUTS_PER_PAGE } from '../(home)'
+import { SHOUTS_PER_PAGE } from '../(main)'
 
 export type FeedPeriod = 'week' | 'month' | 'year'
 

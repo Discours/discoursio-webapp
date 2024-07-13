@@ -1,16 +1,14 @@
-import { Shout } from '~/graphql/schema/core.gen'
-
 const MAX_DESCRIPTION_LENGTH = 150
 
-export const getArticleDescription = (body: string): string => {
+export const descFromBody = (body: string): string => {
   if (!body) {
     return ''
   }
   const descriptionWordsArray = body
-    .replaceAll(/<[^>]*>/g, ' ')
-    .replaceAll(/\s+/g, ' ')
+    .replace(/<[^>]*>/g, ' ') // Remove HTML tags
+    .replace(/\s+/g, ' ') // Normalize whitespace
     .split(' ')
-  // ¯\_(ツ)_/¯ maybe need to remove the punctuation
+
   let description = ''
   let i = 0
   while (i < descriptionWordsArray.length && description.length < MAX_DESCRIPTION_LENGTH) {
@@ -20,6 +18,6 @@ export const getArticleDescription = (body: string): string => {
   return description.trim()
 }
 
-export const getArticleKeywords = (shout: Shout): string => {
-  return (shout.topics || [])?.map((topic) => topic?.title).join(', ')
+export const keywordsFromTopics = (topics: { title: string }[]): string => {
+  return topics.map((topic: { title: string }) => topic.title).join(', ')
 }

@@ -15,7 +15,7 @@ import {
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/lib/getImageUrl'
+import { getImageUrl } from '~/lib/getThumbUrl'
 import { SHOUTS_PER_PAGE } from '../../(main)'
 
 const fetchAuthorShouts = async (slug: string, offset?: number) => {

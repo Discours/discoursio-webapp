@@ -8,12 +8,6 @@ const URL_CONFIG = {
   productionFolder: 'production/'
 }
 
-const AUDIO_EXTENSIONS = new Set(['wav', 'mp3', 'ogg', 'aif', 'flac'])
-
-const isAudioFile = (filename: string): boolean => {
-  const extension = filename.split('.').pop()?.toLowerCase()
-  return AUDIO_EXTENSIONS.has(extension ?? '')
-}
 const getLastSegment = (url: string): string => url.toLowerCase().split('/').pop() || ''
 
 const buildSizePart = (width?: number, height?: number, includeSize = true): string => {
@@ -31,11 +25,19 @@ export const getImageUrl = (
     return src
   }
   const filename = getLastSegment(src)
-  const base = isAudioFile(filename) ? URL_CONFIG.cdnUrl : URL_CONFIG.thumborUrl
   const suffix = options.noSizeUrlPart ? '' : buildSizePart(options.width, options.height)
-  const subfolder = isAudioFile(filename) ? URL_CONFIG.audioSubfolder : URL_CONFIG.imageSubfolder
+  const base = URL_CONFIG.thumborUrl
+  const subfolder = URL_CONFIG.imageSubfolder
 
   return `${base}${suffix}${URL_CONFIG.productionFolder}${subfolder}/${filename}`
+}
+
+export const getAudioUrl = (src: string) => {
+  const filename = getLastSegment(src)
+  const base = URL_CONFIG.cdnUrl
+  const subfolder = URL_CONFIG.audioSubfolder
+  const prodfolder = URL_CONFIG.productionFolder
+  return `${base}${prodfolder}${subfolder}/${filename}`
 }
 
 export const getOpenGraphImageUrl = (

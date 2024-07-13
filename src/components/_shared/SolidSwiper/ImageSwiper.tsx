@@ -4,7 +4,7 @@ import SwiperCore from 'swiper'
 import { HashNavigation, Manipulation, Navigation, Pagination } from 'swiper/modules'
 import { throttle } from 'throttle-debounce'
 
-import { getImageUrl } from '~/lib/getImageUrl'
+import { getImageUrl } from '~/lib/getThumbUrl'
 import { MediaItem } from '~/types/mediaitem'
 import { Icon } from '../Icon'
 import { Image } from '../Image'

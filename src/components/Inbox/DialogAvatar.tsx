@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { Show, createMemo } from 'solid-js'
 
-import { getImageUrl } from '~/lib/getImageUrl'
+import { getImageUrl } from '~/lib/getThumbUrl'
 import './DialogCard.module.scss'
 
 import styles from './DialogAvatar.module.scss'

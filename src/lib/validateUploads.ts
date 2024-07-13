@@ -2,6 +2,12 @@ import { UploadFile } from '@solid-primitives/upload'
 
 export const imageExtensions = new Set(['jpg', 'jpeg', 'png', 'gif', 'bmp'])
 export const docExtensions = new Set(['doc', 'docx', 'pdf', 'txt'])
+export const audioExtensions = new Set(['wav', 'mp3', 'ogg', 'aif', 'flac'])
+
+export const isAudioFilename = (filename: string): boolean => {
+  const extension = filename.split('.').pop()?.toLowerCase()
+  return audioExtensions.has(extension || '')
+}
 
 export const validateUploads = (fileType: string, files: UploadFile[]): boolean => {
   for (const file of files) {

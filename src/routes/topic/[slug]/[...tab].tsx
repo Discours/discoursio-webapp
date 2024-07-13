@@ -9,7 +9,7 @@ import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { Author, LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/lib/getImageUrl'
+import { getImageUrl } from '~/lib/getThumbUrl'
 import { descFromBody } from '~/utils/meta'
 import { SHOUTS_PER_PAGE } from '../../(main)'
 

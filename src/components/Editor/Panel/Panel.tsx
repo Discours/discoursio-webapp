@@ -9,8 +9,8 @@ import { Icon } from '~/components/_shared/Icon'
 import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { useEscKeyDownHandler } from '~/utils/useEscKeyDownHandler'
-import { useOutsideClickHandler } from '~/utils/useOutsideClickHandler'
+import { useEscKeyDownHandler } from '~/lib/useEscKeyDownHandler'
+import { useOutsideClickHandler } from '~/lib/useOutsideClickHandler'
 import styles from './Panel.module.scss'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })

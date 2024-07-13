@@ -144,7 +144,12 @@ export const PublishSettings = (props: Props) => {
   const handleSaveDraft = () => {
     saveShout({ ...props.form, ...settingsForm })
   }
-
+  const removeSpecial = (ev: InputEvent) => {
+    const input = ev.target as HTMLInputElement
+    const value = input.value
+    const newValue = value.startsWith('@') || value.startsWith('!') ? value.substring(1) : value
+    input.value = newValue
+  }
   return (
     <form class={clsx(styles.PublishSettings, 'inputs-wrapper')}>
       <div class="wide-container">
@@ -235,7 +240,7 @@ export const PublishSettings = (props: Props) => {
 
             <h4>{t('Slug')}</h4>
             <div class="pretty-form__item">
-              <input type="text" name="slug" id="slug" value={settingsForm.slug} />
+              <input type="text" name="slug" id="slug" value={settingsForm.slug} onInput={removeSpecial} />
               <label for="slug">{t('Slug')}</label>
             </div>
 

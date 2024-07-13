@@ -6,7 +6,7 @@ import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { handleFileUpload } from '~/lib/handleFileUpload'
 import { handleImageUpload } from '~/lib/handleImageUpload'
-import { validateFiles } from '~/utils/validateFile'
+import { validateUploads } from '~/lib/validateUploads'
 
 import styles from './DropArea.module.scss'
 
@@ -62,7 +62,7 @@ export const DropArea = (props: Props) => {
       setDropAreaError(t('Many files, choose only one'))
       return
     }
-    const isValid = validateFiles(props.fileType, selectedFiles)
+    const isValid = validateUploads(props.fileType, selectedFiles)
     if (isValid) {
       await runUpload(selectedFiles)
     } else {

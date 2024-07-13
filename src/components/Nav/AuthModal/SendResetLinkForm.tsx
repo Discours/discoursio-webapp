@@ -3,7 +3,7 @@ import { JSX, Show, createSignal, onMount } from 'solid-js'
 
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
-import { validateEmail } from '~/utils/validateEmail'
+import { validateEmail } from '~/utils/validate'
 import { email, setEmail } from './sharedLogic'
 
 import { useSearchParams } from '@solidjs/router'

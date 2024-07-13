@@ -2,7 +2,7 @@ import { Editor } from '@tiptap/core'
 import { createEditorTransaction } from 'solid-tiptap'
 
 import { useLocalize } from '~/context/localize'
-import { validateUrl } from '~/utils/validateUrl'
+import { validateUrl } from '~/utils/validate'
 import { InlineForm } from '../InlineForm'
 
 type Props = {

@@ -13,7 +13,7 @@ import { useSession } from '~/context/session'
 import { Author, FollowingEntity } from '~/graphql/schema/core.gen'
 import { isCyrillic } from '~/intl/translate'
 import { translit } from '~/intl/translit'
-import { mediaMatches } from '~/utils/media-query'
+import { mediaMatches } from '~/lib/mediaQuery'
 import { Userpic } from '../Userpic'
 import styles from './AuthorBadge.module.scss'
 

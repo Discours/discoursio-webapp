@@ -8,9 +8,9 @@ import { useTopics } from '~/context/topics'
 import { loadAuthors, loadFollowersByTopic, loadShouts } from '~/graphql/api/public'
 import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { SHOUTS_PER_PAGE } from '~/routes/(main)'
-import { getUnixtime } from '~/utils/getServerDate'
+import { getUnixtime } from '~/utils/date'
+import { paginate } from '~/utils/paginate'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
-import { splitToPages } from '~/utils/splitToPages'
 import styles from '../../styles/Topic.module.scss'
 import { Beside } from '../Feed/Beside'
 import { Row1 } from '../Feed/Row1'
@@ -140,7 +140,7 @@ export const TopicView = (props: Props) => {
   })
   */
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+    paginate(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
   return (
     <div class={styles.topicPage}>

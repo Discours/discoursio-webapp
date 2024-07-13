@@ -6,7 +6,7 @@ import { loadShouts } from '~/graphql/api/public'
 import { Author, Shout, Topic } from '~/graphql/schema/core.gen'
 import { SHOUTS_PER_PAGE } from '~/routes/(main)'
 import { capitalize } from '~/utils/capitalize'
-import { splitToPages } from '~/utils/splitToPages'
+import { paginate } from '~/utils/paginate'
 import Banner from '../Discours/Banner'
 import Hero from '../Discours/Hero'
 import { Beside } from '../Feed/Beside'
@@ -62,11 +62,7 @@ export const HomeView = (props: HomeViewProps) => {
   )
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(
-      props.featuredShouts || [],
-      SHOUTS_PER_PAGE + CLIENT_LOAD_ARTICLES_COUNT,
-      LOAD_MORE_PAGE_SIZE
-    )
+    paginate(props.featuredShouts || [], SHOUTS_PER_PAGE + CLIENT_LOAD_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   return (

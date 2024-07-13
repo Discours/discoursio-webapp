@@ -23,7 +23,7 @@ import { getImageUrl } from '~/lib/getImageUrl'
 import { handleImageUpload } from '~/lib/handleImageUpload'
 import { profileSocialLinks } from '~/lib/profileSocialLinks'
 import { clone } from '~/utils/clone'
-import { validateUrl } from '~/utils/validateUrl'
+import { validateUrl } from '~/utils/validate'
 import { Modal } from '../../Nav/Modal'
 import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
 import { Button } from '../../_shared/Button'
@@ -188,6 +188,14 @@ export const ProfileSettings = () => {
     updateFormField('links', link, true)
   }
 
+  const slugUpdate = (ev: InputEvent) => {
+    const input = (ev.target || ev.currentTarget) as HTMLInputElement
+    const value = input.value
+    const newValue = value.startsWith('@') || value.startsWith('!') ? value.substring(1) : value
+    input.value = newValue
+    updateFormField('slug', newValue)
+  }
+
   return (
     <Show when={Object.keys(form).length > 0 && isFormInitialized()} fallback={<Loading />}>
       <>
@@ -293,7 +301,7 @@ export const ProfileSettings = () => {
                     <h4>{t('Address on Discours')}</h4>
                     <div class="pretty-form__item">
                       <div class={styles.discoursName}>
-                        <label for="user-address">https://{hostname()}/author/</label>
+                        <label for="user-address">{hostname()}/@</label>
                         <div class={styles.discoursNameField}>
                           <input
                             type="text"
@@ -301,7 +309,7 @@ export const ProfileSettings = () => {
                             id="user-address"
                             data-lpignore="true"
                             autocomplete="one-time-code2"
-                            onInput={(event) => updateFormField('slug', event.currentTarget.value)}
+                            onInput={slugUpdate}
                             value={form.slug || ''}
                             ref={(el) => (slugInputRef = el)}
                             class="nolabel"

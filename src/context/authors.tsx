@@ -17,7 +17,7 @@ import {
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
-import { byStat } from '~/lib/sortby'
+import { byStat } from '~/lib/sortBy'
 import { useFeed } from './feed'
 
 const TOP_AUTHORS_COUNT = 5

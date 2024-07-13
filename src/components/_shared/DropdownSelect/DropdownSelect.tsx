@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { For, Show, createSignal } from 'solid-js'
 
-import { useOutsideClickHandler } from '~/utils/useOutsideClickHandler'
+import { useOutsideClickHandler } from '~/lib/useOutsideClickHandler'
 
 import styles from './DropdownSelect.module.scss'
 

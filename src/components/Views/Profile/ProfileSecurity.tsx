@@ -10,7 +10,7 @@ import { Loading } from '~/components/_shared/Loading'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { DEFAULT_HEADER_OFFSET, useSnackbar, useUI } from '~/context/ui'
-import { validateEmail } from '~/utils/validateEmail'
+import { validateEmail } from '~/utils/validate'
 import styles from './Settings.module.scss'
 
 type FormField = 'oldPassword' | 'newPassword' | 'newPasswordConfirm' | 'email'

@@ -4,7 +4,7 @@ import { debounce, throttle } from 'throttle-debounce'
 
 import { useLocalize } from '~/context/localize'
 import { DEFAULT_HEADER_OFFSET } from '~/context/ui'
-import { isDesktop } from '~/utils/media-query'
+import { isDesktop } from '~/lib/mediaQuery'
 import { Icon } from '../_shared/Icon'
 
 import styles from './TableOfContents.module.scss'

@@ -1,9 +1,9 @@
 import { UploadFile } from '@solid-primitives/upload'
 
-export const validateFiles = (fileType: string, files: UploadFile[]): boolean => {
-  const imageExtensions = new Set(['jpg', 'jpeg', 'png', 'gif', 'bmp'])
-  const docExtensions = new Set(['doc', 'docx', 'pdf', 'txt'])
+export const imageExtensions = new Set(['jpg', 'jpeg', 'png', 'gif', 'bmp'])
+export const docExtensions = new Set(['doc', 'docx', 'pdf', 'txt'])
 
+export const validateUploads = (fileType: string, files: UploadFile[]): boolean => {
   for (const file of files) {
     let isValid: boolean
 

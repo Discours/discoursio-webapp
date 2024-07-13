@@ -4,7 +4,7 @@ import { Dynamic } from 'solid-js/web'
 
 import { useLocalize } from '~/context/localize'
 import { AuthModalSource, useUI } from '~/context/ui'
-import { isMobile } from '~/utils/media-query'
+import { isMobile } from '~/lib/mediaQuery'
 import { ChangePasswordForm } from './ChangePasswordForm'
 import { EmailConfirm } from './EmailConfirm'
 import { LoginForm } from './LoginForm'

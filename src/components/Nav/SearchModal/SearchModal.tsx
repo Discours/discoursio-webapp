@@ -7,7 +7,7 @@ import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
-import { byScore } from '~/lib/sortby'
+import { byScore } from '~/lib/sortBy'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
 

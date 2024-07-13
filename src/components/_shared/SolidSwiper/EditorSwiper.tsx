@@ -6,10 +6,10 @@ import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 
 import { useLocalize } from '~/context/localize'
 import { useSnackbar } from '~/context/ui'
+import { composeMediaItems } from '~/lib/composeMediaItems'
 import { getImageUrl } from '~/lib/getImageUrl'
 import { handleImageUpload } from '~/lib/handleImageUpload'
-import { composeMediaItems } from '~/utils/composeMediaItems'
-import { validateFiles } from '~/utils/validateFile'
+import { validateUploads } from '~/lib/validateUploads'
 import { DropArea } from '../DropArea'
 import { Icon } from '../Icon'
 import { Image } from '../Image'
@@ -90,7 +90,7 @@ export const EditorSwiper = (props: Props) => {
   })
 
   const initUpload = async (selectedFiles: UploadFile[]) => {
-    const isValid = validateFiles('image', selectedFiles)
+    const isValid = validateUploads('image', selectedFiles)
 
     if (!isValid) {
       await showSnackbar({ type: 'error', body: t('Invalid file type') })

@@ -4,8 +4,8 @@ import type { JSX } from 'solid-js'
 import { Show } from 'solid-js'
 import { Icon } from '~/components/_shared/Icon'
 import { useUI } from '~/context/ui'
-import { isPortrait } from '~/utils/media-query'
-import { useEscKeyDownHandler } from '~/utils/useEscKeyDownHandler'
+import { isPortrait } from '~/lib/mediaQuery'
+import { useEscKeyDownHandler } from '~/lib/useEscKeyDownHandler'
 import styles from './Modal.module.scss'
 
 interface Props {

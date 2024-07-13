@@ -13,9 +13,9 @@ import loadShoutsQuery from '~/graphql/query/core/articles-load-by'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
-import { byCreated } from '~/lib/sortby'
+import { byCreated } from '~/lib/sortBy'
+import { paginate } from '~/utils/paginate'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
-import { splitToPages } from '~/utils/splitToPages'
 import stylesArticle from '../../Article/Article.module.scss'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
@@ -59,7 +59,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   // derivatives
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+    paginate(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   // fx

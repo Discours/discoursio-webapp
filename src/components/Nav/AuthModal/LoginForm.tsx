@@ -4,7 +4,7 @@ import { JSX, Show, createSignal } from 'solid-js'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useSnackbar, useUI } from '~/context/ui'
-import { validateEmail } from '~/utils/validateEmail'
+import { validateEmail } from '~/utils/validate'
 
 import { AuthModalHeader } from './AuthModalHeader'
 import { PasswordField } from './PasswordField'

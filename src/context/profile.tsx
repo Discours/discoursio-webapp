@@ -76,16 +76,21 @@ export const ProfileProvider = (props: { children: JSX.Element }) => {
     }
   })
 
+  // TODO: validation error for `!` and `@`
+
   const updateFormField = (fieldName: string, value: string, remove?: boolean) => {
+    let val = value
+    if (fieldName === 'slug' && value.startsWith('@')) val = value.substring(1)
+    if (fieldName === 'slug' && value.startsWith('!')) val = value.substring(1)
     if (fieldName === 'links') {
       setForm((prev) => {
         const updatedLinks = remove
-          ? (prev.links || []).filter((item) => item !== value)
-          : [...(prev.links || []), value]
+          ? (prev.links || []).filter((item) => item !== val)
+          : [...(prev.links || []), val]
         return { ...prev, links: updatedLinks }
       })
     } else {
-      setForm((prev) => ({ ...prev, [fieldName]: value }))
+      setForm((prev) => ({ ...prev, [fieldName]: val }))
     }
   }
 

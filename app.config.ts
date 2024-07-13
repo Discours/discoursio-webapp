@@ -1,5 +1,5 @@
 import { SolidStartInlineConfig, defineConfig } from '@solidjs/start/config'
-import { visualizer } from "rollup-plugin-visualizer"
+import { visualizer } from 'rollup-plugin-visualizer'
 import mkcert from 'vite-plugin-mkcert'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
@@ -48,7 +48,7 @@ export default defineConfig({
       chunkSizeWarningLimit: 1024,
       target: 'esnext',
       rollupOptions: {
-        plugins: [visualizer(), ]
+        plugins: [visualizer()]
       }
     },
     server: {

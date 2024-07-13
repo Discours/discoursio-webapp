@@ -79,7 +79,7 @@ export default (props: RouteSectionProps<{ articles: Shout[]; author: Author; to
       : getImageUrl('production/image/logo_image.png')
   )
 
-  const selectedTab = createMemo(() => params.tab in ['followers', 'shouts'] ? params.tab : 'name')
+  const selectedTab = createMemo(() => (params.tab in ['followers', 'shouts'] ? params.tab : 'name'))
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>

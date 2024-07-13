@@ -80,22 +80,26 @@ export const AuthorView = (props: Props) => {
   // 1 // проверяет не собственный ли это профиль, иначе - загружает
   const [isFetching, setIsFetching] = createSignal(false)
   createEffect(
-    on([() => session()?.user?.app_data?.profile, () => props.authorSlug || ''], async ([me, slug]) => {
-      console.debug('check if my profile')
-      const my = slug && me?.slug === slug
-      if (my) {
-        console.debug('[Author] my profile precached')
-        if (me) {
-          setAuthor(me)
-          if (myFollowers()) setFollowers((myFollowers() || []) as Author[])
-          changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
+    on(
+      [() => session()?.user?.app_data?.profile, () => props.authorSlug || ''],
+      async ([me, slug]) => {
+        console.debug('check if my profile')
+        const my = slug && me?.slug === slug
+        if (my) {
+          console.debug('[Author] my profile precached')
+          if (me) {
+            setAuthor(me)
+            if (myFollowers()) setFollowers((myFollowers() || []) as Author[])
+            changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
+          }
+        } else if (slug && !isFetching()) {
+          setIsFetching(true)
+          await loadAuthor({ slug })
+          setIsFetching(false) // Сброс состояния загрузки после завершения
         }
-      } else if (slug && !isFetching()) {
-        setIsFetching(true)
-        await loadAuthor({ slug })
-        setIsFetching(false) // Сброс состояния загрузки после завершения
-      }
-    }, {defer: true})
+      },
+      { defer: true }
+    )
   )
 
   // 2 // догружает подписки автора
@@ -132,7 +136,7 @@ export const AuthorView = (props: Props) => {
           const ccc = await commentsFetcher()
           if (ccc) setCommented((_) => ccc || [])
         }
-      },
+      }
       // { defer: true },
     )
   )

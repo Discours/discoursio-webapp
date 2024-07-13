@@ -1,4 +1,4 @@
-import { RouteDefinition, RouteSectionProps, createAsync, useLocation, useParams } from '@solidjs/router'
+import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
 import {
   ErrorBoundary,
@@ -14,7 +14,7 @@ import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
 import { useLocalize } from '~/context/localize'
-import { getAuthor, getShout } from '~/graphql/api/public'
+import { getShout } from '~/graphql/api/public'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
 import { initGA, loadGAScript } from '~/utils/ga'
 import { descFromBody, keywordsFromTopics } from '~/utils/meta'
@@ -29,12 +29,6 @@ const fetchShout = async (slug: string): Promise<Shout | undefined> => {
   return result
 }
 
-const fetchAuthor = async (slug: string): Promise<Author | undefined> => {
-  const authorLoader = getAuthor({ slug })
-  const result = await authorLoader()
-  return result
-}
-
 export const route: RouteDefinition = {
   load: async ({ params }) => ({
     article: await fetchShout(params.slug)
@@ -44,21 +38,23 @@ export const route: RouteDefinition = {
 type SlugPageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author }
 
 export default (props: RouteSectionProps<SlugPageProps>) => {
-  const params = useParams()
-  if (params.slug.startsWith('@')) return AuthorPage(props as RouteSectionProps<AuthorPageProps>)
+  if (props.params.slug.startsWith('@')) {
+    console.debug('[slug] @ found, render as author page')
+    const patchedProps = {
+      ...props,
+      params: {
+        ...props.params,
+        slug: props.params.slug.slice(1, props.params.slug.length)
+      }
+    } as RouteSectionProps<AuthorPageProps>
+    return AuthorPage(patchedProps)
+  }
 
   const loc = useLocation()
   const { t } = useLocalize()
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
-  const article = createAsync(async () => props.data.article || (await fetchShout(params.slug)))
-  const author = createAsync(async () =>
-    params.slug.startsWith('@')
-      ? props.data.author || (await fetchAuthor(params.slug))
-      : article()?.authors?.[0]
-  )
-  const titleSuffix = createMemo(
-    () => (article()?.title || author()?.name) ?? ` :: ${article()?.title || author()?.name || ''}`
-  )
+  const article = createAsync(async () => props.data.article || (await fetchShout(props.params.slug)))
+  const titleSuffix = createMemo(() => (article()?.title ? ` :: ${article()?.title || ''}` : ''))
 
   onMount(async () => {
     if (gaIdentity && article()?.id) {
@@ -98,35 +94,19 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
             </PageLayout>
           }
         >
-          <Show
-            when={params.slug.startsWith('@')}
-            fallback={
-              <PageLayout
-                title={`${t('Discours')}${titleSuffix() || ''}`}
-                desc={keywordsFromTopics(article()?.topics as { title: string }[])}
-                headerTitle={article()?.title || ''}
-                slug={article()?.slug}
-                cover={article()?.cover || ''}
-                scrollToComments={(value) => setScrollToComments(value)}
-              >
-                <ReactionsProvider>
-                  <FullArticle article={article() as Shout} scrollToComments={scrollToComments()} />
-                </ReactionsProvider>
-              </PageLayout>
-            }
+          <PageLayout
+            title={`${t('Discours')}${titleSuffix()}`}
+            desc={descFromBody(article()?.body || '')}
+            keywords={keywordsFromTopics(article()?.topics as { title: string }[])}
+            headerTitle={article()?.title || ''}
+            slug={article()?.slug}
+            cover={article()?.cover || ''}
+            scrollToComments={(value) => setScrollToComments(value)}
           >
-            <PageLayout
-              title={`${t('Discours')}${titleSuffix() || ''}`}
-              desc={descFromBody(author()?.about || author()?.bio || '')}
-              headerTitle={author()?.name || ''}
-              slug={author()?.slug}
-              cover={author()?.pic || ''}
-            >
-              <ReactionsProvider>
-                <FullArticle article={article() as Shout} scrollToComments={scrollToComments()} />
-              </ReactionsProvider>
-            </PageLayout>
-          </Show>
+            <ReactionsProvider>
+              <FullArticle article={article() as Shout} scrollToComments={scrollToComments()} />
+            </ReactionsProvider>
+          </PageLayout>
         </Show>
       </Suspense>
     </ErrorBoundary>

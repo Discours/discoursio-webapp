@@ -16,6 +16,7 @@ import styles from './PageLayout.module.scss'
 type PageLayoutProps = {
   title: string
   desc?: string
+  keywords?: string
   headerTitle?: string
   slug?: string
   article?: Shout
@@ -46,12 +47,10 @@ export const PageLayout = (props: PageLayoutProps) => {
         })
       : imageUrl
   )
-  const description = createMemo(() => (props.desc ? t(props.desc) : ''))
+  const description = createMemo(() => props.desc || (props.article && descFromBody(props.article.body)))
   const keypath = createMemo(() => (props.key || loc?.pathname.split('/')[0]) as keyof typeof ruKeywords)
   const keywords = createMemo(
-    () =>
-      (props.article && descFromBody(props.article.body)) ||
-      (lang() === 'ru' ? ruKeywords[keypath()] : enKeywords[keypath()])
+    () => props.keywords || (lang() === 'ru' ? ruKeywords[keypath()] : enKeywords[keypath()])
   )
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
   createEffect(() => props.scrollToComments?.(scrollToComments()))

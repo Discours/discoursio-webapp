@@ -1,4 +1,4 @@
-import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
+import { RouteSectionProps, createAsync } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
 import { Show, Suspense, createEffect, createMemo, createSignal } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
@@ -37,7 +37,6 @@ export const route = {
 
 export default (props: RouteSectionProps<{ articles: Shout[]; topics: Topic[] }>) => {
   const { t } = useLocalize()
-  const params = useParams()
   const { addTopics } = useTopics()
   const [loadingError, setLoadingError] = createSignal(false)
 
@@ -46,7 +45,7 @@ export default (props: RouteSectionProps<{ articles: Shout[]; topics: Topic[] }>
       const ttt: Topic[] = props.data.topics || (await fetchAllTopics()) || []
       addTopics(ttt)
       console.debug('[route.topic] all topics loaded')
-      const t = ttt.find((x) => x.slug === params.slug)
+      const t = ttt.find((x) => x.slug === props.params.slug)
       return t
     } catch (_error) {
       setLoadingError(true)
@@ -55,7 +54,7 @@ export default (props: RouteSectionProps<{ articles: Shout[]; topics: Topic[] }>
   })
 
   const articles = createAsync(
-    async () => props.data.articles || (await fetchTopicShouts(params.slug)) || []
+    async () => props.data.articles || (await fetchTopicShouts(props.params.slug)) || []
   )
 
   const title = createMemo(() => `${t('Discours')} :: ${topic()?.title || ''}`)

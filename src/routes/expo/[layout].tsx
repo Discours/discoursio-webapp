@@ -1,4 +1,4 @@
-import { Params, RouteSectionProps, createAsync, useParams } from '@solidjs/router'
+import { Params, RouteSectionProps, createAsync } from '@solidjs/router'
 import { createEffect, createMemo, on } from 'solid-js'
 import { TopicsNav } from '~/components/Nav/TopicsNav'
 import { Expo } from '~/components/Views/Expo'
@@ -28,15 +28,14 @@ export const route = {
 
 export default (props: RouteSectionProps<Shout[]>) => {
   const { t } = useLocalize()
-  const params = useParams()
   const shouts = createAsync(
     async () =>
       props.data ||
       (await fetchExpoShouts(
-        params.layout ? [params.layout] : ['audio', 'literature', 'article', 'video', 'image']
+        props.params.layout ? [props.params.layout] : ['audio', 'literature', 'article', 'video', 'image']
       ))
   )
-  const layout = createMemo(() => params.layout)
+  const layout = createMemo(() => props.params.layout)
   const title = createMemo(() => {
     switch (layout()) {
       case 'audio': {

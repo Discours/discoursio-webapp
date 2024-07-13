@@ -92,12 +92,13 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
 
   const loadAuthor = async (opts: QueryGet_AuthorArgs): Promise<void> => {
     try {
+      console.debug('[context.authors] load author', opts)
       const fetcher = await getAuthor(opts)
       const author = await fetcher()
       if (author) addAuthor(author as Author)
-      console.debug('Loaded author:', author)
+      console.debug('[context.authors]', author)
     } catch (error) {
-      console.error('Error loading author:', error)
+      console.error('[context.authors] Error loading author:', error)
       throw error
     }
   }

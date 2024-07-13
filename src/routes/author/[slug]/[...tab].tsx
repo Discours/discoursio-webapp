@@ -1,4 +1,4 @@
-import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
+import { RouteSectionProps, createAsync } from '@solidjs/router'
 import { ErrorBoundary, Suspense, createEffect, createMemo } from 'solid-js'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
@@ -50,13 +50,12 @@ export const route = {
 export type AuthorPageProps = { articles?: Shout[]; author?: Author; topics?: Topic[] }
 
 export const AuthorPage = (props: RouteSectionProps<AuthorPageProps>) => {
-  const params = useParams()
   const { addAuthor } = useAuthors()
   const articles = createAsync(
-    async () => props.data.articles || (await fetchAuthorShouts(params.slug)) || []
+    async () => props.data.articles || (await fetchAuthorShouts(props.params.slug)) || []
   )
   const author = createAsync(async () => {
-    const a = props.data.author || (await fetchAuthor(params.slug))
+    const a = props.data.author || (await fetchAuthor(props.params.slug))
     a && addAuthor(a)
     return a
   })
@@ -81,7 +80,9 @@ export const AuthorPage = (props: RouteSectionProps<AuthorPageProps>) => {
       : getImageUrl('production/image/logo_image.png')
   )
 
-  const selectedTab = createMemo(() => (params.tab in ['followers', 'shouts'] ? params.tab : 'name'))
+  const selectedTab = createMemo(() =>
+    props.params.tab in ['followers', 'shouts'] ? props.params.tab : 'name'
+  )
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>
@@ -96,7 +97,7 @@ export const AuthorPage = (props: RouteSectionProps<AuthorPageProps>) => {
             <AuthorView
               author={author() as Author}
               selectedTab={selectedTab()}
-              authorSlug={params.slug}
+              authorSlug={props.params.slug}
               shouts={articles() as Shout[]}
               topics={topics()}
             />

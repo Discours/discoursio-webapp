@@ -1,4 +1,4 @@
-import { A, useLocation, useParams } from '@solidjs/router'
+import { A, useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
@@ -26,7 +26,7 @@ import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
 import styles from './Author.module.scss'
 
-type Props = {
+type AuthorViewProps = {
   authorSlug: string
   selectedTab: string
   shouts?: Shout[]
@@ -37,11 +37,10 @@ type Props = {
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
-export const AuthorView = (props: Props) => {
+export const AuthorView = (props: AuthorViewProps) => {
   // contexts
   const { t } = useLocalize()
   const loc = useLocation()
-  const params = useParams()
   const { session } = useSession()
   const { query } = useGraphQL()
   const { sortedFeed } = useFeed()
@@ -173,19 +172,19 @@ export const AuthorView = (props: Props) => {
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">
                 <ul class="view-switcher">
-                  <li classList={{ 'view-switcher__item--selected': params.tab === '' }}>
+                  <li classList={{ 'view-switcher__item--selected': !props.selectedTab }}>
                     <A href={`/author/${props.authorSlug}`}>{t('Publications')}</A>
                     <Show when={author()?.stat}>
                       <span class="view-switcher__counter">{author()?.stat?.shouts || 0}</span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': params.tab === 'comment' }}>
+                  <li classList={{ 'view-switcher__item--selected': props.selectedTab === 'comment' }}>
                     <A href={`/author/${props.authorSlug}/comments`}>{t('Comments')}</A>
                     <Show when={author()?.stat}>
                       <span class="view-switcher__counter">{author()?.stat?.comments || 0}</span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': params.tab === 'about' }}>
+                  <li classList={{ 'view-switcher__item--selected': props.selectedTab === 'about' }}>
                     <A onClick={() => checkBioHeight()} href={`/author/${props.authorSlug}/about`}>
                       {t('About the author')}
                     </A>
@@ -206,7 +205,7 @@ export const AuthorView = (props: Props) => {
       </div>
 
       <Switch>
-        <Match when={params.tab === 'about'}>
+        <Match when={props.selectedTab === 'about'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -230,7 +229,7 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={params.tab === 'comments'}>
+        <Match when={props.selectedTab === 'comments'}>
           <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
@@ -256,7 +255,7 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={params.tab === ''}>
+        <Match when={!props.selectedTab}>
           <Show when={me()?.slug === props.authorSlug && !me().stat?.shouts}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />

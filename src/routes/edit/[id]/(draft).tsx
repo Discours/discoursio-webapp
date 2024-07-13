@@ -1,4 +1,4 @@
-import { redirect, useParams } from '@solidjs/router'
+import { RouteSectionProps, redirect } from '@solidjs/router'
 import { createEffect, createMemo, createSignal, lazy, on } from 'solid-js'
 import { AuthGuard } from '~/components/AuthGuard'
 import { PageLayout } from '~/components/_shared/PageLayout'
@@ -27,7 +27,7 @@ export const getContentTypeTitle = (layout: LayoutType) => {
   }
 }
 
-export default () => {
+export default (props: RouteSectionProps) => {
   const { t } = useLocalize()
   const { session } = useSession()
   const snackbar = useSnackbar()
@@ -38,13 +38,12 @@ export default () => {
     redirect('/edit') // all drafts page
   }
   const [shout, setShout] = createSignal<Shout>()
-  const params = useParams()
   const client = useGraphQL()
 
   createEffect(on(session, (s) => s?.access_token && loadDraft(), { defer: true }))
 
   const loadDraft = async () => {
-    const result = await client.query(getShoutDraft, { shout_id: params.id }).toPromise()
+    const result = await client.query(getShoutDraft, { shout_id: props.params.id }).toPromise()
     if (result) {
       const { shout: loadedShout, error } = result.data.get_my_shout
       if (error) {

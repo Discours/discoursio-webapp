@@ -2,16 +2,16 @@ import { RouteSectionProps, createAsync } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
 import { Show, Suspense, createEffect, createMemo, createSignal } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
-import { TopicView } from '~/components/Views/Topic'
+import { TopicFeedSortBy, TopicView } from '~/components/Views/Topic'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
-import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
+import { Author, LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { getImageUrl } from '~/lib/getImageUrl'
 import { descFromBody } from '~/utils/meta'
-import { SHOUTS_PER_PAGE } from '../(main)'
+import { SHOUTS_PER_PAGE } from '../../(main)'
 
 const fetchTopicShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { topic: slug }, limit: SHOUTS_PER_PAGE, offset }
@@ -34,8 +34,9 @@ export const route = {
     }
   }
 }
+export type TopicPageProps = { articles?: Shout[]; topics: Topic[], authors?: Author[] }
 
-export default (props: RouteSectionProps<{ articles: Shout[]; topics: Topic[] }>) => {
+export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const { t } = useLocalize()
   const { addTopics } = useTopics()
   const [loadingError, setLoadingError] = createSignal(false)
@@ -104,6 +105,7 @@ export default (props: RouteSectionProps<{ articles: Shout[]; topics: Topic[] }>
             topic={topic() as Topic}
             topicSlug={props.params.slug}
             shouts={articles() as Shout[]}
+            selectedTab={props.params.tab as TopicFeedSortBy}
           />
         </PageLayout>
       </Show>

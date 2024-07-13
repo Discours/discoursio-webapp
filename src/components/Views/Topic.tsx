@@ -20,15 +20,15 @@ import { FullTopic } from '../Topic/Full'
 import { Loading } from '../_shared/Loading'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
-type TopicsPageSearchParams = {
-  by: 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
-}
+// FIXME: should be 'last_comment' and 'comments_stat' or just one?
+export type TopicFeedSortBy = 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
 
 interface Props {
   topic: Topic
   shouts: Shout[]
   topicSlug: string
   followers?: Author[]
+  selectedTab?: TopicFeedSortBy
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 28
@@ -39,7 +39,7 @@ export const TopicView = (props: Props) => {
   const { feedByTopic, addFeed } = useFeed()
   const { topicEntities } = useTopics()
   const { authorsByTopic } = useAuthors()
-  const [searchParams, changeSearchParams] = useSearchParams<TopicsPageSearchParams>()
+  const [searchParams, changeSearchParams] = useSearchParams<{by: TopicFeedSortBy}>()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])

@@ -5,7 +5,6 @@ import {
   Show,
   Suspense,
   createEffect,
-  createMemo,
   createSignal,
   on,
   onMount
@@ -15,13 +14,14 @@ import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
 import { useLocalize } from '~/context/localize'
 import { getShout } from '~/graphql/api/public'
-import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
+import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
 import { initGA, loadGAScript } from '~/utils/ga'
 import { descFromBody, keywordsFromTopics } from '~/utils/meta'
 import { FullArticle } from '../../components/Article/FullArticle'
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { ReactionsProvider } from '../../context/reactions'
 import AuthorPage, { AuthorPageProps } from '../author/[slug]/[...tab]'
+import TopicPage, { TopicPageProps } from '../topic/[slug]/[...tab]'
 
 const fetchShout = async (slug: string): Promise<Shout | undefined> => {
   const shoutLoader = getShout({ slug })
@@ -35,29 +35,16 @@ export const route: RouteDefinition = {
   })
 }
 
-type SlugPageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author }
+type ArticlePageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author }
 
-export default (props: RouteSectionProps<SlugPageProps>) => {
-  if (props.params.slug.startsWith('@')) {
-    console.debug('[slug] @ found, render as author page')
-    const patchedProps = {
-      ...props,
-      params: {
-        ...props.params,
-        slug: props.params.slug.slice(1, props.params.slug.length)
-      }
-    } as RouteSectionProps<AuthorPageProps>
-    return AuthorPage(patchedProps)
-  }
-
+export const ArticlePage = (props: RouteSectionProps<ArticlePageProps>) => {
   const loc = useLocation()
   const { t } = useLocalize()
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
-  const article = createAsync(async () => props.data.article || (await fetchShout(props.params.slug)))
-  const titleSuffix = createMemo(() => (article()?.title ? ` :: ${article()?.title || ''}` : ''))
+  const data = createAsync(async () => props.data?.article || await fetchShout(props.params.slug))
 
   onMount(async () => {
-    if (gaIdentity && article()?.id) {
+    if (gaIdentity && data()?.id) {
       try {
         await loadGAScript(gaIdentity)
         initGA(gaIdentity)
@@ -69,7 +56,7 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
 
   createEffect(
     on(
-      article,
+      data,
       (a?: Shout) => {
         if (!a?.id) return
         window?.gtag?.('event', 'page_view', {
@@ -86,7 +73,7 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
     <ErrorBoundary fallback={() => <HttpStatusCode code={500} />}>
       <Suspense fallback={<Loading />}>
         <Show
-          when={article()?.id}
+          when={data()?.id}
           fallback={
             <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
               <FourOuFourView />
@@ -95,20 +82,50 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
           }
         >
           <PageLayout
-            title={`${t('Discours')}${titleSuffix()}`}
-            desc={descFromBody(article()?.body || '')}
-            keywords={keywordsFromTopics(article()?.topics as { title: string }[])}
-            headerTitle={article()?.title || ''}
-            slug={article()?.slug}
-            cover={article()?.cover || ''}
+            title={`${t('Discours')}${data()?.title ? ' :: ' : ''}${data()?.title||''}`}
+            desc={descFromBody(data()?.body || '')}
+            keywords={keywordsFromTopics(data()?.topics as { title: string }[])}
+            headerTitle={data()?.title || ''}
+            slug={data()?.slug}
+            cover={data()?.cover || ''}
             scrollToComments={(value) => setScrollToComments(value)}
           >
             <ReactionsProvider>
-              <FullArticle article={article() as Shout} scrollToComments={scrollToComments()} />
+              <FullArticle article={data() as Shout} scrollToComments={scrollToComments()} />
             </ReactionsProvider>
           </PageLayout>
         </Show>
       </Suspense>
     </ErrorBoundary>
   )
+}
+
+type SlugPageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author, topics: Topic[] }
+
+export default (props: RouteSectionProps<SlugPageProps>) => {
+  if (props.params.slug.startsWith('@')) {
+    console.debug('[slug] starts with @, render as author page')
+    const patchedProps = {
+      ...props,
+      params: {
+        ...props.params,
+        slug: props.params.slug.slice(1, props.params.slug.length)
+      }
+    } as RouteSectionProps<AuthorPageProps>
+    return <AuthorPage {...patchedProps} />
+  }
+
+  if (props.params.slug.startsWith('!')) {
+    console.debug('[slug] starts with !, render as topic page')
+    const patchedProps = {
+      ...props,
+      params: {
+        ...props.params,
+        slug: props.params.slug.slice(1, props.params.slug.length)
+      }
+    } as RouteSectionProps<TopicPageProps>
+    return <TopicPage {...patchedProps} />
+  }
+
+  return <ArticlePage {...props} />
 }

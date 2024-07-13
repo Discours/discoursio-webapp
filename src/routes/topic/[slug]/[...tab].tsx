@@ -34,7 +34,7 @@ export const route = {
     }
   }
 }
-export type TopicPageProps = { articles?: Shout[]; topics: Topic[], authors?: Author[] }
+export type TopicPageProps = { articles?: Shout[]; topics: Topic[]; authors?: Author[] }
 
 export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const { t } = useLocalize()

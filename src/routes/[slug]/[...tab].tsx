@@ -1,14 +1,6 @@
 import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import {
-  ErrorBoundary,
-  Show,
-  Suspense,
-  createEffect,
-  createSignal,
-  on,
-  onMount
-} from 'solid-js'
+import { ErrorBoundary, Show, Suspense, createEffect, createSignal, on, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -41,7 +33,7 @@ export const ArticlePage = (props: RouteSectionProps<ArticlePageProps>) => {
   const loc = useLocation()
   const { t } = useLocalize()
   const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
-  const data = createAsync(async () => props.data?.article || await fetchShout(props.params.slug))
+  const data = createAsync(async () => props.data?.article || (await fetchShout(props.params.slug)))
 
   onMount(async () => {
     if (gaIdentity && data()?.id) {
@@ -82,7 +74,7 @@ export const ArticlePage = (props: RouteSectionProps<ArticlePageProps>) => {
           }
         >
           <PageLayout
-            title={`${t('Discours')}${data()?.title ? ' :: ' : ''}${data()?.title||''}`}
+            title={`${t('Discours')}${data()?.title ? ' :: ' : ''}${data()?.title || ''}`}
             desc={descFromBody(data()?.body || '')}
             keywords={keywordsFromTopics(data()?.topics as { title: string }[])}
             headerTitle={data()?.title || ''}
@@ -100,7 +92,13 @@ export const ArticlePage = (props: RouteSectionProps<ArticlePageProps>) => {
   )
 }
 
-type SlugPageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author, topics: Topic[] }
+type SlugPageProps = {
+  article?: Shout
+  comments?: Reaction[]
+  votes?: Reaction[]
+  author?: Author
+  topics: Topic[]
+}
 
 export default (props: RouteSectionProps<SlugPageProps>) => {
   if (props.params.slug.startsWith('@')) {

@@ -39,7 +39,7 @@ export const TopicView = (props: Props) => {
   const { feedByTopic, addFeed } = useFeed()
   const { topicEntities } = useTopics()
   const { authorsByTopic } = useAuthors()
-  const [searchParams, changeSearchParams] = useSearchParams<{by: TopicFeedSortBy}>()
+  const [searchParams, changeSearchParams] = useSearchParams<{ by: TopicFeedSortBy }>()
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])

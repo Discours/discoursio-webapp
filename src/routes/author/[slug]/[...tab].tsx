@@ -49,7 +49,7 @@ export const route = {
 
 export type AuthorPageProps = { articles?: Shout[]; author?: Author; topics?: Topic[] }
 
-export const AuthorPage = (props: RouteSectionProps<AuthorPageProps>) => {
+export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   const { addAuthor } = useAuthors()
   const articles = createAsync(
     async () => props.data.articles || (await fetchAuthorShouts(props.params.slug)) || []
@@ -107,5 +107,3 @@ export const AuthorPage = (props: RouteSectionProps<AuthorPageProps>) => {
     </ErrorBoundary>
   )
 }
-
-export default AuthorPage

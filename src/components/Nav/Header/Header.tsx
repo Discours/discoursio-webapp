@@ -500,14 +500,14 @@ export const Header = (props: Props) => {
                   </span>
                 </A>
               </li>
-              <li>
+              {/* <li>
                 <A href={'/feed/bookmarked'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="bookmark" class={styles.icon} />
                     {t('Bookmarks')}
                   </span>
                 </A>
-              </li>
+              </li> */}
             </ul>
           </div>
         </nav>

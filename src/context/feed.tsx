@@ -34,9 +34,9 @@ type FeedContextType = {
   seen: Accessor<{ [slug: string]: number }>
   addSeen: (slug: string) => void
 
-  // featured
-  nonfeaturedFeed: Accessor<Shout[] | undefined>
-  setNonFeaturedFeed: Setter<Shout[]>
+  // all
+  feed: Accessor<Shout[] | undefined>
+  setFeed: Setter<Shout[]>
 
   // featured
   featuredFeed: Accessor<Shout[] | undefined>
@@ -62,7 +62,7 @@ export const useFeed = () => useContext(FeedContext)
 export const FeedProvider = (props: { children: JSX.Element }) => {
   const [sortedFeed, setSortedFeed] = createSignal<Shout[]>([])
   const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})
-  const [nonfeaturedFeed, setNonFeaturedFeed] = createSignal<Shout[]>([])
+  const [feed, setFeed] = createSignal<Shout[]>([])
   const [featuredFeed, setFeaturedFeed] = createSignal<Shout[]>([])
   const [expoFeed, setExpoFeed] = createSignal<Shout[]>([])
   const [topFeed, setTopFeed] = createSignal<Shout[]>([])
@@ -260,8 +260,8 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
         setFeaturedFeed,
         expoFeed,
         setExpoFeed,
-        nonfeaturedFeed,
-        setNonFeaturedFeed
+        feed,
+        setFeed
       }}
     >
       {props.children}

@@ -1,6 +1,6 @@
 import { A, createAsync, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { DropDown } from '~/components/_shared/DropDown'
 import { Option } from '~/components/_shared/DropDown/DropDown'
 import { Icon } from '~/components/_shared/Icon'
@@ -18,7 +18,7 @@ import { useUI } from '~/context/ui'
 import { loadUnratedShouts } from '~/graphql/api/private'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
 import { byCreated } from '~/lib/sort'
-import { FeedSearchParams } from '~/routes/feed/(feed)'
+import { FeedSearchParams } from '~/routes/feed/[...order]'
 import { CommentDate } from '../../Article/CommentDate'
 import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorBadge } from '../../Author/AuthorBadge'
@@ -36,6 +36,7 @@ export type PeriodType = 'week' | 'month' | 'year'
 
 export type FeedProps = {
   shouts?: Shout[]
+  mode?: '' | 'likes' | 'hot'
 }
 
 export const FeedView = (props: FeedProps) => {
@@ -53,7 +54,7 @@ export const FeedView = (props: FeedProps) => {
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
   const { session } = useSession()
-  const { nonfeaturedFeed, setNonFeaturedFeed } = useFeed()
+  const { feed, setFeed } = useFeed()
   const { loadReactionsBy } = useReactions()
   const { topTopics } = useTopics()
   const { topAuthors } = useAuthors()
@@ -67,20 +68,13 @@ export const FeedView = (props: FeedProps) => {
     setTopComments(comments.sort(byCreated).reverse())
   }
 
-  onMount(
-    () =>
-      props.shouts &&
-      Array.isArray(props.shouts) &&
-      setNonFeaturedFeed((prev) => [...prev, ...(props.shouts || [])]) && console.info(nonfeaturedFeed())
-  )
-
   createEffect(
     on(
-      () => nonfeaturedFeed(),
+      feed,
       (sss?: Shout[]) => {
         if (sss && Array.isArray(sss)) {
           setIsLoading(true)
-          setNonFeaturedFeed((prev) => [...prev, ...sss])
+          setFeed((prev) => [...prev, ...sss])
           Promise.all([
             loadTopComments(),
             loadReactionsBy({ by: { shouts: sss.map((s: Shout) => s.slug) } })
@@ -113,40 +107,33 @@ export const FeedView = (props: FeedProps) => {
             <Placeholder type={loc?.pathname} mode="feed" />
           </Show>
 
-          <Show when={(session() || loc?.pathname === 'feed') && nonfeaturedFeed()?.length}>
+          <Show when={(session() || loc?.pathname === 'feed') && feed()?.length}>
             <div class={styles.filtersContainer}>
               <ul class={clsx('view-switcher', styles.feedFilter)}>
-                <li
-                  class={clsx({
-                    'view-switcher__item--selected': searchParams?.by === 'after' || !searchParams?.by
-                  })}
-                >
+                <li class={clsx({ 'view-switcher__item--selected': !props.mode })}>
                   <A href={loc.pathname}>{t('Recent')}</A>
                 </li>
-                {/*<li>*/}
-                {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
-                {/*</li>*/}
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': searchParams?.by === 'likes'
+                    'view-switcher__item--selected': props.mode === 'likes'
                   })}
                 >
-                  <span class="link" onClick={() => changeSearchParams({ by: 'likes' })}>
-                    {t('Top rated')}
-                  </span>
+                  <A class="link" href={'/feed/likes'}>
+                    {t('Liked')}
+                  </A>
                 </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': searchParams?.by === 'last_comment'
+                    'view-switcher__item--selected': props.mode === 'hot'
                   })}
                 >
-                  <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
+                  <A class="link" href={'/feed/hot'}>
                     {t('Commented')}
-                  </span>
+                  </A>
                 </li>
               </ul>
               <div class={styles.dropdowns}>
-                <Show when={searchParams?.by && searchParams?.by !== 'after'}>
+                <Show when={searchParams?.period}>
                   <DropDown
                     popupProps={{ horizontalAnchor: 'right' }}
                     options={asOptions(['week', 'month', 'year'])}
@@ -157,7 +144,7 @@ export const FeedView = (props: FeedProps) => {
                 </Show>
                 <DropDown
                   popupProps={{ horizontalAnchor: 'right' }}
-                  options={asOptions(['followed', 'unrated', 'discussed', 'bookmarked', 'coauthored'])}
+                  options={asOptions(['followed', 'unrated', 'discussed', 'coauthored'])}
                   currentOption={asOption(loc.pathname.split('/').pop() || '')}
                   triggerCssClass={styles.periodSwitcher}
                   onChange={(mode: Option) => navigate(`/feed/${mode.value}`)}
@@ -166,8 +153,8 @@ export const FeedView = (props: FeedProps) => {
             </div>
 
             <Show when={!isLoading()} fallback={<Loading />}>
-              <Show when={(nonfeaturedFeed() || []).length > 0}>
-                <For each={(nonfeaturedFeed() || []).slice(0, 4)}>
+              <Show when={(feed() || []).length > 0}>
+                <For each={(feed() || []).slice(0, 4)}>
                   {(article) => (
                     <ArticleCard
                       onShare={(shared) => handleShare(shared)}
@@ -199,7 +186,7 @@ export const FeedView = (props: FeedProps) => {
                   </ul>
                 </div>
 
-                <For each={(nonfeaturedFeed() || []).slice(4)}>
+                <For each={(feed() || []).slice(4)}>
                   {(article) => (
                     <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
                   )}

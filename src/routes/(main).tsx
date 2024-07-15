@@ -1,12 +1,10 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
 import { Show, createEffect } from 'solid-js'
-import { LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
+import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { useFeed } from '~/context/feed'
 import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
-import { byStat } from '~/lib/sort'
-import { SortFunction } from '~/types/common'
 import { HomeView, HomeViewProps } from '../components/Views/Home'
 import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
@@ -74,7 +72,6 @@ export const route = {
 } satisfies RouteDefinition
 
 export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
-  const { addTopics } = useTopics()
   const { t } = useLocalize()
   const {
     setFeaturedFeed,
@@ -85,46 +82,38 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
     topFeed: topRatedFeed
   } = useFeed()
 
-  const data = createAsync(async (prev?: HomeViewProps) => {
-    const topics = props.data?.topics || (await fetchAllTopics())
-    const offset = prev?.featuredShouts?.length || 0
-    const featuredShoutsLoader = featuredLoader(offset)
-    const loaded = await featuredShoutsLoader()
-    setFeaturedFeed((prev) => [...prev, ...loaded||[]])
-    const featuredShouts = [
-      ...(prev?.featuredShouts || []),
-      ...(loaded || props.data?.featuredShouts || [])
-    ]
-    const sortFn = byStat('viewed')
-    const topViewedShouts = featuredShouts.sort(sortFn as SortFunction<Shout>)
-    return {
-      ...prev,
-      ...props.data,
-      topViewedShouts,
-      featuredShouts,
-      topics
-    }
-  })
-
+  // preload all topics
+  const { addTopics, sortedTopics } = useTopics()
   createEffect(() => {
-    if (data()?.topics) {
-      console.debug('[routes.main] topics update')
-      addTopics(data()?.topics || [])
-    }
+    !sortedTopics() && props.data.topics && addTopics(props.data.topics)
   })
 
+  // load more faetured shouts
   const loadMoreFeatured = async (offset?: number) => {
     const shoutsLoader = featuredLoader(offset)
     const loaded = await shoutsLoader()
     loaded && setFeaturedFeed((prev: Shout[]) => [...prev, ...loaded])
+    return loaded as LoadMoreItems
   }
+
+  // preload featured shouts
+  const shouts = createAsync(async () => {
+    if (props.data.featuredShouts) {
+      setFeaturedFeed(props.data.featuredShouts)
+      console.debug('[routes.main] featured feed preloaded')
+      return props.data.featuredShouts
+    }
+    return await loadMoreFeatured()
+  })
+
   const SHOUTS_PER_PAGE = 20
+
   return (
     <PageLayout withPadding={true} title={t('Discours')} key="home">
       <Show when={(featuredFeed() || []).length > 0} fallback={<Loading />}>
         <LoadMoreWrapper loadFunction={loadMoreFeatured} pageSize={SHOUTS_PER_PAGE}>
           <HomeView
-            featuredShouts={featuredFeed() as Shout[]}
+            featuredShouts={featuredFeed() || shouts() as Shout[]}
             topMonthShouts={topMonthFeed() as Shout[]}
             topViewedShouts={topViewedFeed() as Shout[]}
             topRatedShouts={topRatedFeed() as Shout[]}

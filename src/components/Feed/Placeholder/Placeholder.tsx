@@ -51,7 +51,7 @@ const data: PlaceholderData = {
     text: 'Placeholder feedDiscussions',
     buttonLabelAuthor: 'Current discussions',
     buttonLabelFeed: 'Enter',
-    href: '/feed?by=last_comment'
+    href: '/feed/hot'
   },
   author: {
     image: 'placeholder-join.webp',
@@ -71,7 +71,7 @@ const data: PlaceholderData = {
     header: 'Join discussions',
     text: 'Placeholder feedDiscussions',
     buttonLabel: 'Go to discussions',
-    href: '/feed?by=last_comment',
+    href: '/feed/hot',
     profileLinks: [
       {
         href: '/debate',

@@ -4,17 +4,17 @@ import { useLocalize } from '~/context/localize'
 import { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 
+export type LoadMoreItems = Shout[] | Author[] | Reaction[]
+
 type LoadMoreProps = {
-  loadFunction: (offset?: number) => void
+  loadFunction: (offset?: number) => Promise<LoadMoreItems>
   pageSize: number
   children: JSX.Element
 }
 
-type Items = Shout[] | Author[] | Reaction[]
-
 export const LoadMoreWrapper = (props: LoadMoreProps) => {
   const { t } = useLocalize()
-  const [items, setItems] = createSignal<Items>([])
+  const [items, setItems] = createSignal<LoadMoreItems>([])
   const [offset, setOffset] = createSignal(0)
   const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(true)
   const [isLoading, setIsLoading] = createSignal(false)
@@ -25,7 +25,7 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
     const newItems = await props.loadFunction(offset())
     if (!Array.isArray(newItems)) return
     console.debug('[_share] load more items', newItems)
-    setItems((prev) => [...prev, ...newItems])
+    setItems((prev) => [...prev, ...newItems] as LoadMoreItems)
     setOffset((prev) => prev + props.pageSize)
     setIsLoadMoreButtonVisible(newItems.length >= props.pageSize - 1)
     setIsLoading(false)

@@ -5,6 +5,7 @@ import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
 import { Feed } from '~/components/Views/Feed'
 import { LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
+import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { loadShouts } from '~/graphql/api/public'
@@ -59,8 +60,8 @@ export const route = {
 export default (props: RouteSectionProps<Shout[]>) => {
   const [searchParams] = useSearchParams<FeedSearchParams>()
   const { t } = useLocalize()
+  const {setNonFeaturedFeed} = useFeed()
   const [offset, setOffset] = createSignal<number>(0)
-  const shouts = createAsync(async () => ({ ...props.data }) || (await loadMore()))
   const loadMore = async () => {
     const newOffset = offset() + SHOUTS_PER_PAGE
     setOffset(newOffset)
@@ -74,8 +75,12 @@ export default (props: RouteSectionProps<Shout[]>) => {
       const period = searchParams?.by || 'month'
       options.filters = { after: getFromDate(period as FeedPeriod) }
     }
-    return await fetchPublishedShouts(newOffset)
+    const result = await fetchPublishedShouts(newOffset)
+    result && setNonFeaturedFeed(result)
+    return
   }
+  const shouts = createAsync(async () => props.data || await loadMore())
+
   return (
     <PageLayout
       withPadding={true}

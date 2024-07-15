@@ -1,6 +1,6 @@
 import { A, createAsync, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 import { DropDown } from '~/components/_shared/DropDown'
 import { Option } from '~/components/_shared/DropDown/DropDown'
 import { Icon } from '~/components/_shared/Icon'
@@ -8,6 +8,7 @@ import { InviteMembers } from '~/components/_shared/InviteMembers'
 import { Loading } from '~/components/_shared/Loading'
 import { ShareModal } from '~/components/_shared/ShareModal'
 import { useAuthors } from '~/context/authors'
+import { useFeed } from '~/context/feed'
 import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
@@ -32,8 +33,9 @@ import styles from './Feed.module.scss'
 
 export const FEED_PAGE_SIZE = 20
 export type PeriodType = 'week' | 'month' | 'year'
+
 export type FeedProps = {
-  shouts: Shout[]
+  shouts?: Shout[]
 }
 
 export const FeedView = (props: FeedProps) => {
@@ -51,6 +53,7 @@ export const FeedView = (props: FeedProps) => {
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
   const { session } = useSession()
+  const { nonfeaturedFeed, setNonFeaturedFeed } = useFeed()
   const { loadReactionsBy } = useReactions()
   const { topTopics } = useTopics()
   const { topAuthors } = useAuthors()
@@ -64,16 +67,25 @@ export const FeedView = (props: FeedProps) => {
     setTopComments(comments.sort(byCreated).reverse())
   }
 
+  onMount(
+    () =>
+      props.shouts &&
+      Array.isArray(props.shouts) &&
+      setNonFeaturedFeed((prev) => [...prev, ...(props.shouts || [])]) && console.info(nonfeaturedFeed())
+  )
+
   createEffect(
     on(
-      () => props.shouts,
-      (sss: Shout[]) => {
-        if (sss) {
+      () => nonfeaturedFeed(),
+      (sss?: Shout[]) => {
+        if (sss && Array.isArray(sss)) {
           setIsLoading(true)
+          setNonFeaturedFeed((prev) => [...prev, ...sss])
           Promise.all([
             loadTopComments(),
             loadReactionsBy({ by: { shouts: sss.map((s: Shout) => s.slug) } })
           ]).finally(() => {
+            console.debug('[views.feed] finally loaded reactions, data loading finished')
             setIsRightColumnLoaded(true)
             setIsLoading(false)
           })
@@ -101,7 +113,7 @@ export const FeedView = (props: FeedProps) => {
             <Placeholder type={loc?.pathname} mode="feed" />
           </Show>
 
-          <Show when={(session() || loc?.pathname === 'feed') && props.shouts.length}>
+          <Show when={(session() || loc?.pathname === 'feed') && nonfeaturedFeed()?.length}>
             <div class={styles.filtersContainer}>
               <ul class={clsx('view-switcher', styles.feedFilter)}>
                 <li
@@ -154,8 +166,8 @@ export const FeedView = (props: FeedProps) => {
             </div>
 
             <Show when={!isLoading()} fallback={<Loading />}>
-              <Show when={props.shouts.length > 0}>
-                <For each={props.shouts.slice(0, 4)}>
+              <Show when={(nonfeaturedFeed() || []).length > 0}>
+                <For each={(nonfeaturedFeed() || []).slice(0, 4)}>
                   {(article) => (
                     <ArticleCard
                       onShare={(shared) => handleShare(shared)}
@@ -187,7 +199,7 @@ export const FeedView = (props: FeedProps) => {
                   </ul>
                 </div>
 
-                <For each={props.shouts.slice(4)}>
+                <For each={(nonfeaturedFeed() || []).slice(4)}>
                   {(article) => (
                     <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
                   )}

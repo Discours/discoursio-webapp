@@ -18,8 +18,6 @@ export const PRERENDERED_ARTICLES_COUNT = 5
 type FeedContextType = {
   sortedFeed: Accessor<Shout[]>
   articleEntities: Accessor<{ [articleSlug: string]: Shout }>
-  topFeed: Accessor<Shout[]>
-  topMonthFeed: Accessor<Shout[]>
   feedByAuthor: Accessor<{ [authorSlug: string]: Shout[] }>
   feedByTopic: Accessor<{ [topicSlug: string]: Shout[] }>
   feedByLayout: Accessor<{ [layout: string]: Shout[] }>
@@ -33,12 +31,26 @@ type FeedContextType = {
     options: QueryLoad_Shouts_SearchArgs
   ) => Promise<{ hasMore: boolean; newShouts: Shout[] }>
   resetSortedFeed: () => void
-  loadTopMonthFeed: () => Promise<void>
-  loadTopFeed: () => Promise<void>
   seen: Accessor<{ [slug: string]: number }>
   addSeen: (slug: string) => void
+
+  // featured
+  nonfeaturedFeed: Accessor<Shout[] | undefined>
+  setNonFeaturedFeed: Setter<Shout[]>
+
+  // featured
   featuredFeed: Accessor<Shout[] | undefined>
   setFeaturedFeed: Setter<Shout[]>
+
+  // top month
+  loadTopMonthFeed: () => Promise<void>
+  topMonthFeed: Accessor<Shout[]>
+
+  // top rated
+  loadTopFeed: () => Promise<void>
+  topFeed: Accessor<Shout[]>
+
+  // expo
   expoFeed: Accessor<Shout[] | undefined>
   setExpoFeed: Setter<Shout[]>
 }
@@ -50,6 +62,7 @@ export const useFeed = () => useContext(FeedContext)
 export const FeedProvider = (props: { children: JSX.Element }) => {
   const [sortedFeed, setSortedFeed] = createSignal<Shout[]>([])
   const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})
+  const [nonfeaturedFeed, setNonFeaturedFeed] = createSignal<Shout[]>([])
   const [featuredFeed, setFeaturedFeed] = createSignal<Shout[]>([])
   const [expoFeed, setExpoFeed] = createSignal<Shout[]>([])
   const [topFeed, setTopFeed] = createSignal<Shout[]>([])
@@ -246,7 +259,9 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
         featuredFeed,
         setFeaturedFeed,
         expoFeed,
-        setExpoFeed
+        setExpoFeed,
+        nonfeaturedFeed,
+        setNonFeaturedFeed
       }}
     >
       {props.children}

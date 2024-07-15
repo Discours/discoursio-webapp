@@ -52,11 +52,10 @@ const fetchHomeTopData = async () => {
     order_by: 'likes_stat',
     limit: 10
   })
-  return {
-    topRatedShouts: await topRatedLoader(),
-    topMonthShouts: await topMonthLoader(),
-    topCommentedShouts: await topCommentedLoader()
-  } as Partial<HomeViewProps>
+  const topRatedShouts = await topRatedLoader()
+  const topMonthShouts = await topMonthLoader()
+  const topCommentedShouts = await topCommentedLoader()
+  return { topCommentedShouts, topMonthShouts, topRatedShouts } as Partial<HomeViewProps>
 }
 
 export const route = {
@@ -91,6 +90,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
     const offset = prev?.featuredShouts?.length || 0
     const featuredShoutsLoader = featuredLoader(offset)
     const loaded = await featuredShoutsLoader()
+    setFeaturedFeed((prev) => [...prev, ...loaded||[]])
     const featuredShouts = [
       ...(prev?.featuredShouts || []),
       ...(loaded || props.data?.featuredShouts || [])

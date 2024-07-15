@@ -24,9 +24,10 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
     saveScrollPosition()
     const newItems = await props.loadFunction(offset())
     if (!Array.isArray(newItems)) return
+    console.debug('[_share] load more items', newItems)
     setItems((prev) => [...prev, ...newItems])
     setOffset((prev) => prev + props.pageSize)
-    setIsLoadMoreButtonVisible(newItems.length >= props.pageSize)
+    setIsLoadMoreButtonVisible(newItems.length >= props.pageSize - 1)
     setIsLoading(false)
     restoreScrollPosition()
   }

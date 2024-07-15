@@ -1,7 +1,8 @@
 import { RouteSectionProps, useSearchParams } from '@solidjs/router'
-import { createEffect } from 'solid-js'
+import { createEffect, createMemo } from 'solid-js'
 import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
 import { Feed } from '~/components/Views/Feed'
+import { FeedProps } from '~/components/Views/Feed/Feed'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useFeed } from '~/context/feed'
@@ -52,7 +53,7 @@ const getFromDate = (period: FeedPeriod): number => {
 export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) => {
   const [searchParams] = useSearchParams<FeedSearchParams>() // ?period=month
   const { t } = useLocalize()
-  const { setFeed } = useFeed()
+  const { setFeed, feed } = useFeed()
   // TODO: use const { requireAuthentication } = useSession()
   const client = useGraphQL()
 
@@ -62,27 +63,32 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     !sortedTopics() && props.data.topics && addTopics(props.data.topics)
   })
 
-  // load more my feed
-  const loadMoreMyFeed = async (offset?: number) => {
-    // /feed/my/:mode:
+  // /feed/my/:mode:
+  const mode = createMemo(() => {
     const paramModePattern = /^(followed|discussed|liked|coauthored|unrated)$/
-    const mode =
-      props.params.mode && paramModePattern.test(props.params.mode) ? props.params.mode : 'followed'
-    const gqlHandler = feeds[mode as keyof typeof feeds]
+    return props.params.mode && paramModePattern.test(props.params.mode) ? props.params.mode : 'followed'
+  })
 
-    // /feed/my/:mode:/:order: - select order setting
+  const order = createMemo(() => {
     const paramOrderPattern = /^(hot|likes)$/
-    const order =
+    return (
       (paramOrderPattern.test(props.params.order)
         ? props.params.order === 'hot'
           ? 'last_comment'
           : props.params.order
         : 'created_at') || 'created_at'
+    )
+  })
 
+  // load more my feed
+  const loadMoreMyFeed = async (offset?: number) => {
+    const gqlHandler = feeds[mode() as keyof typeof feeds]
+
+    // /feed/my/:mode:/:order: - select order setting
     const options: LoadShoutsOptions = {
       limit: 20,
       offset,
-      order_by: order
+      order_by: order()
     }
 
     // ?period=month - time period filter
@@ -106,7 +112,11 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     >
       <LoadMoreWrapper loadFunction={loadMoreMyFeed} pageSize={AUTHORS_PER_PAGE}>
         <ReactionsProvider>
-          <Feed />
+          <Feed
+            shouts={feed() || []}
+            mode={(mode() || 'followed') as FeedProps['mode']}
+            order={order() as FeedProps['order']}
+          />
         </ReactionsProvider>
       </LoadMoreWrapper>
     </PageLayout>

@@ -1,8 +1,9 @@
 import { RouteSectionProps, createAsync, useSearchParams } from '@solidjs/router'
 import { Client } from '@urql/core'
-import { createEffect } from 'solid-js'
+import { createEffect, createMemo } from 'solid-js'
 import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
 import { Feed } from '~/components/Views/Feed'
+import { FeedProps } from '~/components/Views/Feed/Feed'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useFeed } from '~/context/feed'
@@ -60,7 +61,7 @@ export const route = {
 export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) => {
   const [searchParams] = useSearchParams<FeedSearchParams>() // ?period=month
   const { t } = useLocalize()
-  const { setFeed } = useFeed()
+  const { feed, setFeed } = useFeed()
 
   // preload all topics
   const { addTopics, sortedTopics } = useTopics()
@@ -106,6 +107,17 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     return (await loadMoreFeed()) as Shout[]
   })
 
+  const order = createMemo(() => {
+    const paramOrderPattern = /^(hot|likes)$/
+    return (
+      (paramOrderPattern.test(props.params.order)
+        ? props.params.order === 'hot'
+          ? 'last_comment'
+          : props.params.order
+        : 'created_at') || 'created_at'
+    )
+  })
+
   return (
     <PageLayout
       withPadding={true}
@@ -115,7 +127,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     >
       <LoadMoreWrapper loadFunction={loadMoreFeed} pageSize={AUTHORS_PER_PAGE}>
         <ReactionsProvider>
-          <Feed />
+          <Feed shouts={feed() || (shouts() as Shout[])} order={order() as FeedProps['order']} />
         </ReactionsProvider>
       </LoadMoreWrapper>
     </PageLayout>

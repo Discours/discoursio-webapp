@@ -8,7 +8,6 @@ import { InviteMembers } from '~/components/_shared/InviteMembers'
 import { Loading } from '~/components/_shared/Loading'
 import { ShareModal } from '~/components/_shared/ShareModal'
 import { useAuthors } from '~/context/authors'
-import { useFeed } from '~/context/feed'
 import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
@@ -35,8 +34,9 @@ export const FEED_PAGE_SIZE = 20
 export type PeriodType = 'week' | 'month' | 'year'
 
 export type FeedProps = {
-  shouts?: Shout[]
-  mode?: '' | 'likes' | 'hot'
+  shouts: Shout[]
+  mode?: 'followed' | 'discussed' | 'coauthored' | 'unrated'
+  order?: '' | 'likes' | 'hot'
 }
 
 export const FeedView = (props: FeedProps) => {
@@ -54,7 +54,6 @@ export const FeedView = (props: FeedProps) => {
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
   const { session } = useSession()
-  const { feed, setFeed } = useFeed()
   const { loadReactionsBy } = useReactions()
   const { topTopics } = useTopics()
   const { topAuthors } = useAuthors()
@@ -68,13 +67,13 @@ export const FeedView = (props: FeedProps) => {
     setTopComments(comments.sort(byCreated).reverse())
   }
 
+  // post-load
   createEffect(
     on(
-      feed,
+      () => props.shouts,
       (sss?: Shout[]) => {
         if (sss && Array.isArray(sss)) {
           setIsLoading(true)
-          setFeed((prev) => [...prev, ...sss])
           Promise.all([
             loadTopComments(),
             loadReactionsBy({ by: { shouts: sss.map((s: Shout) => s.slug) } })
@@ -107,15 +106,15 @@ export const FeedView = (props: FeedProps) => {
             <Placeholder type={loc?.pathname} mode="feed" />
           </Show>
 
-          <Show when={(session() || loc?.pathname === 'feed') && feed()?.length}>
+          <Show when={(session() || loc?.pathname === 'feed') && props.shouts?.length}>
             <div class={styles.filtersContainer}>
               <ul class={clsx('view-switcher', styles.feedFilter)}>
-                <li class={clsx({ 'view-switcher__item--selected': !props.mode })}>
+                <li class={clsx({ 'view-switcher__item--selected': !props.order })}>
                   <A href={loc.pathname}>{t('Recent')}</A>
                 </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': props.mode === 'likes'
+                    'view-switcher__item--selected': props.order === 'likes'
                   })}
                 >
                   <A class="link" href={'/feed/likes'}>
@@ -124,7 +123,7 @@ export const FeedView = (props: FeedProps) => {
                 </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': props.mode === 'hot'
+                    'view-switcher__item--selected': props.order === 'hot'
                   })}
                 >
                   <A class="link" href={'/feed/hot'}>
@@ -153,8 +152,8 @@ export const FeedView = (props: FeedProps) => {
             </div>
 
             <Show when={!isLoading()} fallback={<Loading />}>
-              <Show when={(feed() || []).length > 0}>
-                <For each={(feed() || []).slice(0, 4)}>
+              <Show when={(props.shouts || []).length > 0}>
+                <For each={(props.shouts || []).slice(0, 4)}>
                   {(article) => (
                     <ArticleCard
                       onShare={(shared) => handleShare(shared)}
@@ -186,7 +185,7 @@ export const FeedView = (props: FeedProps) => {
                   </ul>
                 </div>
 
-                <For each={(feed() || []).slice(4)}>
+                <For each={(props.shouts || []).slice(4)}>
                   {(article) => (
                     <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
                   )}

@@ -113,7 +113,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
       <Show when={(featuredFeed() || []).length > 0} fallback={<Loading />}>
         <LoadMoreWrapper loadFunction={loadMoreFeatured} pageSize={SHOUTS_PER_PAGE}>
           <HomeView
-            featuredShouts={featuredFeed() || shouts() as Shout[]}
+            featuredShouts={featuredFeed() || (shouts() as Shout[])}
             topMonthShouts={topMonthFeed() as Shout[]}
             topViewedShouts={topViewedFeed() as Shout[]}
             topRatedShouts={topRatedFeed() as Shout[]}

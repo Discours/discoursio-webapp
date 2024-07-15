@@ -205,7 +205,7 @@ export const AllAuthors = (props: Props) => {
                     {(author) => (
                       <div class={clsx(styles.topic, 'topic col-sm-12 col-md-8')}>
                         <div class="topic-title">
-                          <a href={`/author/${author.slug}`}>{translateAuthor(author, lang())}</a>
+                          <a href={`/@${author.slug}`}>{translateAuthor(author, lang())}</a>
                           <Show when={author.stat?.shouts || 0}>
                             <span class={styles.articlesCounter}>{author.stat?.shouts || 0}</span>
                           </Show>

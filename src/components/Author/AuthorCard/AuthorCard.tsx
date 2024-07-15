@@ -262,7 +262,7 @@ export const AuthorCard = (props: Props) => {
                   description={props.author.bio || ''}
                   imageUrl={props.author.pic || ''}
                   shareUrl={getShareUrl({
-                    pathname: `/author/${props.author.slug}`
+                    pathname: `/@${props.author.slug}`
                   })}
                   trigger={<Button variant="secondary" value={t('Share')} />}
                 />

@@ -30,7 +30,7 @@ export const AuthorLink = (props: Props) => {
         [styles.authorLinkFloorImportant]: props.isFloorImportant
       })}
     >
-      <a class={styles.link} href={`/author/${props.author.slug}`}>
+      <a class={styles.link} href={`/@${props.author.slug}`}>
         <Userpic size={props.size ?? 'M'} name={name() || ''} userpic={props.author.pic || ''} />
         <div class={styles.name}>{name()}</div>
       </a>

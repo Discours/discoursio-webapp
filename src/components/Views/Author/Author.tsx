@@ -144,9 +144,10 @@ export const AuthorView = (props: AuthorViewProps) => {
   let bioContainerRef: HTMLDivElement
   let bioWrapperRef: HTMLDivElement
   const checkBioHeight = () => {
-    console.debug('[AuthorView] mounted, checking bio height...')
     if (bioContainerRef) {
-      setShowExpandBioControl(bioContainerRef.offsetHeight > bioWrapperRef.offsetHeight)
+      const showExpand = bioContainerRef.offsetHeight > bioWrapperRef.offsetHeight
+      setShowExpandBioControl(showExpand)
+      console.debug('[AuthorView] mounted, show expand bio container:', showExpand)
     }
   }
 
@@ -173,19 +174,19 @@ export const AuthorView = (props: AuthorViewProps) => {
               <div class="col-md-16">
                 <ul class="view-switcher">
                   <li classList={{ 'view-switcher__item--selected': !props.selectedTab }}>
-                    <A href={`/author/${props.authorSlug}`}>{t('Publications')}</A>
+                    <A href={`/@${props.authorSlug}`}>{t('Publications')}</A>
                     <Show when={author()?.stat}>
                       <span class="view-switcher__counter">{author()?.stat?.shouts || 0}</span>
                     </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': props.selectedTab === 'comment' }}>
-                    <A href={`/author/${props.authorSlug}/comments`}>{t('Comments')}</A>
+                    <A href={`/@${props.authorSlug}/comments`}>{t('Comments')}</A>
                     <Show when={author()?.stat}>
                       <span class="view-switcher__counter">{author()?.stat?.comments || 0}</span>
                     </Show>
                   </li>
                   <li classList={{ 'view-switcher__item--selected': props.selectedTab === 'about' }}>
-                    <A onClick={() => checkBioHeight()} href={`/author/${props.authorSlug}/about`}>
+                    <A onClick={() => checkBioHeight()} href={`/@${props.authorSlug}/about`}>
                       {t('About the author')}
                     </A>
                   </li>

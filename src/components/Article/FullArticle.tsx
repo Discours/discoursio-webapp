@@ -354,7 +354,7 @@ export const FullArticle = (props: Props) => {
                     {(a: Maybe<Author>, index: () => number) => (
                       <>
                         <Show when={index() > 0}>, </Show>
-                        <A href={`/author/${a?.slug}`}>{a && getAuthorName(a)}</A>
+                        <A href={`/@${a?.slug}`}>{a && getAuthorName(a)}</A>
                       </>
                     )}
                   </For>

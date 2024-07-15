@@ -28,7 +28,7 @@ export const VotersList = (props: Props) => {
                     userpic={reaction.created_by.pic || ''}
                     class={styles.userpic}
                   />
-                  <a href={`/author/${reaction.created_by.slug}`}>{reaction.created_by.name || ''}</a>
+                  <a href={`/@${reaction.created_by.slug}`}>{reaction.created_by.name || ''}</a>
                 </div>
                 {reaction.kind === ReactionKind.Like ? (
                   <div class={styles.commentRatingPositive}>+1</div>

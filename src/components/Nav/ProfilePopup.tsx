@@ -20,7 +20,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     <Popup {...props} horizontalAnchor="right" popupCssClass={styles.profilePopup}>
       <ul class="nodash">
         <li>
-          <A class={styles.action} href={`/author/${author()?.slug || 'anonymous'}`}>
+          <A class={styles.action} href={`/@${author()?.slug || 'anonymous'}`}>
             <Icon name="profile" class={styles.icon} />
             {t('Profile')}
           </A>
@@ -32,7 +32,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           </A>
         </li>
         <li>
-          <A class={styles.action} href={`/author/${author()?.slug}?m=following`}>
+          <A class={styles.action} href={`/@${author()?.slug}?m=following`}>
             <Icon name="feed-all" class={styles.icon} />
             {t('Subscriptions')}
           </A>

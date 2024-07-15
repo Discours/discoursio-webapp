@@ -77,7 +77,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
                   {getTitle(n.shout?.title || '')}
                 </A>{' '}
                 {t('from')}{' '}
-                <A href={`/author/${n.authors?.[0]?.slug || ''}`} onClick={handleLinkClick}>
+                <A href={`/@${n.authors?.[0]?.slug || ''}`} onClick={handleLinkClick}>
                   {n.authors?.[0]?.name || ''}
                 </A>{' '}
               </div>

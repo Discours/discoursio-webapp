@@ -29,69 +29,6 @@ export const route: RouteDefinition = {
 
 type ArticlePageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author }
 
-export function ArticlePage(props: RouteSectionProps<ArticlePageProps>) {
-  const loc = useLocation()
-  const { t } = useLocalize()
-  const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
-  const data = createAsync(async () => props.data?.article || (await fetchShout(props.params.slug)))
-
-  onMount(async () => {
-    if (gaIdentity && data()?.id) {
-      try {
-        await loadGAScript(gaIdentity)
-        initGA(gaIdentity)
-      } catch (error) {
-        console.warn('Failed to connect Google Analytics:', error)
-      }
-    }
-  })
-
-  createEffect(
-    on(
-      data,
-      (a?: Shout) => {
-        if (!a?.id) return
-        window?.gtag?.('event', 'page_view', {
-          page_title: a.title,
-          page_location: window?.location.href || '',
-          page_path: loc.pathname
-        })
-      },
-      { defer: true }
-    )
-  )
-
-  return (
-    <ErrorBoundary fallback={() => <HttpStatusCode code={500} />}>
-      <Suspense fallback={<Loading />}>
-        <Show
-          when={data()?.id}
-          fallback={
-            <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
-              <FourOuFourView />
-              <HttpStatusCode code={404} />
-            </PageLayout>
-          }
-        >
-          <PageLayout
-            title={`${t('Discours')}${data()?.title ? ' :: ' : ''}${data()?.title || ''}`}
-            desc={descFromBody(data()?.body || '')}
-            keywords={keywordsFromTopics(data()?.topics as { title: string }[])}
-            headerTitle={data()?.title || ''}
-            slug={data()?.slug}
-            cover={data()?.cover || ''}
-            scrollToComments={(value) => setScrollToComments(value)}
-          >
-            <ReactionsProvider>
-              <FullArticle article={data() as Shout} scrollToComments={scrollToComments()} />
-            </ReactionsProvider>
-          </PageLayout>
-        </Show>
-      </Suspense>
-    </ErrorBoundary>
-  )
-}
-
 type SlugPageProps = {
   article?: Shout
   comments?: Reaction[]
@@ -125,5 +62,67 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
     return <TopicPage {...patchedProps} />
   }
 
+  function ArticlePage(props: RouteSectionProps<ArticlePageProps>) {
+    const loc = useLocation()
+    const { t } = useLocalize()
+    const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
+    const data = createAsync(async () => props.data?.article || (await fetchShout(props.params.slug)))
+
+    onMount(async () => {
+      if (gaIdentity && data()?.id) {
+        try {
+          await loadGAScript(gaIdentity)
+          initGA(gaIdentity)
+        } catch (error) {
+          console.warn('Failed to connect Google Analytics:', error)
+        }
+      }
+    })
+
+    createEffect(
+      on(
+        data,
+        (a?: Shout) => {
+          if (!a?.id) return
+          window?.gtag?.('event', 'page_view', {
+            page_title: a.title,
+            page_location: window?.location.href || '',
+            page_path: loc.pathname
+          })
+        },
+        { defer: true }
+      )
+    )
+
+    return (
+      <ErrorBoundary fallback={() => <HttpStatusCode code={500} />}>
+        <Suspense fallback={<Loading />}>
+          <Show
+            when={data()?.id}
+            fallback={
+              <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
+                <FourOuFourView />
+                <HttpStatusCode code={404} />
+              </PageLayout>
+            }
+          >
+            <PageLayout
+              title={`${t('Discours')}${data()?.title ? ' :: ' : ''}${data()?.title || ''}`}
+              desc={descFromBody(data()?.body || '')}
+              keywords={keywordsFromTopics(data()?.topics as { title: string }[])}
+              headerTitle={data()?.title || ''}
+              slug={data()?.slug}
+              cover={data()?.cover || ''}
+              scrollToComments={(value) => setScrollToComments(value)}
+            >
+              <ReactionsProvider>
+                <FullArticle article={data() as Shout} scrollToComments={scrollToComments()} />
+              </ReactionsProvider>
+            </PageLayout>
+          </Show>
+        </Suspense>
+      </ErrorBoundary>
+    )
+  }
   return <ArticlePage {...props} />
 }

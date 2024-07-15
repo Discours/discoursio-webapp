@@ -55,7 +55,7 @@ export const Userpic = (props: Props) => {
       <Show when={!props.loading} fallback={<Loading />}>
         <ConditionalWrapper
           condition={Boolean(props.hasLink)}
-          wrapper={(children) => <a href={`/author/${props.slug}`}>{children}</a>}
+          wrapper={(children) => <a href={`/@${props.slug}`}>{children}</a>}
         >
           <Show keyed={true} when={props.userpic} fallback={<div class={styles.letters}>{letters()}</div>}>
             <Image src={props.userpic} width={avatarSize()} height={avatarSize()} alt={props.name} />

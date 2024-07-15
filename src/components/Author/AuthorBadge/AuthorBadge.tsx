@@ -95,7 +95,7 @@ export const AuthorBadge = (props: Props) => {
         <ConditionalWrapper
           condition={!props.inviteView}
           wrapper={(children) => (
-            <a href={`/author/${props.author.slug}`} class={styles.info}>
+            <a href={`/@${props.author.slug}`} class={styles.info}>
               {children}
             </a>
           )}

@@ -96,7 +96,7 @@ export const Sidebar = () => {
           <For each={follows.authors}>
             {(a: Author) => (
               <li>
-                <a href={`/author/${a.slug}`} classList={{ [styles.unread]: checkAuthorIsSeen(a.slug) }}>
+                <a href={`/@${a.slug}`} classList={{ [styles.unread]: checkAuthorIsSeen(a.slug) }}>
                   <div class={styles.sidebarItemName}>
                     <Userpic name={a.name || ''} userpic={a.pic || ''} size="XS" class={styles.userpic} />
                     <div class={styles.sidebarItemNameLabel}>{a.name}</div>

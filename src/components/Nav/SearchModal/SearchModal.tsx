@@ -1,19 +1,15 @@
-import type { Shout } from '~/graphql/schema/core.gen'
-
 import { For, Show, createResource, createSignal, onCleanup } from 'solid-js'
 import { debounce } from 'throttle-debounce'
-
 import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
+import type { Shout } from '~/graphql/schema/core.gen'
 import { byScore } from '~/lib/sort'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
-
-import { SearchResultItem } from './SearchResultItem'
-
 import styles from './SearchModal.module.scss'
+import { SearchResultItem } from './SearchResultItem'
 
 // @@TODO handle empty article options after backend support (subtitle, cover, etc.)
 // @@TODO implement load more

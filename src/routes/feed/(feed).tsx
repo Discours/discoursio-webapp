@@ -1,7 +1,9 @@
 import { RouteSectionProps, createAsync, useSearchParams } from '@solidjs/router'
 import { Client } from '@urql/core'
-import { Show, createEffect, createSignal } from 'solid-js'
+import { createSignal } from 'solid-js'
+import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
 import { Feed } from '~/components/Views/Feed'
+import { LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
@@ -59,7 +61,6 @@ export default (props: RouteSectionProps<Shout[]>) => {
   const { t } = useLocalize()
   const [offset, setOffset] = createSignal<number>(0)
   const shouts = createAsync(async () => ({ ...props.data }) || (await loadMore()))
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal<boolean>(true)
   const loadMore = async () => {
     const newOffset = offset() + SHOUTS_PER_PAGE
     setOffset(newOffset)
@@ -75,7 +76,6 @@ export default (props: RouteSectionProps<Shout[]>) => {
     }
     return await fetchPublishedShouts(newOffset)
   }
-  createEffect(() => setIsLoadMoreButtonVisible(offset() < (shouts()?.length || 0)))
   return (
     <PageLayout
       withPadding={true}
@@ -83,16 +83,11 @@ export default (props: RouteSectionProps<Shout[]>) => {
       key="feed"
       desc="Independent media project about culture, science, art and society with horizontal editing"
     >
-      <ReactionsProvider>
-        <Feed shouts={shouts() || []} />
-      </ReactionsProvider>
-      <Show when={isLoadMoreButtonVisible()}>
-        <p class="load-more-container">
-          <button class="button" onClick={loadMore}>
-            {t('Load more')}
-          </button>
-        </p>
-      </Show>
+      <LoadMoreWrapper loadFunction={loadMore} pageSize={AUTHORS_PER_PAGE}>
+        <ReactionsProvider>
+          <Feed shouts={shouts() || []} />
+        </ReactionsProvider>
+      </LoadMoreWrapper>
     </PageLayout>
   )
 }

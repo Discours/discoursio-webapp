@@ -34,18 +34,14 @@ export default defineConfig({
   },
   vite: {
     envPrefix: 'PUBLIC_',
-    plugins: [
-      !isVercel && mkcert(),
-      nodePolyfills(polyfillOptions),
-      sassDts()
-    ],
+    plugins: [!isVercel && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
     css: {
       preprocessorOptions: {
         scss: {
           additionalData: '@import "src/styles/imports";\n',
           includePaths: ['./public', './src/styles']
         }
-      } as CSSOptions["preprocessorOptions"]
+      } as CSSOptions['preprocessorOptions']
     }
   }
 } as SolidStartInlineConfig)

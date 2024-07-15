@@ -1,5 +1,5 @@
 import { action, useSearchParams } from '@solidjs/router'
-import { Show, Suspense, createEffect, createSignal, onCleanup } from 'solid-js'
+import { Show, createEffect, createSignal, onCleanup } from 'solid-js'
 
 import { SearchView } from '~/components/Views/Search'
 import { Loading } from '~/components/_shared/Loading'
@@ -48,20 +48,18 @@ export default () => {
 
   return (
     <PageLayout withPadding={true} title={`${t('Discours')} :: ${t('Search')}`}>
-      <Suspense fallback={<Loading />}>
-        <Show when={isLoaded()} fallback={<Loading />}>
-          <Show
-            when={searchResults().length > 0}
-            fallback={
-              <Show when={hasSearched()} fallback={<div>{t('Enter your search query')}</div>}>
-                <div>{t('No results found')}</div>
-              </Show>
-            }
-          >
-            <SearchView results={searchResults() as SearchResult[]} query={searchParams?.q || ''} />
-          </Show>
+      <Show when={isLoaded()} fallback={<Loading />}>
+        <Show
+          when={searchResults().length > 0}
+          fallback={
+            <Show when={hasSearched()} fallback={<div>{t('Enter your search query')}</div>}>
+              <div>{t('No results found')}</div>
+            </Show>
+          }
+        >
+          <SearchView results={searchResults() as SearchResult[]} query={searchParams?.q || ''} />
         </Show>
-      </Suspense>
+      </Show>
     </PageLayout>
   )
 }

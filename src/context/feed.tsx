@@ -1,6 +1,6 @@
 import { createLazyMemo } from '@solid-primitives/memo'
 import { makePersisted } from '@solid-primitives/storage'
-import { Accessor, JSX, createContext, createSignal, useContext } from 'solid-js'
+import { Accessor, JSX, Setter, createContext, createSignal, useContext } from 'solid-js'
 import { loadFollowedShouts } from '~/graphql/api/private'
 import { loadShoutsSearch as fetchShoutsSearch, getShout, loadShouts } from '~/graphql/api/public'
 import {
@@ -37,6 +37,10 @@ type FeedContextType = {
   loadTopFeed: () => Promise<void>
   seen: Accessor<{ [slug: string]: number }>
   addSeen: (slug: string) => void
+  featuredFeed: Accessor<Shout[] | undefined>
+  setFeaturedFeed: Setter<Shout[]>
+  expoFeed: Accessor<Shout[] | undefined>
+  setExpoFeed: Setter<Shout[]>
 }
 
 const FeedContext = createContext<FeedContextType>({} as FeedContextType)
@@ -46,6 +50,8 @@ export const useFeed = () => useContext(FeedContext)
 export const FeedProvider = (props: { children: JSX.Element }) => {
   const [sortedFeed, setSortedFeed] = createSignal<Shout[]>([])
   const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})
+  const [featuredFeed, setFeaturedFeed] = createSignal<Shout[]>([])
+  const [expoFeed, setExpoFeed] = createSignal<Shout[]>([])
   const [topFeed, setTopFeed] = createSignal<Shout[]>([])
   const [topMonthFeed, setTopMonthFeed] = createSignal<Shout[]>([])
   const [feedByLayout, _setFeedByLayout] = createSignal<{ [layout: string]: Shout[] }>({})
@@ -236,7 +242,11 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
         loadTopMonthFeed,
         loadTopFeed,
         seen,
-        addSeen
+        addSeen,
+        featuredFeed,
+        setFeaturedFeed,
+        expoFeed,
+        setExpoFeed
       }}
     >
       {props.children}

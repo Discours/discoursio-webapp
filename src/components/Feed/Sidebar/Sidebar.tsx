@@ -1,7 +1,6 @@
+import { A, useLocation, useParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createSignal } from 'solid-js'
-
-import { A, useMatch } from '@solidjs/router'
 import { Icon } from '~/components/_shared/Icon'
 import { useFeed } from '~/context/feed'
 import { useFollowing } from '~/context/following'
@@ -15,10 +14,8 @@ export const Sidebar = () => {
   const { follows } = useFollowing()
   const { feedByTopic, feedByAuthor, seen } = useFeed()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
-  const matchFeed = useMatch(() => '/feed')
-  const matchFeedMy = useMatch(() => '/feed/followed')
-  const matchFeedCollabs = useMatch(() => '/feed/coauthored')
-  const matchFeedDiscussions = useMatch(() => '/feed/discussed')
+  const loc = useLocation()
+  const params = useParams()
   const checkTopicIsSeen = (topicSlug: string) => {
     return feedByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))
   }
@@ -32,9 +29,9 @@ export const Sidebar = () => {
       <ul class={styles.feedFilters}>
         <li>
           <A
-            href={'feed'}
+            href={'/feed'}
             class={clsx({
-              [styles.selected]: matchFeed()
+              [styles.selected]: !loc.pathname.includes('feed/my')
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -45,9 +42,9 @@ export const Sidebar = () => {
         </li>
         <li>
           <A
-            href={'/feed/followed'}
+            href={'/feed/my/followed'}
             class={clsx({
-              [styles.selected]: matchFeedMy()
+              [styles.selected]: !params.mode || params.mode === 'followed'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -58,9 +55,9 @@ export const Sidebar = () => {
         </li>
         <li>
           <A
-            href={'/feed/coauthored'}
+            href={'/feed/my/coauthored'}
             class={clsx({
-              [styles.selected]: matchFeedCollabs()
+              [styles.selected]: params.mode === 'coauthored'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -71,9 +68,9 @@ export const Sidebar = () => {
         </li>
         <li>
           <a
-            href={'/feed/discussed'}
+            href={'/feed/my/discussed'}
             class={clsx({
-              [styles.selected]: matchFeedDiscussions()
+              [styles.selected]: params.mode === 'discussed'
             })}
           >
             <span class={styles.sidebarItemName}>

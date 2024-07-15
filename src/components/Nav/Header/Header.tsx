@@ -477,7 +477,7 @@ export const Header = (props: Props) => {
               </li>
 
               <li>
-                <A href={'/feed/followed'}>
+                <A href={'/feed/my/followed'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-my" class={styles.icon} />
                     {t('My feed')}
@@ -485,7 +485,7 @@ export const Header = (props: Props) => {
                 </A>
               </li>
               <li>
-                <A href={'/feed/coauthored'}>
+                <A href={'/feed/my/coauthored'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-collaborate" class={styles.icon} />
                     {t('Participation')}
@@ -493,7 +493,7 @@ export const Header = (props: Props) => {
                 </A>
               </li>
               <li>
-                <A href={'/feed/discussed'}>
+                <A href={'/feed/my/discussed'}>
                   <span class={styles.subnavigationItemName}>
                     <Icon name="feed-discussion" class={styles.icon} />
                     {t('Discussions')}

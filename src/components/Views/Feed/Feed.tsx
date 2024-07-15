@@ -35,7 +35,7 @@ export type PeriodType = 'week' | 'month' | 'year'
 
 export type FeedProps = {
   shouts: Shout[]
-  mode?: 'followed' | 'discussed' | 'coauthored' | 'unrated'
+  mode?: 'followed' | 'discussed' | 'coauthored' | 'unrated' | 'all'
   order?: '' | 'likes' | 'hot'
 }
 
@@ -143,8 +143,8 @@ export const FeedView = (props: FeedProps) => {
                 </Show>
                 <DropDown
                   popupProps={{ horizontalAnchor: 'right' }}
-                  options={asOptions(['followed', 'unrated', 'discussed', 'coauthored'])}
-                  currentOption={asOption(loc.pathname.split('/').pop() || '')}
+                  options={asOptions(['all', 'featured', 'followed', 'unrated', 'discussed', 'coauthored'])}
+                  currentOption={asOption(props.mode || '')}
                   triggerCssClass={styles.periodSwitcher}
                   onChange={(mode: Option) => navigate(`/feed/${mode.value}`)}
                 />

@@ -114,7 +114,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
         <ReactionsProvider>
           <Feed
             shouts={feed() || []}
-            mode={(mode() || 'followed') as FeedProps['mode']}
+            mode={(mode() || 'all') as FeedProps['mode']}
             order={order() as FeedProps['order']}
           />
         </ReactionsProvider>

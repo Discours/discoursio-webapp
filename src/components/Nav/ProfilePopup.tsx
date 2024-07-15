@@ -1,3 +1,4 @@
+import { A } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { createMemo } from 'solid-js'
 import { useLocalize } from '~/context/localize'
@@ -6,8 +7,6 @@ import type { Author } from '~/graphql/schema/core.gen'
 import { Icon } from '../_shared/Icon'
 import type { PopupProps } from '../_shared/Popup'
 import { Popup } from '../_shared/Popup'
-
-import { A } from '@solidjs/router'
 import styles from '../_shared/Popup/Popup.module.scss'
 
 type ProfilePopupProps = Omit<PopupProps, 'children'>

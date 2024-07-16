@@ -1,13 +1,14 @@
 import { RouteSectionProps, createAsync } from '@solidjs/router'
-import { ErrorBoundary, Suspense, createEffect, createMemo } from 'solid-js'
+import { ErrorBoundary, createEffect, createMemo } from 'solid-js'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
-import { Loading } from '~/components/_shared/Loading'
+import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
+import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
-import { ReactionsProvider } from '~/context/reactions'
-import { loadAuthors, loadShouts, loadTopics } from '~/graphql/api/public'
+import { ReactionsProvider, useReactions } from '~/context/reactions'
+import { loadAuthors, loadReactions, loadShouts, loadTopics } from '~/graphql/api/public'
 import {
   Author,
   LoadShoutsOptions,
@@ -38,10 +39,9 @@ const fetchAuthor = async (slug: string) => {
 export const route = {
   load: async ({ params, location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
     const offset: number = Number.parseInt(query.offset, 10)
-    const result = await fetchAuthorShouts(params.slug, offset)
     return {
       author: await fetchAuthor(params.slug),
-      shouts: result || [],
+      shouts: await fetchAuthorShouts(params.slug, offset),
       topics: await fetchAllTopics()
     }
   }
@@ -50,11 +50,14 @@ export const route = {
 export type AuthorPageProps = { articles?: Shout[]; author?: Author; topics?: Topic[] }
 
 export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
-  const { addAuthor } = useAuthors()
+  const { addAuthor, authorsEntities } = useAuthors()
   const articles = createAsync(
     async () => props.data.articles || (await fetchAuthorShouts(props.params.slug)) || []
   )
   const author = createAsync(async () => {
+    const loadedBefore = authorsEntities()[props.params.slug]
+    if (loadedBefore) return loadedBefore
+
     const a = props.data.author || (await fetchAuthor(props.params.slug))
     a && addAuthor(a)
     return a
@@ -80,30 +83,55 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
       : getImageUrl('production/image/logo_image.png')
   )
 
-  const selectedTab = createMemo(() =>
-    props.params.tab in ['followers', 'shouts'] ? props.params.tab : 'name'
-  )
+  const selectedTab = createMemo(() => (props.params.tab in ['comments', 'about'] ? props.params.tab : ''))
+  const { addReactions } = useReactions()
+  const loadMoreComments = async () => {
+    const commentsFetcher = loadReactions({
+      by: { comment: true, created_by: author()?.id }
+    })
+    const ccc = await commentsFetcher()
+    ccc && addReactions(ccc)
+    return ccc as LoadMoreItems
+  }
+  const { addFeed, feedByAuthor } = useFeed()
+  const loadMoreAuthorShouts = async () => {
+    const slug = author()?.slug
+    const offset = feedByAuthor()[props.params.slug].length
+    const shoutsFetcher = loadShouts({
+      filters: { author: slug },
+      offset,
+      limit: SHOUTS_PER_PAGE
+    })
+    const sss = await shoutsFetcher()
+    sss && addFeed(sss)
+    return sss as LoadMoreItems
+  }
+
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
-      <Suspense fallback={<Loading />}>
-        <PageLayout
-          title={`${t('Discours')} :: ${title()}`}
-          headerTitle={author()?.name || ''}
-          slug={author()?.slug}
-          desc={author()?.about || author()?.bio || ''}
-          cover={cover()}
-        >
-          <ReactionsProvider>
+      <PageLayout
+        title={`${t('Discours')} :: ${title()}`}
+        headerTitle={author()?.name || ''}
+        slug={author()?.slug}
+        desc={author()?.about || author()?.bio || ''}
+        cover={cover()}
+      >
+        <ReactionsProvider>
+          <LoadMoreWrapper
+            loadFunction={(selectedTab() === 'comments' ? loadMoreComments : loadMoreAuthorShouts)}
+            pageSize={SHOUTS_PER_PAGE}
+            hidden={selectedTab() !== '' || selectedTab() !== 'comments'}
+          >
             <AuthorView
               author={author() as Author}
               selectedTab={selectedTab()}
               authorSlug={props.params.slug}
-              shouts={articles() as Shout[]}
+              shouts={feedByAuthor()[props.params.slug] || articles() as Shout[]}
               topics={topics()}
             />
-          </ReactionsProvider>
-        </PageLayout>
-      </Suspense>
+          </LoadMoreWrapper>
+        </ReactionsProvider>
+      </PageLayout>
     </ErrorBoundary>
   )
 }

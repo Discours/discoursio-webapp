@@ -8,14 +8,11 @@ import { useFollowing } from '~/context/following'
 import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
-import { loadReactions } from '~/graphql/api/public'
-import loadShoutsQuery from '~/graphql/query/core/articles-load-by'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
 import { byCreated } from '~/lib/sort'
 import { paginate } from '~/utils/paginate'
-import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import stylesArticle from '../../Article/Article.module.scss'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
@@ -48,7 +45,6 @@ export const AuthorView = (props: AuthorViewProps) => {
   const { followers: myFollowers, follows: myFollows } = useFollowing()
 
   // signals
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [author, setAuthor] = createSignal<Author>()
   const [followers, setFollowers] = createSignal<Author[]>([] as Author[])
@@ -61,20 +57,6 @@ export const AuthorView = (props: AuthorViewProps) => {
   const pages = createMemo<Shout[][]>(() =>
     paginate(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
-
-  // fx
-  // пагинация загрузки ленты постов
-  const loadMore = async () => {
-    saveScrollPosition()
-    const resp = await query(loadShoutsQuery, {
-      filters: { author: props.authorSlug },
-      limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedFeed().length
-    })
-    const hasMore = resp?.data?.load_shouts_by?.hasMore
-    setIsLoadMoreButtonVisible(hasMore)
-    restoreScrollPosition()
-  }
 
   // 1 // проверяет не собственный ли это профиль, иначе - загружает
   const [isFetching, setIsFetching] = createSignal(false)
@@ -119,24 +101,6 @@ export const AuthorView = (props: AuthorViewProps) => {
         setIsFetching(false)
       },
       { defer: true }
-    )
-  )
-
-  // 3 // догружает ленту и комментарии
-  createEffect(
-    on(
-      () => author() as Author,
-      async (profile: Author) => {
-        if (!commented() && profile) {
-          await loadMore()
-          const commentsFetcher = loadReactions({
-            by: { comment: true, created_by: profile.id }
-          })
-          const ccc = await commentsFetcher()
-          if (ccc) setCommented((_) => ccc || [])
-        }
-      }
-      // { defer: true },
     )
   )
 
@@ -289,14 +253,6 @@ export const AuthorView = (props: AuthorViewProps) => {
                   </For>
                 </Match>
               </Switch>
-            </Show>
-
-            <Show when={isLoadMoreButtonVisible()}>
-              <p class="load-more-container">
-                <button class="button" onClick={loadMore}>
-                  {t('Load more')}
-                </button>
-              </p>
             </Show>
           </Show>
         </Match>

@@ -24,6 +24,7 @@ type ReactionsContextType = {
   createReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
   updateReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction>
   deleteReaction: (id: number) => Promise<{ error: string } | null>
+  addReactions: (rrr: Reaction[]) => void
 }
 
 const ReactionsContext = createContext<ReactionsContextType>({} as ReactionsContextType)
@@ -38,24 +39,27 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
   const { mutation } = useGraphQL()
-
-  const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
-    !opts.by && console.warn('reactions provider got wrong opts')
-    const fetcher = await loadReactions(opts)
-    const result = (await fetcher()) || []
-    console.debug('[context.reactions] loaded', result)
-    const newReactionsByShout: Record<string, Reaction[]> = {}
-    const newReactionEntities = result.reduce(
+  const addReactions = (rrr: Reaction[]) => {
+    const newReactionsByShout: Record<string, Reaction[]> = { ...reactionsByShout }
+    const newReactionEntities = rrr.reduce(
       (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {
         acc[reaction.id] = reaction
         if (!newReactionsByShout[reaction.shout.slug]) newReactionsByShout[reaction.shout.slug] = []
         newReactionsByShout[reaction.shout.slug].push(reaction)
         return acc
       },
-      {}
+      { ...reactionEntities }
     )
-    setReactionsByShout(newReactionsByShout)
     setReactionEntities(newReactionEntities)
+    setReactionsByShout(newReactionsByShout)
+  }
+
+  const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
+    !opts.by && console.warn('reactions provider got wrong opts')
+    const fetcher = await loadReactions(opts)
+    const result = (await fetcher()) || []
+    console.debug('[context.reactions] loaded', result)
+    result && addReactions(result)
     return result
   }
 
@@ -120,7 +124,8 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     loadReactionsBy,
     createReaction,
     updateReaction,
-    deleteReaction
+    deleteReaction,
+    addReactions
   }
 
   const value: ReactionsContextType = { reactionEntities, reactionsByShout, ...actions }

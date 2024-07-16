@@ -9,6 +9,7 @@ export type LoadMoreItems = Shout[] | Author[] | Reaction[]
 type LoadMoreProps = {
   loadFunction: (offset?: number) => Promise<LoadMoreItems>
   pageSize: number
+  hidden?: boolean
   children: JSX.Element
 }
 
@@ -37,7 +38,7 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
   return (
     <>
       {props.children}
-      <Show when={isLoadMoreButtonVisible()}>
+      <Show when={isLoadMoreButtonVisible() && !props.hidden}>
         <div class="load-more-container">
           <Button
             onClick={loadItems}

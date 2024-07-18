@@ -5,9 +5,9 @@ import {
   createContext,
   createEffect,
   createMemo,
-  createReaction,
   createSignal,
   on,
+  onMount,
   useContext
 } from 'solid-js'
 import { loadTopics } from '~/graphql/api/public'
@@ -163,20 +163,25 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
       }
     })
   }
-
   const [db, setDb] = createSignal()
+  createEffect(
+    on(
+      () => window?.indexedDB,
+      async (_raw) => {
+        const initialized = await setupIndexedDB()
+        setDb(initialized)
+      },
+      { defer: true }
+    )
+  )
 
   const loadAllTopics = async () => {
     const topicsLoader = loadTopics()
     const ttt = await topicsLoader()
+    ttt && addTopics(ttt)
     if (db()) await saveTopicsToIndexedDB(db() as IDBDatabase, ttt as Topic[])
     return ttt || []
   }
-
-  createReaction(async () => {
-    setDb(await setupIndexedDB())
-    console.info('[context.topics] idb loaded')
-  })
 
   const [randomTopic, setRandomTopic] = createSignal<Topic>()
   createEffect(
@@ -197,6 +202,20 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
       { defer: true }
     )
   )
+
+  const getCachedOrLoadTopics = async () => {
+    const { topics: stored } = await getTopicsFromIndexedDB(db() as IDBDatabase)
+    if (stored) {
+      setSortedTopics(stored)
+      return stored
+    }
+    const loaded = await loadAllTopics()
+    if (loaded) setSortedTopics(loaded)
+    return loaded
+  }
+
+  // preload all topics
+  onMount(getCachedOrLoadTopics)
 
   const value: TopicsContextType = {
     setTopicsSort: setSortAllBy,

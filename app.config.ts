@@ -8,7 +8,7 @@ import sassDts from 'vite-plugin-sass-dts'
 const isVercel = Boolean(process?.env.VERCEL)
 const isBun = Boolean(process.env.BUN)
 
-console.info(`[app.config] build for ${isVercel ? 'vercel' : isBun? 'bun' : 'node'}!`)
+console.info(`[app.config] build for ${isVercel ? 'vercel' : isBun ? 'bun' : 'node'}!`)
 
 const polyfillOptions = {
   include: ['path', 'stream', 'util'],

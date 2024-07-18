@@ -5,8 +5,8 @@ export const byFirstChar = (a: Author | Topic, b: Author | Topic) =>
     (b as Author).name || (b as Topic).title || ''
   )
 
-export const byCreated = (a: Shout | Reaction, b: Shout | Reaction) => {
-  return a?.created_at - b?.created_at
+export const byCreated = (a: { created_at?: number }, b: { created_at?: number }) => {
+  return (a?.created_at || 0) - (b?.created_at || 0)
 }
 
 export const byPublished = (a: Shout, b: Shout) => {

@@ -40,9 +40,9 @@ export type FeedProps = {
 }
 
 const PERIODS = {
-  'day': 24 * 60 * 60,
-  'month': 30 * 24 * 60 * 60,
-  'year': 365 * 24 * 60 * 60
+  day: 24 * 60 * 60,
+  month: 30 * 24 * 60 * 60,
+  year: 365 * 24 * 60 * 60
 }
 
 export const FeedView = (props: FeedProps) => {
@@ -98,7 +98,7 @@ export const FeedView = (props: FeedProps) => {
   }
 
   const asOption = (o: string) => {
-    const value = Math.floor(Date.now()/1000) - PERIODS[o as keyof typeof PERIODS]
+    const value = Math.floor(Date.now() / 1000) - PERIODS[o as keyof typeof PERIODS]
     return { value, title: t(o) }
   }
   const asOptions = (opts: string[]) => opts.map(asOption)

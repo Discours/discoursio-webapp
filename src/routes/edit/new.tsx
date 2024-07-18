@@ -15,18 +15,19 @@ import { LayoutType } from '~/types/common'
 export default () => {
   const { t } = useLocalize()
   const client = useGraphQL()
-  const {showSnackbar} = useSnackbar()
+  const { showSnackbar } = useSnackbar()
   const navigate = useNavigate()
   const handleCreate = async (layout: LayoutType) => {
     console.debug('[routes : edit/new] handling create click...')
     const result = await client.mutation(createShoutMutation, { shout: { layout: layout } }).toPromise()
     if (result) {
       console.debug(result)
-      const {shout, error} = result.data.create_shout
-      if (error) showSnackbar({
-        body: `${t('Error')}: ${t(error)}`,
-        type: 'error'
-      })
+      const { shout, error } = result.data.create_shout
+      if (error)
+        showSnackbar({
+          body: `${t('Error')}: ${t(error)}`,
+          type: 'error'
+        })
       if (shout?.id) navigate(`/edit/${shout.id}`)
     }
   }

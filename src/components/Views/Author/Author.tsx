@@ -117,7 +117,12 @@ export const AuthorView = (props: AuthorViewProps) => {
 
   // on load
   createEffect(on(() => bioContainerRef, checkBioHeight))
-  createEffect(on(() => props.selectedTab, (tab) => tab && console.log('[views.Author] profile tab switched')))
+  createEffect(
+    on(
+      () => props.selectedTab,
+      (tab) => tab && console.log('[views.Author] profile tab switched')
+    )
+  )
 
   return (
     <div class={styles.authorPage}>

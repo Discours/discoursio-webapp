@@ -7,15 +7,12 @@ import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
-import { ReactionsProvider, useReactions } from '~/context/reactions'
-import { loadAuthors, loadReactions, loadShouts, loadTopics } from '~/graphql/api/public'
+import { ReactionsProvider } from '~/context/reactions'
+import { loadAuthors, loadShouts, loadTopics } from '~/graphql/api/public'
 import {
   Author,
   LoadShoutsOptions,
   QueryLoad_Authors_ByArgs,
-  QueryLoad_Reactions_ByArgs,
-  Reaction,
-  ReactionKind,
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
@@ -25,16 +22,6 @@ import { SHOUTS_PER_PAGE } from '../../(main)'
 const fetchAuthorShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { author: slug }, limit: SHOUTS_PER_PAGE, offset }
   const shoutsLoader = loadShouts(opts)
-  return await shoutsLoader()
-}
-
-const fetchAuthorComments = async (slug: string, offset?: number) => {
-  const opts: QueryLoad_Reactions_ByArgs = {
-    by: { comment: true, author: slug },
-    limit: SHOUTS_PER_PAGE,
-    offset
-  }
-  const shoutsLoader = loadReactions(opts)
   return await shoutsLoader()
 }
 
@@ -86,13 +73,6 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
       : getImageUrl('production/image/logo_image.png')
   )
 
-  // author comments
-  const { addReactions, reactionEntities } = useReactions()
-  const commentsByAuthor = createMemo(() =>
-    Object.values(reactionEntities).filter(
-      (r: Reaction) => r.kind === ReactionKind.Comment && r.created_by.id === author()?.id
-    )
-  )
   // author shouts
   const { addFeed, feedByAuthor } = useFeed()
   const shoutsByAuthor = createMemo(() => feedByAuthor()[props.params.slug])
@@ -113,15 +93,8 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
     )
   )
 
-  const loadAuthorDataMore = async (offset = 0) => {
-    if (props.params.tab === 'comments') {
-      const commentsOffset = commentsByAuthor().length
-      const loadedComments = await fetchAuthorComments(props.params.slug, commentsOffset)
-      loadedComments && addReactions(loadedComments)
-      return (loadedComments || []) as LoadMoreItems
-    }
-    const shoutsOffset = shoutsByAuthor().length
-    const loadedShouts = await fetchAuthorShouts(props.params.slug, shoutsOffset)
+  const loadAuthorShoutsMore = async (offset: number) => {
+    const loadedShouts = await fetchAuthorShouts(props.params.slug, offset)
     loadedShouts && addFeed(loadedShouts)
     return (loadedShouts || []) as LoadMoreItems
   }
@@ -136,11 +109,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
         cover={cover()}
       >
         <ReactionsProvider>
-          <LoadMoreWrapper
-            loadFunction={loadAuthorDataMore}
-            pageSize={SHOUTS_PER_PAGE}
-            hidden={!props.params.tab || props.params.tab !== 'comments'}
-          >
+          <LoadMoreWrapper loadFunction={loadAuthorShoutsMore} pageSize={SHOUTS_PER_PAGE}>
             <AuthorView
               author={author() as Author}
               selectedTab={props.params.tab}

@@ -2,7 +2,7 @@ import { A } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
-import { LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
+import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { Loading } from '~/components/_shared/Loading'
 import { ArticleCardSwiper } from '~/components/_shared/SolidSwiper/ArticleCardSwiper'
 import { useFeed } from '~/context/feed'
@@ -46,7 +46,7 @@ export const Expo = (props: Props) => {
     const shoutsFetcher = loadShouts(options)
     const result = await shoutsFetcher()
     result && setExpoFeed(result)
-    return result
+    return result as LoadMoreItems
   }
 
   const loadRandomTopArticles = async () => {

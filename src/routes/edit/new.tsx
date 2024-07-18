@@ -7,6 +7,7 @@ import { Icon } from '~/components/_shared/Icon'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
+import { useSnackbar } from '~/context/ui'
 import createShoutMutation from '~/graphql/mutation/core/article-create'
 import styles from '~/styles/Create.module.scss'
 import { LayoutType } from '~/types/common'
@@ -14,11 +15,18 @@ import { LayoutType } from '~/types/common'
 export default () => {
   const { t } = useLocalize()
   const client = useGraphQL()
+  const {showSnackbar} = useSnackbar()
   const navigate = useNavigate()
   const handleCreate = async (layout: LayoutType) => {
+    console.debug('[routes : edit/new] handling create click...')
     const result = await client.mutation(createShoutMutation, { shout: { layout: layout } }).toPromise()
     if (result) {
-      const shout = result.data.create_shout
+      console.debug(result)
+      const {shout, error} = result.data.create_shout
+      if (error) showSnackbar({
+        body: `${t('Error')}: ${t(error)}`,
+        type: 'error'
+      })
       if (shout?.id) navigate(`/edit/${shout.id}`)
     }
   }
@@ -34,8 +42,8 @@ export default () => {
           <ul class={clsx('nodash', styles.list)}>
             <For each={['Article', 'Literature', 'Image', 'Audio', 'Video']}>
               {(layout: string) => (
-                <li>
-                  <div class={styles.link} onClick={() => handleCreate(layout.toLowerCase() as LayoutType)}>
+                <li onClick={() => handleCreate(layout.toLowerCase() as LayoutType)}>
+                  <div class={styles.link}>
                     <Icon name={`create-${layout.toLowerCase()}`} class={styles.icon} />
                     <div>{t(layout)}</div>
                   </div>

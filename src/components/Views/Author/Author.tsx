@@ -1,9 +1,8 @@
 import { A, useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
 import { useAuthors } from '~/context/authors'
-import { useFeed } from '~/context/feed'
 import { useFollowing } from '~/context/following'
 import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
@@ -28,7 +27,6 @@ type AuthorViewProps = {
   selectedTab: string
   shouts?: Shout[]
   author?: Author
-  topics?: Topic[]
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
@@ -40,7 +38,6 @@ export const AuthorView = (props: AuthorViewProps) => {
   const loc = useLocation()
   const { session } = useSession()
   const { query } = useGraphQL()
-  const { sortedFeed } = useFeed()
   const { loadAuthor, authorsEntities } = useAuthors()
   const { followers: myFollowers, follows: myFollows } = useFollowing()
 
@@ -55,7 +52,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   // derivatives
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const pages = createMemo<Shout[][]>(() =>
-    paginate(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+    paginate((props.shouts || []).slice(1), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   // 1 // проверяет не собственный ли это профиль, иначе - загружает
@@ -107,12 +104,11 @@ export const AuthorView = (props: AuthorViewProps) => {
   // event handlers
   let bioContainerRef: HTMLDivElement
   let bioWrapperRef: HTMLDivElement
-  const checkBioHeight = () => {
-    if (bioContainerRef) {
-      const showExpand = bioContainerRef.offsetHeight > bioWrapperRef.offsetHeight
-      setShowExpandBioControl(showExpand)
-      console.debug('[AuthorView] mounted, show expand bio container:', showExpand)
-    }
+  const checkBioHeight = (bio = bioWrapperRef) => {
+    if (!bio) return
+    const showExpand = bioContainerRef.offsetHeight > bio.offsetHeight
+    setShowExpandBioControl(showExpand)
+    console.debug('[AuthorView] mounted, show expand bio container:', showExpand)
   }
 
   const handleDeleteComment = (id: number) => {
@@ -120,7 +116,8 @@ export const AuthorView = (props: AuthorViewProps) => {
   }
 
   // on load
-  onMount(checkBioHeight)
+  createEffect(on(() => bioContainerRef, checkBioHeight))
+  createEffect(on(() => props.selectedTab, (tab) => tab && console.log('[views.Author] profile tab switched')))
 
   return (
     <div class={styles.authorPage}>
@@ -227,18 +224,18 @@ export const AuthorView = (props: AuthorViewProps) => {
             </div>
           </Show>
 
-          <Show when={sortedFeed().length > 0}>
-            <Row1 article={sortedFeed()[0]} noauthor={true} nodate={true} />
+          <Show when={Array.isArray(props.shouts) && props.shouts.length > 0 && props.shouts[0]}>
+            <Row1 article={props.shouts?.[0] as Shout} noauthor={true} nodate={true} />
 
-            <Show when={sortedFeed().length > 1}>
+            <Show when={props.shouts && props.shouts.length > 1}>
               <Switch>
-                <Match when={sortedFeed().length === 2}>
-                  <Row2 articles={sortedFeed()} isEqual={true} noauthor={true} nodate={true} />
+                <Match when={props.shouts && props.shouts.length === 2}>
+                  <Row2 articles={props.shouts as Shout[]} isEqual={true} noauthor={true} nodate={true} />
                 </Match>
-                <Match when={sortedFeed().length === 3}>
-                  <Row3 articles={sortedFeed()} noauthor={true} nodate={true} />
+                <Match when={props.shouts && props.shouts.length === 3}>
+                  <Row3 articles={props.shouts as Shout[]} noauthor={true} nodate={true} />
                 </Match>
-                <Match when={sortedFeed().length > 3}>
+                <Match when={props.shouts && props.shouts.length > 3}>
                   <For each={pages()}>
                     {(page) => (
                       <>

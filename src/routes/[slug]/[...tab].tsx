@@ -39,7 +39,7 @@ type SlugPageProps = {
 
 export default (props: RouteSectionProps<SlugPageProps>) => {
   if (props.params.slug.startsWith('@')) {
-    console.debug('[slug] starts with @, render as author page')
+    console.debug('[routes] [slug]/[...tab] starts with @, render as author page')
     const patchedProps = {
       ...props,
       params: {
@@ -51,7 +51,7 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
   }
 
   if (props.params.slug.startsWith('!')) {
-    console.debug('[slug] starts with !, render as topic page')
+    console.debug('[routes] [slug]/[...tab] starts with !, render as topic page')
     const patchedProps = {
       ...props,
       params: {
@@ -74,7 +74,7 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
           await loadGAScript(gaIdentity)
           initGA(gaIdentity)
         } catch (error) {
-          console.warn('Failed to connect Google Analytics:', error)
+          console.warn('[routes] [slug]/[...tab] Failed to connect Google Analytics:', error)
         }
       }
     })

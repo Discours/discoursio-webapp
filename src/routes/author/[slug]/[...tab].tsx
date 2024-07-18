@@ -1,5 +1,5 @@
-import { RouteSectionProps, createAsync } from '@solidjs/router'
-import { ErrorBoundary, createEffect, createMemo } from 'solid-js'
+import { RouteSectionProps } from '@solidjs/router'
+import { ErrorBoundary, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
@@ -13,6 +13,9 @@ import {
   Author,
   LoadShoutsOptions,
   QueryLoad_Authors_ByArgs,
+  QueryLoad_Reactions_ByArgs,
+  Reaction,
+  ReactionKind,
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
@@ -22,6 +25,16 @@ import { SHOUTS_PER_PAGE } from '../../(main)'
 const fetchAuthorShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { author: slug }, limit: SHOUTS_PER_PAGE, offset }
   const shoutsLoader = loadShouts(opts)
+  return await shoutsLoader()
+}
+
+const fetchAuthorComments = async (slug: string, offset?: number) => {
+  const opts: QueryLoad_Reactions_ByArgs = {
+    by: { comment: true, author: slug },
+    limit: SHOUTS_PER_PAGE,
+    offset
+  }
+  const shoutsLoader = loadReactions(opts)
   return await shoutsLoader()
 }
 
@@ -51,18 +64,8 @@ export type AuthorPageProps = { articles?: Shout[]; author?: Author; topics?: To
 
 export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   const { addAuthor, authorsEntities } = useAuthors()
-  const articles = createAsync(
-    async () => props.data.articles || (await fetchAuthorShouts(props.params.slug)) || []
-  )
-  const author = createAsync(async () => {
-    const loadedBefore = authorsEntities()[props.params.slug]
-    if (loadedBefore) return loadedBefore
+  const [author, setAuthor] = createSignal<Author | undefined>(undefined)
 
-    const a = props.data.author || (await fetchAuthor(props.params.slug))
-    a && addAuthor(a)
-    return a
-  })
-  const topics = createAsync(async () => props.data.topics || (await fetchAllTopics()))
   const { t } = useLocalize()
   const title = createMemo(() => `${author()?.name || ''}`)
 
@@ -83,28 +86,44 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
       : getImageUrl('production/image/logo_image.png')
   )
 
-  const selectedTab = createMemo(() => (props.params.tab in ['comments', 'about'] ? props.params.tab : ''))
-  const { addReactions } = useReactions()
-  const loadMoreComments = async () => {
-    const commentsFetcher = loadReactions({
-      by: { comment: true, created_by: author()?.id }
-    })
-    const ccc = await commentsFetcher()
-    ccc && addReactions(ccc)
-    return ccc as LoadMoreItems
-  }
+  // author comments
+  const { addReactions, reactionEntities } = useReactions()
+  const commentsByAuthor = createMemo(() =>
+    Object.values(reactionEntities).filter(
+      (r: Reaction) => r.kind === ReactionKind.Comment && r.created_by.id === author()?.id
+    )
+  )
+  // author shouts
   const { addFeed, feedByAuthor } = useFeed()
-  const loadMoreAuthorShouts = async () => {
-    const slug = author()?.slug
-    const offset = feedByAuthor()[props.params.slug].length
-    const shoutsFetcher = loadShouts({
-      filters: { author: slug },
-      offset,
-      limit: SHOUTS_PER_PAGE
-    })
-    const sss = await shoutsFetcher()
-    sss && addFeed(sss)
-    return sss as LoadMoreItems
+  const shoutsByAuthor = createMemo(() => feedByAuthor()[props.params.slug])
+
+  createEffect(
+    on(
+      [() => props.params.slug || '', author],
+      async ([slug, profile]) => {
+        if (!profile) {
+          const loadedAuthor = authorsEntities()[slug] || (await fetchAuthor(slug))
+          if (loadedAuthor) {
+            addAuthor(loadedAuthor)
+            setAuthor(loadedAuthor)
+          }
+        }
+      },
+      { defer: true }
+    )
+  )
+
+  const loadAuthorDataMore = async (offset = 0) => {
+    if (props.params.tab === 'comments') {
+      const commentsOffset = commentsByAuthor().length
+      const loadedComments = await fetchAuthorComments(props.params.slug, commentsOffset)
+      loadedComments && addReactions(loadedComments)
+      return (loadedComments || []) as LoadMoreItems
+    }
+    const shoutsOffset = shoutsByAuthor().length
+    const loadedShouts = await fetchAuthorShouts(props.params.slug, shoutsOffset)
+    loadedShouts && addFeed(loadedShouts)
+    return (loadedShouts || []) as LoadMoreItems
   }
 
   return (
@@ -118,16 +137,15 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
       >
         <ReactionsProvider>
           <LoadMoreWrapper
-            loadFunction={selectedTab() === 'comments' ? loadMoreComments : loadMoreAuthorShouts}
+            loadFunction={loadAuthorDataMore}
             pageSize={SHOUTS_PER_PAGE}
-            hidden={selectedTab() !== '' || selectedTab() !== 'comments'}
+            hidden={!props.params.tab || props.params.tab !== 'comments'}
           >
             <AuthorView
               author={author() as Author}
-              selectedTab={selectedTab()}
+              selectedTab={props.params.tab}
               authorSlug={props.params.slug}
-              shouts={feedByAuthor()[props.params.slug] || (articles() as Shout[])}
-              topics={topics()}
+              shouts={shoutsByAuthor()}
             />
           </LoadMoreWrapper>
         </ReactionsProvider>

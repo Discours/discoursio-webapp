@@ -39,6 +39,12 @@ export type FeedProps = {
   order?: '' | 'likes' | 'hot'
 }
 
+const PERIODS = {
+  'day': 24 * 60 * 60,
+  'month': 30 * 24 * 60 * 60,
+  'year': 365 * 24 * 60 * 60
+}
+
 export const FeedView = (props: FeedProps) => {
   const { t } = useLocalize()
   const loc = useLocation()
@@ -59,9 +65,6 @@ export const FeedView = (props: FeedProps) => {
   const { topAuthors } = useAuthors()
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
   const [searchParams, changeSearchParams] = useSearchParams<FeedSearchParams>()
-  const asOption = (o: string) => ({ value: o, title: t(o) })
-  const asOptions = (opts: string[]) => opts.map(asOption)
-  const currentPeriod = createMemo(() => asOption(searchParams?.period || ''))
   const loadTopComments = async () => {
     const comments = await loadReactionsBy({ by: { comment: true }, limit: 50 })
     setTopComments(comments.sort(byCreated).reverse())
@@ -93,6 +96,13 @@ export const FeedView = (props: FeedProps) => {
     showModal('share')
     setShareData(shared)
   }
+
+  const asOption = (o: string) => {
+    const value = Math.floor(Date.now()/1000) - PERIODS[o as keyof typeof PERIODS]
+    return { value, title: t(o) }
+  }
+  const asOptions = (opts: string[]) => opts.map(asOption)
+  const currentPeriod = createMemo(() => asOption(searchParams?.period || ''))
 
   return (
     <div class="feed">

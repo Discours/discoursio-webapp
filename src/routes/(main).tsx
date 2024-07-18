@@ -109,7 +109,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
 
   return (
     <PageLayout withPadding={true} title={t('Discours')} key="home">
-      <LoadMoreWrapper loadFunction={loadMoreFeatured} pageSize={SHOUTS_PER_PAGE}>
+      <LoadMoreWrapper loadFunction={loadMoreFeatured} pageSize={SHOUTS_PER_PAGE} hidden={!featuredFeed()}>
         <HomeView
           featuredShouts={featuredFeed() || (shouts() as Shout[])}
           topMonthShouts={topMonthFeed() as Shout[]}

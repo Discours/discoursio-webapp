@@ -89,7 +89,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       if (data.entity === 'reaction' && authorized()) {
         console.info('[context.notifications] event', data)
         loadNotificationsGrouped({
-          after: after() || Date.now(),
+          after: after() || now,
           limit: Math.max(PAGE_SIZE, loadedNotificationsCount())
         })
       }
@@ -108,14 +108,14 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const markSeenAll = async () => {
     if (authorized()) {
       const _resp = await mutation(markSeenAfterMutation, { after: after() }).toPromise()
-      await loadNotificationsGrouped({ after: after() || Date.now(), limit: loadedNotificationsCount() })
+      await loadNotificationsGrouped({ after: after() || now, limit: loadedNotificationsCount() })
     }
   }
 
   const markSeen = async (notification_id: number) => {
     if (authorized()) {
       await mutation(markSeenMutation, { notification_id }).toPromise()
-      await loadNotificationsGrouped({ after: after() || Date.now(), limit: loadedNotificationsCount() })
+      await loadNotificationsGrouped({ after: after() || now, limit: loadedNotificationsCount() })
     }
   }
 

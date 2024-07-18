@@ -58,6 +58,10 @@ export const loadShouts = (options: LoadShoutsOptions) => {
 }
 
 export const loadReactions = (options: QueryLoad_Reactions_ByArgs) => {
+  if (!options.by) {
+    console.debug(options)
+    throw new Error('[api] wrong loadReactions call')
+  }
   const kind = options.by?.comment ? 'comments' : options.by?.rating ? 'votes' : 'reactions'
   const allorone = options.by?.shout ? `shout-${options.by.shout}` : 'all'
   const page = `${options.offset || 0}-${(options?.limit || 0) + (options.offset || 0)}`

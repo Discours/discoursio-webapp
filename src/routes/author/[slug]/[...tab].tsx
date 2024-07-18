@@ -118,7 +118,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
       >
         <ReactionsProvider>
           <LoadMoreWrapper
-            loadFunction={(selectedTab() === 'comments' ? loadMoreComments : loadMoreAuthorShouts)}
+            loadFunction={selectedTab() === 'comments' ? loadMoreComments : loadMoreAuthorShouts}
             pageSize={SHOUTS_PER_PAGE}
             hidden={selectedTab() !== '' || selectedTab() !== 'comments'}
           >
@@ -126,7 +126,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
               author={author() as Author}
               selectedTab={selectedTab()}
               authorSlug={props.params.slug}
-              shouts={feedByAuthor()[props.params.slug] || articles() as Shout[]}
+              shouts={feedByAuthor()[props.params.slug] || (articles() as Shout[])}
               topics={topics()}
             />
           </LoadMoreWrapper>

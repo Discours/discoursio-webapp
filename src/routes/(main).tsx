@@ -1,12 +1,11 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
-import { Show, createEffect } from 'solid-js'
+import { createEffect } from 'solid-js'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { useFeed } from '~/context/feed'
 import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { HomeView, HomeViewProps } from '../components/Views/Home'
-import { Loading } from '../components/_shared/Loading'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 
@@ -110,17 +109,15 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
 
   return (
     <PageLayout withPadding={true} title={t('Discours')} key="home">
-      <Show when={(featuredFeed() || []).length > 0} fallback={<Loading />}>
-        <LoadMoreWrapper loadFunction={loadMoreFeatured} pageSize={SHOUTS_PER_PAGE}>
-          <HomeView
-            featuredShouts={featuredFeed() || (shouts() as Shout[])}
-            topMonthShouts={topMonthFeed() as Shout[]}
-            topViewedShouts={topViewedFeed() as Shout[]}
-            topRatedShouts={topRatedFeed() as Shout[]}
-            topCommentedShouts={topCommentedFeed() as Shout[]}
-          />
-        </LoadMoreWrapper>
-      </Show>
+      <LoadMoreWrapper loadFunction={loadMoreFeatured} pageSize={SHOUTS_PER_PAGE}>
+        <HomeView
+          featuredShouts={featuredFeed() || (shouts() as Shout[])}
+          topMonthShouts={topMonthFeed() as Shout[]}
+          topViewedShouts={topViewedFeed() as Shout[]}
+          topRatedShouts={topRatedFeed() as Shout[]}
+          topCommentedShouts={topCommentedFeed() as Shout[]}
+        />
+      </LoadMoreWrapper>
     </PageLayout>
   )
 }

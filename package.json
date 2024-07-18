@@ -116,6 +116,9 @@
     "yjs": "13.6.18",
     "y-prosemirror": "1.2.9"
   },
+  "engines": {
+    "node": ">= 20"
+  },
   "trustedDependencies": ["@biomejs/biome", "esbuild", "protobufjs"],
   "dependencies": {
     "form-data": "^4.0.0",

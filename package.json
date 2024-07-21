@@ -36,7 +36,7 @@
     "@solid-primitives/upload": "^0.0.117",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.14.1",
-    "@solidjs/start": "^1.0.5",
+    "@solidjs/start": "^1.0.6",
     "@tiptap/core": "^2.5.4",
     "@tiptap/extension-blockquote": "^2.5.4",
     "@tiptap/extension-bold": "^2.5.4",
@@ -79,7 +79,7 @@
     "extended-eventsource": "^1.4.9",
     "fast-deep-equal": "^3.1.3",
     "graphql": "^16.9.0",
-    "i18next": "^23.12.1",
+    "i18next": "^23.12.2",
     "i18next-http-backend": "^2.5.2",
     "i18next-icu": "^2.3.0",
     "intl-messageformat": "^10.5.14",
@@ -87,7 +87,7 @@
     "patch-package": "^8.0.0",
     "prosemirror-history": "^1.4.1",
     "prosemirror-trailing-node": "^2.0.9",
-    "prosemirror-view": "^1.33.8",
+    "prosemirror-view": "^1.33.9",
     "rollup-plugin-visualizer": "^5.12.0",
     "sass": "1.76.0",
     "solid-js": "^1.8.18",
@@ -105,7 +105,7 @@
     "typescript": "^5.5.3",
     "typograf": "^7.4.1",
     "uniqolor": "^1.1.1",
-    "vinxi": "^0.4.0",
+    "vinxi": "^0.4.1",
     "vite-plugin-mkcert": "^1.17.5",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-sass-dts": "^1.3.24",
@@ -123,6 +123,6 @@
   "dependencies": {
     "form-data": "^4.0.0",
     "idb": "^8.0.0",
-    "mailgun.js": "^10.2.1"
+    "mailgun.js": "^10.2.3"
   }
 }

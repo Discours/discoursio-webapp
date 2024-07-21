@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { For, Show, createMemo } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { Icon } from '../../_shared/Icon'
+import { Icon } from '~/components/_shared/Icon'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import styles from './Placeholder.module.scss'
 
 type ProfileLink = {
@@ -36,14 +36,14 @@ const data: PlaceholderData = {
     text: 'Placeholder feed',
     buttonLabelAuthor: 'Popular authors',
     buttonLabelFeed: 'Create own feed',
-    href: '/authors?by=followers'
+    href: '/author?by=followers'
   },
   feedCollaborations: {
     image: 'placeholder-experts.webp',
     header: 'Find collaborators',
     text: 'Placeholder feedCollaborations',
     buttonLabel: 'Find co-authors',
-    href: '/authors?by=name'
+    href: '/author?by=name'
   },
   feedDiscussions: {
     image: 'placeholder-discussions.webp',
@@ -51,14 +51,14 @@ const data: PlaceholderData = {
     text: 'Placeholder feedDiscussions',
     buttonLabelAuthor: 'Current discussions',
     buttonLabelFeed: 'Enter',
-    href: '/feed?by=last_comment'
+    href: '/feed/hot'
   },
   author: {
     image: 'placeholder-join.webp',
     header: 'Join our team of authors',
     text: 'Join our team of authors text',
     buttonLabel: 'Create post',
-    href: '/create',
+    href: '/edit/new',
     profileLinks: [
       {
         href: '/how-to-write-a-good-article',
@@ -71,14 +71,14 @@ const data: PlaceholderData = {
     header: 'Join discussions',
     text: 'Placeholder feedDiscussions',
     buttonLabel: 'Go to discussions',
-    href: '/feed?by=last_comment',
+    href: '/feed/hot',
     profileLinks: [
       {
-        href: '/about/discussion-rules',
+        href: '/debate',
         label: 'Discussion rules'
       },
       {
-        href: '/about/discussion-rules#ban',
+        href: '/debate#ban',
         label: 'Block rules'
       }
     ]

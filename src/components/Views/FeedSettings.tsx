@@ -1,4 +1,4 @@
-import { useLocalize } from '../../context/localize'
+import { useLocalize } from '~/context/localize'
 
 import styles from '../../styles/FeedSettings.module.scss'
 
@@ -14,18 +14,18 @@ export const FeedSettingsView = () => {
 
       <ul class="view-switcher">
         <li class="view-switcher__item--selected">
-          <a href="?by=topics">{t('topics')}</a>
+          <a href="?by=topics">{t('Topics').toLocaleLowerCase()}</a>
         </li>
         {/*<li>
           <a href="?by=collections" onClick={() => setBy('collections')}>
-            {t('collections')}
+            {t('Collections').toLocaleLowerCase()}
           </a>
         </li>*/}
         <li>
-          <a href="?by=authors">{t('authors')}</a>
+          <a href="?by=authors">{t('Authors').toLocaleLowerCase()}</a>
         </li>
         <li>
-          <a href="?by=shouts">{t('publications')}</a>
+          <a href="?by=shouts">{t('Publications').toLocaleLowerCase()}</a>
         </li>
       </ul>
 
@@ -35,7 +35,7 @@ export const FeedSettingsView = () => {
         </div>
 
         <div>
-          <label for="checkbox1">Комментарии к&nbsp;моим постам</label>
+          <label for="checkbox1">Комментарии к моим постам</label>
           <div>
             <input type="checkbox" name="checkbox1" id="checkbox1" />
             <label for="checkbox1" />
@@ -69,7 +69,7 @@ export const FeedSettingsView = () => {
         </div>
 
         <div>
-          <label for="checkbox3">добавление моих текстов в&nbsp;коллекции</label>
+          <label for="checkbox3">добавление моих текстов в коллекции</label>
           <div>
             <input type="checkbox" name="checkbox3" id="checkbox3" />
             <label for="checkbox3" />
@@ -90,7 +90,7 @@ export const FeedSettingsView = () => {
         </div>
 
         <div>
-          <label for="checkbox4">добавление моих текстов в&nbsp;коллекции</label>
+          <label for="checkbox4">добавление моих текстов в коллекции</label>
           <div>
             <input type="checkbox" name="checkbox4" id="checkbox4" />
             <label for="checkbox4" />

@@ -2,15 +2,15 @@ import { createInfiniteScroll } from '@solid-primitives/pagination'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, on } from 'solid-js'
 
+import { useAuthors } from '~/context/authors'
+import { useInbox } from '~/context/inbox'
+import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { useAuthors } from '../../../context/authors'
-import { useInbox } from '../../../context/inbox'
-import { useLocalize } from '../../../context/localize'
-import { Author } from '../../../graphql/schema/core.gen'
+import { Author } from '~/graphql/schema/core.gen'
 import { AuthorBadge } from '../../Author/AuthorBadge'
-import { InlineLoader } from '../../InlineLoader'
 import { Button } from '../Button'
 import { DropdownSelect } from '../DropdownSelect'
+import { InlineLoader } from '../InlineLoader'
 
 import styles from './InviteMembers.module.scss'
 
@@ -48,7 +48,7 @@ export const InviteMembers = (props: Props) => {
   const fetcher = async (page: number) => {
     await new Promise((resolve, reject) => {
       const checkDataLoaded = () => {
-        if (authorsSorted().length > 0) {
+        if ((authorsSorted?.().length || 0) > 0) {
           resolve(true)
         } else {
           setTimeout(checkDataLoaded, 100)

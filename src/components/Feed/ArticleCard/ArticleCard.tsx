@@ -1,19 +1,19 @@
 import { A, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Accessor, For, Show, createMemo, createSignal } from 'solid-js'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import type { Author, Maybe, Shout, Topic } from '../../../graphql/schema/core.gen'
-import { capitalize } from '../../../utils/capitalize'
-import { getDescription } from '../../../utils/meta'
+import { Icon } from '~/components/_shared/Icon'
+import { Image } from '~/components/_shared/Image'
+import { Popover } from '~/components/_shared/Popover'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
+import { capitalize } from '~/utils/capitalize'
+import { descFromBody } from '~/utils/meta'
 import { CoverImage } from '../../Article/CoverImage'
 import { RatingControl as ShoutRatingControl } from '../../Article/RatingControl'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
 import { AuthorLink } from '../../Author/AuthorLink'
-import stylesHeader from '../../Nav/Header/Header.module.scss'
-import { Icon } from '../../_shared/Icon'
-import { Image } from '../../_shared/Image'
-import { Popover } from '../../_shared/Popover'
+import stylesHeader from '../../HeaderNav/Header.module.scss'
 import { CardTopic } from '../CardTopic'
 import { FeedArticlePopup } from '../FeedArticlePopup'
 import styles from './ArticleCard.module.scss'
@@ -109,7 +109,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
-  const description = getDescription(props.article?.body)
+  const description = descFromBody(props.article?.body)
   const aspectRatio: Accessor<string> = () => LAYOUT_ASPECT[props.article?.layout as string]
   const [mainTopicTitle, mainTopicSlug] = getMainTopicTitle(props.article, lang())
   const { title, subtitle } = getTitleAndSubtitle(props.article)
@@ -128,7 +128,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const navigate = useNavigate()
   const scrollToComments = (event: MouseEvent & { currentTarget: HTMLAnchorElement; target: Element }) => {
     event.preventDefault()
-    navigate(`/article/${props.article.slug}`)
+    navigate(`/${props.article.slug}`)
     changeSearchParams({
       scrollTo: 'comments'
     })
@@ -220,7 +220,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <A href={`/article${props.article?.slug || ''}`}>
+          <A href={`/${props.article?.slug || ''}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer} innerHTML={title} />

@@ -2,15 +2,14 @@ import { UploadFile, createDropzone, createFileUploader } from '@solid-primitive
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
+import { Button } from '~/components/_shared/Button'
+import { Icon } from '~/components/_shared/Icon'
+import { Loading } from '~/components/_shared/Loading'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
+import { handleImageUpload } from '~/lib/handleImageUpload'
 import { UploadedFile } from '~/types/upload'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { handleImageUpload } from '../../../utils/handleImageUpload'
-import { verifyImg } from '../../../utils/verifyImg'
-import { Button } from '../../_shared/Button'
-import { Icon } from '../../_shared/Icon'
-import { Loading } from '../../_shared/Loading'
 import { InlineForm } from '../InlineForm'
 
 import styles from './UploadModalContent.module.scss'
@@ -18,6 +17,9 @@ import styles from './UploadModalContent.module.scss'
 type Props = {
   onClose: (image?: UploadedFile) => void
 }
+
+const verify = (url: string) =>
+  fetch(url, { method: 'HEAD' }).then((res) => res.headers.get('Content-Type')?.startsWith('image'))
 
 export const UploadModalContent = (props: Props) => {
   const { t } = useLocalize()
@@ -87,7 +89,7 @@ export const UploadModalContent = (props: Props) => {
   }
 
   const handleValidate = async (value: string) => {
-    const validationResult = await verifyImg(value)
+    const validationResult = await verify(value)
     if (!validationResult) {
       return t('Invalid image URL')
     }

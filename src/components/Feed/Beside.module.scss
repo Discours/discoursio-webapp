@@ -1,11 +1,11 @@
 .besideColumn {
-  counter-reset: item;
-  list-style-type: none;
-  padding-left: 0;
-
   @include media-breakpoint-up(md) {
     margin-bottom: 0;
   }
+
+  counter-reset: item;
+  list-style-type: none;
+  padding-left: 0;
 
   a {
     border: none;

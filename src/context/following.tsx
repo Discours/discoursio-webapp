@@ -12,8 +12,8 @@ import { createStore } from 'solid-js/store'
 
 import followMutation from '~/graphql/mutation/core/follow'
 import unfollowMutation from '~/graphql/mutation/core/unfollow'
-import loadAuthorFollowers from '../graphql/query/core/author-followers'
-import { Author, Community, FollowingEntity, Topic } from '../graphql/schema/core.gen'
+import loadAuthorFollowers from '~/graphql/query/core/author-followers'
+import { Author, Community, FollowingEntity, Topic } from '~/graphql/schema/core.gen'
 import { useGraphQL } from './graphql'
 import { useSession } from './session'
 
@@ -33,7 +33,21 @@ interface FollowingContextType {
   unfollow: (what: FollowingEntity, slug: string) => Promise<void>
 }
 
-const FollowingContext = createContext<FollowingContextType>({} as FollowingContextType)
+const defaultFollowing = {
+  slug: '',
+  type: 'follow'
+} as FollowingData
+
+const FollowingContext = createContext<FollowingContextType>({
+  following: () => defaultFollowing,
+  followers: () => [],
+  loading: () => false,
+  setFollows: (_follows: AuthorFollowsResult) => undefined,
+  follows: {},
+  loadFollows: () => undefined,
+  follow: (_what: FollowingEntity, _slug: string) => undefined,
+  unfollow: (_what: FollowingEntity, _slug: string) => undefined
+} as unknown as FollowingContextType)
 
 export function useFollowing() {
   return useContext(FollowingContext)
@@ -50,8 +64,6 @@ const EMPTY_SUBSCRIPTIONS: AuthorFollowsResult = {
   authors: [] as Author[],
   communities: [] as Community[]
 }
-
-const defaultFollowing = { slug: '', type: 'follow' } as FollowingData
 
 export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)

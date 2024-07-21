@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { Show, createMemo } from 'solid-js'
 
-import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
-import { Image } from '../../_shared/Image'
-import { Loading } from '../../_shared/Loading'
+import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
+import { Image } from '~/components/_shared/Image'
+import { Loading } from '~/components/_shared/Loading'
 
 import styles from './Userpic.module.scss'
 
@@ -55,7 +55,7 @@ export const Userpic = (props: Props) => {
       <Show when={!props.loading} fallback={<Loading />}>
         <ConditionalWrapper
           condition={Boolean(props.hasLink)}
-          wrapper={(children) => <a href={`/author/${props.slug}`}>{children}</a>}
+          wrapper={(children) => <a href={`/@${props.slug}`}>{children}</a>}
         >
           <Show keyed={true} when={props.userpic} fallback={<div class={styles.letters}>{letters()}</div>}>
             <Image src={props.userpic} width={avatarSize()} height={avatarSize()} alt={props.name} />

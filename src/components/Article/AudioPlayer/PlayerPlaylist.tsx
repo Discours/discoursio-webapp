@@ -1,16 +1,16 @@
 import { For, Show, createSignal, lazy } from 'solid-js'
 
+import { Icon } from '~/components/_shared/Icon'
+import { Popover } from '~/components/_shared/Popover'
+import { useLocalize } from '~/context/localize'
 import { MediaItem } from '~/types/mediaitem'
-import { useLocalize } from '../../../context/localize'
-import { getDescription } from '../../../utils/meta'
-import { Icon } from '../../_shared/Icon'
-import { Popover } from '../../_shared/Popover'
+import { descFromBody } from '~/utils/meta'
 import { SharePopup, getShareUrl } from '../SharePopup'
 
 import styles from './AudioPlayer.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
-const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
+const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
   media: MediaItem[]
@@ -137,7 +137,7 @@ export const PlayerPlaylist = (props: Props) => {
                       >
                         <SharePopup
                           title={mi.title}
-                          description={getDescription(props.body || '')}
+                          description={descFromBody(props.body || '')}
                           imageUrl={mi.pic || ''}
                           shareUrl={getShareUrl({ pathname: `/${props.articleSlug}` })}
                           trigger={

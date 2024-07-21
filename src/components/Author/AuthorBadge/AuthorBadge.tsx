@@ -2,18 +2,18 @@ import { clsx } from 'clsx'
 import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 
 import { useNavigate, useSearchParams } from '@solidjs/router'
-import { mediaMatches } from '~/utils/media-query'
-import { useFollowing } from '../../../context/following'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { Author, FollowingEntity } from '../../../graphql/schema/core.gen'
-import { translit } from '../../../utils/ru2en'
-import { isCyrillic } from '../../../utils/translate'
-import { Button } from '../../_shared/Button'
-import { CheckButton } from '../../_shared/CheckButton'
-import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
-import { FollowingButton } from '../../_shared/FollowingButton'
-import { Icon } from '../../_shared/Icon'
+import { Button } from '~/components/_shared/Button'
+import { CheckButton } from '~/components/_shared/CheckButton'
+import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
+import { FollowingButton } from '~/components/_shared/FollowingButton'
+import { Icon } from '~/components/_shared/Icon'
+import { useFollowing } from '~/context/following'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import { Author, FollowingEntity } from '~/graphql/schema/core.gen'
+import { isCyrillic } from '~/intl/translate'
+import { translit } from '~/intl/translit'
+import { mediaMatches } from '~/lib/mediaQuery'
 import { Userpic } from '../Userpic'
 import styles from './AuthorBadge.module.scss'
 
@@ -94,7 +94,7 @@ export const AuthorBadge = (props: Props) => {
         <ConditionalWrapper
           condition={!props.inviteView}
           wrapper={(children) => (
-            <a href={`/author/${props.author.slug}`} class={styles.info}>
+            <a href={`/@${props.author.slug}`} class={styles.info}>
               {children}
             </a>
           )}

@@ -114,11 +114,6 @@ section {
 }
 
 .wide-container {
-  margin: 0 auto;
-  max-width: 1500px;
-  padding: 0 divide($container-padding-x, 2);
-  width: 100%;
-
   @include media-breakpoint-up(sm) {
     padding: 0 $container-padding-x;
   }
@@ -126,6 +121,11 @@ section {
   @include media-breakpoint-up(xl) {
     padding: 0 $grid-gutter-width;
   }
+
+  margin: 0 auto;
+  max-width: 1500px;
+  padding: 0 divide($container-padding-x, 2);
+  width: 100%;
 }
 
 h1,
@@ -341,6 +341,16 @@ button {
 }
 
 .button--content-index {
+  @include media-breakpoint-up(md) {
+    margin-top: -0.5rem;
+    position: sticky;
+    top: 135px;
+  }
+
+  @include media-breakpoint-up(sm) {
+    right: $container-padding-x;
+  }
+
   background: none;
   border: 2px solid #fff;
   height: 3.2rem;
@@ -351,16 +361,6 @@ button {
   top: -0.5rem;
   width: 3.2rem;
   z-index: 1;
-
-  @include media-breakpoint-up(md) {
-    margin-top: -0.5rem;
-    position: sticky;
-    top: 135px;
-  }
-
-  @include media-breakpoint-up(sm) {
-    right: $container-padding-x;
-  }
 
   .icon {
     background: #fff;
@@ -518,26 +518,26 @@ form {
   }
 
   .pretty-form__item--with-button {
-    margin-bottom: 1.6rem;
-
     @include media-breakpoint-up(sm) {
       display: flex;
     }
 
-    input {
-      flex: 1;
+    margin-bottom: 1.6rem;
 
+    input {
       @include media-breakpoint-up(sm) {
         margin-bottom: 0 !important;
       }
+
+      flex: 1;
     }
 
     *:first-child {
-      flex: 1;
-
       @include media-breakpoint-up(sm) {
         margin-right: 1em;
       }
+
+      flex: 1;
     }
   }
 }
@@ -595,16 +595,19 @@ figure {
 .ta-video-container,
 figure {
   figcaption {
-    color: rgb(0 0 0 / 60%);
-
     @include font-size(1.2rem);
 
+    color: rgb(0 0 0 / 60%);
     line-height: 1.5;
   }
 }
 
 .view-switcher {
   @include font-size(1.4rem);
+
+  @include media-breakpoint-up(md) {
+    flex-wrap: wrap;
+  }
 
   display: flex;
   font-weight: 500;
@@ -613,19 +616,15 @@ figure {
   overflow: auto;
   padding: 0 1rem;
 
-  @include media-breakpoint-up(md) {
-    flex-wrap: wrap;
-  }
-
   li {
+    @include media-breakpoint-up(md) {
+      margin-right: 2.4rem;
+    }
+
     display: inline-block;
     margin-right: 2rem;
     margin-bottom: 0.6em;
     white-space: nowrap;
-
-    @include media-breakpoint-up(md) {
-      margin-right: 2.4rem;
-    }
 
     .link {
       border-bottom: none;
@@ -706,14 +705,14 @@ figure {
 }
 
 .view-switcher__search {
-  flex: 1 100%;
-  text-align: right;
-  white-space: nowrap;
-
   @include media-breakpoint-up(sm) {
     flex: 1;
     margin-left: 2em;
   }
+
+  flex: 1 100%;
+  text-align: right;
+  white-space: nowrap;
 
   .icon {
     display: inline-block;
@@ -762,16 +761,20 @@ figure {
 }
 
 .floor--important {
+  @include media-breakpoint-up(md) {
+    padding-bottom: $grid-gutter-width;
+    padding-top: $grid-gutter-width;
+  }
+
+  @include media-breakpoint-down(md) {
+    margin-bottom: 5rem;
+  }
+
   background: #000;
   color: #fff;
   padding: $grid-gutter-width 0;
   padding-bottom: $container-padding-x;
   padding-top: $container-padding-x;
-
-  @include media-breakpoint-up(md) {
-    padding-bottom: $grid-gutter-width;
-    padding-top: $grid-gutter-width;
-  }
 
   ::selection {
     background: #fff;
@@ -782,10 +785,6 @@ figure {
     @include font-size(4.4rem);
 
     text-align: center;
-  }
-
-  @include media-breakpoint-down(md) {
-    margin-bottom: 5rem;
   }
 
   .all-materials {
@@ -801,18 +800,15 @@ figure {
 }
 
 .short-cards {
-  margin: 0 -5px;
-
   @include media-breakpoint-up(md) {
     display: flex;
     flex-wrap: wrap;
   }
+
+  margin: 0 -5px;
 }
 
 .short-card {
-  margin-bottom: 10px;
-  padding: 0 5px;
-
   @include media-breakpoint-up(md) {
     flex: 1 0 50%;
   }
@@ -820,6 +816,9 @@ figure {
   @include media-breakpoint-up(lg) {
     flex: 1 0 25%;
   }
+
+  margin-bottom: 10px;
+  padding: 0 5px;
 }
 
 .row {
@@ -848,13 +847,13 @@ figure {
 }
 
 .main-content {
-  flex: 1 100%;
-  min-height: 90vh;
-  position: relative;
-
   @include media-breakpoint-up(lg) {
     // padding-top: 130px;
   }
+
+  flex: 1 100%;
+  min-height: 90vh;
+  position: relative;
 }
 
 .main-content--no-padding {
@@ -863,19 +862,16 @@ figure {
 }
 
 .container {
-  max-width: 1500px;
-  width: auto;
-
   @include media-breakpoint-down(sm) {
     // padding: 0 $container-padding-x * 0.5;
   }
+
+  max-width: 1500px;
+  width: auto;
 }
 
 .container--static-page {
   @include font-size(1.7rem);
-
-  color: #404040;
-  position: relative;
 
   @include media-breakpoint-up(md) {
     padding-top: 1.5em;
@@ -887,14 +883,15 @@ figure {
     }
   }
 
+  color: #404040;
+  position: relative;
+
   .order-md-last {
     padding-right: 0;
   }
 }
 
 .shift-content {
-  position: relative;
-
   @include media-breakpoint-up(md) {
     margin-left: 161px;
   }
@@ -902,6 +899,8 @@ figure {
   @include media-breakpoint-up(lg) {
     margin-left: 235px;
   }
+
+  position: relative;
 
   .left-navigation {
     position: sticky;
@@ -933,13 +932,13 @@ figure {
 .content-index {
   @include font-size(1.4rem);
 
-  line-height: 1.4;
-  margin: 0 3.6rem 2em 0;
-
   @include media-breakpoint-up(md) {
     position: sticky;
     top: 14rem;
   }
+
+  line-height: 1.4;
+  margin: 0 3.6rem 2em 0;
 
   ul ul {
     margin: 1em 0 0 1em;
@@ -967,11 +966,11 @@ figure {
 }
 
 details {
-  margin-bottom: 1.5em;
-
   @include media-breakpoint-down(md) {
     padding-left: 3rem;
   }
+
+  margin-bottom: 1.5em;
 
   summary {
     display: block;

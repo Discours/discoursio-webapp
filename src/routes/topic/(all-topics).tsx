@@ -1,0 +1,36 @@
+import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
+import { Suspense, createEffect } from 'solid-js'
+import { AllTopics } from '~/components/Views/AllTopics'
+import { Loading } from '~/components/_shared/Loading'
+import { PageLayout } from '~/components/_shared/PageLayout'
+import { useLocalize } from '~/context/localize'
+import { useTopics } from '~/context/topics'
+import { loadTopics } from '~/graphql/api/public'
+import { Topic } from '~/graphql/schema/core.gen'
+
+const fetchData = async () => {
+  const topicsFetcher = loadTopics()
+  return await topicsFetcher()
+}
+
+export const route = { load: loadTopics } satisfies RouteDefinition
+
+export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
+  const { t } = useLocalize()
+  const topics = createAsync<Topic[]>(async () => props.data.topics || (await fetchData()) || [])
+  const { addTopics } = useTopics()
+  createEffect(() => addTopics(topics() || []))
+  return (
+    <PageLayout
+      withPadding={true}
+      key="topics"
+      title={t('Themes and plots')}
+      headerTitle={`${t('Discours')} :: ${t('All topics')}`}
+      desc="Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about"
+    >
+      <Suspense fallback={<Loading />}>
+        <AllTopics topics={topics() as Topic[]} />
+      </Suspense>
+    </PageLayout>
+  )
+}

@@ -1,4 +1,16 @@
 .author {
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
+
+  @include media-breakpoint-up(md) {
+    margin-bottom: 2.4rem;
+  }
+
+  @include media-breakpoint-down(lg) {
+    flex-wrap: wrap;
+  }
+
   display: flex;
   align-items: center;
   flex-flow: row nowrap;
@@ -6,14 +18,6 @@
 
   &:last-child {
     margin-bottom: 0;
-  }
-
-  @include media-breakpoint-down(md) {
-    justify-content: center;
-  }
-
-  @include media-breakpoint-up(md) {
-    margin-bottom: 2.4rem;
   }
 
   .authorName {
@@ -32,15 +36,15 @@
   }
 
   .authorActions {
+    @include media-breakpoint-down(md) {
+      justify-content: center;
+    }
+
     margin: 2rem -0.8rem 0 0;
     padding-left: 0;
     display: flex;
     flex-direction: row;
     gap: 1rem;
-
-    @include media-breakpoint-down(md) {
-      justify-content: center;
-    }
   }
 
   .authorActionsLabel {
@@ -50,27 +54,24 @@
   }
 
   .authorActionsLabelMobile {
-    display: none;
-
     @include media-breakpoint-down(sm) {
       display: block;
     }
+
+    display: none;
   }
 
   .authorDetails {
-    display: block;
-    margin-bottom: 0;
-
     @include media-breakpoint-down(md) {
       flex: 1 100%;
       text-align: center;
     }
+
+    display: block;
+    margin-bottom: 0;
   }
 
   .listWrapper & {
-    align-items: flex-start;
-    margin-bottom: 2rem;
-
     @include media-breakpoint-down(sm) {
       margin-bottom: 3rem;
     }
@@ -78,6 +79,9 @@
     @include media-breakpoint-between(md, lg) {
       margin-bottom: 3rem;
     }
+
+    align-items: flex-start;
+    margin-bottom: 2rem;
 
     .circlewrap {
       margin-top: 1rem;
@@ -88,10 +92,6 @@
     }
   }
 
-  @include media-breakpoint-down(lg) {
-    flex-wrap: wrap;
-  }
-
   .buttonWriteMessage {
     border-radius: 0.8rem;
     padding-bottom: 0.6rem;
@@ -100,8 +100,6 @@
 }
 
 .authorDetails {
-  flex: 0 0 auto;
-
   @include media-breakpoint-up(sm) {
     align-items: center;
     display: flex;
@@ -118,12 +116,11 @@
       flex-wrap: nowrap;
     }
   }
+
+  flex: 0 0 auto;
 }
 
 .authorDetailsWrapper {
-  flex: 1 0;
-  position: relative;
-
   @include media-breakpoint-up(sm) {
     flex: 1;
   }
@@ -139,6 +136,9 @@
   @include media-breakpoint-up(md) {
     padding-right: 1.2rem;
   }
+
+  flex: 1 0;
+  position: relative;
 }
 
 .authorName {
@@ -160,6 +160,15 @@
 }
 
 .authorSubscribeSocial {
+  @include media-breakpoint-down(sm) {
+    flex: 1 100%;
+    justify-content: center;
+  }
+
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
+
   align-items: center;
   display: flex;
   margin: 0.5rem 0 2rem -0.4rem;
@@ -415,15 +424,6 @@
     }
   }
 
-  @include media-breakpoint-down(sm) {
-    flex: 1 100%;
-    justify-content: center;
-  }
-
-  @include media-breakpoint-down(md) {
-    justify-content: center;
-  }
-
   a:link {
     border: none;
   }
@@ -434,14 +434,14 @@
 }
 
 .subscribersContainer {
+  @include media-breakpoint-down(md) {
+    justify-content: center;
+  }
+
   display: flex;
   flex-wrap: wrap;
   font-size: 1.4rem;
   gap: 1rem;
   margin-top: 0;
   white-space: nowrap;
-
-  @include media-breakpoint-down(md) {
-    justify-content: center;
-  }
 }

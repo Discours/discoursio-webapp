@@ -1,11 +1,11 @@
 import type { Accessor, JSX } from 'solid-js'
-import type { Author, Reaction, Shout, Topic } from '../graphql/schema/core.gen'
+import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
 
 import { EventSource } from 'extended-eventsource'
 import { createContext, createEffect, createSignal, on, useContext } from 'solid-js'
 
-import { sseUrl } from '../config/config'
-import { Chat, Message } from '../graphql/schema/chat.gen'
+import { Chat, Message } from '~/graphql/schema/chat.gen'
+import { sseUrl } from '../config'
 import { useSession } from './session'
 
 const RECONNECT_TIMES = 2
@@ -73,7 +73,7 @@ export const ConnectProvider = (props: { children: JSX.Element }) => {
               setConnected(false)
               if (retried() < RECONNECT_TIMES) {
                 setRetried((r) => r + 1)
-              } else throw Error('failed')
+              } else throw new Error('failed')
             }
           } catch (error) {
             console.error('[context.connect] SSE init failed:', error)

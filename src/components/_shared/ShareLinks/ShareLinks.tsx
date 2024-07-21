@@ -2,8 +2,8 @@ import { FACEBOOK, TELEGRAM, TWITTER, VK, createSocialShare } from '@solid-primi
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
+import { useLocalize } from '~/context/localize'
 import { useSnackbar } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
 import { Icon } from '../Icon'
 import { Popover } from '../Popover'
 

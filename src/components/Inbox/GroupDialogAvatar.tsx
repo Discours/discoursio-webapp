@@ -1,4 +1,4 @@
-import type { ChatMember } from '../../graphql/schema/chat.gen'
+import type { ChatMember } from '~/graphql/schema/chat.gen'
 
 import { clsx } from 'clsx'
 import { For } from 'solid-js'

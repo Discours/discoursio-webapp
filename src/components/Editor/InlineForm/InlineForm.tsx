@@ -1,9 +1,9 @@
 import { clsx } from 'clsx'
 import { createSignal, onMount } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { Icon } from '../../_shared/Icon'
-import { Popover } from '../../_shared/Popover'
+import { Icon } from '~/components/_shared/Icon'
+import { Popover } from '~/components/_shared/Popover'
+import { useLocalize } from '~/context/localize'
 
 import styles from './InlineForm.module.scss'
 

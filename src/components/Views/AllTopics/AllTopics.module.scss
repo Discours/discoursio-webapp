@@ -1,48 +1,47 @@
-.allTopicsPage {
-  .group {
-    @include font-size(1.6rem);
+.group {
+  @include font-size(1.6rem);
 
-    margin: 3em 0 9.6rem;
-
-    @include media-breakpoint-down(sm) {
-      margin-bottom: 6.4rem;
-    }
-
-    h2 {
-      margin-bottom: 3.2rem;
-      text-transform: capitalize;
-
-      @include media-breakpoint-down(sm) {
-        margin-bottom: 1.6rem;
-      }
-    }
-
-    .topic {
-      margin-bottom: 2.4rem;
-    }
+  @include media-breakpoint-down(sm) {
+    margin-bottom: 6.4rem;
   }
 
-  .container {
-    width: auto;
+  margin: 3em 0 9.6rem;
 
-    .search-input {
-      display: inline-block;
-      width: 100px !important;
+  h2 {
+    @include media-breakpoint-down(sm) {
+      margin-bottom: 1.6rem;
     }
+
+    margin-bottom: 3.2rem;
+    text-transform: capitalize;
   }
 }
+
+.topicTitle {
+  margin-bottom: 2.4rem;
+}
+
+.container {
+  width: auto;
+
+  .search-input {
+    display: inline-block;
+    width: 100px !important;
+  }
+}
+
 
 .loadMoreContainer {
   margin-top: 48px;
   text-align: center;
 
   .loadMoreButton {
-    padding: 0.6em 3em;
-    width: 100%;
-
     @include media-breakpoint-up(sm) {
       width: auto;
     }
+
+    padding: 0.6em 3em;
+    width: 100%;
   }
 }
 

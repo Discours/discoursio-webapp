@@ -11,7 +11,7 @@ export const saveScrollPosition = () => {
 }
 
 export const restoreScrollPosition = () => {
-  window.scroll({
+  window?.scroll({
     top: scrollPosition.top,
     left: scrollPosition.left
   })
@@ -21,7 +21,7 @@ export const scrollHandler = (elemId: string, offset = -100) => {
   const anchor = document.querySelector(`#${elemId}`)
 
   if (anchor && window) {
-    window.scrollTo({
+    window?.scrollTo?.({
       top: anchor.getBoundingClientRect().top + offset,
       behavior: 'smooth'
     })

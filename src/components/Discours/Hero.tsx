@@ -1,5 +1,5 @@
+import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { useLocalize } from '../../context/localize'
 
 import { useSearchParams } from '@solidjs/router'
 import styles from './Hero.module.scss'
@@ -20,7 +20,7 @@ export default () => {
               )}
             />
             <div class={styles.aboutDiscoursActions}>
-              <a class="button" href="/create">
+              <a class="button" href="/edit/new">
                 {t('Create post')}
               </a>
               <a
@@ -34,7 +34,7 @@ export default () => {
               >
                 {t('Join the community')}
               </a>
-              <a class="button" href="/about/help">
+              <a class="button" href="/support">
                 {t('Support us')}
               </a>
             </div>

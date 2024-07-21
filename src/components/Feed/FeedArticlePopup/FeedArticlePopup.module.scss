@@ -1,14 +1,14 @@
 .feedArticlePopup {
-  padding: 0 !important;
-  text-align: left;
-  overflow: hidden;
-  margin-top: -14px;
-
   @include media-breakpoint-down(md) {
     left: auto !important;
     right: 0;
     transform: none !important;
   }
+
+  padding: 0 !important;
+  text-align: left;
+  overflow: hidden;
+  margin-top: -14px;
 
   .actionList {
     & > li {

@@ -6,6 +6,7 @@ import styles from './Button.module.scss'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'bordered' | 'inline' | 'light' | 'outline' | 'danger'
 type Props = {
+  title?: string
   value: string | JSX.Element
   size?: 'S' | 'M' | 'L'
   variant?: ButtonVariant
@@ -28,6 +29,7 @@ export const Button = (props: Props) => {
         }
         props.ref = el
       }}
+      title={props.title || (typeof props.value === 'string' ? props.value : '')}
       onClick={props.onClick}
       type={props.type ?? 'button'}
       disabled={props.loading || props.disabled}

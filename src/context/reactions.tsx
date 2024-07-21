@@ -2,27 +2,29 @@ import type { JSX } from 'solid-js'
 
 import { createContext, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
+import { loadReactions } from '~/graphql/api/public'
 import createReactionMutation from '~/graphql/mutation/core/reaction-create'
 import destroyReactionMutation from '~/graphql/mutation/core/reaction-destroy'
 import updateReactionMutation from '~/graphql/mutation/core/reaction-update'
-import getReactionsByQuery from '~/graphql/query/core/reactions-load-by'
 import {
   MutationCreate_ReactionArgs,
   MutationUpdate_ReactionArgs,
   QueryLoad_Reactions_ByArgs,
   Reaction,
   ReactionKind
-} from '../graphql/schema/core.gen'
+} from '~/graphql/schema/core.gen'
 import { useGraphQL } from './graphql'
 import { useLocalize } from './localize'
 import { useSnackbar } from './ui'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
+  reactionsByShout: Record<string, Reaction[]>
   loadReactionsBy: (args: QueryLoad_Reactions_ByArgs) => Promise<Reaction[]>
   createReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
   updateReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction>
   deleteReaction: (id: number) => Promise<{ error: string } | null>
+  addReactions: (rrr: Reaction[]) => void
 }
 
 const ReactionsContext = createContext<ReactionsContextType>({} as ReactionsContextType)
@@ -33,21 +35,31 @@ export function useReactions() {
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
+  const [reactionsByShout, setReactionsByShout] = createStore<Record<number, Reaction[]>>({})
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
-  const { query, mutation } = useGraphQL()
-
-  const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
-    const resp = await query(getReactionsByQuery, opts)
-    const result = resp?.data?.load_reactions_by || []
-    const newReactionEntities = result.reduce(
+  const { mutation } = useGraphQL()
+  const addReactions = (rrr: Reaction[]) => {
+    const newReactionsByShout: Record<string, Reaction[]> = { ...reactionsByShout }
+    const newReactionEntities = rrr.reduce(
       (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {
         acc[reaction.id] = reaction
+        if (!newReactionsByShout[reaction.shout.slug]) newReactionsByShout[reaction.shout.slug] = []
+        newReactionsByShout[reaction.shout.slug].push(reaction)
         return acc
       },
-      {}
+      { ...reactionEntities }
     )
     setReactionEntities(newReactionEntities)
+    setReactionsByShout(newReactionsByShout)
+  }
+
+  const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
+    !opts.by && console.warn('reactions provider got wrong opts')
+    const fetcher = await loadReactions(opts)
+    const result = (await fetcher()) || []
+    console.debug('[context.reactions] loaded', result)
+    result && addReactions(result)
     return result
   }
 
@@ -99,7 +111,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const updateReaction = async (input: MutationUpdate_ReactionArgs): Promise<Reaction> => {
     const resp = await mutation(updateReactionMutation, input).toPromise()
     const result = resp?.data?.update_reaction
-    if (!result) throw Error('cannot update reaction')
+    if (!result) throw new Error('cannot update reaction')
     const { error, reaction } = result
     if (error) await showSnackbar({ type: 'error', body: t(error) })
     if (reaction) setReactionEntities(reaction.id, reaction)
@@ -112,10 +124,11 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     loadReactionsBy,
     createReaction,
     updateReaction,
-    deleteReaction
+    deleteReaction,
+    addReactions
   }
 
-  const value: ReactionsContextType = { reactionEntities, ...actions }
+  const value: ReactionsContextType = { reactionEntities, reactionsByShout, ...actions }
 
   return <ReactionsContext.Provider value={value}>{props.children}</ReactionsContext.Provider>
 }

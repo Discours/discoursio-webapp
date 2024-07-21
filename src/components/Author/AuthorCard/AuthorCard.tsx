@@ -1,25 +1,22 @@
-import type { Author, Community } from '../../../graphql/schema/core.gen'
-
+import { redirect, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
-import { FollowsFilter, useFollowing } from '../../../context/following'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { FollowingEntity, Topic } from '../../../graphql/schema/core.gen'
-import { isAuthor } from '../../../utils/isAuthor'
-import { translit } from '../../../utils/ru2en'
-import { isCyrillic } from '../../../utils/translate'
+import { Button } from '~/components/_shared/Button'
+import stylesButton from '~/components/_shared/Button/Button.module.scss'
+import { FollowingCounters } from '~/components/_shared/FollowingCounters/FollowingCounters'
+import { ShowOnlyOnClient } from '~/components/_shared/ShowOnlyOnClient'
+import { FollowsFilter, useFollowing } from '~/context/following'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import type { Author, Community } from '~/graphql/schema/core.gen'
+import { FollowingEntity, Topic } from '~/graphql/schema/core.gen'
+import { isCyrillic } from '~/intl/translate'
+import { translit } from '~/intl/translit'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
-import { Modal } from '../../Nav/Modal'
 import { TopicBadge } from '../../Topic/TopicBadge'
-import { Button } from '../../_shared/Button'
-import { FollowingCounters } from '../../_shared/FollowingCounters/FollowingCounters'
-import { ShowOnlyOnClient } from '../../_shared/ShowOnlyOnClient'
+import { Modal } from '../../_shared/Modal'
 import { AuthorBadge } from '../AuthorBadge'
 import { Userpic } from '../Userpic'
-
-import { useNavigate, useSearchParams } from '@solidjs/router'
-import stylesButton from '../../_shared/Button/Button.module.scss'
 import styles from './AuthorCard.module.scss'
 
 type Props = {
@@ -164,10 +161,10 @@ export const AuthorCard = (props: Props) => {
           <div class="col-24">
             <For each={authorSubs()}>
               {(subscription) =>
-                isAuthor(subscription) ? (
-                  <AuthorBadge author={subscription} subscriptionsMode={true} />
+                'name' in subscription ? (
+                  <AuthorBadge author={subscription as Author} subscriptionsMode={true} />
                 ) : (
-                  <TopicBadge topic={subscription} subscriptionsMode={true} />
+                  <TopicBadge topic={subscription as Topic} subscriptionsMode={true} />
                 )
               }
             </For>
@@ -252,7 +249,7 @@ export const AuthorCard = (props: Props) => {
               <div class={styles.authorActions}>
                 <Button
                   variant="secondary"
-                  onClick={() => navigate('/profile/settings')}
+                  onClick={() => redirect('/profile')}
                   value={
                     <>
                       <span class={styles.authorActionsLabel}>{t('Edit profile')}</span>
@@ -265,7 +262,7 @@ export const AuthorCard = (props: Props) => {
                   description={props.author.bio || ''}
                   imageUrl={props.author.pic || ''}
                   shareUrl={getShareUrl({
-                    pathname: `/author/${props.author.slug}`
+                    pathname: `/@${props.author.slug}`
                   })}
                   trigger={<Button variant="secondary" value={t('Share')} />}
                 />

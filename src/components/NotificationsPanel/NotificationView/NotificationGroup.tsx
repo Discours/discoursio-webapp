@@ -1,11 +1,11 @@
 import { clsx } from 'clsx'
 import { For, Show } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { useNotifications } from '../../../context/notifications'
-import { Author, NotificationGroup as Group } from '../../../graphql/schema/core.gen'
-import { GroupAvatar } from '../../_shared/GroupAvatar'
-import { TimeAgo } from '../../_shared/TimeAgo'
+import { GroupAvatar } from '~/components/_shared/GroupAvatar'
+import { TimeAgo } from '~/components/_shared/TimeAgo'
+import { useLocalize } from '~/context/localize'
+import { useNotifications } from '~/context/notifications'
+import { Author, NotificationGroup as Group } from '~/graphql/schema/core.gen'
 
 import { A, useNavigate, useSearchParams } from '@solidjs/router'
 import styles from './NotificationView.module.scss'
@@ -50,7 +50,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
 
     markSeenThread(threadId)
     const [slug, commentId] = threadId.split('::')
-    navigate(`/article/${slug}`)
+    navigate(`/${slug}`)
     if (commentId) changeSearchParams({ commentId })
   }
 
@@ -77,7 +77,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
                   {getTitle(n.shout?.title || '')}
                 </A>{' '}
                 {t('from')}{' '}
-                <A href={`/author/${n.authors?.[0]?.slug || ''}`} onClick={handleLinkClick}>
+                <A href={`/@${n.authors?.[0]?.slug || ''}`} onClick={handleLinkClick}>
                   {n.authors?.[0]?.name || ''}
                 </A>{' '}
               </div>

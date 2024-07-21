@@ -1,4 +1,4 @@
-import type { Author } from '../../graphql/schema/core.gen'
+import type { Author } from '~/graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'

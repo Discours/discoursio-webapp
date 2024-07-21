@@ -1,9 +1,4 @@
 .sidebar {
-  margin-top: -0.7rem;
-  max-height: calc(100vh - 120px);
-  overflow: auto;
-  top: 120px;
-
   @include media-breakpoint-up(md) {
     margin-top: 0;
     position: sticky;
@@ -14,6 +9,11 @@
       text-overflow: ellipsis;
     }
   }
+
+  margin-top: -0.7rem;
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  top: 120px;
 
   .sidebarItemName {
     background: transparent;
@@ -71,10 +71,6 @@
   }
 
   .settings {
-    display: flex;
-    justify-content: space-between;
-    margin: 2em 0;
-
     @include media-breakpoint-down(md) {
       margin: 0;
       position: absolute;
@@ -84,6 +80,10 @@
     @include media-breakpoint-down(sm) {
       right: 2px;
     }
+
+    display: flex;
+    justify-content: space-between;
+    margin: 2em 0;
 
     a {
       border: none;

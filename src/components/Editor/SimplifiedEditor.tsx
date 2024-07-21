@@ -20,13 +20,13 @@ import {
   useEditorIsFocused
 } from 'solid-tiptap'
 
+import { useEditorContext } from '~/context/editor'
+import { useLocalize } from '~/context/localize'
 import { UploadedFile } from '~/types/upload'
-import { useEditorContext } from '../../context/editor'
-import { useLocalize } from '../../context/localize'
-import { Modal } from '../Nav/Modal'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../_shared/Loading'
+import { Modal } from '../_shared/Modal'
 import { Popover } from '../_shared/Popover'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { LinkBubbleMenuModule } from './LinkBubbleMenu'

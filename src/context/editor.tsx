@@ -1,15 +1,14 @@
-import type { JSX } from 'solid-js'
-
 import { useMatch, useNavigate } from '@solidjs/router'
 import { Editor } from '@tiptap/core'
+import type { JSX } from 'solid-js'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
 import { useSnackbar } from '~/context/ui'
+import deleteShoutQuery from '~/graphql/mutation/core/article-delete'
+import updateShoutQuery from '~/graphql/mutation/core/article-update'
+import { Topic, TopicInput } from '~/graphql/schema/core.gen'
+import { slugify } from '~/intl/translit'
 import { useFeed } from '../context/feed'
-import deleteShoutQuery from '../graphql/mutation/core/article-delete'
-import updateShoutQuery from '../graphql/mutation/core/article-update'
-import { Topic, TopicInput } from '../graphql/schema/core.gen'
-import { slugify } from '../utils/slugify'
 import { useGraphQL } from './graphql'
 import { useLocalize } from './localize'
 
@@ -68,14 +67,14 @@ const topic2topicInput = (topic: Topic): TopicInput => {
 }
 
 const saveDraftToLocalStorage = (formToSave: ShoutForm) => {
-  localStorage.setItem(`shout-${formToSave.shoutId}`, JSON.stringify(formToSave))
+  localStorage?.setItem(`shout-${formToSave.shoutId}`, JSON.stringify(formToSave))
 }
 const getDraftFromLocalStorage = (shoutId: number) => {
-  return JSON.parse(localStorage.getItem(`shout-${shoutId}`) || '{}')
+  return JSON.parse(localStorage?.getItem(`shout-${shoutId}`) || '{}')
 }
 
 const removeDraftFromLocalStorage = (shoutId: number) => {
-  localStorage.removeItem(`shout-${shoutId}`)
+  localStorage?.removeItem(`shout-${shoutId}`)
 }
 
 export const EditorProvider = (props: { children: JSX.Element }) => {
@@ -179,7 +178,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       if (shout?.published_at) {
         navigate(`/article/${shout.slug}`)
       } else {
-        navigate('/drafts')
+        navigate('/edit')
       }
     } catch (error) {
       console.error('[saveShout]', error)

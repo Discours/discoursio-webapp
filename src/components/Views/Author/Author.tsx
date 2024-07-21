@@ -1,24 +1,17 @@
-import { Meta, Title } from '@solidjs/meta'
-import { A, useLocation, useMatch } from '@solidjs/router'
+import { A, useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { Loading } from '~/components/_shared/Loading'
 import { useAuthors } from '~/context/authors'
+import { useFollowing } from '~/context/following'
 import { useGraphQL } from '~/context/graphql'
-import { useUI } from '~/context/ui'
-import { useFeed } from '../../../context/feed'
-import { useFollowing } from '../../../context/following'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import loadShoutsQuery from '../../../graphql/query/core/articles-load-by'
-import getAuthorFollowersQuery from '../../../graphql/query/core/author-followers'
-import getAuthorFollowsQuery from '../../../graphql/query/core/author-follows'
-import loadReactionsBy from '../../../graphql/query/core/reactions-load-by'
-import type { Author, Reaction, Shout, Topic } from '../../../graphql/schema/core.gen'
-import { getImageUrl } from '../../../utils/getImageUrl'
-import { getDescription } from '../../../utils/meta'
-import { restoreScrollPosition, saveScrollPosition } from '../../../utils/scroll'
-import { byCreated } from '../../../utils/sortby'
-import { splitToPages } from '../../../utils/splitToPages'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
+import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
+import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
+import { byCreated } from '~/lib/sort'
+import { paginate } from '~/utils/paginate'
 import stylesArticle from '../../Article/Article.module.scss'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
@@ -27,11 +20,11 @@ import { Placeholder } from '../../Feed/Placeholder'
 import { Row1 } from '../../Feed/Row1'
 import { Row2 } from '../../Feed/Row2'
 import { Row3 } from '../../Feed/Row3'
-import { Loading } from '../../_shared/Loading'
 import styles from './Author.module.scss'
 
-type Props = {
+type AuthorViewProps = {
   authorSlug: string
+  selectedTab: string
   shouts?: Shout[]
   author?: Author
 }
@@ -39,143 +32,100 @@ type Props = {
 export const PRERENDERED_ARTICLES_COUNT = 12
 const LOAD_MORE_PAGE_SIZE = 9
 
-export const AuthorView = (props: Props) => {
+export const AuthorView = (props: AuthorViewProps) => {
+  // contexts
   const { t } = useLocalize()
-  const { followers: myFollowers, follows: myFollows } = useFollowing()
-  const { session } = useSession()
-  const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const [slug, setSlug] = createSignal(props.authorSlug)
-  const { sortedFeed } = useFeed()
-  const { modal, hideModal } = useUI()
   const loc = useLocation()
-  const matchAuthor = useMatch(() => '/author')
-  const matchComments = useMatch(() => '/author/:authorId/comments')
-  const matchAbout = useMatch(() => '/author/:authorId/about')
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
-  const [isBioExpanded, setIsBioExpanded] = createSignal(false)
+  const { session } = useSession()
+  const { query } = useGraphQL()
   const { loadAuthor, authorsEntities } = useAuthors()
+  const { followers: myFollowers, follows: myFollows } = useFollowing()
+
+  // signals
+  const [isBioExpanded, setIsBioExpanded] = createSignal(false)
   const [author, setAuthor] = createSignal<Author>()
   const [followers, setFollowers] = createSignal<Author[]>([] as Author[])
   const [following, changeFollowing] = createSignal<Array<Author | Topic>>([] as Array<Author | Topic>) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
-  const [commented, setCommented] = createSignal<Reaction[]>()
-  const { query } = useGraphQL()
+  const [commented, setCommented] = createSignal<Reaction[]>([])
 
-  // пагинация загрузки ленты постов
-  const loadMore = async () => {
-    saveScrollPosition()
-    const resp = await query(loadShoutsQuery, {
-      filters: { author: props.authorSlug },
-      limit: LOAD_MORE_PAGE_SIZE,
-      offset: sortedFeed().length
-    })
-    const hasMore = resp?.data?.load_shouts_by?.hasMore
-    setIsLoadMoreButtonVisible(hasMore)
-    restoreScrollPosition()
-  }
+  // derivatives
+  const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
+  const pages = createMemo<Shout[][]>(() =>
+    paginate((props.shouts || []).slice(1), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+  )
 
   // 1 // проверяет не собственный ли это профиль, иначе - загружает
   const [isFetching, setIsFetching] = createSignal(false)
   createEffect(
-    on([() => session()?.user?.app_data?.profile, () => props.authorSlug || ''], async ([me, s]) => {
-      const my = s && me?.slug === s
-      if (my) {
-        console.debug('[Author] my profile precached')
-        if (me) {
-          setAuthor(me)
-          if (myFollowers()) setFollowers((myFollowers() || []) as Author[])
-          changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
+    on(
+      [() => session()?.user?.app_data?.profile, () => props.authorSlug || ''],
+      async ([me, slug]) => {
+        console.debug('check if my profile')
+        const my = slug && me?.slug === slug
+        if (my) {
+          console.debug('[Author] my profile precached')
+          if (me) {
+            setAuthor(me)
+            if (myFollowers()) setFollowers((myFollowers() || []) as Author[])
+            changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
+          }
+        } else if (slug && !isFetching()) {
+          setIsFetching(true)
+          await loadAuthor({ slug })
+          setIsFetching(false) // Сброс состояния загрузки после завершения
         }
-      } else if (s && !isFetching()) {
-        setIsFetching(true)
-        setSlug(s)
-        await loadAuthor(s)
-        setIsFetching(false) // Сброс состояния загрузки после завершения
-      }
-    })
+      },
+      { defer: true }
+    )
   )
-  // 3 // after fetch loading following data
+
+  // 2 // догружает подписки автора
   createEffect(
     on(
-      [followers, () => authorsEntities()[slug()]],
-      async ([current, found]) => {
-        if (current) return
+      () => authorsEntities()[props.author?.slug || props.authorSlug || ''],
+      async (found) => {
         if (!found) return
         setAuthor(found)
-        console.info(`[Author] profile for @${slug()} fetched`)
-        const followsResp = await query(getAuthorFollowsQuery, { slug: slug() }).toPromise()
+        console.info(`[Author] profile for @${found.slug} fetched`)
+        const followsResp = await query(getAuthorFollowsQuery, { slug: found.slug }).toPromise()
         const follows = followsResp?.data?.get_author_followers || {}
         changeFollowing([...(follows?.authors || []), ...(follows?.topics || [])])
-        console.info(`[Author] follows for @${slug()} fetched`)
-        const followersResp = await query(getAuthorFollowersQuery, { slug: slug() }).toPromise()
+        console.info(`[Author] follows for @${found.slug} fetched`)
+        const followersResp = await query(getAuthorFollowersQuery, { slug: found.slug }).toPromise()
         setFollowers(followersResp?.data?.get_author_followers || [])
-        console.info(`[Author] followers for @${slug()} fetched`)
+        console.info(`[Author] followers for @${found.slug} fetched`)
         setIsFetching(false)
       },
       { defer: true }
     )
   )
 
-  // догружает ленту и комментарии
-  createEffect(
-    on(
-      () => author() as Author,
-      async (profile: Author) => {
-        if (!commented() && profile) {
-          await loadMore()
-
-          const resp = await query(loadReactionsBy, {
-            by: { comment: true, created_by: profile.id }
-          }).toPromise()
-          const ccc = resp?.data?.load_reactions_by
-          if (ccc) setCommented(ccc)
-        }
-      }
-      // { defer: true },
-    )
-  )
-
+  // event handlers
   let bioContainerRef: HTMLDivElement
   let bioWrapperRef: HTMLDivElement
-  const checkBioHeight = () => {
-    if (bioContainerRef) {
-      setShowExpandBioControl(bioContainerRef.offsetHeight > bioWrapperRef.offsetHeight)
-    }
+  const checkBioHeight = (bio = bioWrapperRef) => {
+    if (!bio) return
+    const showExpand = bioContainerRef.offsetHeight > bio.offsetHeight
+    setShowExpandBioControl(showExpand)
+    console.debug('[AuthorView] mounted, show expand bio container:', showExpand)
   }
 
-  onMount(() => {
-    if (!modal()) hideModal()
-    checkBioHeight()
-  })
-
-  const pages = createMemo<Shout[][]>(() =>
-    splitToPages(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
-  )
-
-  const ogImage = createMemo(() =>
-    author()?.pic
-      ? getImageUrl(author()?.pic || '', { width: 1200 })
-      : getImageUrl('production/image/logo_image.png')
-  )
-  const description = createMemo(() => getDescription(author()?.bio || ''))
   const handleDeleteComment = (id: number) => {
     setCommented((prev) => (prev || []).filter((comment) => comment.id !== id))
   }
 
+  // on load
+  createEffect(on(() => bioContainerRef, checkBioHeight))
+  createEffect(
+    on(
+      () => props.selectedTab,
+      (tab) => tab && console.log('[views.Author] profile tab switched')
+    )
+  )
+
   return (
     <div class={styles.authorPage}>
-      <Show when={author()}>
-        <Title>{author()?.name}</Title>
-        <Meta name="descprition" content={description()} />
-        <Meta name="og:type" content="profile" />
-        <Meta name="og:title" content={author()?.name || ''} />
-        <Meta name="og:image" content={ogImage()} />
-        <Meta name="og:description" content={description()} />
-        <Meta name="twitter:card" content="summary_large_image" />
-        <Meta name="twitter:title" content={author()?.name || ''} />
-        <Meta name="twitter:description" content={description()} />
-        <Meta name="twitter:image" content={ogImage()} />
-      </Show>
       <div class="wide-container">
         <Show when={author()} fallback={<Loading />}>
           <>
@@ -189,21 +139,21 @@ export const AuthorView = (props: Props) => {
             <div class={clsx(styles.groupControls, 'row')}>
               <div class="col-md-16">
                 <ul class="view-switcher">
-                  <li classList={{ 'view-switcher__item--selected': !!matchAuthor() }}>
-                    <A href={`/author/${props.authorSlug}`}>{t('Publications')}</A>
+                  <li classList={{ 'view-switcher__item--selected': !props.selectedTab }}>
+                    <A href={`/@${props.authorSlug}`}>{t('Publications')}</A>
                     <Show when={author()?.stat}>
                       <span class="view-switcher__counter">{author()?.stat?.shouts || 0}</span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': !!matchComments() }}>
-                    <A href={`/author/${props.authorSlug}/comments`}>{t('Comments')}</A>
+                  <li classList={{ 'view-switcher__item--selected': props.selectedTab === 'comment' }}>
+                    <A href={`/@${props.authorSlug}/comments`}>{t('Comments')}</A>
                     <Show when={author()?.stat}>
                       <span class="view-switcher__counter">{author()?.stat?.comments || 0}</span>
                     </Show>
                   </li>
-                  <li classList={{ 'view-switcher__item--selected': !!matchAbout() }}>
-                    <A onClick={() => checkBioHeight()} href={`/author/${props.authorSlug}`}>
-                      {t('About')}
+                  <li classList={{ 'view-switcher__item--selected': props.selectedTab === 'about' }}>
+                    <A onClick={() => checkBioHeight()} href={`/@${props.authorSlug}/about`}>
+                      {t('About the author')}
                     </A>
                   </li>
                 </ul>
@@ -222,7 +172,7 @@ export const AuthorView = (props: Props) => {
       </div>
 
       <Switch>
-        <Match when={matchAbout()}>
+        <Match when={props.selectedTab === 'about'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -246,7 +196,7 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={matchComments()}>
+        <Match when={props.selectedTab === 'comments'}>
           <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
@@ -272,25 +222,25 @@ export const AuthorView = (props: Props) => {
             </div>
           </div>
         </Match>
-        <Match when={matchAuthor()}>
+        <Match when={!props.selectedTab}>
           <Show when={me()?.slug === props.authorSlug && !me().stat?.shouts}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
             </div>
           </Show>
 
-          <Show when={sortedFeed().length > 0}>
-            <Row1 article={sortedFeed()[0]} noauthor={true} nodate={true} />
+          <Show when={Array.isArray(props.shouts) && props.shouts.length > 0 && props.shouts[0]}>
+            <Row1 article={props.shouts?.[0] as Shout} noauthor={true} nodate={true} />
 
-            <Show when={sortedFeed().length > 1}>
+            <Show when={props.shouts && props.shouts.length > 1}>
               <Switch>
-                <Match when={sortedFeed().length === 2}>
-                  <Row2 articles={sortedFeed()} isEqual={true} noauthor={true} nodate={true} />
+                <Match when={props.shouts && props.shouts.length === 2}>
+                  <Row2 articles={props.shouts as Shout[]} isEqual={true} noauthor={true} nodate={true} />
                 </Match>
-                <Match when={sortedFeed().length === 3}>
-                  <Row3 articles={sortedFeed()} noauthor={true} nodate={true} />
+                <Match when={props.shouts && props.shouts.length === 3}>
+                  <Row3 articles={props.shouts as Shout[]} noauthor={true} nodate={true} />
                 </Match>
-                <Match when={sortedFeed().length > 3}>
+                <Match when={props.shouts && props.shouts.length > 3}>
                   <For each={pages()}>
                     {(page) => (
                       <>
@@ -305,14 +255,6 @@ export const AuthorView = (props: Props) => {
                   </For>
                 </Match>
               </Switch>
-            </Show>
-
-            <Show when={isLoadMoreButtonVisible()}>
-              <p class="load-more-container">
-                <button class="button" onClick={loadMore}>
-                  {t('Load more')}
-                </button>
-              </p>
             </Show>
           </Show>
         </Match>

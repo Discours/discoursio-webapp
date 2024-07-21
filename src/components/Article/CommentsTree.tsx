@@ -1,19 +1,17 @@
 import { clsx } from 'clsx'
 import { For, Show, createMemo, createSignal, lazy, onMount } from 'solid-js'
 
-import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
-import { useSession } from '../../context/session'
-import { Author, Reaction, ReactionKind, ReactionSort } from '../../graphql/schema/core.gen'
-import { byCreated, byStat } from '../../utils/sortby'
+import { useFeed } from '~/context/feed'
+import { useLocalize } from '~/context/localize'
+import { useReactions } from '~/context/reactions'
+import { useSession } from '~/context/session'
+import { Author, Reaction, ReactionKind, ReactionSort } from '~/graphql/schema/core.gen'
+import { byCreated, byStat } from '~/lib/sort'
+import { SortFunction } from '~/types/common'
 import { Button } from '../_shared/Button'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
-
-import { Comment } from './Comment'
-
-import { SortFunction } from '~/context/authors'
-import { useFeed } from '../../context/feed'
 import styles from './Article.module.scss'
+import { Comment } from './Comment'
 
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
@@ -52,10 +50,10 @@ export const CommentsTree = (props: Props) => {
   })
   const { seen } = useFeed()
   const shoutLastSeen = createMemo(() => seen()[props.shoutSlug] ?? 0)
-  const currentDate = new Date()
-  const setCookie = () => localStorage.setItem(`${props.shoutSlug}`, `${currentDate}`)
 
   onMount(() => {
+    const currentDate = new Date()
+    const setCookie = () => localStorage?.setItem(`${props.shoutSlug}`, `${currentDate}`)
     if (!shoutLastSeen()) {
       setCookie()
     } else if (currentDate.getTime() > shoutLastSeen()) {
@@ -98,7 +96,7 @@ export const CommentsTree = (props: Props) => {
         <h2 class={styles.commentsHeader}>
           {t('Comments')} {comments().length.toString() || ''}
           <Show when={newReactions().length > 0}>
-            <span class={styles.newReactions}>&nbsp;+{newReactions().length}</span>
+            <span class={styles.newReactions}>{` +${newReactions().length}`}</span>
           </Show>
         </h2>
         <Show when={comments().length > 0}>
@@ -150,7 +148,7 @@ export const CommentsTree = (props: Props) => {
             <a href="?m=auth&mode=register" class={styles.link}>
               {t('sign up')}
             </a>{' '}
-            {t('or')}&nbsp;
+            {t('or')}{' '}
             <a href="?m=auth&mode=login" class={styles.link}>
               {t('sign in')}
             </a>

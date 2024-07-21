@@ -1,11 +1,11 @@
 import { clsx } from 'clsx'
 import { createMemo } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { Author } from '../../../graphql/schema/core.gen'
-import { capitalize } from '../../../utils/capitalize'
-import { translit } from '../../../utils/ru2en'
-import { isCyrillic } from '../../../utils/translate'
+import { useLocalize } from '~/context/localize'
+import { Author } from '~/graphql/schema/core.gen'
+import { isCyrillic } from '~/intl/translate'
+import { translit } from '~/intl/translit'
+import { capitalize } from '~/utils/capitalize'
 import { Userpic } from '../Userpic'
 
 import styles from './AhtorLink.module.scss'
@@ -30,7 +30,7 @@ export const AuthorLink = (props: Props) => {
         [styles.authorLinkFloorImportant]: props.isFloorImportant
       })}
     >
-      <a class={styles.link} href={`/author/${props.author.slug}`}>
+      <a class={styles.link} href={`/@${props.author.slug}`}>
         <Userpic size={props.size ?? 'M'} name={name() || ''} userpic={props.author.pic || ''} />
         <div class={styles.name}>{name()}</div>
       </a>

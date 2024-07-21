@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { createSignal, onCleanup, onMount } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
+import { useLocalize } from '~/context/localize'
 
 import styles from './TimeAgo.module.scss'
 

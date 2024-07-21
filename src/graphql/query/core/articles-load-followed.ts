@@ -1,17 +1,15 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query ShoutsReactedByUserQuery($slug: String!, $limit: Int!, $offset: Int!) {
-    load_shouts_followed(slug: String!, limit: Int, offset: Int) {
+  query ShoutsFollowedQuery($limit: Int!, $offset: Int!) {
+    load_shouts_followed(limit: Int, offset: Int) {
       title
       subtitle
       layout
       slug
       cover
-      # cover_caption
       main_topic
       topics {
-        # id
         title
         body
         slug
@@ -32,7 +30,6 @@ export default gql`
       featured_at
       stat {
         viewed
-
         rating
       }
     }

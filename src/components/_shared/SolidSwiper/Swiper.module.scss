@@ -1,11 +1,11 @@
 :root {
-  --slide-height: 300px;
-  --navigation-reserve: 48px;
-
   @include media-breakpoint-up(md) {
     --slide-height: 500px;
     --navigation-reserve: 56px;
   }
+
+  --slide-height: 300px;
+  --navigation-reserve: 48px;
 }
 
 .Swiper {
@@ -230,15 +230,15 @@
     .body {
       @include font-size(1.7rem);
 
+      @include media-breakpoint-up(md) {
+        // margin-left: calc((100% + 130px) * 0.15);
+        margin-left: calc(15% + 24px);
+      }
+
       margin-top: 24px;
 
       * {
         color: var(--default-color-invert) !important; // Force fix migration errors with inline styles
-      }
-
-      @include media-breakpoint-up(md) {
-        // margin-left: calc((100% + 130px) * 0.15);
-        margin-left: calc(15% + 24px);
       }
     }
   }

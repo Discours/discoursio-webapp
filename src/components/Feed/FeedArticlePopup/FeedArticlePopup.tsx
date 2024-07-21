@@ -1,12 +1,12 @@
-import type { PopupProps } from '../../_shared/Popup'
+import type { PopupProps } from '~/components/_shared/Popup'
 
 import { clsx } from 'clsx'
 import { Show, createSignal } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { Icon } from '../../_shared/Icon'
-import { Popup } from '../../_shared/Popup'
-import { SoonChip } from '../../_shared/SoonChip'
+import { Icon } from '~/components/_shared/Icon'
+import { Popup } from '~/components/_shared/Popup'
+import { SoonChip } from '~/components/_shared/SoonChip'
+import { useLocalize } from '~/context/localize'
 
 import styles from './FeedArticlePopup.module.scss'
 
@@ -93,10 +93,10 @@ export const FeedArticlePopup = (props: Props) => {
           {/*      class={styles.action}*/}
           {/*      role="button"*/}
           {/*      onClick={() => {*/}
-          {/*        alert('Report')*/}
+          {/*        alert('Complain')*/}
           {/*      }}*/}
           {/*    >*/}
-          {/*      {t('Report')}*/}
+          {/*      {t('Complain')}*/}
           {/*    </button>*/}
           {/*  </li>*/}
           {/*</Show>*/}

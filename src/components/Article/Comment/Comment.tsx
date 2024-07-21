@@ -1,23 +1,23 @@
 import { A } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, Suspense, createMemo, createSignal, lazy } from 'solid-js'
+import { Icon } from '~/components/_shared/Icon'
+import { ShowIfAuthenticated } from '~/components/_shared/ShowIfAuthenticated'
 import { useGraphQL } from '~/context/graphql'
+import { useLocalize } from '~/context/localize'
+import { useReactions } from '~/context/reactions'
+import { useSession } from '~/context/session'
 import { useSnackbar, useUI } from '~/context/ui'
 import deleteReactionMutation from '~/graphql/mutation/core/reaction-destroy'
-import { useLocalize } from '../../../context/localize'
-import { useReactions } from '../../../context/reactions'
-import { useSession } from '../../../context/session'
 import {
   Author,
   MutationCreate_ReactionArgs,
   MutationUpdate_ReactionArgs,
   Reaction,
   ReactionKind
-} from '../../../graphql/schema/core.gen'
+} from '~/graphql/schema/core.gen'
 import { AuthorLink } from '../../Author/AuthorLink'
 import { Userpic } from '../../Author/Userpic'
-import { Icon } from '../../_shared/Icon'
-import { ShowIfAuthenticated } from '../../_shared/ShowIfAuthenticated'
 import { CommentDate } from '../CommentDate'
 import { RatingControl as CommentRatingControl } from '../RatingControl'
 
@@ -254,7 +254,7 @@ export const Comment = (props: Props) => {
               {/*  class={clsx(styles.commentControl, styles.commentControlComplain)}*/}
               {/*  onClick={() => showModal('reportComment')}*/}
               {/*>*/}
-              {/*  {t('Report')}*/}
+              {/*  {t('Complain')}*/}
               {/*</button>*/}
             </div>
 

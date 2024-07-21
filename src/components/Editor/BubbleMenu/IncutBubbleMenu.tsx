@@ -3,8 +3,8 @@ import type { Editor } from '@tiptap/core'
 import { clsx } from 'clsx'
 import { For, Show, createSignal } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
-import { Icon } from '../../_shared/Icon'
+import { Icon } from '~/components/_shared/Icon'
+import { useLocalize } from '~/context/localize'
 
 import styles from './BubbleMenu.module.scss'
 

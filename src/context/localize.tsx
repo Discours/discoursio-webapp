@@ -10,7 +10,8 @@ import {
   onMount,
   useContext
 } from 'solid-js'
-import { TimeAgo, type i18n, i18next, i18nextInit } from '~/lib/i18next'
+import { TimeAgo, type i18n, i18next, i18nextInit } from '~/intl/i18next'
+import { processPrepositions } from '~/intl/prepositions'
 
 i18nextInit()
 
@@ -46,7 +47,7 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
   })
   createEffect(
     on(lang, (lng: Language) => {
-      localStorage.setItem('lng', lng || 'ru')
+      localStorage?.setItem('lng', lng || 'ru')
       i18next.changeLanguage(lng || 'ru')
     })
   )
@@ -83,7 +84,13 @@ export const LocalizeProvider = (props: { children: JSX.Element }) => {
   const formatTimeAgo = (date: Date) => timeAgo().format(date)
 
   const value: LocalizeContextType = {
-    t: i18next.t,
+    t: ((...args) => {
+      try {
+        return i18next.t(...args)
+      } catch (_) {
+        return args?.length > 0 ? processPrepositions(args[0] as string) : ''
+      }
+    }) as i18n['t'],
     lang,
     setLang,
     formatTime,

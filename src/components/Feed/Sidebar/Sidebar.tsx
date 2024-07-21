@@ -1,13 +1,12 @@
+import { A, useLocation, useParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createSignal } from 'solid-js'
-
-import { A, useMatch } from '@solidjs/router'
+import { Icon } from '~/components/_shared/Icon'
 import { useFeed } from '~/context/feed'
-import { useFollowing } from '../../../context/following'
-import { useLocalize } from '../../../context/localize'
-import { Author } from '../../../graphql/schema/core.gen'
+import { useFollowing } from '~/context/following'
+import { useLocalize } from '~/context/localize'
+import { Author } from '~/graphql/schema/core.gen'
 import { Userpic } from '../../Author/Userpic'
-import { Icon } from '../../_shared/Icon'
 import styles from './Sidebar.module.scss'
 
 export const Sidebar = () => {
@@ -15,10 +14,8 @@ export const Sidebar = () => {
   const { follows } = useFollowing()
   const { feedByTopic, feedByAuthor, seen } = useFeed()
   const [isSubscriptionsVisible, setSubscriptionsVisible] = createSignal(true)
-  const matchFeed = useMatch(() => '/feed')
-  const matchFeedMy = useMatch(() => '/feed/my')
-  const matchFeedCollabs = useMatch(() => '/feed/collabs')
-  const matchFeedDiscussions = useMatch(() => '/feed/discussions')
+  const loc = useLocation()
+  const params = useParams()
   const checkTopicIsSeen = (topicSlug: string) => {
     return feedByTopic()[topicSlug]?.every((article) => Boolean(seen()[article.slug]))
   }
@@ -32,22 +29,22 @@ export const Sidebar = () => {
       <ul class={styles.feedFilters}>
         <li>
           <A
-            href={'feed'}
+            href={'/feed'}
             class={clsx({
-              [styles.selected]: matchFeed()
+              [styles.selected]: !loc.pathname.includes('feed/my')
             })}
           >
             <span class={styles.sidebarItemName}>
               <Icon name="feed-all" class={styles.icon} />
-              {t('Common feed')}
+              {t('All')}
             </span>
           </A>
         </li>
         <li>
           <A
-            href={'/feed/my'}
+            href={'/feed/my/followed'}
             class={clsx({
-              [styles.selected]: matchFeedMy()
+              [styles.selected]: !params.mode || params.mode === 'followed'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -58,9 +55,9 @@ export const Sidebar = () => {
         </li>
         <li>
           <A
-            href={'/feed/collabs'}
+            href={'/feed/my/coauthored'}
             class={clsx({
-              [styles.selected]: matchFeedCollabs()
+              [styles.selected]: params.mode === 'coauthored'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -71,9 +68,9 @@ export const Sidebar = () => {
         </li>
         <li>
           <a
-            href={'/feed/discussions'}
+            href={'/feed/my/discussed'}
             class={clsx({
-              [styles.selected]: matchFeedDiscussions()
+              [styles.selected]: params.mode === 'discussed'
             })}
           >
             <span class={styles.sidebarItemName}>
@@ -99,7 +96,7 @@ export const Sidebar = () => {
           <For each={follows.authors}>
             {(a: Author) => (
               <li>
-                <a href={`/author/${a.slug}`} classList={{ [styles.unread]: checkAuthorIsSeen(a.slug) }}>
+                <a href={`/@${a.slug}`} classList={{ [styles.unread]: checkAuthorIsSeen(a.slug) }}>
                   <div class={styles.sidebarItemName}>
                     <Userpic name={a.name || ''} userpic={a.pic || ''} size="XS" class={styles.userpic} />
                     <div class={styles.sidebarItemNameLabel}>{a.name}</div>
@@ -127,7 +124,7 @@ export const Sidebar = () => {
       </Show>
 
       <div class={styles.settings}>
-        <a href="/profile/subscriptions">
+        <a href="/profile/subs">
           <Icon name="settings" class={styles.icon} />
           <span class={styles.settingsLabel}>{t('Feed settings')}</span>
         </a>

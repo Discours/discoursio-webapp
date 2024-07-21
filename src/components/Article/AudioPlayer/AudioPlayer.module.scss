@@ -3,27 +3,32 @@
 }
 
 .playerHeader {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-
   @include media-breakpoint-down(sm) {
     flex-direction: column;
   }
+
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .playerTitle {
+  @include media-breakpoint-down(sm) {
+    max-width: 100%;
+  }
+
   max-width: 50%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  @include media-breakpoint-down(sm) {
-    max-width: 100%;
-  }
 }
 
 .playerControls {
+  @include media-breakpoint-down(sm) {
+    margin-top: 20px;
+    margin-left: 0;
+  }
+
   display: flex;
   min-width: 160px;
   align-items: center;
@@ -40,11 +45,6 @@
     &:hover {
       opacity: 0.8;
     }
-  }
-
-  @include media-breakpoint-down(sm) {
-    margin-top: 20px;
-    margin-left: 0;
   }
 
   .playButton {

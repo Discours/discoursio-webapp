@@ -2,7 +2,7 @@ import type { JSX } from 'solid-js'
 
 import { Show } from 'solid-js'
 
-import { useSession } from '../../context/session'
+import { useSession } from '~/context/session'
 
 type ShowIfAuthenticatedProps = {
   children: JSX.Element

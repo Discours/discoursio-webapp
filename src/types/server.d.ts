@@ -1,8 +1,8 @@
 
-// Типы из '../graphql/schema/chat.gen'
-import type { Chat } from '../graphql/schema/chat.gen';
-// Типы из '../graphql/schema/core.gen'
-import type { Author, SearchResult, Shout, Topic } from '../graphql/schema/core.gen';
+// Типы из '~/graphql/schema/chat.gen'
+import type { Chat } from '~/graphql/schema/chat.gen';
+// Типы из '~/graphql/schema/core.gen'
+import type { Author, SearchResult, Shout, Topic } from '~/graphql/schema/core.gen';
 import { LayoutType } from './common';
 
 // Все возможные свойства, которые могут быть переданы с сервера

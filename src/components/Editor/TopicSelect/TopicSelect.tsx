@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { For, Show, createSignal } from 'solid-js'
+import { useLocalize } from '~/context/localize'
 import type { Topic } from '~/graphql/schema/core.gen'
-import { useLocalize } from '../../../context/localize'
 import styles from './TopicSelect.module.scss'
 
 type TopicSelectProps = {

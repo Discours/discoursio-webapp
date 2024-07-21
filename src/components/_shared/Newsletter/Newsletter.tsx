@@ -1,8 +1,8 @@
 import { JSX, Show, createSignal } from 'solid-js'
 
+import { useLocalize } from '~/context/localize'
 import { useSnackbar } from '~/context/ui'
-import { useLocalize } from '../../../context/localize'
-import { validateEmail } from '../../../utils/validateEmail'
+import { validateEmail } from '~/utils/validate'
 import { Button } from '../Button'
 import { Icon } from '../Icon'
 
@@ -44,7 +44,7 @@ export const Newsletter = (props: Props) => {
 
     if (!validate()) return
 
-    setTitle(t('subscribing...'))
+    setTitle(t('Subscribing...'))
 
     const requestOptions = {
       method: 'POST',
@@ -106,7 +106,7 @@ export const Newsletter = (props: Props) => {
               <Icon name="arrow-right" />
             </button>
           </div>
-          <div class="description">Подпишитесь на&nbsp;рассылку лучших публикаций</div>
+          <div class="description">{t('Subscribe to the best publications newsletter')}</div>
         </Show>
         <Show when={emailError()}>
           <div class={styles.error}>{emailError()}</div>

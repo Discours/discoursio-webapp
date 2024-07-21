@@ -1,27 +1,27 @@
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
 
+import { Icon } from '~/components/_shared/Icon'
+import { InviteMembers } from '~/components/_shared/InviteMembers'
+import { Popover } from '~/components/_shared/Popover'
+import { useInbox } from '~/context/inbox'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
-import { useInbox } from '../../../context/inbox'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
 import type {
   Chat,
   ChatMember,
   Message as MessageType,
   MutationCreate_MessageArgs
-} from '../../../graphql/schema/chat.gen'
-import type { Author } from '../../../graphql/schema/core.gen'
+} from '~/graphql/schema/chat.gen'
+import type { Author } from '~/graphql/schema/core.gen'
 import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
 import MessagesFallback from '../../Inbox/MessagesFallback'
 import Search from '../../Inbox/Search'
-import { Modal } from '../../Nav/Modal'
-import { Icon } from '../../_shared/Icon'
-import { InviteMembers } from '../../_shared/InviteMembers'
-import { Popover } from '../../_shared/Popover'
+import { Modal } from '../../_shared/Modal'
 
 import { useSearchParams } from '@solidjs/router'
 import styles from './Inbox.module.scss'
@@ -307,7 +307,7 @@ export const InboxView = (props: Props) => {
                   smallHeight={true}
                   imageEnabled={true}
                   isCancelButtonVisible={false}
-                  placeholder={t('Write message')}
+                  placeholder={t('New message')}
                   setClear={isClear()}
                   onSubmit={(message) => handleSubmit(message)}
                   submitByCtrlEnter={true}

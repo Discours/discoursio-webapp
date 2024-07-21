@@ -1,8 +1,8 @@
 import type { Editor } from '@tiptap/core'
 
-import { useLocalize } from '../../../context/localize'
-import { Icon } from '../../_shared/Icon'
-import { Popover } from '../../_shared/Popover'
+import { Icon } from '~/components/_shared/Icon'
+import { Popover } from '~/components/_shared/Popover'
+import { useLocalize } from '~/context/localize'
 
 import styles from './BubbleMenu.module.scss'
 

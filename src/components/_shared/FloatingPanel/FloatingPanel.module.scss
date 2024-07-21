@@ -1,4 +1,12 @@
 .PanelWrapper {
+  @include media-breakpoint-down(sm) {
+    flex-wrap: wrap;
+
+    input {
+      min-width: 250px;
+    }
+  }
+
   position: fixed;
   bottom: 20px;
   left: 0;
@@ -13,14 +21,6 @@
   padding: 14px;
   background-color: var(--background-color);
   border: 2px solid black;
-
-  @include media-breakpoint-down(sm) {
-    flex-wrap: wrap;
-
-    input {
-      min-width: 250px;
-    }
-  }
 }
 
 .PanelWrapperVisible {

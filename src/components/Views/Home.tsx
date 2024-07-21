@@ -1,11 +1,12 @@
 import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
-
 import { useAuthors } from '~/context/authors'
-import { useLocalize } from '../../context/localize'
-import { useTopics } from '../../context/topics'
-import { Author, Shout, Topic } from '../../graphql/schema/core.gen'
-import { capitalize } from '../../utils/capitalize'
-import { splitToPages } from '../../utils/splitToPages'
+import { useLocalize } from '~/context/localize'
+import { useTopics } from '~/context/topics'
+import { loadShouts } from '~/graphql/api/public'
+import { Author, Shout, Topic } from '~/graphql/schema/core.gen'
+import { SHOUTS_PER_PAGE } from '~/routes/(main)'
+import { capitalize } from '~/utils/capitalize'
+import { paginate } from '~/utils/paginate'
 import Banner from '../Discours/Banner'
 import Hero from '../Discours/Hero'
 import { Beside } from '../Feed/Beside'
@@ -15,12 +16,9 @@ import { Row2 } from '../Feed/Row2'
 import { Row3 } from '../Feed/Row3'
 import { Row5 } from '../Feed/Row5'
 import RowShort from '../Feed/RowShort'
-import { Topics } from '../Nav/Topics'
+import { TopicsNav } from '../TopicsNav'
 import { Icon } from '../_shared/Icon'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
-
-import { loadShouts } from '~/lib/api'
-import { SHOUTS_PER_PAGE } from '~/routes/(home)'
 import styles from './Home.module.scss'
 
 export const RANDOM_TOPICS_COUNT = 12
@@ -34,6 +32,7 @@ export interface HomeViewProps {
   topMonthShouts: Shout[]
   topViewedShouts: Shout[]
   topCommentedShouts: Shout[]
+  topics?: Topic[]
 }
 
 export const HomeView = (props: HomeViewProps) => {
@@ -63,92 +62,90 @@ export const HomeView = (props: HomeViewProps) => {
   )
 
   const pages = createMemo<Shout[][]>(() =>
-    splitToPages(
-      props.featuredShouts || [],
-      SHOUTS_PER_PAGE + CLIENT_LOAD_ARTICLES_COUNT,
-      LOAD_MORE_PAGE_SIZE
-    )
+    paginate(props.featuredShouts || [], SHOUTS_PER_PAGE + CLIENT_LOAD_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
   return (
-    <Show when={(props.featuredShouts || []).length > 0}>
-      <Topics />
-      <Row5 articles={props.featuredShouts.slice(0, 5)} nodate={true} />
-      <Hero />
-      <Show when={props.featuredShouts?.length > SHOUTS_PER_PAGE}>
-        <Beside
-          beside={props.featuredShouts[5]}
-          title={t('Top viewed')}
-          values={props.topViewedShouts.slice(0, 5)}
-          wrapper={'top-article'}
-          nodate={true}
-        />
-        <Row3 articles={(props.featuredShouts || []).slice(6, 9)} nodate={true} />
-        <Beside
-          beside={props.featuredShouts[9]}
-          title={t('Top authors')}
-          values={topAuthors?.() || []}
-          wrapper={'author'}
-          nodate={true}
-        />
-
-        <ArticleCardSwiper title={t('Top month')} slides={props.topMonthShouts} />
-
-        <Row2 articles={props.featuredShouts.slice(10, 12)} nodate={true} />
-        <RowShort articles={props.featuredShouts.slice(12, 16)} />
-        <Row1 article={props.featuredShouts[16]} nodate={true} />
-        <Row3 articles={props.featuredShouts.slice(17, 20)} nodate={true} />
-        <Row3
-          articles={props.topCommentedShouts?.slice(0, 3) || []}
-          header={<h2>{t('Top commented')}</h2>}
-          nodate={true}
-        />
-        <Show when={Boolean(randomTopic())}>
-          <Group
-            articles={randomTopicArticles() || []}
-            header={
-              <div class={styles.randomTopicHeaderContainer}>
-                <div class={styles.randomTopicHeader}>{capitalize(randomTopic()?.title || '', true)}</div>
-                <div>
-                  <a class={styles.randomTopicHeaderLink} href={`/topic/${randomTopic()?.slug || ''}`}>
-                    {t('All articles')} <Icon class={styles.icon} name="arrow-right" />
-                  </a>
-                </div>
-              </div>
-            }
+    <>
+      <Show when={(props.featuredShouts || []).length > 0}>
+        <TopicsNav />
+        <Row5 articles={props.featuredShouts.slice(0, 5)} nodate={true} />
+        <Hero />
+        <Show when={props.featuredShouts?.length > SHOUTS_PER_PAGE}>
+          <Beside
+            beside={props.featuredShouts[5]}
+            title={t('Top viewed')}
+            values={props.topViewedShouts.slice(0, 5)}
+            wrapper={'top-article'}
+            nodate={true}
           />
+          <Row3 articles={(props.featuredShouts || []).slice(6, 9)} nodate={true} />
+          <Beside
+            beside={props.featuredShouts[9]}
+            title={t('Top authors')}
+            values={topAuthors?.() || []}
+            wrapper={'author'}
+            nodate={true}
+          />
+
+          <ArticleCardSwiper title={t('Top month')} slides={props.topMonthShouts} />
+
+          <Row2 articles={props.featuredShouts.slice(10, 12)} nodate={true} />
+          <RowShort articles={props.featuredShouts.slice(12, 16)} />
+          <Row1 article={props.featuredShouts[16]} nodate={true} />
+          <Row3 articles={props.featuredShouts.slice(17, 20)} nodate={true} />
+          <Row3
+            articles={props.topCommentedShouts?.slice(0, 3) || []}
+            header={<h2>{t('Top commented')}</h2>}
+            nodate={true}
+          />
+          <Show when={Boolean(randomTopic())}>
+            <Group
+              articles={randomTopicArticles() || []}
+              header={
+                <div class={styles.randomTopicHeaderContainer}>
+                  <div class={styles.randomTopicHeader}>{capitalize(randomTopic()?.title || '', true)}</div>
+                  <div>
+                    <a class={styles.randomTopicHeaderLink} href={`/topic/${randomTopic()?.slug || ''}`}>
+                      {t('All articles')} <Icon class={styles.icon} name="arrow-right" />
+                    </a>
+                  </div>
+                </div>
+              }
+            />
+          </Show>
+
+          <ArticleCardSwiper title={t('Favorite')} slides={props.topRatedShouts} />
+
+          <Beside
+            beside={props.featuredShouts[20]}
+            title={t('Top topics')}
+            values={topTopics().slice(0, 5)}
+            wrapper={'topic'}
+            isTopicCompact={true}
+            nodate={true}
+          />
+          <Row3 articles={props.featuredShouts.slice(21, 24)} nodate={true} />
+          <Banner />
+          <Row2 articles={props.featuredShouts.slice(24, 26)} nodate={true} />
+          <Row3 articles={props.featuredShouts.slice(26, 29)} nodate={true} />
+          <Row2 articles={props.featuredShouts.slice(29, 31)} nodate={true} />
+          <Row3 articles={props.featuredShouts.slice(31, 34)} nodate={true} />
         </Show>
-
-        <ArticleCardSwiper title={t('Favorite')} slides={props.topRatedShouts} />
-
-        <Beside
-          beside={props.featuredShouts[20]}
-          title={t('Top topics')}
-          values={topTopics().slice(0, 5)}
-          wrapper={'topic'}
-          isTopicCompact={true}
-          nodate={true}
-        />
-        <Row3 articles={props.featuredShouts.slice(21, 24)} nodate={true} />
-        <Banner />
-        <Row2 articles={props.featuredShouts.slice(24, 26)} nodate={true} />
-        <Row3 articles={props.featuredShouts.slice(26, 29)} nodate={true} />
-        <Row2 articles={props.featuredShouts.slice(29, 31)} nodate={true} />
-        <Row3 articles={props.featuredShouts.slice(31, 34)} nodate={true} />
+        <For each={pages()}>
+          {(page) => (
+            <>
+              <Row1 article={page[0]} nodate={true} />
+              <Row3 articles={page.slice(1, 4)} nodate={true} />
+              <Row2 articles={page.slice(4, 6)} nodate={true} />
+              <Beside values={page.slice(6, 9)} beside={page[9]} wrapper="article" nodate={true} />
+              <Row1 article={page[10]} nodate={true} />
+              <Row2 articles={page.slice(11, 13)} nodate={true} />
+              <Row3 articles={page.slice(13, 16)} nodate={true} />
+            </>
+          )}
+        </For>
       </Show>
-      <For each={pages()}>
-        {(page) => (
-          <>
-            <Row1 article={page[0]} nodate={true} />
-            <Row3 articles={page.slice(1, 4)} nodate={true} />
-            <Row2 articles={page.slice(4, 6)} nodate={true} />
-            <Beside values={page.slice(6, 9)} beside={page[9]} wrapper="article" nodate={true} />
-            <Row1 article={page[10]} nodate={true} />
-            <Row2 articles={page.slice(11, 13)} nodate={true} />
-            <Row3 articles={page.slice(13, 16)} nodate={true} />
-          </>
-        )}
-      </For>
-    </Show>
+    </>
   )
 }

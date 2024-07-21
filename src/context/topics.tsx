@@ -5,15 +5,15 @@ import {
   createContext,
   createEffect,
   createMemo,
-  createReaction,
   createSignal,
   on,
+  onMount,
   useContext
 } from 'solid-js'
-import { loadTopics } from '~/lib/api'
-import { getRandomTopicsFromArray } from '~/utils/getRandomTopicsFromArray'
-import { Topic } from '../graphql/schema/core.gen'
-import { byTopicStatDesc } from '../utils/sortby'
+import { loadTopics } from '~/graphql/api/public'
+import { Topic } from '~/graphql/schema/core.gen'
+import { getRandomTopicsFromArray } from '~/lib/getRandomTopicsFromArray'
+import { byTopicStatDesc } from '../lib/sort'
 
 type TopicsContextType = {
   topicEntities: Accessor<{ [topicSlug: string]: Topic }>
@@ -31,7 +31,8 @@ const TopicsContext = createContext<TopicsContextType>({
   topTopics: () => [] as Topic[],
   setTopicsSort: (_s: string) => undefined,
   addTopics: (_ttt: Topic[]) => undefined,
-  loadTopics: async () => [] as Topic[]
+  loadTopics: async () => [] as Topic[],
+  randomTopic: () => undefined
 } as TopicsContextType)
 
 export function useTopics() {
@@ -44,7 +45,7 @@ const STORE_NAME = 'topics'
 const CACHE_LIFETIME = 24 * 60 * 60 * 1000 // один день в миллисекундах
 
 const setupIndexedDB = async () => {
-  if (!('indexedDB' in window)) {
+  if (window && !('indexedDB' in window)) {
     console.error("This browser doesn't support IndexedDB")
     return
   }
@@ -105,15 +106,15 @@ const saveTopicsToIndexedDB = async (db: IDBDatabase, topics: Topic[]) => {
     await tx.done
   }
 }
-export type TopicSort = 'shouts' | 'followers' | 'authors' | 'title' | ''
+export type TopicSort = 'shouts' | 'followers' | 'authors' | 'title'
 export const TopicsProvider = (props: { children: JSX.Element }) => {
   const [topicEntities, setTopicEntities] = createSignal<{ [topicSlug: string]: Topic }>({})
   const [sortedTopics, setSortedTopics] = createSignal<Topic[]>([])
-  const [sortAllBy, setSortAllBy] = createSignal<TopicSort>('')
+  const [sortAllBy, setSortAllBy] = createSignal<TopicSort>('shouts')
 
   createEffect(() => {
     const topics = Object.values(topicEntities())
-    console.debug('[context.topics] effect trig', topics)
+    // console.debug('[context.topics] effect trig', topics)
     switch (sortAllBy()) {
       case 'followers': {
         topics.sort(byTopicStatDesc('followers'))
@@ -162,20 +163,25 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
       }
     })
   }
-
   const [db, setDb] = createSignal()
+  createEffect(
+    on(
+      () => window?.indexedDB,
+      async (_raw) => {
+        const initialized = await setupIndexedDB()
+        setDb(initialized)
+      },
+      { defer: true }
+    )
+  )
 
   const loadAllTopics = async () => {
     const topicsLoader = loadTopics()
     const ttt = await topicsLoader()
+    ttt && addTopics(ttt)
     if (db()) await saveTopicsToIndexedDB(db() as IDBDatabase, ttt as Topic[])
     return ttt || []
   }
-
-  createReaction(async () => {
-    setDb(await setupIndexedDB())
-    console.info('[context.topics] idb loaded')
-  })
 
   const [randomTopic, setRandomTopic] = createSignal<Topic>()
   createEffect(
@@ -196,6 +202,20 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
       { defer: true }
     )
   )
+
+  const getCachedOrLoadTopics = async () => {
+    const { topics: stored } = await getTopicsFromIndexedDB(db() as IDBDatabase)
+    if (stored) {
+      setSortedTopics(stored)
+      return stored
+    }
+    const loaded = await loadAllTopics()
+    if (loaded) setSortedTopics(loaded)
+    return loaded
+  }
+
+  // preload all topics
+  onMount(getCachedOrLoadTopics)
 
   const value: TopicsContextType = {
     setTopicsSort: setSortAllBy,

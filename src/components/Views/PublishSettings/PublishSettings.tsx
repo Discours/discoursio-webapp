@@ -2,17 +2,17 @@ import { clsx } from 'clsx'
 import { Show, createEffect, createMemo, createSignal, lazy, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
+import { Button } from '~/components/_shared/Button'
+import { Icon } from '~/components/_shared/Icon'
+import { Image } from '~/components/_shared/Image'
+import { ShoutForm, useEditorContext } from '~/context/editor'
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import { useTopics } from '~/context/topics'
 import { useSnackbar, useUI } from '~/context/ui'
-import { ShoutForm, useEditorContext } from '../../../context/editor'
-import { useLocalize } from '../../../context/localize'
-import { useSession } from '../../../context/session'
-import { useTopics } from '../../../context/topics'
-import { Topic } from '../../../graphql/schema/core.gen'
+import { Topic } from '~/graphql/schema/core.gen'
 import { TopicSelect, UploadModalContent } from '../../Editor'
-import { Modal } from '../../Nav/Modal'
-import { Button } from '../../_shared/Button'
-import { Icon } from '../../_shared/Icon'
-import { Image } from '../../_shared/Image'
+import { Modal } from '../../_shared/Modal'
 
 import { useNavigate } from '@solidjs/router'
 import { UploadedFile } from '~/types/upload'
@@ -20,7 +20,7 @@ import stylesBeside from '../../Feed/Beside.module.scss'
 import styles from './PublishSettings.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
-const GrowingTextarea = lazy(() => import('../../_shared/GrowingTextarea/GrowingTextarea'))
+const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 const DESCRIPTION_MAX_LENGTH = 400
 
 type Props = {
@@ -144,7 +144,12 @@ export const PublishSettings = (props: Props) => {
   const handleSaveDraft = () => {
     saveShout({ ...props.form, ...settingsForm })
   }
-
+  const removeSpecial = (ev: InputEvent) => {
+    const input = ev.target as HTMLInputElement
+    const value = input.value
+    const newValue = value.startsWith('@') || value.startsWith('!') ? value.substring(1) : value
+    input.value = newValue
+  }
   return (
     <form class={clsx(styles.PublishSettings, 'inputs-wrapper')}>
       <div class="wide-container">
@@ -235,7 +240,7 @@ export const PublishSettings = (props: Props) => {
 
             <h4>{t('Slug')}</h4>
             <div class="pretty-form__item">
-              <input type="text" name="slug" id="slug" value={settingsForm.slug} />
+              <input type="text" name="slug" id="slug" value={settingsForm.slug} onInput={removeSpecial} />
               <label for="slug">{t('Slug')}</label>
             </div>
 

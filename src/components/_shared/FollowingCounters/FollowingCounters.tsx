@@ -1,8 +1,8 @@
 import { For, Show, createMemo } from 'solid-js'
 
-import { useLocalize } from '../../../context/localize'
+import { useLocalize } from '~/context/localize'
 
-import { Author, Topic } from '../../../graphql/schema/core.gen'
+import { Author, Topic } from '~/graphql/schema/core.gen'
 import { Userpic } from '../../Author/Userpic'
 
 import styles from './FollowingCounters.module.scss'

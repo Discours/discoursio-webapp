@@ -1,4 +1,4 @@
-import type { Shout } from '../../graphql/schema/core.gen'
+import type { Shout } from '~/graphql/schema/core.gen'
 
 import { For, Show, createEffect, createSignal } from 'solid-js'
 

@@ -1,14 +1,14 @@
 import type { Accessor, JSX } from 'solid-js'
 import { createContext, createSignal, useContext } from 'solid-js'
-import { chatApiUrl } from '~/config/config'
+import { chatApiUrl } from '~/config'
 import { useGraphQL } from '~/context/graphql'
 import createChatMutation from '~/graphql/mutation/chat/chat-create'
 import createMessageMutation from '~/graphql/mutation/chat/chat-message-create'
 import loadChatMessagesQuery from '~/graphql/query/chat/chat-messages-load-by'
 import loadChatsQuery from '~/graphql/query/chat/chats-load'
+import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '~/graphql/schema/chat.gen'
+import { Author } from '~/graphql/schema/core.gen'
 import { useAuthors } from '../context/authors'
-import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '../graphql/schema/chat.gen'
-import { Author } from '../graphql/schema/core.gen'
 import { SSEMessage, useConnect } from './connect'
 
 type InboxContextType = {

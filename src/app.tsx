@@ -4,6 +4,7 @@ import { FileRoutes } from '@solidjs/start/router'
 import { type JSX, Suspense } from 'solid-js'
 
 import { Loading } from './components/_shared/Loading'
+import { AuthorsProvider } from './context/authors'
 import { EditorProvider } from './context/editor'
 import { FeedProvider } from './context/feed'
 import { GraphQLClientProvider } from './context/graphql'
@@ -24,7 +25,9 @@ export const Providers = (props: { children?: JSX.Element }) => {
                 <Meta name="viewport" content="width=device-width, initial-scale=1" />
                 <UIProvider>
                   <EditorProvider>
-                    <Suspense fallback={<Loading />}>{props.children}</Suspense>
+                    <AuthorsProvider>
+                      <Suspense fallback={<Loading />}>{props.children}</Suspense>
+                    </AuthorsProvider>
                   </EditorProvider>
                 </UIProvider>
               </MetaProvider>

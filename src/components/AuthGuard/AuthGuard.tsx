@@ -1,7 +1,7 @@
 import { useSearchParams } from '@solidjs/router'
 import { JSX, Show, createEffect, createMemo, on } from 'solid-js'
+import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
-import { useSession } from '../../context/session'
 
 type Props = {
   children: JSX.Element

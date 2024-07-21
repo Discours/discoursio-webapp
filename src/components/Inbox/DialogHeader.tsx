@@ -1,4 +1,4 @@
-import type { Chat, ChatMember } from '../../graphql/schema/chat.gen'
+import type { Chat, ChatMember } from '~/graphql/schema/chat.gen'
 
 import DialogCard from './DialogCard'
 

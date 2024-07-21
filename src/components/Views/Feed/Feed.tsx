@@ -1,20 +1,23 @@
+import { A, createAsync, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
-
-import { Meta } from '@solidjs/meta'
-import { A, useLocation, useSearchParams } from '@solidjs/router'
+import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { DropDown } from '~/components/_shared/DropDown'
+import { Option } from '~/components/_shared/DropDown/DropDown'
+import { Icon } from '~/components/_shared/Icon'
+import { InviteMembers } from '~/components/_shared/InviteMembers'
+import { Loading } from '~/components/_shared/Loading'
+import { ShareModal } from '~/components/_shared/ShareModal'
+import { useAuthors } from '~/context/authors'
 import { useGraphQL } from '~/context/graphql'
+import { useLocalize } from '~/context/localize'
+import { useReactions } from '~/context/reactions'
+import { useSession } from '~/context/session'
+import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
-import getUnratedShoutsQuery from '~/graphql/query/core/articles-load-unrated'
-import { useAuthors } from '../../../context/authors'
-import { useFeed } from '../../../context/feed'
-import { useLocalize } from '../../../context/localize'
-import { useReactions } from '../../../context/reactions'
-import { useSession } from '../../../context/session'
-import { useTopics } from '../../../context/topics'
-import type { Author, LoadShoutsOptions, Reaction, Shout } from '../../../graphql/schema/core.gen'
-import { getImageUrl } from '../../../utils/getImageUrl'
-import { byCreated } from '../../../utils/sortby'
+import { loadUnratedShouts } from '~/graphql/api/private'
+import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
+import { byCreated } from '~/lib/sort'
+import { FeedSearchParams } from '~/routes/feed/[...order]'
 import { CommentDate } from '../../Article/CommentDate'
 import { getShareUrl } from '../../Article/SharePopup'
 import { AuthorBadge } from '../../Author/AuthorBadge'
@@ -24,199 +27,69 @@ import stylesBeside from '../../Feed/Beside.module.scss'
 import stylesTopic from '../../Feed/CardTopic.module.scss'
 import { Placeholder } from '../../Feed/Placeholder'
 import { Sidebar } from '../../Feed/Sidebar'
-import { Modal } from '../../Nav/Modal'
-import { DropDown } from '../../_shared/DropDown'
-import { Icon } from '../../_shared/Icon'
-import { InviteMembers } from '../../_shared/InviteMembers'
-import { Loading } from '../../_shared/Loading'
-import { ShareModal } from '../../_shared/ShareModal'
+import { Modal } from '../../_shared/Modal'
 import styles from './Feed.module.scss'
 
 export const FEED_PAGE_SIZE = 20
-const UNRATED_ARTICLES_COUNT = 5
+export type PeriodType = 'week' | 'month' | 'year'
 
-type FeedPeriod = 'week' | 'month' | 'year'
-type VisibilityMode = 'all' | 'community' | 'featured'
-
-type PeriodItem = {
-  value: FeedPeriod
-  title: string
+export type FeedProps = {
+  shouts: Shout[]
+  mode?: 'followed' | 'discussed' | 'coauthored' | 'unrated' | 'all'
+  order?: '' | 'likes' | 'hot'
 }
 
-type VisibilityItem = {
-  value: VisibilityMode
-  title: string
+const PERIODS = {
+  day: 24 * 60 * 60,
+  month: 30 * 24 * 60 * 60,
+  year: 365 * 24 * 60 * 60
 }
 
-type FeedSearchParams = {
-  by: 'publish_date' | 'likes' | 'last_comment'
-  period: FeedPeriod
-  visibility: VisibilityMode
-}
-
-type Props = {
-  loadShouts: (options: LoadShoutsOptions) => Promise<{
-    hasMore: boolean
-    newShouts: Shout[]
-  }>
-}
-
-const getFromDate = (period: FeedPeriod): number => {
-  const now = new Date()
-  let d: Date = now
-  switch (period) {
-    case 'week': {
-      d = new Date(now.setDate(now.getDate() - 7))
-      break
-    }
-    case 'month': {
-      d = new Date(now.setMonth(now.getMonth() - 1))
-      break
-    }
-    case 'year': {
-      d = new Date(now.setFullYear(now.getFullYear() - 1))
-      break
-    }
-  }
-  return Math.floor(d.getTime() / 1000)
-}
-
-export const FeedView = (props: Props) => {
+export const FeedView = (props: FeedProps) => {
   const { t } = useLocalize()
-
-  const monthPeriod: PeriodItem = { value: 'month', title: t('This month') }
-
-  const periods: PeriodItem[] = [
-    { value: 'week', title: t('This week') },
-    monthPeriod,
-    { value: 'year', title: t('This year') }
-  ]
-
-  const visibilities: VisibilityItem[] = [
-    { value: 'community', title: t('All') },
-    { value: 'featured', title: t('Published') }
-  ]
-  const { query } = useGraphQL()
-  const [searchParams, changeSearchParams] = useSearchParams<FeedSearchParams>()
   const loc = useLocation()
+  const client = useGraphQL()
+  const unrated = createAsync(async () => {
+    if (client) {
+      const shoutsLoader = loadUnratedShouts(client, { limit: 5 })
+      return await shoutsLoader()
+    }
+  })
+  const navigate = useNavigate()
   const { showModal } = useUI()
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
   const { session } = useSession()
   const { loadReactionsBy } = useReactions()
-  const { sortedFeed } = useFeed()
   const { topTopics } = useTopics()
   const { topAuthors } = useAuthors()
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
-  const [unratedArticles, setUnratedArticles] = createSignal<Shout[]>([])
-  const [_searchResults, setSearchResults] = createSignal<Shout[]>([])
-
-  const currentPeriod = createMemo(() => {
-    const period = periods.find((p) => p.value === searchParams?.period)
-    if (!period) {
-      return monthPeriod
-    }
-    return period
-  })
-
-  const currentVisibility = createMemo(() => {
-    const visibility = visibilities.find((v) => v.value === searchParams?.visibility)
-    if (!visibility) {
-      return visibilities[0]
-    }
-    return visibility
-  })
-
-  const loadUnratedArticles = async () => {
-    if (session()) {
-      const resp = await query(getUnratedShoutsQuery, { limit: UNRATED_ARTICLES_COUNT }).toPromise()
-      setUnratedArticles(resp?.data?.load_shouts_unrated || [])
-    }
-  }
-
+  const [searchParams, changeSearchParams] = useSearchParams<FeedSearchParams>()
   const loadTopComments = async () => {
     const comments = await loadReactionsBy({ by: { comment: true }, limit: 50 })
     setTopComments(comments.sort(byCreated).reverse())
   }
 
-  onMount(() => {
-    loadMore()
-    // eslint-disable-next-line promise/catch-or-return
-    Promise.all([loadTopComments()]).finally(() => setIsRightColumnLoaded(true))
-  })
-
+  // post-load
   createEffect(
     on(
-      [() => session(), unratedArticles],
-      ([s, seen]) => {
-        if (s?.access_token && !(seen?.length > 0)) loadUnratedArticles()
+      () => props.shouts,
+      (sss?: Shout[]) => {
+        if (sss && Array.isArray(sss)) {
+          setIsLoading(true)
+          Promise.all([
+            loadTopComments(),
+            loadReactionsBy({ by: { shouts: sss.map((s: Shout) => s.slug) } })
+          ]).finally(() => {
+            console.debug('[views.feed] finally loaded reactions, data loading finished')
+            setIsRightColumnLoaded(true)
+            setIsLoading(false)
+          })
+        }
       },
       { defer: true }
     )
   )
-
-  // TODO: declare some details
-  createEffect(
-    on(
-      () => searchParams,
-      (_p) => {
-        setSearchResults([])
-        loadMore()
-      },
-      { defer: true }
-    )
-  )
-
-  const loadFeedShouts = () => {
-    const options: LoadShoutsOptions = {
-      limit: FEED_PAGE_SIZE,
-      offset: sortedFeed()?.length || 0
-    }
-
-    if (searchParams?.by) {
-      options.order_by = searchParams?.by
-    }
-
-    const visibilityMode = searchParams?.visibility
-
-    if (visibilityMode === 'all') {
-      options.filters = { ...options.filters }
-    } else if (visibilityMode) {
-      options.filters = {
-        ...options.filters,
-        featured: visibilityMode === 'featured'
-      }
-    }
-
-    if (searchParams?.by && searchParams?.by !== 'publish_date') {
-      const period = searchParams?.period || 'month'
-      options.filters = { after: getFromDate(period) }
-    }
-
-    return props.loadShouts(options)
-  }
-
-  const loadMore = async () => {
-    setIsLoading(true)
-    const { hasMore, newShouts } = await loadFeedShouts()
-
-    setIsLoading(false)
-
-    loadReactionsBy({
-      by: {
-        shouts: newShouts.map((s) => s.slug)
-      }
-    })
-
-    setIsLoadMoreButtonVisible(hasMore)
-  }
-
-  const ogImage = getImageUrl('production/image/logo_image.png')
-  const description = t(
-    'Independent media project about culture, science, art and society with horizontal editing'
-  )
-  const ogTitle = t('Feed')
 
   const [shareData, setShareData] = createSignal<Shout | undefined>()
   const handleShare = (shared: Shout | undefined) => {
@@ -224,18 +97,15 @@ export const FeedView = (props: Props) => {
     setShareData(shared)
   }
 
+  const asOption = (o: string) => {
+    const value = Math.floor(Date.now() / 1000) - PERIODS[o as keyof typeof PERIODS]
+    return { value, title: t(o) }
+  }
+  const asOptions = (opts: string[]) => opts.map(asOption)
+  const currentPeriod = createMemo(() => asOption(searchParams?.period || ''))
+
   return (
-    <div class="wide-container feed">
-      <Meta name="descprition" content={description} />
-      <Meta name="keywords" content={t('keywords')} />
-      <Meta name="og:type" content="article" />
-      <Meta name="og:title" content={ogTitle} />
-      <Meta name="og:image" content={ogImage} />
-      <Meta name="twitter:image" content={ogImage} />
-      <Meta name="og:description" content={description} />
-      <Meta name="twitter:card" content="summary_large_image" />
-      <Meta name="twitter:title" content={ogTitle} />
-      <Meta name="twitter:description" content={description} />
+    <div class="feed">
       <div class="row">
         <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
           <Sidebar />
@@ -246,64 +116,54 @@ export const FeedView = (props: Props) => {
             <Placeholder type={loc?.pathname} mode="feed" />
           </Show>
 
-          <Show when={(session() || loc?.pathname === 'feed') && sortedFeed().length}>
+          <Show when={(session() || loc?.pathname === 'feed') && props.shouts?.length}>
             <div class={styles.filtersContainer}>
               <ul class={clsx('view-switcher', styles.feedFilter)}>
-                <li
-                  class={clsx({
-                    'view-switcher__item--selected':
-                      searchParams?.by === 'publish_date' || !searchParams?.by
-                  })}
-                >
+                <li class={clsx({ 'view-switcher__item--selected': !props.order })}>
                   <A href={loc.pathname}>{t('Recent')}</A>
                 </li>
-                {/*<li>*/}
-                {/*  <a href="/feed/?by=views">{t('Most read')}</a>*/}
-                {/*</li>*/}
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': searchParams?.by === 'likes'
+                    'view-switcher__item--selected': props.order === 'likes'
                   })}
                 >
-                  <span class="link" onClick={() => changeSearchParams({ by: 'likes' })}>
-                    {t('Top rated')}
-                  </span>
+                  <A class="link" href={'/feed/likes'}>
+                    {t('Liked')}
+                  </A>
                 </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': searchParams?.by === 'last_comment'
+                    'view-switcher__item--selected': props.order === 'hot'
                   })}
                 >
-                  <span class="link" onClick={() => changeSearchParams({ by: 'last_comment' })}>
-                    {t('Most commented')}
-                  </span>
+                  <A class="link" href={'/feed/hot'}>
+                    {t('Commented')}
+                  </A>
                 </li>
               </ul>
               <div class={styles.dropdowns}>
-                <Show when={searchParams?.by && searchParams?.by !== 'publish_date'}>
+                <Show when={searchParams?.period}>
                   <DropDown
                     popupProps={{ horizontalAnchor: 'right' }}
-                    options={periods}
+                    options={asOptions(['week', 'month', 'year'])}
                     currentOption={currentPeriod()}
                     triggerCssClass={styles.periodSwitcher}
-                    onChange={(period: PeriodItem) => changeSearchParams({ period: period.value })}
+                    onChange={(period: Option) => changeSearchParams({ period: period.value })}
                   />
                 </Show>
                 <DropDown
                   popupProps={{ horizontalAnchor: 'right' }}
-                  options={visibilities}
-                  currentOption={currentVisibility()}
+                  options={asOptions(['all', 'featured', 'followed', 'unrated', 'discussed', 'coauthored'])}
+                  currentOption={asOption(props.mode || '')}
                   triggerCssClass={styles.periodSwitcher}
-                  onChange={(visibility: VisibilityItem) =>
-                    changeSearchParams({ visibility: visibility.value })
-                  }
+                  onChange={(mode: Option) => navigate(`/feed/${mode.value}`)}
                 />
               </div>
             </div>
 
             <Show when={!isLoading()} fallback={<Loading />}>
-              <Show when={sortedFeed().length > 0}>
-                <For each={sortedFeed().slice(0, 4)}>
+              <Show when={(props.shouts || []).length > 0}>
+                <For each={(props.shouts || []).slice(0, 4)}>
                   {(article) => (
                     <ArticleCard
                       onShare={(shared) => handleShare(shared)}
@@ -318,7 +178,7 @@ export const FeedView = (props: Props) => {
                 <div class={styles.asideSection}>
                   <div class={stylesBeside.besideColumnTitle}>
                     <h4>{t('Popular authors')}</h4>
-                    <a href="/authors">
+                    <a href="/author">
                       {t('All authors')}
                       <Icon name="arrow-right" class={stylesBeside.icon} />
                     </a>
@@ -335,19 +195,11 @@ export const FeedView = (props: Props) => {
                   </ul>
                 </div>
 
-                <For each={sortedFeed().slice(4)}>
+                <For each={(props.shouts || []).slice(4)}>
                   {(article) => (
                     <ArticleCard article={article} settings={{ isFeedMode: true }} desktopCoverSize="M" />
                   )}
                 </For>
-              </Show>
-
-              <Show when={isLoadMoreButtonVisible()}>
-                <p class="load-more-container">
-                  <button class="button" onClick={loadMore}>
-                    {t('Load more')}
-                  </button>
-                </p>
               </Show>
             </Show>
           </Show>
@@ -412,10 +264,10 @@ export const FeedView = (props: Props) => {
                 </li>
               </ul>
             </section>
-            <Show when={unratedArticles()}>
+            <Show when={unrated()}>
               <section class={clsx(styles.asideSection)}>
                 <h4>{t('Be the first to rate')}</h4>
-                <For each={unratedArticles()}>
+                <For each={unrated()}>
                   {(article) => (
                     <ArticleCard article={article} settings={{ noimage: true, nodate: true }} />
                   )}

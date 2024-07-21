@@ -9,9 +9,9 @@ import markSeenMutation from '~/graphql/mutation/notifier/mark-seen'
 import markSeenAfterMutation from '~/graphql/mutation/notifier/mark-seen-after'
 import markSeenThreadMutation from '~/graphql/mutation/notifier/mark-seen-thread'
 import getNotifications from '~/graphql/query/notifier/notifications-load'
+import { NotificationGroup, QueryLoad_NotificationsArgs } from '~/graphql/schema/core.gen'
 import { NotificationsPanel } from '../components/NotificationsPanel'
 import { ShowIfAuthenticated } from '../components/_shared/ShowIfAuthenticated'
-import { NotificationGroup, QueryLoad_NotificationsArgs } from '../graphql/schema/core.gen'
 import { SSEMessage, useConnect } from './connect'
 import { useGraphQL } from './graphql'
 import { useSession } from './session'
@@ -89,7 +89,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
       if (data.entity === 'reaction' && authorized()) {
         console.info('[context.notifications] event', data)
         loadNotificationsGrouped({
-          after: after() || Date.now(),
+          after: after() || now,
           limit: Math.max(PAGE_SIZE, loadedNotificationsCount())
         })
       }
@@ -108,14 +108,14 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const markSeenAll = async () => {
     if (authorized()) {
       const _resp = await mutation(markSeenAfterMutation, { after: after() }).toPromise()
-      await loadNotificationsGrouped({ after: after() || Date.now(), limit: loadedNotificationsCount() })
+      await loadNotificationsGrouped({ after: after() || now, limit: loadedNotificationsCount() })
     }
   }
 
   const markSeen = async (notification_id: number) => {
     if (authorized()) {
       await mutation(markSeenMutation, { notification_id }).toPromise()
-      await loadNotificationsGrouped({ after: after() || Date.now(), limit: loadedNotificationsCount() })
+      await loadNotificationsGrouped({ after: after() || now, limit: loadedNotificationsCount() })
     }
   }
 

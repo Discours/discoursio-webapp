@@ -5,10 +5,18 @@ import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
-import { Author, Reaction, ReactionKind, ReactionSort } from '~/graphql/schema/core.gen'
+import {
+  Author,
+  QueryLoad_Reactions_ByArgs,
+  Reaction,
+  ReactionKind,
+  ReactionSort
+} from '~/graphql/schema/core.gen'
 import { byCreated, byStat } from '~/lib/sort'
 import { SortFunction } from '~/types/common'
 import { Button } from '../_shared/Button'
+import { InlineLoader } from '../_shared/InlineLoader'
+import { LoadMoreItems, LoadMoreWrapper } from '../_shared/LoadMoreWrapper'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import styles from './Article.module.scss'
 import { Comment } from './Comment'
@@ -20,6 +28,7 @@ type Props = {
   shoutSlug: string
   shoutId: number
 }
+const COMMENTS_PER_PAGE = 50
 
 export const CommentsTree = (props: Props) => {
   const { session } = useSession()
@@ -29,7 +38,7 @@ export const CommentsTree = (props: Props) => {
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
   const [clearEditor, setClearEditor] = createSignal(false)
   const [clickedReplyId, setClickedReplyId] = createSignal<number>()
-  const { reactionEntities, createReaction, loadReactionsBy } = useReactions()
+  const { reactionEntities, createReaction, loadReactionsBy, addReactions } = useReactions()
 
   const comments = createMemo(() =>
     Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
@@ -89,6 +98,23 @@ export const CommentsTree = (props: Props) => {
     setClearEditor(false)
     setPosting(false)
   }
+  const [commentsLoading, setCommentsLoading] = createSignal(false)
+  const [pagination, setPagination] = createSignal(0)
+  const loadMoreComments = async () => {
+    setCommentsLoading(true)
+    const next = pagination() + 1
+    const offset = next * COMMENTS_PER_PAGE
+    const opts: QueryLoad_Reactions_ByArgs = {
+      by: { comment: true, shout: props.shoutSlug },
+      limit: COMMENTS_PER_PAGE,
+      offset
+    }
+    const rrr = await loadReactionsBy(opts)
+    rrr && addReactions(rrr)
+    rrr && setPagination(next)
+    setCommentsLoading(false)
+    return rrr as LoadMoreItems
+  }
 
   return (
     <>
@@ -127,20 +153,31 @@ export const CommentsTree = (props: Props) => {
           </ul>
         </Show>
       </div>
-      <ul class={styles.comments}>
-        <For each={sortedComments().filter((r) => !r.reply_to)}>
-          {(reaction) => (
-            <Comment
-              sortedComments={sortedComments()}
-              isArticleAuthor={Boolean(props.articleAuthors.some((a) => a?.id === reaction.created_by.id))}
-              comment={reaction}
-              clickedReply={(id) => setClickedReplyId(id)}
-              clickedReplyId={clickedReplyId()}
-              lastSeen={shoutLastSeen()}
-            />
-          )}
-        </For>
-      </ul>
+      <Show when={commentsLoading()}>
+        <InlineLoader />
+      </Show>
+      <LoadMoreWrapper
+        loadFunction={loadMoreComments}
+        pageSize={COMMENTS_PER_PAGE}
+        hidden={commentsLoading()}
+      >
+        <ul class={styles.comments}>
+          <For each={sortedComments().filter((r) => !r.reply_to)}>
+            {(reaction) => (
+              <Comment
+                sortedComments={sortedComments()}
+                isArticleAuthor={Boolean(
+                  props.articleAuthors.some((a) => a?.id === reaction.created_by.id)
+                )}
+                comment={reaction}
+                clickedReply={(id) => setClickedReplyId(id)}
+                clickedReplyId={clickedReplyId()}
+                lastSeen={shoutLastSeen()}
+              />
+            )}
+          </For>
+        </ul>
+      </LoadMoreWrapper>
       <ShowIfAuthenticated
         fallback={
           <div class={styles.signInMessage}>

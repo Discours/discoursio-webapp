@@ -6,10 +6,9 @@ import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMou
 import { isServer } from 'solid-js/web'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
-import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
-import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
+import { type Author, type Maybe, type Shout, type Topic } from '~/graphql/schema/core.gen'
 import { processPrepositions } from '~/intl/prepositions'
 import { isCyrillic } from '~/intl/translate'
 import { getImageUrl } from '~/lib/getThumbUrl'
@@ -63,42 +62,17 @@ const scrollTo = (el: HTMLElement) => {
 }
 
 const imgSrcRegExp = /<img[^>]+src\s*=\s*["']([^"']+)["']/gi
-const COMMENTS_PER_PAGE = 30
-const VOTES_PER_PAGE = 50
 
 export const FullArticle = (props: Props) => {
   const [searchParams, changeSearchParams] = useSearchParams<ArticlePageSearchParams>()
   const { showModal } = useUI()
-  const { loadReactionsBy } = useReactions()
   const [selectedImage, setSelectedImage] = createSignal('')
-  const [isReactionsLoaded, setIsReactionsLoaded] = createSignal(false)
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const { t, formatDate, lang } = useLocalize()
   const { session, requireAuthentication } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { addSeen } = useFeed()
   const formattedDate = createMemo(() => formatDate(new Date((props.article.published_at || 0) * 1000)))
-
-  const [pages, setPages] = createSignal<Record<string, number>>({})
-  createEffect(
-    on(
-      pages,
-      async (p: Record<string, number>) => {
-        await loadReactionsBy({
-          by: { shout: props.article.slug, comment: true },
-          limit: COMMENTS_PER_PAGE,
-          offset: COMMENTS_PER_PAGE * p.comments || 0
-        })
-        await loadReactionsBy({
-          by: { shout: props.article.slug, rating: true },
-          limit: VOTES_PER_PAGE,
-          offset: VOTES_PER_PAGE * p.rating || 0
-        })
-        setIsReactionsLoaded(true)
-      },
-      { defer: true }
-    )
-  )
 
   const canEdit = createMemo(
     () =>
@@ -167,7 +141,7 @@ export const FullArticle = (props: Props) => {
   let commentsRef: HTMLDivElement | undefined
 
   createEffect(() => {
-    if (searchParams?.commentId && isReactionsLoaded()) {
+    if (searchParams?.commentId) {
       const commentElement = document.querySelector<HTMLElement>(
         `[id='comment_${searchParams?.commentId}']`
       )
@@ -314,11 +288,8 @@ export const FullArticle = (props: Props) => {
       }
     )
   )
-  const [ratings, setRatings] = createSignal<Reaction[]>([])
 
   onMount(async () => {
-    // install('G-LQ4B87H8C2')
-    await loadReactionsBy({ by: { shout: props.article.slug } })
     addSeen(props.article.slug)
     document.title = props.article.title
     updateIframeSizes()
@@ -453,11 +424,7 @@ export const FullArticle = (props: Props) => {
           <div class="col-md-16 offset-md-5">
             <div class={styles.shoutStats}>
               <div class={styles.shoutStatsItem}>
-                <ShoutRatingControl
-                  shout={props.article}
-                  class={styles.ratingControl}
-                  ratings={ratings()}
-                />
+                <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
               </div>
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>
@@ -593,13 +560,11 @@ export const FullArticle = (props: Props) => {
               </For>
             </div>
             <div id="comments" ref={(el) => (commentsRef = el)}>
-              <Show when={isReactionsLoaded()}>
-                <CommentsTree
-                  shoutId={props.article.id}
-                  shoutSlug={props.article.slug}
-                  articleAuthors={props.article.authors as Author[]}
-                />
-              </Show>
+              <CommentsTree
+                shoutId={props.article.id}
+                shoutSlug={props.article.slug}
+                articleAuthors={props.article.authors as Author[]}
+              />
             </div>
           </div>
         </div>

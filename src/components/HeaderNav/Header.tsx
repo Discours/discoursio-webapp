@@ -1,24 +1,20 @@
 import { A, redirect, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
-
-import type { Topic } from '~/graphql/schema/core.gen'
-import { getRandomTopicsFromArray } from '~/lib/getRandomTopicsFromArray'
-
+import { Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
-import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
-import { SharePopup, getShareUrl } from '../../Article/SharePopup'
-import { Icon } from '../../_shared/Icon'
-import { Newsletter } from '../../_shared/Newsletter'
+import { SharePopup, getShareUrl } from '../Article/SharePopup'
 import { AuthModal } from '../AuthModal'
-import { ConfirmModal } from '../ConfirmModal'
-import { HeaderAuth } from '../HeaderAuth'
-import { Modal } from '../Modal'
 import { SearchModal } from '../SearchModal/SearchModal'
-import { Snackbar } from '../Snackbar'
+import { Snackbar } from '../Snackbar/Snackbar'
+import { RandomTopics } from '../TopicsNav/TopicsNav'
+import { ConfirmModal } from '../_shared/ConfirmModal'
+import { Icon } from '../_shared/Icon'
+import { Modal } from '../_shared/Modal'
+import { Newsletter } from '../_shared/Newsletter'
 import styles from './Header.module.scss'
+import { HeaderAuth } from './HeaderAuth'
 import { Link } from './HeaderLink'
 
 type Props = {
@@ -43,8 +39,6 @@ export const Header = (props: Props) => {
   const { modal } = useUI()
   const { requireAuthentication } = useSession()
   const [searchParams] = useSearchParams<HeaderSearchParams>()
-  const { sortedTopics: topics } = useTopics()
-  const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
@@ -57,16 +51,7 @@ export const Header = (props: Props) => {
   const { session } = useSession()
   const toggleFixed = () => setFixed(!fixed())
 
-  const tag = (topic: Topic) =>
-    /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
-
   let windowScrollTop = 0
-
-  createEffect(() => {
-    if (topics()?.length) {
-      setRandomTopics(getRandomTopicsFromArray(topics()))
-    }
-  })
 
   createEffect(() => {
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
@@ -439,25 +424,7 @@ export const Header = (props: Props) => {
             onMouseOver={clearTimer}
             onMouseOut={hideSubnavigation}
           >
-            <ul class="nodash">
-              <Show when={randomTopics().length > 0}>
-                <For each={randomTopics()}>
-                  {(topic: Topic) => (
-                    <li class="item">
-                      <A href={`/topic/${topic.slug}`}>
-                        <span>#{tag(topic)}</span>
-                      </A>
-                    </li>
-                  )}
-                </For>
-                <li class={styles.rightItem}>
-                  <A href="/topic">
-                    {t('All topics')}
-                    <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
-                  </A>
-                </li>
-              </Show>
-            </ul>
+            <RandomTopics />
           </div>
 
           <div

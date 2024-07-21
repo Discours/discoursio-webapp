@@ -1,9 +1,49 @@
+import { A, useMatch } from '@solidjs/router'
 import { clsx } from 'clsx'
+import { For, Show, createEffect, createSignal, on, onMount } from 'solid-js'
 import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'
-
-import { A, useMatch } from '@solidjs/router'
+import { useTopics } from '~/context/topics'
+import type { Topic } from '~/graphql/schema/core.gen'
+import { getRandomTopicsFromArray } from '~/lib/getRandomTopicsFromArray'
 import styles from './TopicsNav.module.scss'
+
+export const RandomTopics = () => {
+  const { sortedTopics } = useTopics()
+  const { lang, t } = useLocalize()
+  const tag = (topic: Topic) =>
+    /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
+  const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
+  createEffect(
+    on(sortedTopics, (ttt: Topic[]) => {
+      if (ttt?.length) {
+        setRandomTopics(getRandomTopicsFromArray(ttt))
+      }
+    })
+  )
+  onMount(() => sortedTopics() && getRandomTopicsFromArray(sortedTopics()))
+  return (
+    <ul class="nodash">
+      <Show when={randomTopics().length > 0}>
+        <For each={randomTopics()}>
+          {(topic: Topic) => (
+            <li class="item">
+              <A href={`/topic/${topic.slug}`}>
+                <span>#{tag(topic)}</span>
+              </A>
+            </li>
+          )}
+        </For>
+        <li class={styles.rightItem}>
+          <A href="/topic">
+            {t('All topics')}
+            <Icon name="arrow-right-black" class={clsx(styles.icon, styles.rightItemIcon)} />
+          </A>
+        </li>
+      </Show>
+    </ul>
+  )
+}
 
 export const TopicsNav = () => {
   const { t } = useLocalize()

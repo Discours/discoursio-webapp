@@ -2,8 +2,8 @@ import { UpdateProfileInput } from '@authorizerdev/authorizer-js'
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal, on } from 'solid-js'
 import { AuthGuard } from '~/components/AuthGuard'
-import { PasswordField } from '~/components/Nav/AuthModal/PasswordField'
-import { ProfileSettingsNavigation } from '~/components/Nav/ProfileSettingsNavigation'
+import { PasswordField } from '~/components/AuthModal/PasswordField'
+import { ProfileSettingsNavigation } from '~/components/ProfileNav'
 import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
 import { Loading } from '~/components/_shared/Loading'
@@ -183,7 +183,7 @@ export const ProfileSecurityView = (_props: any) => {
                       <PasswordField
                         onFocus={() => setOldPasswordError()}
                         setError={oldPasswordError()}
-                        onInput={(value) => handleInputChange('oldPassword', value)}
+                        onInput={(value: string) => handleInputChange('oldPassword', value)}
                         value={formData()['oldPassword'] || undefined}
                         disabled={isSubmitting()}
                       />
@@ -191,7 +191,7 @@ export const ProfileSecurityView = (_props: any) => {
 
                     <h5>{t('New password')}</h5>
                     <PasswordField
-                      onInput={(value) => {
+                      onInput={(value: string) => {
                         handleInputChange('newPassword', value)
                         handleInputChange('newPasswordConfirm', '')
                       }}
@@ -207,7 +207,7 @@ export const ProfileSecurityView = (_props: any) => {
                         value={formData?.()['newPasswordConfirm']}
                         onFocus={() => setNewPasswordError()}
                         setError={newPasswordError()}
-                        onInput={(value) => handleCheckNewPassword(value)}
+                        onInput={handleCheckNewPassword}
                         disabled={isSubmitting()}
                         disableAutocomplete={true}
                       />

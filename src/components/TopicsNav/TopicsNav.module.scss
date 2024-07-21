@@ -76,3 +76,17 @@
     }
   }
 }
+
+.rightItem {
+  margin-right: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.rightItemIcon {
+  display: inline-block;
+  margin-left: 0.3em;
+  position: relative;
+  top: 0.15em;
+}

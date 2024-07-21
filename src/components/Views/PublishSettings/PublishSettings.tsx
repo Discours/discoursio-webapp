@@ -12,7 +12,7 @@ import { useTopics } from '~/context/topics'
 import { useSnackbar, useUI } from '~/context/ui'
 import { Topic } from '~/graphql/schema/core.gen'
 import { TopicSelect, UploadModalContent } from '../../Editor'
-import { Modal } from '../../Nav/Modal'
+import { Modal } from '../../_shared/Modal'
 
 import { useNavigate } from '@solidjs/router'
 import { UploadedFile } from '~/types/upload'

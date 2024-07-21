@@ -1,6 +1,6 @@
 import { A, useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { ConditionalWrapper } from '../../_shared/ConditionalWrapper'
+import { ConditionalWrapper } from '../_shared/ConditionalWrapper'
 import styles from './Header.module.scss'
 
 type Props = {

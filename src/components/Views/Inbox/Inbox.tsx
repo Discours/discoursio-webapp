@@ -21,7 +21,7 @@ import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
 import MessagesFallback from '../../Inbox/MessagesFallback'
 import Search from '../../Inbox/Search'
-import { Modal } from '../../Nav/Modal'
+import { Modal } from '../../_shared/Modal'
 
 import { useSearchParams } from '@solidjs/router'
 import styles from './Inbox.module.scss'

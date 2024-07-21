@@ -7,7 +7,7 @@ import { useLocalize } from '~/context/localize'
 import type { Shout } from '~/graphql/schema/core.gen'
 import { byScore } from '~/lib/sort'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
-import { FEED_PAGE_SIZE } from '../../Views/Feed/Feed'
+import { FEED_PAGE_SIZE } from '../Views/Feed/Feed'
 import styles from './SearchModal.module.scss'
 import { SearchResultItem } from './SearchResultItem'
 

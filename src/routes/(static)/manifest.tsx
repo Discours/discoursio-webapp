@@ -1,7 +1,7 @@
 import { Feedback } from '~/components/Discours/Feedback'
-import { Modal } from '~/components/Nav/Modal'
-import { Opener } from '~/components/Nav/Modal/Opener'
 import { StaticPage } from '~/components/Views/StaticPage'
+import { Modal } from '~/components/_shared/Modal'
+import { Opener } from '~/components/_shared/Modal/Opener'
 import { Newsletter } from '~/components/_shared/Newsletter'
 
 export default () => (

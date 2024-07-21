@@ -1,6 +1,6 @@
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { Modal } from '../../Nav/Modal'
+import { Modal } from '../Modal'
 import { ShareLinks } from '../ShareLinks'
 
 type Props = {

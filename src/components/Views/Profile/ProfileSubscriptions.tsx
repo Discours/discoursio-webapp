@@ -8,7 +8,7 @@ import { Author, Topic } from '~/graphql/schema/core.gen'
 import { dummyFilter } from '~/lib/dummyFilter'
 import stylesSettings from '../../../styles/FeedSettings.module.scss'
 import { AuthorBadge } from '../../Author/AuthorBadge'
-import { ProfileSettingsNavigation } from '../../Nav/ProfileSettingsNavigation'
+import { ProfileSettingsNavigation } from '../../ProfileNav'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import styles from '../Profile/Settings.module.scss'
 

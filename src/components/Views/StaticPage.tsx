@@ -1,7 +1,7 @@
 import { JSX, onMount } from 'solid-js'
 import { processPrepositions } from '~/intl/prepositions'
-import { TableOfContents } from '../TableOfContents'
 import { PageLayout } from '../_shared/PageLayout'
+import { TableOfContents } from '../_shared/TableOfContents'
 
 type Props = {
   title: string

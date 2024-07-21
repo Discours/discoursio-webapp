@@ -1,3 +1,4 @@
+import { A, useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Show, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 import { useEditorContext } from '~/context/editor'
@@ -7,15 +8,13 @@ import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
 import type { Author } from '~/graphql/schema/core.gen'
 import { Userpic } from '../Author/Userpic'
+import { ProfilePopup } from '../ProfileNav/ProfilePopup'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Popover } from '../_shared/Popover'
-import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-
-import { A, useLocation } from '@solidjs/router'
 import { Popup } from '../_shared/Popup'
-import styles from './Header/Header.module.scss'
-import { ProfilePopup } from './ProfilePopup'
+import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+import styles from './Header.module.scss'
 
 type Props = {
   setIsProfilePopupVisible: (value: boolean) => void

@@ -1,5 +1,5 @@
 import { useLocalize } from '~/context/localize'
-import { Loading } from '../_shared/Loading'
+import { Loading } from '../Loading'
 import styles from './InlineLoader.module.scss'
 
 type Props = {

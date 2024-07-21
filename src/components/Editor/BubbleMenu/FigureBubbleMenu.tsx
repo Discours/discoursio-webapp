@@ -5,7 +5,7 @@ import { Icon } from '~/components/_shared/Icon'
 import { Popover } from '~/components/_shared/Popover'
 import { useLocalize } from '~/context/localize'
 import { UploadedFile } from '~/types/upload'
-import { Modal } from '../../Nav/Modal'
+import { Modal } from '../../_shared/Modal'
 import { UploadModalContent } from '../UploadModalContent'
 
 import { useUI } from '~/context/ui'

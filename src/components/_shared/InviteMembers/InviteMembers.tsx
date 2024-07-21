@@ -8,9 +8,9 @@ import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
 import { Author } from '~/graphql/schema/core.gen'
 import { AuthorBadge } from '../../Author/AuthorBadge'
-import { InlineLoader } from '../../InlineLoader'
 import { Button } from '../Button'
 import { DropdownSelect } from '../DropdownSelect'
+import { InlineLoader } from '../InlineLoader'
 
 import styles from './InviteMembers.module.scss'
 

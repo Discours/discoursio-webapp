@@ -34,8 +34,8 @@ import { Editor, Panel } from '../../Editor'
 import { AudioUploader } from '../../Editor/AudioUploader'
 import { AutoSaveNotice } from '../../Editor/AutoSaveNotice'
 import { VideoUploader } from '../../Editor/VideoUploader'
-import { Modal } from '../../Nav/Modal'
-import { TableOfContents } from '../../TableOfContents'
+import { Modal } from '../../_shared/Modal'
+import { TableOfContents } from '../../_shared/TableOfContents'
 import styles from './EditView.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))

@@ -1,6 +1,6 @@
 import { Params, RouteSectionProps, createAsync } from '@solidjs/router'
 import { createEffect, createMemo, on } from 'solid-js'
-import { TopicsNav } from '~/components/Nav/TopicsNav'
+import { TopicsNav } from '~/components/TopicsNav'
 import { Expo } from '~/components/Views/Expo'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'

@@ -10,7 +10,7 @@ import ruKeywords from '~/intl/locales/ru/keywords.json'
 import { getImageUrl, getOpenGraphImageUrl } from '~/lib/getThumbUrl'
 import { descFromBody } from '~/utils/meta'
 import { FooterView } from '../Discours/Footer'
-import { Header } from '../Nav/Header'
+import { Header } from '../HeaderNav'
 import styles from './PageLayout.module.scss'
 
 type PageLayoutProps = {

@@ -27,7 +27,7 @@ import stylesBeside from '../../Feed/Beside.module.scss'
 import stylesTopic from '../../Feed/CardTopic.module.scss'
 import { Placeholder } from '../../Feed/Placeholder'
 import { Sidebar } from '../../Feed/Sidebar'
-import { Modal } from '../../Nav/Modal'
+import { Modal } from '../../_shared/Modal'
 import styles from './Feed.module.scss'
 
 export const FEED_PAGE_SIZE = 20

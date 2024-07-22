@@ -54,7 +54,10 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   const { authorsEntities } = useAuthors()
   const { addFeed, feedByAuthor } = useFeed()
   const { t } = useLocalize()
-  const author = createAsync(async() => props.data.author || authorsEntities()[props.params.slug] || await fetchAuthor(props.params.slug))
+  const author = createAsync(
+    async () =>
+      props.data.author || authorsEntities()[props.params.slug] || (await fetchAuthor(props.params.slug))
+  )
   const shoutsByAuthor = createMemo(() => feedByAuthor()[props.params.slug])
   const title = createMemo(() => `${author()?.name || ''}`)
   const cover = createMemo(() =>
@@ -73,7 +76,6 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
       })
     }
   })
-
 
   // author shouts
   const loadAuthorShoutsMore = async (offset: number) => {

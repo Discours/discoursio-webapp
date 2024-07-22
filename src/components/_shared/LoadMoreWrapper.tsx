@@ -53,14 +53,12 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
   return (
     <>
       {props.children}
-      <Show when={isLoading()}><Loading /></Show>
+      <Show when={isLoading()}>
+        <Loading />
+      </Show>
       <Show when={isLoadMoreButtonVisible() && !props.hidden && !isLoading()}>
         <div class="load-more-container">
-          <Button
-            onClick={loadItems}
-            value={t('Load more')}
-            title={`${items().length} ${t('loaded')}`}
-          />
+          <Button onClick={loadItems} value={t('Load more')} title={`${items().length} ${t('loaded')}`} />
         </div>
       </Show>
     </>

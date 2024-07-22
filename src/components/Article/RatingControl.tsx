@@ -26,8 +26,14 @@ export const RatingControl = (props: RatingControlProps) => {
   const [_, changeSearchParams] = useSearchParams()
   const snackbar = useSnackbar()
   const { session } = useSession()
-  const { reactionEntities, reactionsByShout, createReaction, deleteReaction, loadShoutRatings, loadCommentRatings } =
-    useReactions()
+  const {
+    reactionEntities,
+    reactionsByShout,
+    createReaction,
+    deleteReaction,
+    loadShoutRatings,
+    loadCommentRatings
+  } = useReactions()
   const [myRate, setMyRate] = createSignal<Reaction | undefined>()
   const [ratingReactions, setRatingReactions] = createSignal<Reaction[]>([])
   const [isLoading, setIsLoading] = createSignal(false)
@@ -85,7 +91,7 @@ export const RatingControl = (props: RatingControlProps) => {
             }
           }))
       }
-    } catch(err) {
+    } catch (err) {
       snackbar?.showSnackbar({ type: 'error', body: `${t('Error')}: ${error || err || ''}` })
     }
     setIsLoading(false)

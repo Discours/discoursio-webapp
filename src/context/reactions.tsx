@@ -2,7 +2,12 @@ import type { JSX } from 'solid-js'
 
 import { createContext, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
-import { loadCommentRatings, loadReactions, loadShoutComments, loadShoutRatings } from '~/graphql/api/public'
+import {
+  loadCommentRatings,
+  loadReactions,
+  loadShoutComments,
+  loadShoutRatings
+} from '~/graphql/api/public'
 import createReactionMutation from '~/graphql/mutation/core/reaction-create'
 import destroyReactionMutation from '~/graphql/mutation/core/reaction-destroy'
 import updateReactionMutation from '~/graphql/mutation/core/reaction-update'
@@ -69,7 +74,11 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     return result
   }
 
-  const loadShoutRatingsAdding = async (shout: number, limit = RATINGS_PER_PAGE, offset = 0): Promise<Reaction[]> => {
+  const loadShoutRatingsAdding = async (
+    shout: number,
+    limit = RATINGS_PER_PAGE,
+    offset = 0
+  ): Promise<Reaction[]> => {
     const fetcher = await loadShoutRatings({ shout, limit, offset })
     const result = (await fetcher()) || []
     console.debug('[context.reactions] shout ratings loaded', result)
@@ -77,7 +86,11 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     return result
   }
 
-  const loadCommentRatingsAdding = async (comment: number, limit = RATINGS_PER_PAGE, offset = 0): Promise<Reaction[]> => {
+  const loadCommentRatingsAdding = async (
+    comment: number,
+    limit = RATINGS_PER_PAGE,
+    offset = 0
+  ): Promise<Reaction[]> => {
     const fetcher = await loadCommentRatings({ comment, limit, offset })
     const result = (await fetcher()) || []
     console.debug('[context.reactions] shout ratings loaded', result)
@@ -85,7 +98,11 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     return result
   }
 
-  const loadShoutCommentsAdding = async (shout: number, limit = COMMENTS_PER_PAGE, offset = 0): Promise<Reaction[]> => {
+  const loadShoutCommentsAdding = async (
+    shout: number,
+    limit = COMMENTS_PER_PAGE,
+    offset = 0
+  ): Promise<Reaction[]> => {
     const fetcher = await loadShoutComments({ shout, limit, offset })
     const result = (await fetcher()) || []
     console.debug('[context.reactions] shout comments loaded', result)

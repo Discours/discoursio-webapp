@@ -62,7 +62,7 @@ export const loadShouts = (options: LoadShoutsOptions) => {
 }
 
 export const loadShoutComments = (options: QueryLoad_Shout_RatingsArgs) => {
-  const page = `${options.offset || 0}-${(options.limit||1) + (options.offset || 0)}`
+  const page = `${options.offset || 0}-${(options.limit || 1) + (options.offset || 0)}`
   return cache(async () => {
     const resp = await defaultClient.query(loadShoutCommentsQuery, options).toPromise()
     const result = resp?.data?.load_reactions_by
@@ -71,7 +71,7 @@ export const loadShoutComments = (options: QueryLoad_Shout_RatingsArgs) => {
 }
 
 export const loadShoutRatings = (options: QueryLoad_Shout_RatingsArgs) => {
-  const page = `${options.offset || 0}-${(options.limit||1) + (options.offset || 0)}`
+  const page = `${options.offset || 0}-${(options.limit || 1) + (options.offset || 0)}`
   return cache(async () => {
     const resp = await defaultClient.query(loadShoutRatingsQuery, options).toPromise()
     const result = resp?.data?.load_reactions_by
@@ -81,7 +81,7 @@ export const loadShoutRatings = (options: QueryLoad_Shout_RatingsArgs) => {
 
 // biome-ignore lint/suspicious/noExplicitAny: FIXME: wait backend
 export const loadCommentRatings = (options: any) => {
-  const page = `${options.offset || 0}-${(options.limit||1) + (options.offset || 0)}`
+  const page = `${options.offset || 0}-${(options.limit || 1) + (options.offset || 0)}`
   return cache(async () => {
     const resp = await defaultClient.query(loadCommentRatingsQuery, options).toPromise()
     const result = resp?.data?.load_reactions_by

@@ -261,7 +261,6 @@ export const AuthorView = (props: AuthorViewProps) => {
           </Show>
 
           <AuthorFeed />
-
         </Match>
       </Switch>
     </div>

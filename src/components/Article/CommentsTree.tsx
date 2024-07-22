@@ -4,12 +4,7 @@ import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { COMMENTS_PER_PAGE, useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
-import {
-  Reaction,
-  ReactionKind,
-  ReactionSort,
-  Shout
-} from '~/graphql/schema/core.gen'
+import { Reaction, ReactionKind, ReactionSort, Shout } from '~/graphql/schema/core.gen'
 import { byCreated, byStat } from '~/lib/sort'
 import { SortFunction } from '~/types/common'
 import { Button } from '../_shared/Button'

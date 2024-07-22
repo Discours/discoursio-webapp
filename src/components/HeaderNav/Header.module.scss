@@ -753,7 +753,12 @@
       white-space: nowrap;
     }
 
-
+    .rightItem {
+      margin-right: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
   }
 
   a:link,
@@ -794,6 +799,13 @@
   .icon {
     margin-right: 0.3em;
   }
+}
+
+.rightItemIcon {
+  display: inline-block;
+  margin-left: 0.3em;
+  position: relative;
+  top: 0.15em;
 }
 
 .editorPopup {

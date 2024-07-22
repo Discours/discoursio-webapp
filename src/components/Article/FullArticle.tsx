@@ -560,11 +560,7 @@ export const FullArticle = (props: Props) => {
               </For>
             </div>
             <div id="comments" ref={(el) => (commentsRef = el)}>
-              <CommentsTree
-                shoutId={props.article.id}
-                shoutSlug={props.article.slug}
-                articleAuthors={props.article.authors as Author[]}
-              />
+              <CommentsTree shout={props.article} />
             </div>
           </div>
         </div>

@@ -6,11 +6,11 @@ import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import {
-  Author,
   QueryLoad_Reactions_ByArgs,
   Reaction,
   ReactionKind,
-  ReactionSort
+  ReactionSort,
+  Shout
 } from '~/graphql/schema/core.gen'
 import { byCreated, byStat } from '~/lib/sort'
 import { SortFunction } from '~/types/common'
@@ -24,22 +24,22 @@ import { Comment } from './Comment'
 const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 
 type Props = {
-  articleAuthors: Author[]
-  shoutSlug: string
-  shoutId: number
+  shout: Shout
 }
 const COMMENTS_PER_PAGE = 50
 
 export const CommentsTree = (props: Props) => {
   const { session } = useSession()
   const { t } = useLocalize()
+  const { reactionEntities, createReaction, loadReactionsBy, addReactions } = useReactions()
+  const { seen } = useFeed()
   const [commentsOrder, setCommentsOrder] = createSignal<ReactionSort>(ReactionSort.Newest)
   const [onlyNew, setOnlyNew] = createSignal(false)
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
   const [clearEditor, setClearEditor] = createSignal(false)
   const [clickedReplyId, setClickedReplyId] = createSignal<number>()
-  const { reactionEntities, createReaction, loadReactionsBy, addReactions } = useReactions()
 
+  const shoutLastSeen = createMemo(() => seen()[props.shout.slug] ?? 0)
   const comments = createMemo(() =>
     Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
   )
@@ -57,12 +57,9 @@ export const CommentsTree = (props: Props) => {
     }
     return newSortedComments
   })
-  const { seen } = useFeed()
-  const shoutLastSeen = createMemo(() => seen()[props.shoutSlug] ?? 0)
-
   onMount(() => {
     const currentDate = new Date()
-    const setCookie = () => localStorage?.setItem(`${props.shoutSlug}`, `${currentDate}`)
+    const setCookie = () => localStorage?.setItem(`${props.shout.slug}`, `${currentDate}`)
     if (!shoutLastSeen()) {
       setCookie()
     } else if (currentDate.getTime() > shoutLastSeen()) {
@@ -80,24 +77,6 @@ export const CommentsTree = (props: Props) => {
     }
   })
   const [posting, setPosting] = createSignal(false)
-  const handleSubmitComment = async (value: string) => {
-    setPosting(true)
-    try {
-      await createReaction({
-        reaction: {
-          kind: ReactionKind.Comment,
-          body: value,
-          shout: props.shoutId
-        }
-      })
-      setClearEditor(true)
-      await loadReactionsBy({ by: { shout: props.shoutSlug } })
-    } catch (error) {
-      console.error('[handleCreate reaction]:', error)
-    }
-    setClearEditor(false)
-    setPosting(false)
-  }
   const [commentsLoading, setCommentsLoading] = createSignal(false)
   const [pagination, setPagination] = createSignal(0)
   const loadMoreComments = async () => {
@@ -105,7 +84,7 @@ export const CommentsTree = (props: Props) => {
     const next = pagination() + 1
     const offset = next * COMMENTS_PER_PAGE
     const opts: QueryLoad_Reactions_ByArgs = {
-      by: { comment: true, shout: props.shoutSlug },
+      by: { comment: true, shout: props.shout.slug },
       limit: COMMENTS_PER_PAGE,
       offset
     }
@@ -116,6 +95,24 @@ export const CommentsTree = (props: Props) => {
     return rrr as LoadMoreItems
   }
 
+  const handleSubmitComment = async (value: string) => {
+    setPosting(true)
+    try {
+      await createReaction({
+        reaction: {
+          kind: ReactionKind.Comment,
+          body: value,
+          shout: props.shout.id
+        }
+      })
+      setClearEditor(true)
+      await loadMoreComments()
+    } catch (error) {
+      console.error('[handleCreate reaction]:', error)
+    }
+    setClearEditor(false)
+    setPosting(false)
+  }
   return (
     <>
       <div class={styles.commentsHeaderWrapper}>
@@ -159,16 +156,14 @@ export const CommentsTree = (props: Props) => {
       <LoadMoreWrapper
         loadFunction={loadMoreComments}
         pageSize={COMMENTS_PER_PAGE}
-        hidden={commentsLoading()}
+        hidden={commentsLoading() || comments().length >= (props.shout?.stat?.commented || 0)}
       >
         <ul class={styles.comments}>
           <For each={sortedComments().filter((r) => !r.reply_to)}>
             {(reaction) => (
               <Comment
                 sortedComments={sortedComments()}
-                isArticleAuthor={Boolean(
-                  props.articleAuthors.some((a) => a?.id === reaction.created_by.id)
-                )}
+                isArticleAuthor={props.shout.authors?.some((a) => a && reaction.created_by.id === a.id)}
                 comment={reaction}
                 clickedReply={(id) => setClickedReplyId(id)}
                 clickedReplyId={clickedReplyId()}

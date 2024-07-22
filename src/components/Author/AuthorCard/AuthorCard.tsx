@@ -162,7 +162,7 @@ export const AuthorCard = (props: Props) => {
             <For each={authorSubs()}>
               {(subscription) =>
                 'name' in subscription ? (
-                  <AuthorBadge author={subscription as Author} subscriptionsMode={true} />
+                  <AuthorBadge author={subscription as Author} nameOnly={true} />
                 ) : (
                   <TopicBadge topic={subscription as Topic} subscriptionsMode={true} />
                 )

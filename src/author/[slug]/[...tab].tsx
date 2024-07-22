@@ -5,7 +5,7 @@ import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
-import { useFeed } from '~/context/feed'
+import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { loadAuthors, loadShouts, loadTopics } from '~/graphql/api/public'
@@ -17,7 +17,6 @@ import {
   Topic
 } from '~/graphql/schema/core.gen'
 import { getImageUrl } from '~/lib/getThumbUrl'
-import { SHOUTS_PER_PAGE } from '../../(main)'
 
 const fetchAuthorShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { author: slug }, limit: SHOUTS_PER_PAGE, offset }

@@ -14,6 +14,7 @@ import { byStat } from '../lib/sort'
 import { useGraphQL } from './graphql'
 
 export const PRERENDERED_ARTICLES_COUNT = 5
+export const SHOUTS_PER_PAGE = 20
 
 type FeedContextType = {
   sortedFeed: Accessor<Shout[]>

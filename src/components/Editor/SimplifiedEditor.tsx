@@ -11,7 +11,7 @@ import { Paragraph } from '@tiptap/extension-paragraph'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Text } from '@tiptap/extension-text'
 import { clsx } from 'clsx'
-import { Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
+import { Show, Suspense, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import {
   createEditorTransaction,
@@ -261,6 +261,7 @@ const SimplifiedEditor = (props: Props) => {
 
   return (
     <ShowOnlyOnClient>
+      <Suspense>
       <div
         ref={(el) => (wrapperEditorElRef = el)}
         class={clsx(styles.SimplifiedEditor, {
@@ -390,6 +391,7 @@ const SimplifiedEditor = (props: Props) => {
           />
         </Show>
       </div>
+      </Suspense>
     </ShowOnlyOnClient>
   )
 }

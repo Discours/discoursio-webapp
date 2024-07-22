@@ -12,7 +12,7 @@ import { descFromBody, keywordsFromTopics } from '~/utils/meta'
 import { FullArticle } from '../../components/Article/FullArticle'
 import { PageLayout } from '../../components/_shared/PageLayout'
 import { ReactionsProvider } from '../../context/reactions'
-// import AuthorPage, { AuthorPageProps } from '../author/[slug]/[...tab]'
+import AuthorPage, { AuthorPageProps } from '../author/[slug]/[...tab]'
 import TopicPage, { TopicPageProps } from '../topic/[slug]/[...tab]'
 
 const fetchShout = async (slug: string): Promise<Shout | undefined> => {
@@ -46,8 +46,8 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
         ...props.params,
         slug: props.params.slug.slice(1, props.params.slug.length)
       }
-    } // as RouteSectionProps<AuthorPageProps>
-    return <Loading /> //</><AuthorPage {...patchedProps} />
+    } as RouteSectionProps<AuthorPageProps>
+    return <AuthorPage {...patchedProps} />
   }
 
   if (props.params.slug.startsWith('!')) {

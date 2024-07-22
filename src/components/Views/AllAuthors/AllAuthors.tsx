@@ -18,8 +18,6 @@ import stylesAuthorList from './AuthorsList.module.scss'
 
 type Props = {
   authors: Author[]
-  authorsByFollowers?: Author[]
-  authorsByShouts?: Author[]
   isLoaded: boolean
 }
 
@@ -35,48 +33,44 @@ export const AllAuthors = (props: Props) => {
   const [searchParams, changeSearchParams] = useSearchParams<{ by?: string }>()
   const { authorsSorted, setAuthorsSort, loadAuthors } = useAuthors()
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [_currentAuthors, setCurrentAuthors] = createSignal<Author[]>([])
+  const [searchQuery, setSearchQuery] = createSignal('')
+  const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
 
-  // UPDATE Fetch authors initially and when searchParams.by changes
   createEffect(() => {
-    fetchAuthors(searchParams.by || 'name', 0)
+      // Load all authors initially
+      fetchAuthors(searchParams.by || 'name', 0)
   })
 
-  const authors = createMemo(() => {
-    let sortedAuthors = [...(props.authors || authorsSorted())] // Clone the array to avoid mutating the original
-    console.log('Before Sorting:', sortedAuthors.slice(0, 5)) // Log the first 5 authors for comparison
-    if (searchParams.by === 'name') {
+/*   const authors = createMemo(() => {
+    let sortedAuthors = [...props.authors]
+    sortedAuthors = authorsSorted()
+    if (!searchParams.by || searchParams.by === 'name') {
       sortedAuthors = sortedAuthors.sort(byFirstChar)
-      console.log('Sorted by Name:', sortedAuthors.slice(0, 5))
     } else if (searchParams.by === 'shouts') {
       sortedAuthors = sortedAuthors.sort(byStat('shouts'))
-      console.log('Sorted by Shouts:', sortedAuthors.slice(0, 5))
     } else if (searchParams.by === 'followers') {
       sortedAuthors = sortedAuthors.sort(byStat('followers'))
-      console.log('Sorted by Followers:', sortedAuthors.slice(0, 5))
     }
-    console.log('After Sorting:', sortedAuthors.slice(0, 5))
+    return sortedAuthors
+  }) */
+
+  const authors = createMemo(() => {
+    let sortedAuthors: Author[] = []
+    if (!searchParams.by || searchParams.by === 'name') {
+      sortedAuthors = [...props.authors].sort(byFirstChar)
+    } else {
+      sortedAuthors = authorsSorted().sort(byStat(searchParams.by || 'shouts'))
+    }
     return sortedAuthors
   })
 
-  // Log authors data and searchParams for debugging
   createEffect(() => {
-    console.log('Authors:', props.authors.slice(0, 5)) // Log the first 5 authors
-    console.log('Sorted Authors:', authors().slice(0, 5)) // Log the first 5 sorted authors
-    console.log('Search Params "by":', searchParams.by)
+    setFilteredAuthors(dummyFilter(authors(), searchQuery(), lang()) as Author[])
   })
 
-  // filter
-  const [searchQuery, setSearchQuery] = createSignal('')
-  const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
-  createEffect(
-    () => authors() && setFilteredAuthors(dummyFilter(authors(), searchQuery(), lang()) as Author[])
-  )
 
-  // store by first char
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
     if (!(filteredAuthors()?.length > 0)) return {}
-    console.debug('[components.AllAuthors] update byLetterFiltered', filteredAuthors()?.length)
     return filteredAuthors().reduce(
       (acc, author: Author) => authorLetterReduce(acc, author, lang()),
       {} as { [letter: string]: Author[] }
@@ -93,7 +87,6 @@ export const AllAuthors = (props: Props) => {
 
   const fetchAuthors = async (queryType: string, page: number) => {
     try {
-      console.debug('[components.AuthorsList] fetching authors...')
       setLoading(true)
       setAuthorsSort?.(queryType)
       const offset = AUTHORS_PER_PAGE * page
@@ -102,8 +95,6 @@ export const AllAuthors = (props: Props) => {
         limit: AUTHORS_PER_PAGE,
         offset
       })
-      // UPDATE authors to currentAuthors state
-      setCurrentAuthors((prev) => [...prev, ...authorsSorted()])
     } catch (error) {
       console.error('[components.AuthorsList] error fetching authors:', error)
     } finally {
@@ -123,6 +114,7 @@ export const AllAuthors = (props: Props) => {
     fetchAuthors(by, nextPage).then(() => setCurrentPage({ ...currentPage(), [by]: nextPage }))
   }
 
+
   const TabNavigator = () => (
     <div class="row">
       <div class="col-lg-20 col-xl-18">
@@ -131,7 +123,7 @@ export const AllAuthors = (props: Props) => {
         <ul class={clsx(styles.viewSwitcher, 'view-switcher')}>
           <li
             class={clsx({
-              ['view-switcher__item--selected']: !searchParams?.by || searchParams?.by === 'shouts'
+              ['view-switcher__item--selected']: searchParams?.by === 'shouts'
             })}
           >
             <a href="#" onClick={() => changeSearchParams({ by: 'shouts' })}>
@@ -149,7 +141,7 @@ export const AllAuthors = (props: Props) => {
           </li>
           <li
             class={clsx({
-              ['view-switcher__item--selected']: searchParams?.by === 'name'
+              ['view-switcher__item--selected']: !searchParams?.by || searchParams?.by === 'name'
             })}
           >
             <a href="#" onClick={() => changeSearchParams({ by: 'name' })}>
@@ -247,12 +239,13 @@ export const AllAuthors = (props: Props) => {
       </div>
     </div>
   )
+
   return (
     <>
       <Show when={props.isLoaded} fallback={<Loading />}>
         <div class="offset-md-5">
           <TabNavigator />
-          <Show when={searchParams?.by === 'name'} fallback={<AuthorsSortedList />}>
+          <Show when={!searchParams.by || searchParams.by === 'name'} fallback={<AuthorsSortedList />}>
             <AbcNavigator />
             <AbcAuthorsList />
           </Show>

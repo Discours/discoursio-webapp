@@ -1,8 +1,6 @@
-import type { JSX } from 'solid-js'
-
 import { Link } from '@solidjs/meta'
+import type { JSX } from 'solid-js'
 import { splitProps } from 'solid-js'
-
 import { getImageUrl } from '~/lib/getThumbUrl'
 
 type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {

@@ -1,13 +1,12 @@
 import { RouteDefinition, RoutePreloadFuncArgs, type RouteSectionProps, createAsync } from '@solidjs/router'
 import { Suspense, createEffect, on } from 'solid-js'
 import { AllAuthors } from '~/components/Views/AllAuthors'
-import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
-import { loadAuthors, loadAuthorsAll } from '~/graphql/api/public'
-import { Author, AuthorsBy } from '~/graphql/schema/core.gen'
+import { loadAuthorsAll } from '~/graphql/api/public'
+import { Author } from '~/graphql/schema/core.gen'
 
 // Fetch Function
 const fetchAllAuthors = async () => {
@@ -17,7 +16,7 @@ const fetchAllAuthors = async () => {
 
 //Route Defenition
 export const route = {
-  load: async ({ location: { query } }: RoutePreloadFuncArgs) => {
+  load: async ({ location: { query: _q } }: RoutePreloadFuncArgs) => {
     return {
       authors: await fetchAllAuthors()
     }
@@ -25,7 +24,6 @@ export const route = {
 } satisfies RouteDefinition
 
 type AllAuthorsData = { authors: Author[] }
-
 
 // addAuthors to context
 
@@ -61,10 +59,7 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
       desc="List of authors of the open editorial community"
     >
       <Suspense fallback={<Loading />}>
-        <AllAuthors
-          isLoaded={Boolean(data()?.authors)}
-          authors={data()?.authors || []}
-        />
+        <AllAuthors isLoaded={Boolean(data()?.authors)} authors={data()?.authors || []} />
       </Suspense>
     </PageLayout>
   )

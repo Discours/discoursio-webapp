@@ -37,11 +37,11 @@ export const AllAuthors = (props: Props) => {
   const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
 
   createEffect(() => {
-      // Load all authors initially
-      fetchAuthors(searchParams.by || 'name', 0)
+    // Load all authors initially
+    fetchAuthors(searchParams.by || 'name', 0)
   })
 
-/*   const authors = createMemo(() => {
+  /*   const authors = createMemo(() => {
     let sortedAuthors = [...props.authors]
     sortedAuthors = authorsSorted()
     if (!searchParams.by || searchParams.by === 'name') {
@@ -67,7 +67,6 @@ export const AllAuthors = (props: Props) => {
   createEffect(() => {
     setFilteredAuthors(dummyFilter(authors(), searchQuery(), lang()) as Author[])
   })
-
 
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
     if (!(filteredAuthors()?.length > 0)) return {}
@@ -113,7 +112,6 @@ export const AllAuthors = (props: Props) => {
     const nextPage = currentPage()[by] + 1
     fetchAuthors(by, nextPage).then(() => setCurrentPage({ ...currentPage(), [by]: nextPage }))
   }
-
 
   const TabNavigator = () => (
     <div class="row">

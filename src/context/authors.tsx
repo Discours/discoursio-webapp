@@ -125,7 +125,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
     }))
 
     // Определяем функцию сортировки по рейтингу
-    const sortByRating: SortFunction<{ slug: string; rating: number }> = (a, b) => b.rating - a.rating
+    const sortByRating: SortFunction<{ slug: string; rating: number }> = (a, b) => a.rating - b.rating
 
     // Фильтруем и сортируем авторов
     const sortedTopAuthors = filterAndSort(authors, sortByRating)

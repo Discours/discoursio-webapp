@@ -1,4 +1,4 @@
-import { RouteDefinition, RouteLoadFuncArgs, type RouteSectionProps, createAsync } from '@solidjs/router'
+import { RouteDefinition, RoutePreloadFuncArgs, type RouteSectionProps, createAsync } from '@solidjs/router'
 import { Suspense, createEffect, on } from 'solid-js'
 import { AllAuthors } from '~/components/Views/AllAuthors'
 import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
@@ -9,30 +9,23 @@ import { useLocalize } from '~/context/localize'
 import { loadAuthors, loadAuthorsAll } from '~/graphql/api/public'
 import { Author, AuthorsBy } from '~/graphql/schema/core.gen'
 
-const fetchAuthorsWithStat = async (offset = 0, order?: string) => {
-  const by: AuthorsBy = { order }
-  const authorsFetcher = loadAuthors({ by, offset, limit: AUTHORS_PER_PAGE })
-  return await authorsFetcher()
-}
-
+// Fetch Function
 const fetchAllAuthors = async () => {
   const authorsAllFetcher = loadAuthorsAll()
   return await authorsAllFetcher()
 }
 
+//Route Defenition
 export const route = {
-  load: async ({ location: { query } }: RouteLoadFuncArgs) => {
-    const by = query.by
-    const isAll = !by || by === 'name'
+  load: async ({ location: { query } }: RoutePreloadFuncArgs) => {
     return {
-      authors: isAll && (await fetchAllAuthors()),
-      authorsByFollowers: await fetchAuthorsWithStat(10, 'followers'),
-      authorsByShouts: await fetchAuthorsWithStat(10, 'shouts')
-    } as AllAuthorsData
+      authors: await fetchAllAuthors()
+    }
   }
 } satisfies RouteDefinition
 
-type AllAuthorsData = { authors: Author[]; authorsByFollowers: Author[]; authorsByShouts: Author[] }
+type AllAuthorsData = { authors: Author[] }
+
 
 // addAuthors to context
 
@@ -40,25 +33,20 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
   const { t } = useLocalize()
   const { addAuthors } = useAuthors()
 
-  // async load data: from ssr or fetch
   const data = createAsync<AllAuthorsData>(async () => {
     if (props.data) return props.data
+    const authors = await fetchAllAuthors()
     return {
-      authors: await fetchAllAuthors(),
-      authorsByFollowers: await fetchAuthorsWithStat(10, 'followers'),
-      authorsByShouts: await fetchAuthorsWithStat(10, 'shouts')
-    } as AllAuthorsData
+      authors: authors || []
+    }
   })
 
-  // update context when data is loaded
   createEffect(
     on(
       [data, () => addAuthors],
       ([data, aa]) => {
         if (data && aa) {
           aa(data.authors as Author[])
-          aa(data.authorsByFollowers as Author[])
-          aa(data.authorsByShouts as Author[])
           console.debug('[routes.author] added all authors:', data.authors)
         }
       },
@@ -76,8 +64,6 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
         <AllAuthors
           isLoaded={Boolean(data()?.authors)}
           authors={data()?.authors || []}
-          authorsByFollowers={data()?.authorsByFollowers}
-          authorsByShouts={data()?.authorsByShouts}
         />
       </Suspense>
     </PageLayout>

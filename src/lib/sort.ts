@@ -34,7 +34,7 @@ export const byStat = (metric: string) => {
   return (a: { stat?: SomeStat }, b: { stat?: SomeStat }) => {
     const aStat = a.stat?.[metric] ?? 0
     const bStat = b.stat?.[metric] ?? 0
-    return aStat - bStat
+    return bStat - aStat
   }
 }
 

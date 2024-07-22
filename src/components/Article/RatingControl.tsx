@@ -3,10 +3,10 @@ import { clsx } from 'clsx'
 import { Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { byCreated } from '~/lib/sort'
 import { useLocalize } from '../../context/localize'
-import { useReactions } from '../../context/reactions'
+import { RATINGS_PER_PAGE, useReactions } from '../../context/reactions'
 import { useSession } from '../../context/session'
 import { useSnackbar } from '../../context/ui'
-import { QueryLoad_Reactions_ByArgs, Reaction, ReactionKind, Shout } from '../../graphql/schema/core.gen'
+import { Reaction, ReactionKind, Shout } from '../../graphql/schema/core.gen'
 import { Icon } from '../_shared/Icon'
 import { InlineLoader } from '../_shared/InlineLoader'
 import { LoadMoreItems, LoadMoreWrapper } from '../_shared/LoadMoreWrapper'
@@ -26,8 +26,7 @@ export const RatingControl = (props: RatingControlProps) => {
   const [_, changeSearchParams] = useSearchParams()
   const snackbar = useSnackbar()
   const { session } = useSession()
-  const { addReactions } = useReactions()
-  const { reactionEntities, reactionsByShout, createReaction, deleteReaction, loadReactionsBy } =
+  const { reactionEntities, reactionsByShout, createReaction, deleteReaction, loadShoutRatings, loadCommentRatings } =
     useReactions()
   const [myRate, setMyRate] = createSignal<Reaction | undefined>()
   const [ratingReactions, setRatingReactions] = createSignal<Reaction[]>([])
@@ -70,12 +69,13 @@ export const RatingControl = (props: RatingControlProps) => {
   // rating change
   const handleRatingChange = async (isUpvote: boolean) => {
     setIsLoading(true)
+    let error = ''
     try {
-      if (isUpvoted()) {
-        await deleteRating(ReactionKind.Like)
-      } else if (isDownvoted()) {
-        await deleteRating(ReactionKind.Dislike)
-      } else {
+      if (isUpvoted() && isUpvote) return
+      if (isDownvoted() && !isUpvote) return
+      if (isUpvoted() && !isUpvote) error = (await deleteRating(ReactionKind.Like))?.error || ''
+      if (isDownvoted() && isUpvote) error = (await deleteRating(ReactionKind.Dislike))?.error || ''
+      if (!(isUpvoted() || isDownvoted())) {
         props.comment?.shout.id &&
           (await createReaction({
             reaction: {
@@ -85,13 +85,8 @@ export const RatingControl = (props: RatingControlProps) => {
             }
           }))
       }
-    } catch {
-      snackbar?.showSnackbar({ type: 'error', body: t('Error') })
-    }
-
-    if (props.comment?.shout.slug) {
-      const rrr = await loadReactionsBy({ by: { shout: props.comment.shout.slug } })
-      addReactions(rrr)
+    } catch(err) {
+      snackbar?.showSnackbar({ type: 'error', body: `${t('Error')}: ${error || err || ''}` })
     }
     setIsLoading(false)
   }
@@ -138,16 +133,12 @@ export const RatingControl = (props: RatingControlProps) => {
       : []
   )
   const loadMoreReactions = async () => {
+    if (!(props.shout?.id || props.comment?.id)) return [] as LoadMoreItems
     setRatingLoading(true)
     const next = ratingPage() + 1
-    const offset = VOTERS_PER_PAGE * next
-    const opts: QueryLoad_Reactions_ByArgs = {
-      by: { rating: true, shout: props.shout?.slug },
-      limit: VOTERS_PER_PAGE,
-      offset
-    }
-    const rrr = await loadReactionsBy(opts)
-    rrr && addReactions(rrr)
+    const offset = RATINGS_PER_PAGE * next
+    const loader = props.comment ? loadCommentRatings : loadShoutRatings
+    const rrr = await loader(props.shout?.id || 0, RATINGS_PER_PAGE, offset)
     rrr && setRatingPage(next)
     setRatingLoading(false)
     return rrr as LoadMoreItems

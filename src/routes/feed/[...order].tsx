@@ -125,7 +125,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
       key="feed"
       desc="Independent media project about culture, science, art and society with horizontal editing"
     >
-      <LoadMoreWrapper loadFunction={loadMoreFeed} pageSize={AUTHORS_PER_PAGE}>
+      <LoadMoreWrapper loadFunction={loadMoreFeed} pageSize={AUTHORS_PER_PAGE} hidden={!feed()}>
         <ReactionsProvider>
           <Feed shouts={feed() || (shouts() as Shout[])} order={order() as FeedProps['order']} />
         </ReactionsProvider>

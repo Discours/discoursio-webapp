@@ -5,6 +5,7 @@ import { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
 import { byCreated } from '~/lib/sort'
 import { SortFunction } from '~/types/common'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
+import { Loading } from './Loading'
 
 export type LoadMoreItems = Shout[] | Author[] | Reaction[]
 
@@ -52,11 +53,11 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
   return (
     <>
       {props.children}
-      <Show when={isLoadMoreButtonVisible() && !props.hidden}>
+      <Show when={isLoading()}><Loading /></Show>
+      <Show when={isLoadMoreButtonVisible() && !props.hidden && !isLoading()}>
         <div class="load-more-container">
           <Button
             onClick={loadItems}
-            disabled={isLoading()}
             value={t('Load more')}
             title={`${items().length} ${t('loaded')}`}
           />

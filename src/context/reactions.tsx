@@ -2,7 +2,7 @@ import type { JSX } from 'solid-js'
 
 import { createContext, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
-import { loadReactions } from '~/graphql/api/public'
+import { loadCommentRatings, loadReactions, loadShoutComments, loadShoutRatings } from '~/graphql/api/public'
 import createReactionMutation from '~/graphql/mutation/core/reaction-create'
 import destroyReactionMutation from '~/graphql/mutation/core/reaction-destroy'
 import updateReactionMutation from '~/graphql/mutation/core/reaction-update'
@@ -17,10 +17,16 @@ import { useGraphQL } from './graphql'
 import { useLocalize } from './localize'
 import { useSnackbar } from './ui'
 
+export const COMMENTS_PER_PAGE = 50
+export const RATINGS_PER_PAGE = 100
+
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
   reactionsByShout: Record<string, Reaction[]>
   loadReactionsBy: (args: QueryLoad_Reactions_ByArgs) => Promise<Reaction[]>
+  loadShoutComments: (shout: number, limit?: number, offset?: number) => Promise<Reaction[]>
+  loadShoutRatings: (shout: number, limit?: number, offset?: number) => Promise<Reaction[]>
+  loadCommentRatings: (comment: number, limit?: number, offset?: number) => Promise<Reaction[]>
   createReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
   updateReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction>
   deleteReaction: (id: number) => Promise<{ error: string } | null>
@@ -59,6 +65,30 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     const fetcher = await loadReactions(opts)
     const result = (await fetcher()) || []
     console.debug('[context.reactions] loaded', result)
+    result && addReactions(result)
+    return result
+  }
+
+  const loadShoutRatingsAdding = async (shout: number, limit = RATINGS_PER_PAGE, offset = 0): Promise<Reaction[]> => {
+    const fetcher = await loadShoutRatings({ shout, limit, offset })
+    const result = (await fetcher()) || []
+    console.debug('[context.reactions] shout ratings loaded', result)
+    result && addReactions(result)
+    return result
+  }
+
+  const loadCommentRatingsAdding = async (comment: number, limit = RATINGS_PER_PAGE, offset = 0): Promise<Reaction[]> => {
+    const fetcher = await loadCommentRatings({ comment, limit, offset })
+    const result = (await fetcher()) || []
+    console.debug('[context.reactions] shout ratings loaded', result)
+    result && addReactions(result)
+    return result
+  }
+
+  const loadShoutCommentsAdding = async (shout: number, limit = COMMENTS_PER_PAGE, offset = 0): Promise<Reaction[]> => {
+    const fetcher = await loadShoutComments({ shout, limit, offset })
+    const result = (await fetcher()) || []
+    console.debug('[context.reactions] shout comments loaded', result)
     result && addReactions(result)
     return result
   }
@@ -122,6 +152,9 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const actions = {
     loadReactionsBy,
+    loadShoutComments: loadShoutCommentsAdding,
+    loadShoutRatings: loadShoutRatingsAdding,
+    loadCommentRatings: loadCommentRatingsAdding,
     createReaction,
     updateReaction,
     deleteReaction,

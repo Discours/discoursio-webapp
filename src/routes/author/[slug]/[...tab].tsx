@@ -1,5 +1,5 @@
-import { RouteSectionProps } from '@solidjs/router'
-import { ErrorBoundary, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { RouteSectionProps, createAsync } from '@solidjs/router'
+import { ErrorBoundary, createEffect, createMemo } from 'solid-js'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
@@ -33,6 +33,7 @@ const fetchAllTopics = async () => {
 const fetchAuthor = async (slug: string) => {
   const authorFetcher = loadAuthors({ by: { slug }, limit: 1, offset: 0 } as QueryLoad_Authors_ByArgs)
   const aaa = await authorFetcher()
+  console.debug(aaa)
   return aaa?.[0]
 }
 
@@ -50,11 +51,17 @@ export const route = {
 export type AuthorPageProps = { articles?: Shout[]; author?: Author; topics?: Topic[] }
 
 export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
-  const { addAuthor, authorsEntities } = useAuthors()
-  const [author, setAuthor] = createSignal<Author | undefined>(undefined)
-
+  const { authorsEntities } = useAuthors()
+  const { addFeed, feedByAuthor } = useFeed()
   const { t } = useLocalize()
+  const author = createAsync(async() => props.data.author || authorsEntities()[props.params.slug] || await fetchAuthor(props.params.slug))
+  const shoutsByAuthor = createMemo(() => feedByAuthor()[props.params.slug])
   const title = createMemo(() => `${author()?.name || ''}`)
+  const cover = createMemo(() =>
+    author()?.pic
+      ? getImageUrl(author()?.pic || '', { width: 1200 })
+      : getImageUrl('production/image/logo_image.png')
+  )
 
   createEffect(() => {
     if (author()) {
@@ -67,32 +74,8 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
     }
   })
 
-  const cover = createMemo(() =>
-    author()?.pic
-      ? getImageUrl(author()?.pic || '', { width: 1200 })
-      : getImageUrl('production/image/logo_image.png')
-  )
 
   // author shouts
-  const { addFeed, feedByAuthor } = useFeed()
-  const shoutsByAuthor = createMemo(() => feedByAuthor()[props.params.slug])
-
-  createEffect(
-    on(
-      [() => props.params.slug || '', author],
-      async ([slug, profile]) => {
-        if (!profile) {
-          const loadedAuthor = authorsEntities()[slug] || (await fetchAuthor(slug))
-          if (loadedAuthor) {
-            addAuthor(loadedAuthor)
-            setAuthor(loadedAuthor)
-          }
-        }
-      },
-      { defer: true }
-    )
-  )
-
   const loadAuthorShoutsMore = async (offset: number) => {
     const loadedShouts = await fetchAuthorShouts(props.params.slug, offset)
     loadedShouts && addFeed(loadedShouts)

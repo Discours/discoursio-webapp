@@ -61,7 +61,7 @@ export const AuthorView = (props: AuthorViewProps) => {
     on(
       [() => session()?.user?.app_data?.profile, () => props.authorSlug || ''],
       async ([me, slug]) => {
-        console.debug('check if my profile')
+        console.debug('[AuthorView] checking if my profile')
         const my = slug && me?.slug === slug
         if (my) {
           console.debug('[Author] my profile precached')
@@ -86,7 +86,7 @@ export const AuthorView = (props: AuthorViewProps) => {
       () => authorsEntities()[props.author?.slug || props.authorSlug || ''],
       async (found) => {
         if (!found) return
-        setAuthor(found)
+        console.debug('[AuthorView] ')
         console.info(`[Author] profile for @${found.slug} fetched`)
         const followsResp = await query(getAuthorFollowsQuery, { slug: found.slug }).toPromise()
         const follows = followsResp?.data?.get_author_followers || {}
@@ -96,6 +96,7 @@ export const AuthorView = (props: AuthorViewProps) => {
         setFollowers(followersResp?.data?.get_author_followers || [])
         console.info(`[Author] followers for @${found.slug} fetched`)
         setIsFetching(false)
+        setTimeout(() => setAuthor(found), 1)
       },
       { defer: true }
     )
@@ -123,7 +124,37 @@ export const AuthorView = (props: AuthorViewProps) => {
       (tab) => tab && console.log('[views.Author] profile tab switched')
     )
   )
+  const AuthorFeed = () => (
+    <Show when={Array.isArray(props.shouts) && props.shouts.length > 0 && props.shouts[0]}>
+      <Row1 article={props.shouts?.[0] as Shout} noauthor={true} nodate={true} />
 
+      <Show when={props.shouts?.length || 0}>
+        <Show when={props.shouts?.length === 1}>
+          <Row1 article={props.shouts?.[0] as Shout} noauthor={true} nodate={true} />
+        </Show>
+        <Show when={props.shouts?.length === 2}>
+          <Row2 articles={props.shouts as Shout[]} isEqual={true} noauthor={true} nodate={true} />
+        </Show>
+        <Show when={props.shouts?.length === 3}>
+          <Row3 articles={props.shouts as Shout[]} noauthor={true} nodate={true} />
+        </Show>
+        <Show when={props.shouts && props.shouts.length > 3}>
+          <For each={pages()}>
+            {(page) => (
+              <>
+                <Row1 article={page[0]} noauthor={true} nodate={true} />
+                <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
+                <Row1 article={page[3]} noauthor={true} nodate={true} />
+                <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
+                <Row1 article={page[6]} noauthor={true} nodate={true} />
+                <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
+              </>
+            )}
+          </For>
+        </Show>
+      </Show>
+    </Show>
+  )
   return (
     <div class={styles.authorPage}>
       <div class="wide-container">
@@ -229,34 +260,8 @@ export const AuthorView = (props: AuthorViewProps) => {
             </div>
           </Show>
 
-          <Show when={Array.isArray(props.shouts) && props.shouts.length > 0 && props.shouts[0]}>
-            <Row1 article={props.shouts?.[0] as Shout} noauthor={true} nodate={true} />
+          <AuthorFeed />
 
-            <Show when={props.shouts && props.shouts.length > 1}>
-              <Switch>
-                <Match when={props.shouts && props.shouts.length === 2}>
-                  <Row2 articles={props.shouts as Shout[]} isEqual={true} noauthor={true} nodate={true} />
-                </Match>
-                <Match when={props.shouts && props.shouts.length === 3}>
-                  <Row3 articles={props.shouts as Shout[]} noauthor={true} nodate={true} />
-                </Match>
-                <Match when={props.shouts && props.shouts.length > 3}>
-                  <For each={pages()}>
-                    {(page) => (
-                      <>
-                        <Row1 article={page[0]} noauthor={true} nodate={true} />
-                        <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
-                        <Row1 article={page[3]} noauthor={true} nodate={true} />
-                        <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
-                        <Row1 article={page[6]} noauthor={true} nodate={true} />
-                        <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
-                      </>
-                    )}
-                  </For>
-                </Match>
-              </Switch>
-            </Show>
-          </Show>
         </Match>
       </Switch>
     </div>

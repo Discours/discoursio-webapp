@@ -1,12 +1,10 @@
 import { clsx } from 'clsx'
 import { For, Show, createMemo, createSignal, lazy, onMount } from 'solid-js'
-
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
-import { useReactions } from '~/context/reactions'
+import { COMMENTS_PER_PAGE, useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import {
-  QueryLoad_Reactions_ByArgs,
   Reaction,
   ReactionKind,
   ReactionSort,
@@ -26,12 +24,11 @@ const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
 type Props = {
   shout: Shout
 }
-const COMMENTS_PER_PAGE = 50
 
 export const CommentsTree = (props: Props) => {
   const { session } = useSession()
   const { t } = useLocalize()
-  const { reactionEntities, createReaction, loadReactionsBy, addReactions } = useReactions()
+  const { reactionEntities, createReaction, loadShoutComments } = useReactions()
   const { seen } = useFeed()
   const [commentsOrder, setCommentsOrder] = createSignal<ReactionSort>(ReactionSort.Newest)
   const [onlyNew, setOnlyNew] = createSignal(false)
@@ -83,13 +80,7 @@ export const CommentsTree = (props: Props) => {
     setCommentsLoading(true)
     const next = pagination() + 1
     const offset = next * COMMENTS_PER_PAGE
-    const opts: QueryLoad_Reactions_ByArgs = {
-      by: { comment: true, shout: props.shout.slug },
-      limit: COMMENTS_PER_PAGE,
-      offset
-    }
-    const rrr = await loadReactionsBy(opts)
-    rrr && addReactions(rrr)
+    const rrr = await loadShoutComments(props.shout.id, COMMENTS_PER_PAGE, offset)
     rrr && setPagination(next)
     setCommentsLoading(false)
     return rrr as LoadMoreItems

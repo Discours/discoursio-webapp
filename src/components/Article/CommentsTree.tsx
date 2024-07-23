@@ -142,7 +142,7 @@ export const CommentsTree = (props: Props) => {
       <LoadMoreWrapper
         loadFunction={loadMoreComments}
         pageSize={COMMENTS_PER_PAGE}
-        hidden={commentsLoading() || comments().length >= (props.shout?.stat?.commented || 0)}
+        hidden={props.shout?.stat?.commented === 0 || commentsLoading() || comments().length >= (props.shout?.stat?.commented || 0)}
       >
         <ul class={styles.comments}>
           <For each={sortedComments().filter((r) => !r.reply_to)}>

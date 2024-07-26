@@ -19,8 +19,7 @@ import {
 import { AuthorLink } from '../../Author/AuthorLink'
 import { Userpic } from '../../Author/Userpic'
 import { CommentDate } from '../CommentDate'
-import { RatingControl as CommentRatingControl } from '../RatingControl'
-
+import { CommentRatingControl } from '../CommentRatingControl'
 import styles from './Comment.module.scss'
 
 const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))

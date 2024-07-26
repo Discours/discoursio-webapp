@@ -30,12 +30,11 @@ export default defineConfig({
     https: true
   },
   devOverlay: true,
+  build: {
+    chunkSizeWarningLimit: 1024,
+    target: 'esnext'
+  },
   vite: {
-    build: {
-      sourcemap: true,
-      chunkSizeWarningLimit: 1024,
-      target: 'esnext'
-    },
     envPrefix: 'PUBLIC_',
     plugins: [!isVercel && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
     css: {

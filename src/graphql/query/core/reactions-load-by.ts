@@ -13,7 +13,6 @@ export default gql`
         title
       }
       created_by {
-        id
         name
         slug
         pic

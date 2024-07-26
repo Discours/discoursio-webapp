@@ -28,3 +28,4 @@ target
 .output
 .vinxi
 *.pem
+edge.*

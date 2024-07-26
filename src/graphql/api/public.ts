@@ -1,14 +1,11 @@
 import { cache } from '@solidjs/router'
 import { defaultClient } from '~/context/graphql'
-import loadShoutCommentsQuery from '~/graphql/query/core/article-comments-load'
 import getShoutQuery from '~/graphql/query/core/article-load'
-import loadShoutRatingsQuery from '~/graphql/query/core/article-ratings-load'
 import loadShoutsByQuery from '~/graphql/query/core/articles-load-by'
 import loadShoutsSearchQuery from '~/graphql/query/core/articles-load-search'
 import getAuthorQuery from '~/graphql/query/core/author-by'
 import loadAuthorsAllQuery from '~/graphql/query/core/authors-all'
 import loadAuthorsByQuery from '~/graphql/query/core/authors-load-by'
-import loadCommentRatingsQuery from '~/graphql/query/core/comment-ratings-load'
 import loadReactionsByQuery from '~/graphql/query/core/reactions-load-by'
 import loadFollowersByTopicQuery from '~/graphql/query/core/topic-followers'
 import loadTopicsQuery from '~/graphql/query/core/topics-all'
@@ -19,7 +16,6 @@ import {
   QueryGet_ShoutArgs,
   QueryLoad_Authors_ByArgs,
   QueryLoad_Reactions_ByArgs,
-  QueryLoad_Shout_RatingsArgs,
   QueryLoad_Shouts_SearchArgs,
   Reaction,
   Shout,
@@ -61,39 +57,16 @@ export const loadShouts = (options: LoadShoutsOptions) => {
   }, `shouts-${filter}-${page}`)
 }
 
-export const loadShoutComments = (options: QueryLoad_Shout_RatingsArgs) => {
-  const page = `${options.offset || 0}-${(options.limit || 1) + (options.offset || 0)}`
-  return cache(async () => {
-    const resp = await defaultClient.query(loadShoutCommentsQuery, options).toPromise()
-    const result = resp?.data?.load_reactions_by
-    if (result) return result as Reaction[]
-  }, `shout-${options.shout}-comments-${page}`)
-}
-
-export const loadShoutRatings = (options: QueryLoad_Shout_RatingsArgs) => {
-  const page = `${options.offset || 0}-${(options.limit || 1) + (options.offset || 0)}`
-  return cache(async () => {
-    const resp = await defaultClient.query(loadShoutRatingsQuery, options).toPromise()
-    const result = resp?.data?.load_reactions_by
-    if (result) return result as Reaction[]
-  }, `shout-${options.shout}-ratings-${page}`)
-}
-
-// biome-ignore lint/suspicious/noExplicitAny: FIXME: wait backend
-export const loadCommentRatings = (options: any) => {
-  const page = `${options.offset || 0}-${(options.limit || 1) + (options.offset || 0)}`
-  return cache(async () => {
-    const resp = await defaultClient.query(loadCommentRatingsQuery, options).toPromise()
-    const result = resp?.data?.load_reactions_by
-    if (result) return result as Reaction[]
-  }, `comment-${options.comment}-ratings-${page}`)
-}
-
 export const loadReactions = (options: QueryLoad_Reactions_ByArgs) => {
+  if (!options.by) {
+    console.debug(options)
+    throw new Error('[api] wrong loadReactions call')
+  }
   const kind = options.by?.comment ? 'comments' : options.by?.rating ? 'votes' : 'reactions'
   const allorone = options.by?.shout ? `shout-${options.by.shout}` : 'all'
   const page = `${options.offset || 0}-${(options?.limit || 0) + (options.offset || 0)}`
   const filter = new URLSearchParams(options.by as Record<string, string>)
+  // console.debug(options)
   return cache(async () => {
     const resp = await defaultClient.query(loadReactionsByQuery, options).toPromise()
     const result = resp?.data?.load_reactions_by
@@ -102,6 +75,7 @@ export const loadReactions = (options: QueryLoad_Reactions_ByArgs) => {
 }
 
 export const getShout = (options: QueryGet_ShoutArgs) => {
+  // console.debug('[lib.api] get shout options', options)
   return cache(
     async () => {
       const resp = await defaultClient.query(getShoutQuery, { ...options }).toPromise()

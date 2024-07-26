@@ -9,27 +9,6 @@
   }
 }
 
-.invert {
-    filter: invert(100%);
-}
-
-.rotating {
-  /* Define the keyframes for the animation */
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  /* Apply the animation to the element */
-  animation: rotate .7s ease-out infinite; /* Rotate infinitely over 2 seconds using a linear timing function */
-}
-
-
 .notificationsCounter {
   @include media-breakpoint-up(md) {
     left: 1.8rem;

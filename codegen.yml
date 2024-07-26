@@ -11,7 +11,7 @@ generates:
       skipTypename: true
       useTypeImports: true
       outputPath: './src/graphql/types/chat.gen.ts'
-      # namingConvention: lodash#pascalCase
+      # namingConvention: change-case#CamelCase # for generated types
 
   # Generate types for core
   src/graphql/schema/core.gen.ts:
@@ -24,7 +24,7 @@ generates:
       skipTypename: true
       useTypeImports: true
       outputPath: './src/graphql/types/core.gen.ts'
-      # namingConvention: lodash#pascalCase
+      # namingConvention: change-case#CamelCase # for generated types
 hooks:
   afterAllFileWrite:
     - prettier --ignore-path .gitignore --write --plugin-search-dir=. src/graphql/schema/*.gen.ts

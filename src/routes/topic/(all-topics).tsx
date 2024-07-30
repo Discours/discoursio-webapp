@@ -24,8 +24,8 @@ export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
     <PageLayout
       withPadding={true}
       key="topics"
-      title={t('Themes and plots')}
-      headerTitle={`${t('Discours')} :: ${t('All topics')}`}
+      title={`${t('Discours')} :: ${t('Themes and plots')}`}
+      headerTitle={t('All topics')}
       desc="Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about"
     >
       <Suspense fallback={<Loading />}>

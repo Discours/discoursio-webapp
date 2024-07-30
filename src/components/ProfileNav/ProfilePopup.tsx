@@ -20,13 +20,13 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
     <Popup {...props} horizontalAnchor="right" popupCssClass={styles.profilePopup}>
       <ul class="nodash">
         <li>
-          <A class={styles.action} href={`/@${author()?.slug || 'anonymous'}`}>
+          <A class={styles.action} href='/profile'>
             <Icon name="profile" class={styles.icon} />
             {t('Profile')}
           </A>
         </li>
         <li>
-          <A class={styles.action} href={'/edit'}>
+          <A class={styles.action} href='/edit'>
             <Icon name="pencil-outline" class={styles.icon} />
             {t('Drafts')}
           </A>

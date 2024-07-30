@@ -6,7 +6,6 @@ import { type Page, expect, test } from '@playwright/test'
 let context: any
 let page: Page
 
-
 /* Global starting test config */
 
 function httpsGet(url: string): Promise<void> {
@@ -80,7 +79,7 @@ test('Sign up', async ({ page }) => {
   await page.goto('/')
   /* test.setTimeout(80000); */
   await page.getByRole('link', { name: 'Войти' }).click()
-  await page.getByRole('link', { name: 'У меня еще нет аккаунта'}).click()
+  await page.getByRole('link', { name: 'У меня еще нет аккаунта' }).click()
   await page.getByPlaceholder('Имя и фамилия').click()
   await page.getByPlaceholder('Имя и фамилия').fill('Тестируем Разработку')
   await page.getByPlaceholder('Почта').click()
@@ -89,7 +88,6 @@ test('Sign up', async ({ page }) => {
   await page.getByPlaceholder('Пароль').fill('Gue$tP@ss')
   await page.getByRole('button', { name: 'Присоединиться' }).click()
 })
-
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')

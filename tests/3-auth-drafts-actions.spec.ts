@@ -79,9 +79,9 @@ test.describe('*****Undone***** Drafts - article', () => {
 })
 
 test('Create article', async ({ page }) => {
-  await page.goto('/edit/new');
-  await page.locator('li').filter({ hasText: 'статья' }).locator('img').click();
-});
+  await page.goto('/edit/new')
+  await page.locator('li').filter({ hasText: 'статья' }).locator('img').click()
+})
 
 /*
 
@@ -107,14 +107,14 @@ test('Drafts - create literature', async ({ page }) => {
 }); */
 
 test('Drafts - create music', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р.' }).click();
-  await page.getByRole('link', { name: 'Черновики' }).click();
-  await page.getByRole('link', { name: 'Создать публикацию' }).click();
-  await page.locator('li').filter({ hasText: 'музыка' }).locator('img').click();
+  await page.getByRole('button', { name: 'Т.Р.' }).click()
+  await page.getByRole('link', { name: 'Черновики' }).click()
+  await page.getByRole('link', { name: 'Создать публикацию' }).click()
+  await page.locator('li').filter({ hasText: 'музыка' }).locator('img').click()
   // TODO: Fill the form
   // TODO: Save
   // TODO: Check is it created
-});
+})
 
 /* test('Drafts - create video', async ({ page }) => {
   await page.getByRole('button', { name: 'Т.Р' }).click();

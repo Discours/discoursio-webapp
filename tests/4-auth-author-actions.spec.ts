@@ -6,6 +6,7 @@ import { type Page, expect, test } from '@playwright/test'
 let context: any
 let page: Page
 
+
 /* Global starting test config */
 
 function httpsGet(url: string): Promise<void> {
@@ -43,6 +44,7 @@ async function waitForServer(url: string, timeout = 150000) {
   }
   throw new Error(`Server at ${url} did not start within ${timeout} ms`)
 }
+
 test.beforeAll(async ({ browser }) => {
   console.log('Waiting for the server to start...')
   await new Promise((resolve) => setTimeout(resolve, 5000))
@@ -72,37 +74,54 @@ function generateRandomString(length = 10) {
   return result
 }
 
+const randomstring = generateRandomString(4)
+
+test('Sign up', async ({ page }) => {
+  await page.goto('/')
+  /* test.setTimeout(80000); */
+  await page.getByRole('link', { name: 'Войти' }).click()
+  await page.getByRole('link', { name: 'У меня еще нет аккаунта'}).click()
+  await page.getByPlaceholder('Имя и фамилия').click()
+  await page.getByPlaceholder('Имя и фамилия').fill('Тестируем Разработку')
+  await page.getByPlaceholder('Почта').click()
+  await page.getByPlaceholder('Почта').fill(`guests+${randomstring}@discours.io`)
+  await page.getByPlaceholder('Пароль').click()
+  await page.getByPlaceholder('Пароль').fill('Gue$tP@ss')
+  await page.getByRole('button', { name: 'Присоединиться' }).click()
+})
+
+
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
   /* test.setTimeout(80000); */
   await page.getByRole('link', { name: 'Войти' }).click()
   await page.getByPlaceholder('Почта').click()
-  await page.getByPlaceholder('Почта').fill('guests@discours.io')
+  await page.getByPlaceholder('Почта').fill(`guests+${randomstring}@discours.io`)
   await page.getByPlaceholder('Пароль').click()
   await page.getByPlaceholder('Пароль').fill('Gue$tP@ss')
   await page.getByRole('button', { name: 'Войти' }).click()
 })
 
-test.describe('User Actions', () => {
-  test('User sandwitch menu', async ({ page }) => {
-    await page.getByRole('button', { name: 'Т.Р' }).click()
+test.describe('Author Actions', () => {
+  test('Author sandwitch menu', async ({ page }) => {
+    await page.getByRole('button', { name: 'Т.Р.' }).click()
     await expect(page.getByRole('link', { name: 'Профиль' })).toBeVisible()
-    await page.getByRole('button', { name: 'Т.Р' }).click()
+    await page.getByRole('button', { name: 'Т.Р.' }).click()
   })
-  test('Follow user', async ({ page }) => {
+  test('Follow author', async ({ page }) => {
     await page.getByRole('link', { name: 'авторы', exact: true }).click()
     await page.getByRole('link', { name: 'Дискурс На сайте c 16 июня' }).click()
     await page.getByRole('button', { name: 'Подписаться' }).click()
     await expect(page.getByRole('main').getByRole('button', { name: 'Вы подписаны' })).toBeVisible()
   })
-  test('Unfollow user', async ({ page }) => {
+  test('Unfollow author', async ({ page }) => {
     await page.getByRole('link', { name: 'авторы', exact: true }).click()
     await page.getByRole('link', { name: 'Дискурс На сайте c 16 июня' }).click()
     await page.getByRole('button', { name: 'Вы подписаны' }).click()
     await expect(page.getByRole('main').getByRole('button', { name: 'Подписаться' })).toBeVisible()
   })
-  test('Change user data', async ({ page }) => {
-    await page.getByRole('button', { name: 'Т.Р' }).click()
+  test('Change author profile', async ({ page }) => {
+    await page.getByRole('button', { name: 'Т.Р.' }).click()
     await page.getByRole('link', { name: 'Профиль' }).click()
     await page.getByRole('button', { name: 'Редактировать профиль' }).click()
     await page.locator('.tiptap').click()

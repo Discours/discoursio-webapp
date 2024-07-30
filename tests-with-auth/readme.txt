@@ -1,1 +1,0 @@
-This is folder with Playwright tests, that are needed to move in /tests dir for wrking on playwright circle

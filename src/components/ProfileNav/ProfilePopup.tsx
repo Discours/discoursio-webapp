@@ -38,7 +38,7 @@ export const ProfilePopup = (props: ProfilePopupProps) => {
           </A>
         </li>
         <li>
-          <A class={styles.action} href={`/author${author()?.slug}`}>
+          <A class={styles.action} href={`/@${author()?.slug}/comments`}>
             <Icon name="comment" class={styles.icon} />
             {t('Comments')}
           </A>

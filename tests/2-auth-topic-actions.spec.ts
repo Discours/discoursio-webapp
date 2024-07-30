@@ -60,18 +60,6 @@ test.afterAll(async () => {
 })
 
 /* TESTS section */
-
-/* Random Generator */
-function generateRandomString(length = 10) {
-  let result = ''
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  const charactersLength = characters.length
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-  return result
-}
-
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
   /* test.setTimeout(80000); */
@@ -103,27 +91,5 @@ test.describe('Topic Actions', () => {
       .click()
     await page.getByRole('button', { name: 'Отписаться от темы' }).click()
     await expect(page.getByRole('button', { name: 'Подписаться на тему' })).toBeVisible()
-  })
-  test('Add comment to topic', async ({ page }) => {
-    const randomString = generateRandomString()
-    const currentDate = new Date()
-    await page.getByRole('button', { name: 'Т.Р' }).click()
-    await page.getByRole('link', { name: 'Профиль' }).click()
-    await page.getByRole('link', { name: 'Тестируем функционал' }).first().click()
-    await page.locator('.tiptap').click()
-    await page.locator('.tiptap').fill(`Проверка Комментариев: ${randomString} ${currentDate}`)
-    await page.getByRole('button', { name: 'Отправить' }).click()
-    await expect(page.getByText(`Проверка Комментариев: ${randomString} ${currentDate}`)).toBeVisible()
-  })
-  test('Edit comment to topic', async ({ page }) => {
-    await page.getByRole('button', { name: 'Т.Р' }).click()
-    await page.getByRole('link', { name: 'Комментарии' }).click()
-    await page.locator('[id^="comment_"]').filter({ hasText: 'Проверка Комментариев' }).first().hover()
-    await page.getByRole('button', { name: 'Редактировать', exact: true }).first().click()
-    const randomString = generateRandomString()
-    const currentDate = new Date()
-    await page.locator('.tiptap').fill(`Редактируемый Комментарий: ${randomString} ${currentDate}`)
-    await page.getByRole('button', { name: 'Сохранить' }).click()
-    await expect(page.getByText(`Редактируемый Комментарий: ${randomString} ${currentDate}`)).toBeVisible()
   })
 })

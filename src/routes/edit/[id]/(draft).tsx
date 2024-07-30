@@ -13,21 +13,6 @@ import { LayoutType } from '~/types/common'
 
 const EditView = lazy(() => import('~/components/Views/EditView/EditView'))
 
-export const getContentTypeTitle = (layout: LayoutType) => {
-  switch (layout) {
-    case 'audio':
-      return 'Publish Album'
-    case 'image':
-      return 'Create gallery'
-    case 'video':
-      return 'Create video'
-    case 'literature':
-      return 'New literary work'
-    default:
-      return 'Write an article'
-  }
-}
-
 export default (props: RouteSectionProps) => {
   const { t } = useLocalize()
   const { session } = useSession()
@@ -44,7 +29,8 @@ export default (props: RouteSectionProps) => {
   createEffect(on(session, (s) => s?.access_token && loadDraft(), { defer: true }))
 
   const loadDraft = async () => {
-    const result = await client()?.query(getShoutDraft, { shout_id: props.params.id }).toPromise()
+    const shout_id = Number.parseInt(props.params.id)
+    const result = await client()?.query(getShoutDraft, { shout_id }).toPromise()
     if (result) {
       const { shout: loadedShout, error } = result.data.get_my_shout
       if (error) {
@@ -56,14 +42,21 @@ export default (props: RouteSectionProps) => {
   }
 
   const title = createMemo(() => {
-    if (!shout()) {
-      return t('Create post')
-    }
-    return t(getContentTypeTitle(shout()?.layout as LayoutType))
+    const layout = (shout()?.layout as LayoutType) || 'article'
+    if (!shout()) return 'Create post'
+    return (
+      {
+        article: 'Write an article',
+        audio: 'Publish Album',
+        image: 'Create gallery',
+        video: 'Create video',
+        literature: 'New literary work'
+      }[layout] || 'Write an article'
+    )
   })
 
   return (
-    <PageLayout title={`${t('Discours')} :: ${title()}`}>
+    <PageLayout title={`${t('Discours')} :: ${t(title())}`}>
       <AuthGuard>
         <EditView shout={shout() as Shout} />
       </AuthGuard>

@@ -17,7 +17,8 @@ export default (props: RouteSectionProps) => {
   createEffect(on(session, (s) => s?.access_token && loadDraft(), { defer: true }))
   const [shout, setShout] = createSignal<Shout>()
   const loadDraft = async () => {
-    const result = await client()?.query(getShoutDraft, { shout_id: props.params.id }).toPromise()
+    const shout_id = Number.parseInt(props.params.id)
+    const result = await client()?.query(getShoutDraft, { shout_id }).toPromise()
     if (result) {
       const { shout: loadedShout, error } = result.data.get_my_shout
       if (error) throw new Error(error)

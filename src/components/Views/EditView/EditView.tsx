@@ -19,9 +19,11 @@ import { InviteMembers } from '~/components/_shared/InviteMembers'
 import { Loading } from '~/components/_shared/Loading'
 import { Popover } from '~/components/_shared/Popover'
 import { EditorSwiper } from '~/components/_shared/SolidSwiper'
+import { coreApiUrl } from '~/config'
 import { ShoutForm, useEditorContext } from '~/context/editor'
-import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import { graphqlClientCreate } from '~/graphql/client'
 import getMyShoutQuery from '~/graphql/query/core/article-my'
 import type { Shout, Topic } from '~/graphql/schema/core.gen'
 import { slugify } from '~/intl/translit'
@@ -64,7 +66,9 @@ const handleScrollTopButtonClick = (ev: MouseEvent | TouchEvent) => {
 export const EditView = (props: Props) => {
   const { t } = useLocalize()
   const [isScrolled, setIsScrolled] = createSignal(false)
-  const { query } = useGraphQL()
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
   const {
     form,
     formErrors,
@@ -140,7 +144,7 @@ export const EditView = (props: Props) => {
       () => props.shout?.id,
       async (shoutId) => {
         if (shoutId) {
-          const resp = await query(getMyShoutQuery, { shout_id: shoutId })
+          const resp = await client()?.query(getMyShoutQuery, { shout_id: shoutId })
           const result = resp?.data?.get_my_shout
           if (result) {
             console.debug('[EditView] getMyShout result: ', result)

@@ -3,11 +3,12 @@ import { clsx } from 'clsx'
 import { For, Show, Suspense, createMemo, createSignal, lazy } from 'solid-js'
 import { Icon } from '~/components/_shared/Icon'
 import { ShowIfAuthenticated } from '~/components/_shared/ShowIfAuthenticated'
-import { useGraphQL } from '~/context/graphql'
+import { coreApiUrl } from '~/config'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { useSnackbar, useUI } from '~/context/ui'
+import { graphqlClientCreate } from '~/graphql/client'
 import deleteReactionMutation from '~/graphql/mutation/core/reaction-destroy'
 import {
   Author,
@@ -49,8 +50,7 @@ export const Comment = (props: Props) => {
   const { createReaction, updateReaction } = useReactions()
   const { showConfirm } = useUI()
   const { showSnackbar } = useSnackbar()
-  const { mutation } = useGraphQL()
-
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
@@ -70,7 +70,9 @@ export const Comment = (props: Props) => {
         })
 
         if (isConfirmed) {
-          const resp = await mutation(deleteReactionMutation, { id: props.comment.id }).toPromise()
+          const resp = await client()
+            ?.mutation(deleteReactionMutation, { id: props.comment.id })
+            .toPromise()
           const result = resp?.data?.delete_reaction
           const { error } = result
           const notificationType = error ? 'error' : 'success'

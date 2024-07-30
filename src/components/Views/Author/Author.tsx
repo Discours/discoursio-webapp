@@ -2,11 +2,12 @@ import { A, useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
+import { coreApiUrl } from '~/config'
 import { useAuthors } from '~/context/authors'
 import { useFollowing } from '~/context/following'
-import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
+import { graphqlClientCreate } from '~/graphql/client'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
@@ -36,8 +37,10 @@ export const AuthorView = (props: AuthorViewProps) => {
   // contexts
   const { t } = useLocalize()
   const loc = useLocation()
+
   const { session } = useSession()
-  const { query } = useGraphQL()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
   const { loadAuthor, authorsEntities } = useAuthors()
   const { followers: myFollowers, follows: myFollows } = useFollowing()
 
@@ -70,11 +73,15 @@ export const AuthorView = (props: AuthorViewProps) => {
       setAuthor(foundAuthor)
 
       if (foundAuthor) {
-        const followsResp = await query(getAuthorFollowsQuery, { slug: foundAuthor.slug }).toPromise()
+        const followsResp = await client()
+          ?.query(getAuthorFollowsQuery, { slug: foundAuthor.slug })
+          .toPromise()
         const follows = followsResp?.data?.get_author_followers || {}
         changeFollowing([...(follows?.authors || []), ...(follows?.topics || [])])
 
-        const followersResp = await query(getAuthorFollowersQuery, { slug: foundAuthor.slug }).toPromise()
+        const followersResp = await client()
+          ?.query(getAuthorFollowersQuery, { slug: foundAuthor.slug })
+          .toPromise()
         setFollowers(followersResp?.data?.get_author_followers || [])
       }
     }

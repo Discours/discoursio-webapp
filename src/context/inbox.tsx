@@ -1,7 +1,7 @@
 import type { Accessor, JSX } from 'solid-js'
-import { createContext, createSignal, useContext } from 'solid-js'
+import { createContext, createMemo, createSignal, useContext } from 'solid-js'
 import { chatApiUrl } from '~/config'
-import { useGraphQL } from '~/context/graphql'
+import { graphqlClientCreate } from '~/graphql/client'
 import createChatMutation from '~/graphql/mutation/chat/chat-create'
 import createMessageMutation from '~/graphql/mutation/chat/chat-message-create'
 import loadChatMessagesQuery from '~/graphql/query/chat/chat-messages-load-by'
@@ -10,6 +10,7 @@ import type { Chat, Message, MessagesBy, MutationCreate_MessageArgs } from '~/gr
 import { Author } from '~/graphql/schema/core.gen'
 import { useAuthors } from '../context/authors'
 import { SSEMessage, useConnect } from './connect'
+import { useSession } from './session'
 
 type InboxContextType = {
   chats: Accessor<Chat[]>
@@ -37,7 +38,8 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
   const { authorsSorted } = useAuthors()
-  const { query, mutation } = useGraphQL(chatApiUrl)
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(chatApiUrl, session()?.access_token))
 
   const handleMessage = (sseMessage: SSEMessage) => {
     // handling all action types: create update delete join left seen
@@ -56,13 +58,13 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   addHandler(handleMessage)
 
   const loadMessages = async (by: MessagesBy, limit = 50, offset = 0): Promise<Message[]> => {
-    const resp = await query(loadChatMessagesQuery, { by, limit, offset })
+    const resp = await client()?.query(loadChatMessagesQuery, { by, limit, offset })
     const result = resp?.data?.load_chat_messages || []
     setMessages((mmm) => [...new Set([...mmm, ...result])])
     return result
   }
   const loadChats = async () => {
-    const resp = await query(loadChatsQuery, { limit: 50, offset: 0 }).toPromise()
+    const resp = await client()?.query(loadChatsQuery, { limit: 50, offset: 0 }).toPromise()
     const result = resp?.data?.load_chats || []
     setChats(result)
     return result
@@ -81,7 +83,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   }
 
   const sendMessage = async (args: MutationCreate_MessageArgs) => {
-    const resp = await mutation(createMessageMutation, args).toPromise()
+    const resp = await client()?.mutation(createMessageMutation, args).toPromise()
     const result = resp?.data?.create_message
     if (result) {
       const { message, error } = result
@@ -100,7 +102,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
 
   const createChat = async (members: number[], title: string) => {
     try {
-      const resp = await mutation(createChatMutation, { members, title }).toPromise()
+      const resp = await client()?.mutation(createChatMutation, { members, title }).toPromise()
       const result = resp?.data?.create_chat
       if (result) {
         const { chat, error } = result

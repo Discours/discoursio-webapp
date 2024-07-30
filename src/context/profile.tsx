@@ -1,11 +1,21 @@
 import type { Author, ProfileInput } from '~/graphql/schema/core.gen'
 
 import { AuthToken } from '@authorizerdev/authorizer-js'
-import { Accessor, JSX, createContext, createEffect, createSignal, on, useContext } from 'solid-js'
+import {
+  Accessor,
+  JSX,
+  createContext,
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  useContext
+} from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { coreApiUrl } from '~/config'
 import updateAuthorMuatation from '~/graphql/mutation/core/author-update'
+import { graphqlClientCreate } from '../graphql/client'
 import { useAuthors } from './authors'
-import { useGraphQL } from './graphql'
 import { useSession } from './session'
 
 type ProfileContextType = {
@@ -32,7 +42,7 @@ const userpicUrl = (userpic: string) => {
 
 export const ProfileProvider = (props: { children: JSX.Element }) => {
   const { session } = useSession()
-  const { mutation } = useGraphQL()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
   const { addAuthor } = useAuthors()
   const [form, setForm] = createStore<ProfileInput>({} as ProfileInput)
   const [author, setAuthor] = createSignal<Author>({} as Author)
@@ -55,7 +65,7 @@ export const ProfileProvider = (props: { children: JSX.Element }) => {
   )
 
   const submit = async (profile: ProfileInput) => {
-    const response = await mutation(updateAuthorMuatation, profile).toPromise()
+    const response = await client()?.mutation(updateAuthorMuatation, profile).toPromise()
     if (response.error) {
       console.error(response.error)
       throw response.error

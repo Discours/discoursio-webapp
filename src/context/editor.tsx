@@ -1,16 +1,18 @@
 import { useMatch, useNavigate } from '@solidjs/router'
 import { Editor } from '@tiptap/core'
 import type { JSX } from 'solid-js'
-import { Accessor, createContext, createSignal, useContext } from 'solid-js'
+import { Accessor, createContext, createMemo, createSignal, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
+import { coreApiUrl } from '~/config'
 import { useSnackbar } from '~/context/ui'
 import deleteShoutQuery from '~/graphql/mutation/core/article-delete'
 import updateShoutQuery from '~/graphql/mutation/core/article-update'
 import { Topic, TopicInput } from '~/graphql/schema/core.gen'
 import { slugify } from '~/intl/translit'
 import { useFeed } from '../context/feed'
-import { useGraphQL } from './graphql'
+import { graphqlClientCreate } from '../graphql/client'
 import { useLocalize } from './localize'
+import { useSession } from './session'
 
 type WordCounter = {
   characters: number
@@ -82,7 +84,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const navigate = useNavigate()
   const matchEdit = useMatch(() => '/edit')
   const matchEditSettings = useMatch(() => '/editSettings')
-  const { mutation } = useGraphQL()
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
   const { addFeed } = useFeed()
   const snackbar = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
@@ -133,7 +137,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       console.error(formToUpdate)
       return { error: 'not enought data' }
     }
-    const resp = await mutation(updateShoutQuery, {
+    const resp = await client()?.mutation(updateShoutQuery, {
       shout_id: formToUpdate.shoutId,
       shout_input: {
         body: formToUpdate.body,
@@ -235,7 +239,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       return
     }
     try {
-      const resp = await mutation(updateShoutQuery, { shout_id, publish: true }).toPromise()
+      const resp = await client()?.mutation(updateShoutQuery, { shout_id, publish: true }).toPromise()
       const result = resp?.data?.update_shout
       if (result) {
         const { shout: newShout, error } = result
@@ -259,7 +263,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
 
   const deleteShout = async (shout_id: number) => {
     try {
-      const resp = await mutation(deleteShoutQuery, { shout_id }).toPromise()
+      const resp = await client()?.mutation(deleteShoutQuery, { shout_id }).toPromise()
       return resp?.data?.delete_shout
     } catch {
       snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })

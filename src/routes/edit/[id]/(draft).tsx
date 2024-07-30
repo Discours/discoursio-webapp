@@ -2,10 +2,11 @@ import { RouteSectionProps, redirect } from '@solidjs/router'
 import { createEffect, createMemo, createSignal, lazy, on } from 'solid-js'
 import { AuthGuard } from '~/components/AuthGuard'
 import { PageLayout } from '~/components/_shared/PageLayout'
-import { useGraphQL } from '~/context/graphql'
+import { coreApiUrl } from '~/config'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useSnackbar } from '~/context/ui'
+import { graphqlClientCreate } from '~/graphql/client'
 import getShoutDraft from '~/graphql/query/core/article-my'
 import { Shout } from '~/graphql/schema/core.gen'
 import { LayoutType } from '~/types/common'
@@ -38,12 +39,12 @@ export default (props: RouteSectionProps) => {
     redirect('/edit') // all drafts page
   }
   const [shout, setShout] = createSignal<Shout>()
-  const client = useGraphQL()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   createEffect(on(session, (s) => s?.access_token && loadDraft(), { defer: true }))
 
   const loadDraft = async () => {
-    const result = await client.query(getShoutDraft, { shout_id: props.params.id }).toPromise()
+    const result = await client()?.query(getShoutDraft, { shout_id: props.params.id }).toPromise()
     if (result) {
       const { shout: loadedShout, error } = result.data.get_my_shout
       if (error) {

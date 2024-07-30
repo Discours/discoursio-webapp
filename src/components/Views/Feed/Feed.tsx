@@ -7,14 +7,15 @@ import { Icon } from '~/components/_shared/Icon'
 import { InviteMembers } from '~/components/_shared/InviteMembers'
 import { Loading } from '~/components/_shared/Loading'
 import { ShareModal } from '~/components/_shared/ShareModal'
+import { coreApiUrl } from '~/config'
 import { useAuthors } from '~/context/authors'
-import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
 import { loadUnratedShouts } from '~/graphql/api/private'
+import { graphqlClientCreate } from '~/graphql/client'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
 import { byCreated } from '~/lib/sort'
 import { FeedSearchParams } from '~/routes/feed/[...order]'
@@ -48,10 +49,12 @@ const PERIODS = {
 export const FeedView = (props: FeedProps) => {
   const { t } = useLocalize()
   const loc = useLocation()
-  const client = useGraphQL()
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
   const unrated = createAsync(async () => {
     if (client) {
-      const shoutsLoader = loadUnratedShouts(client, { limit: 5 })
+      const shoutsLoader = loadUnratedShouts(client(), { limit: 5 })
       return await shoutsLoader()
     }
   })
@@ -59,7 +62,6 @@ export const FeedView = (props: FeedProps) => {
   const { showModal } = useUI()
   const [isLoading, setIsLoading] = createSignal(false)
   const [isRightColumnLoaded, setIsRightColumnLoaded] = createSignal(false)
-  const { session } = useSession()
   const { loadReactionsBy } = useReactions()
   const { topTopics } = useTopics()
   const { topAuthors } = useAuthors()

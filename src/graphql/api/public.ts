@@ -1,5 +1,5 @@
 import { cache } from '@solidjs/router'
-import { defaultClient } from '~/context/graphql'
+import { defaultClient } from '~/graphql/client'
 import getShoutQuery from '~/graphql/query/core/article-load'
 import loadShoutsByQuery from '~/graphql/query/core/articles-load-by'
 import loadShoutsSearchQuery from '~/graphql/query/core/articles-load-search'

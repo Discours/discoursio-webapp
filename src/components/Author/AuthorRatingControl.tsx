@@ -1,8 +1,10 @@
 import type { Author } from '~/graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { Show, createSignal } from 'solid-js'
-import { useGraphQL } from '~/context/graphql'
+import { Show, createMemo, createSignal } from 'solid-js'
+import { coreApiUrl } from '~/config'
+import { useSession } from '~/context/session'
+import { graphqlClientCreate } from '~/graphql/client'
 import rateAuthorMutation from '~/graphql/mutation/core/author-rate'
 import styles from './AuthorRatingControl.module.scss'
 
@@ -14,19 +16,24 @@ interface AuthorRatingControlProps {
 export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
   const isUpvoted = false
   const isDownvoted = false
+
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleRatingChange = async (isUpvote: boolean) => {
     console.log('handleRatingChange', { isUpvote })
     if (props.author?.slug) {
       const value = isUpvote ? 1 : -1
-      const _resp = await mutation(rateAuthorMutation, {
-        rated_slug: props.author?.slug,
-        value
-      }).toPromise()
+      const _resp = await client()
+        ?.mutation(rateAuthorMutation, {
+          rated_slug: props.author?.slug,
+          value
+        })
+        .toPromise()
       setRating((r) => (r || 0) + value)
     }
   }
-  const { mutation } = useGraphQL()
   const [rating, setRating] = createSignal(props.author?.stat?.rating)
   return (
     <div

@@ -16,6 +16,7 @@ import AuthorPage, { AuthorPageProps } from '../author/[slug]/[...tab]'
 import TopicPage, { TopicPageProps } from '../topic/[slug]/[...tab]'
 
 const fetchShout = async (slug: string): Promise<Shout | undefined> => {
+  if (slug.startsWith('@')) return
   const shoutLoader = getShout({ slug })
   const result = await shoutLoader()
   return result

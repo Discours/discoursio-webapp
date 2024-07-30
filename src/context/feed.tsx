@@ -1,6 +1,7 @@
 import { createLazyMemo } from '@solid-primitives/memo'
 import { makePersisted } from '@solid-primitives/storage'
-import { Accessor, JSX, Setter, createContext, createSignal, useContext } from 'solid-js'
+import { Accessor, JSX, Setter, createContext, createMemo, createSignal, useContext } from 'solid-js'
+import { coreApiUrl } from '~/config'
 import { loadFollowedShouts } from '~/graphql/api/private'
 import { loadShoutsSearch as fetchShoutsSearch, getShout, loadShouts } from '~/graphql/api/public'
 import {
@@ -10,8 +11,9 @@ import {
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
+import { graphqlClientCreate } from '../graphql/client'
 import { byStat } from '../lib/sort'
-import { useGraphQL } from './graphql'
+import { useSession } from './session'
 
 export const PRERENDERED_ARTICLES_COUNT = 5
 export const SHOUTS_PER_PAGE = 20
@@ -172,14 +174,16 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
     addFeed(result)
     return { hasMore, newShouts: result }
   }
-  const client = useGraphQL()
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
   // Load the user's feed based on the provided options and update the articleEntities and sortedFeed state
   const loadMyFeed = async (
     options: LoadShoutsOptions
   ): Promise<{ hasMore: boolean; newShouts: Shout[] }> => {
     if (!options.limit) options.limit = 0
     options.limit += 1
-    const fetcher = await loadFollowedShouts(client, options)
+    const fetcher = await loadFollowedShouts(client(), options)
     const result = (await fetcher()) || []
     const hasMore = result.length === options.limit + 1
     if (hasMore) result.splice(-1)

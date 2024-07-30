@@ -1,7 +1,8 @@
 import type { JSX } from 'solid-js'
 
-import { createContext, onCleanup, useContext } from 'solid-js'
+import { createContext, createMemo, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
+import { coreApiUrl } from '~/config'
 import { loadReactions } from '~/graphql/api/public'
 import createReactionMutation from '~/graphql/mutation/core/reaction-create'
 import destroyReactionMutation from '~/graphql/mutation/core/reaction-destroy'
@@ -13,8 +14,9 @@ import {
   Reaction,
   ReactionKind
 } from '~/graphql/schema/core.gen'
-import { useGraphQL } from './graphql'
+import { graphqlClientCreate } from '../graphql/client'
 import { useLocalize } from './localize'
+import { useSession } from './session'
 import { useSnackbar } from './ui'
 
 type ReactionsContextType = {
@@ -38,7 +40,9 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionsByShout, setReactionsByShout] = createStore<Record<number, Reaction[]>>({})
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
-  const { mutation } = useGraphQL()
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
   const addReactions = (rrr: Reaction[]) => {
     const newReactionsByShout: Record<string, Reaction[]> = { ...reactionsByShout }
     const newReactionEntities = rrr.reduce(
@@ -64,7 +68,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const createReaction = async (input: MutationCreate_ReactionArgs): Promise<void> => {
-    const resp = await mutation(createReactionMutation, input).toPromise()
+    const resp = await client()?.mutation(createReactionMutation, input).toPromise()
     const { error, reaction } = resp?.data?.create_reaction || {}
     if (error) await showSnackbar({ type: 'error', body: t(error) })
     if (!reaction) return
@@ -96,7 +100,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     reaction_id: number
   ): Promise<{ error: string; reaction?: string } | null> => {
     if (reaction_id) {
-      const resp = await mutation(destroyReactionMutation, { reaction_id }).toPromise()
+      const resp = await client()?.mutation(destroyReactionMutation, { reaction_id }).toPromise()
       const result = resp?.data?.destroy_reaction
       if (!result.error) {
         setReactionEntities({
@@ -109,7 +113,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const updateReaction = async (input: MutationUpdate_ReactionArgs): Promise<Reaction> => {
-    const resp = await mutation(updateReactionMutation, input).toPromise()
+    const resp = await client()?.mutation(updateReactionMutation, input).toPromise()
     const result = resp?.data?.update_reaction
     if (!result) throw new Error('cannot update reaction')
     const { error, reaction } = result

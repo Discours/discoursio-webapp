@@ -10,11 +10,12 @@ import {
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
+import { coreApiUrl } from '~/config'
 import followMutation from '~/graphql/mutation/core/follow'
 import unfollowMutation from '~/graphql/mutation/core/unfollow'
 import loadAuthorFollowers from '~/graphql/query/core/author-followers'
 import { Author, Community, FollowingEntity, Topic } from '~/graphql/schema/core.gen'
-import { useGraphQL } from './graphql'
+import { graphqlClientCreate } from '../graphql/client'
 import { useSession } from './session'
 
 export type FollowsFilter = 'all' | 'authors' | 'topics' | 'communities'
@@ -71,14 +72,14 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [follows, setFollows] = createStore<AuthorFollowsResult>(EMPTY_SUBSCRIPTIONS)
   const { session } = useSession()
   const authorized = createMemo<boolean>(() => Boolean(session()?.access_token))
-  const { query, mutation } = useGraphQL()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   const fetchData = async () => {
     setLoading(true)
     try {
       if (session()?.access_token) {
         console.debug('[context.following] fetching subs data...')
-        const result = await query(loadAuthorFollowers, { user: session()?.user?.id }).toPromise()
+        const result = await client()?.query(loadAuthorFollowers, { user: session()?.user?.id }).toPromise()
         if (result) {
           setFollows((_: AuthorFollowsResult) => {
             return { ...EMPTY_SUBSCRIPTIONS, ...result } as AuthorFollowsResult
@@ -98,7 +99,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     if (!authorized()) return
     setFollowing({ slug, type: 'follow' })
     try {
-      const resp = await mutation(followMutation, { what, slug }).toPromise()
+      const resp = await client()?.mutation(followMutation, { what, slug }).toPromise()
       const result = resp?.data?.follow
       if (!result) return
       setFollows((subs) => {
@@ -117,7 +118,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     if (!authorized()) return
     setFollowing({ slug: slug, type: 'unfollow' })
     try {
-      const resp = await mutation(unfollowMutation, { what, slug }).toPromise()
+      const resp = await client()?.mutation(unfollowMutation, { what, slug }).toPromise()
       const result = resp?.data?.unfollow
       if (!result) return
       setFollows((subs) => {

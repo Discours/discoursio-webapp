@@ -5,10 +5,12 @@ import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { Loading } from '~/components/_shared/Loading'
 import { ArticleCardSwiper } from '~/components/_shared/SolidSwiper/ArticleCardSwiper'
+import { coreApiUrl } from '~/config'
 import { useFeed } from '~/context/feed'
-import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import { loadShouts } from '~/graphql/api/public'
+import { graphqlClientCreate } from '~/graphql/client'
 import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-top'
 import { LoadShoutsFilters, LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { SHOUTS_PER_PAGE } from '~/routes/(main)'
@@ -29,7 +31,9 @@ const LOAD_MORE_PAGE_SIZE = 12
 
 export const Expo = (props: Props) => {
   const { t } = useLocalize()
-  const { query } = useGraphQL()
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
   const [expoShouts, setExpoShouts] = createSignal<Shout[]>([])
@@ -55,7 +59,7 @@ export const Expo = (props: Props) => {
       limit: 10,
       random_limit: 100
     }
-    const resp = await query(getRandomTopShoutsQuery, { options }).toPromise()
+    const resp = await client()?.query(getRandomTopShoutsQuery, { options }).toPromise()
     setFavoriteTopArticles(resp?.data?.load_shouts_random_top || [])
   }
 
@@ -67,7 +71,7 @@ export const Expo = (props: Props) => {
       limit: 10,
       random_limit: 10
     }
-    const resp = await query(getRandomTopShoutsQuery, { options }).toPromise()
+    const resp = await client()?.query(getRandomTopShoutsQuery, { options }).toPromise()
     setReactedTopMonthArticles(resp?.data?.load_shouts_random_top || [])
   }
 

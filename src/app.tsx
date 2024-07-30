@@ -7,7 +7,6 @@ import { Loading } from './components/_shared/Loading'
 import { AuthorsProvider } from './context/authors'
 import { EditorProvider } from './context/editor'
 import { FeedProvider } from './context/feed'
-import { GraphQLClientProvider } from './context/graphql'
 import { LocalizeProvider } from './context/localize'
 import { SessionProvider } from './context/session'
 import { TopicsProvider } from './context/topics'
@@ -18,22 +17,20 @@ export const Providers = (props: { children?: JSX.Element }) => {
   return (
     <LocalizeProvider>
       <SessionProvider onStateChangeCallback={console.info}>
-        <GraphQLClientProvider>
-          <TopicsProvider>
-            <FeedProvider>
-              <MetaProvider>
-                <Meta name="viewport" content="width=device-width, initial-scale=1" />
-                <UIProvider>
-                  <EditorProvider>
-                    <AuthorsProvider>
-                      <Suspense fallback={<Loading />}>{props.children}</Suspense>
-                    </AuthorsProvider>
-                  </EditorProvider>
-                </UIProvider>
-              </MetaProvider>
-            </FeedProvider>
-          </TopicsProvider>
-        </GraphQLClientProvider>
+        <TopicsProvider>
+          <FeedProvider>
+            <MetaProvider>
+              <Meta name="viewport" content="width=device-width, initial-scale=1" />
+              <UIProvider>
+                <EditorProvider>
+                  <AuthorsProvider>
+                    <Suspense fallback={<Loading />}>{props.children}</Suspense>
+                  </AuthorsProvider>
+                </EditorProvider>
+              </UIProvider>
+            </MetaProvider>
+          </FeedProvider>
+        </TopicsProvider>
       </SessionProvider>
     </LocalizeProvider>
   )

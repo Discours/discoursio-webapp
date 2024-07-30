@@ -1,8 +1,9 @@
 import { RouteSectionProps } from '@solidjs/router'
-import { ErrorBoundary, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { ErrorBoundary, Suspense, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
+import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
 import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
@@ -100,24 +101,26 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
 
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
-      <PageLayout
-        title={`${t('Discours')} :: ${title()}`}
-        headerTitle={author()?.name || ''}
-        slug={author()?.slug}
-        desc={author()?.about || author()?.bio || ''}
-        cover={cover()}
-      >
-        <ReactionsProvider>
-          <LoadMoreWrapper loadFunction={loadAuthorShoutsMore} pageSize={SHOUTS_PER_PAGE}>
-            <AuthorView
-              author={author() as Author}
-              selectedTab={props.params.tab}
-              authorSlug={props.params.slug}
-              shouts={shoutsByAuthor()}
-            />
-          </LoadMoreWrapper>
-        </ReactionsProvider>
-      </PageLayout>
+      <Suspense fallback={<Loading />}>
+        <PageLayout
+          title={`${t('Discours')} :: ${title()}`}
+          headerTitle={author()?.name || ''}
+          slug={author()?.slug}
+          desc={author()?.about || author()?.bio || ''}
+          cover={cover()}
+        >
+          <ReactionsProvider>
+            <LoadMoreWrapper loadFunction={loadAuthorShoutsMore} pageSize={SHOUTS_PER_PAGE}>
+              <AuthorView
+                author={author() as Author}
+                selectedTab={props.params.tab}
+                authorSlug={props.params.slug}
+                shouts={shoutsByAuthor()}
+              />
+            </LoadMoreWrapper>
+          </ReactionsProvider>
+        </PageLayout>
+      </Suspense>
     </ErrorBoundary>
   )
 }

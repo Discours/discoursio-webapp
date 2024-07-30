@@ -5,10 +5,11 @@ import { Feed } from '~/components/Views/Feed'
 import { FeedProps } from '~/components/Views/Feed/Feed'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
+import { coreApiUrl } from '~/config'
 import { useFeed } from '~/context/feed'
-import { useGraphQL } from '~/context/graphql'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
+import { useSession } from '~/context/session'
 import { useTopics } from '~/context/topics'
 import {
   loadCoauthoredShouts,
@@ -16,6 +17,7 @@ import {
   loadFollowedShouts,
   loadUnratedShouts
 } from '~/graphql/api/private'
+import { graphqlClientCreate } from '~/graphql/client'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 
 const feeds = {
@@ -54,8 +56,8 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
   const [searchParams] = useSearchParams<FeedSearchParams>() // ?period=month
   const { t } = useLocalize()
   const { setFeed, feed } = useFeed()
-  // TODO: use const { requireAuthentication } = useSession()
-  const client = useGraphQL()
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   // preload all topics
   const { addTopics, sortedTopics } = useTopics()
@@ -97,7 +99,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
       options.filters = { after: getFromDate(period as FeedPeriod) }
     }
 
-    const shoutsLoader = gqlHandler(client, options)
+    const shoutsLoader = gqlHandler(client(), options)
     const loaded = await shoutsLoader()
     loaded && setFeed((prev: Shout[]) => [...prev, ...loaded])
     return loaded as LoadMoreItems

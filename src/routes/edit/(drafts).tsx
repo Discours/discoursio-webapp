@@ -1,10 +1,13 @@
 import { createAsync } from '@solidjs/router'
 import { Client } from '@urql/core'
+import { createMemo } from 'solid-js'
 import { AuthGuard } from '~/components/AuthGuard'
 import { DraftsView } from '~/components/Views/DraftsView'
 import { PageLayout } from '~/components/_shared/PageLayout'
-import { useGraphQL } from '~/context/graphql'
+import { coreApiUrl } from '~/config'
 import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import { graphqlClientCreate } from '~/graphql/client'
 import getDraftsQuery from '~/graphql/query/core/articles-load-drafts'
 import { Shout } from '~/graphql/schema/core.gen'
 
@@ -16,8 +19,9 @@ const fetchDrafts = async (client: Client) => {
 
 export default () => {
   const { t } = useLocalize()
-  const client = useGraphQL()
-  const drafts = createAsync(async () => await fetchDrafts(client))
+  const { session } = useSession()
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const drafts = createAsync(async () => await fetchDrafts(client()))
 
   return (
     <PageLayout title={`${t('Discours')} :: ${t('Drafts')}`}>

@@ -1,6 +1,6 @@
 import { A, useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
 import { useAuthors } from '~/context/authors'
 import { useFollowing } from '~/context/following'
@@ -55,74 +55,48 @@ export const AuthorView = (props: AuthorViewProps) => {
     paginate((props.shouts || []).slice(1), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
 
-  // 1 // проверяет не собственный ли это профиль, иначе - загружает
-  const [isFetching, setIsFetching] = createSignal(false)
-  createEffect(
-    on(
-      [() => session()?.user?.app_data?.profile, () => props.authorSlug || ''],
-      async ([me, slug]) => {
-        console.debug('check if my profile')
-        const my = slug && me?.slug === slug
-        if (my) {
-          console.debug('[Author] my profile precached')
-          if (me) {
-            setAuthor(me)
-            if (myFollowers()) setFollowers((myFollowers() || []) as Author[])
-            changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
-          }
-        } else if (slug && !isFetching()) {
-          setIsFetching(true)
-          await loadAuthor({ slug })
-          setIsFetching(false) // Сброс состояния загрузки после завершения
-        }
-      },
-      { defer: true }
-    )
-  )
+  // Объединенный эффект для загрузки автора и его подписок
+  createEffect(async () => {
+    const meData = session()?.user?.app_data?.profile as Author
+    const slug = props.authorSlug
 
-  // 2 // догружает подписки автора
-  createEffect(
-    on(
-      () => authorsEntities()[props.author?.slug || props.authorSlug || ''],
-      async (found) => {
-        if (!found) return
-        setAuthor(found)
-        console.info(`[Author] profile for @${found.slug} fetched`)
-        const followsResp = await query(getAuthorFollowsQuery, { slug: found.slug }).toPromise()
+    if (slug && meData?.slug === slug) {
+      setAuthor(meData)
+      setFollowers(myFollowers() || [])
+      changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
+    } else if (slug && !author()) {
+      await loadAuthor({ slug })
+      const foundAuthor = authorsEntities()[slug]
+      setAuthor(foundAuthor)
+
+      if (foundAuthor) {
+        const followsResp = await query(getAuthorFollowsQuery, { slug: foundAuthor.slug }).toPromise()
         const follows = followsResp?.data?.get_author_followers || {}
         changeFollowing([...(follows?.authors || []), ...(follows?.topics || [])])
-        console.info(`[Author] follows for @${found.slug} fetched`)
-        const followersResp = await query(getAuthorFollowersQuery, { slug: found.slug }).toPromise()
-        setFollowers(followersResp?.data?.get_author_followers || [])
-        console.info(`[Author] followers for @${found.slug} fetched`)
-        setIsFetching(false)
-      },
-      { defer: true }
-    )
-  )
 
-  // event handlers
+        const followersResp = await query(getAuthorFollowersQuery, { slug: foundAuthor.slug }).toPromise()
+        setFollowers(followersResp?.data?.get_author_followers || [])
+      }
+    }
+  })
+
+  // Обработка биографии
   let bioContainerRef: HTMLDivElement
   let bioWrapperRef: HTMLDivElement
-  const checkBioHeight = (bio = bioWrapperRef) => {
-    if (!bio) return
-    const showExpand = bioContainerRef.offsetHeight > bio.offsetHeight
-    setShowExpandBioControl(showExpand)
-    console.debug('[AuthorView] mounted, show expand bio container:', showExpand)
+  const checkBioHeight = () => {
+    if (bioWrapperRef && bioContainerRef) {
+      const showExpand = bioContainerRef.offsetHeight > bioWrapperRef.offsetHeight
+      setShowExpandBioControl(showExpand)
+    }
   }
+
+  createEffect(() => {
+    checkBioHeight()
+  })
 
   const handleDeleteComment = (id: number) => {
-    setCommented((prev) => (prev || []).filter((comment) => comment.id !== id))
+    setCommented((prev) => prev.filter((comment) => comment.id !== id))
   }
-
-  // on load
-  createEffect(on(() => bioContainerRef, checkBioHeight))
-  createEffect(
-    on(
-      () => props.selectedTab,
-      (tab) => tab && console.log('[views.Author] profile tab switched')
-    )
-  )
 
   return (
     <div class={styles.authorPage}>

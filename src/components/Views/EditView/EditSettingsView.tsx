@@ -58,11 +58,11 @@ export const EditSettingsView = (props: Props) => {
       () => props.shout,
       (shout) => {
         if (shout) {
-          console.debug(`[EditView] shout is loaded: ${shout}`)
+          // console.debug(`[EditView] shout is loaded: ${shout}`)
           setShoutTopics((shout.topics as Topic[]) || [])
           const stored = getDraftFromLocalStorage(shout.id)
           if (stored) {
-            console.info(`[EditView] got stored shout: ${stored}`)
+            // console.info(`[EditView] got stored shout: ${stored}`)
             setDraft(stored)
           } else {
             if (!shout.slug) {
@@ -113,11 +113,11 @@ export const EditSettingsView = (props: Props) => {
           const resp = await client()?.query(getMyShoutQuery, { shout_id: shoutId })
           const result = resp?.data?.get_my_shout
           if (result) {
-            console.debug('[EditView] getMyShout result: ', result)
+            // console.debug('[EditView] getMyShout result: ', result)
             const { shout: loadedShout, error } = result
             setDraft(loadedShout)
-            console.debug('[EditView] loadedShout:', loadedShout)
-            console.log(error)
+            // console.debug('[EditView] loadedShout:', loadedShout)
+            error && console.log(error)
           }
         }
       },

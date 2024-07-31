@@ -235,9 +235,9 @@ export const EditorComponent = (props: Props) => {
                 const isEmptyTextBlock =
                   doc.textBetween(from, to).length === 0 && isTextSelection(selection)
                 if (isEmptyTextBlock) {
-                  e.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
+                  e?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
                 }
-                setIsCommonMarkup(e.isActive('figcaption'))
+                setIsCommonMarkup(e?.isActive('figcaption'))
                 const result =
                   (view.hasFocus() &&
                     !empty &&

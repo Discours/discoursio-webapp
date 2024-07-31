@@ -46,7 +46,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     // TODO: add support instagram embed (blockquote)
     const emb = await embedData(value)
     props.editor
-      .chain()
+      ?.chain()
       .focus()
       .insertContent({
         type: 'figure',
@@ -83,7 +83,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         return
       }
       case 'horizontal-rule': {
-        props.editor.chain().focus().setHorizontalRule().run()
+        props.editor?.chain().focus().setHorizontalRule().run()
         setSelectedMenuItem()
         return
       }

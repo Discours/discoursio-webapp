@@ -29,13 +29,13 @@ export const InsertLinkForm = (props: Props) => {
   )
   const handleClearLinkForm = () => {
     if (currentUrl()) {
-      props.editor.chain().focus().unsetLink().run()
+      props.editor?.chain().focus().unsetLink().run()
     }
   }
 
   const handleLinkFormSubmit = (value: string) => {
     props.editor
-      .chain()
+      ?.chain()
       .focus()
       .setLink({ href: checkUrl(value) })
       .run()

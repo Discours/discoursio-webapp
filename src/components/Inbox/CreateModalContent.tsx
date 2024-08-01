@@ -57,8 +57,8 @@ const CreateModalContent = (props: Props) => {
 
   const handleCreate = async () => {
     try {
-      const initChat = await createChat(usersId(), chatTitle())
-      console.debug('[components.Inbox] create chat result:', initChat)
+      const result = await createChat(usersId(), chatTitle())
+      console.debug('[components.Inbox] create chat result:', result)
       hideModal()
       await loadChats()
     } catch (error) {

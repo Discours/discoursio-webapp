@@ -1,7 +1,6 @@
+import { useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
-
-import { useNavigate, useSearchParams } from '@solidjs/router'
 import { Button } from '~/components/_shared/Button'
 import { CheckButton } from '~/components/_shared/CheckButton'
 import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
@@ -49,17 +48,13 @@ export const AuthorBadge = (props: Props) => {
     )
   )
 
-  const [, changeSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const { t, formatDate, lang } = useLocalize()
 
   const initChat = () => {
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      navigate('/inbox')
-      changeSearchParams({
-        initChat: props.author?.id.toString()
-      })
+      props.author?.id && navigate(`/inbox/${props.author?.id}`, { replace: true })
     }, 'discussions')
   }
 

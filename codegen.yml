@@ -25,6 +25,3 @@ generates:
       useTypeImports: true
       outputPath: './src/graphql/types/core.gen.ts'
       # namingConvention: change-case#CamelCase # for generated types
-hooks:
-  afterAllFileWrite:
-    - prettier --ignore-path .gitignore --write --plugin-search-dir=. src/graphql/schema/*.gen.ts

@@ -98,8 +98,8 @@ export const InviteMembers = (props: Props) => {
 
   const handleCreate = async () => {
     try {
-      const initChat = await createChat(collectionToInvite(), 'chat Title')
-      console.debug('[components.Inbox] create chat result:', initChat)
+      const result = await createChat(collectionToInvite(), 'chat Title')
+      console.debug('[components.Inbox] create chat result:', result)
       hideModal()
       await loadChats()
     } catch (error) {

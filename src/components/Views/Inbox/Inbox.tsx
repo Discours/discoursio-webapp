@@ -1,6 +1,7 @@
+import { useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
-
+import QuotedMessage from '~/components/Inbox/QuotedMessage'
 import { Icon } from '~/components/_shared/Icon'
 import { InviteMembers } from '~/components/_shared/InviteMembers'
 import { Popover } from '~/components/_shared/Popover'
@@ -15,6 +16,7 @@ import type {
   MutationCreate_MessageArgs
 } from '~/graphql/schema/chat.gen'
 import type { Author } from '~/graphql/schema/core.gen'
+import { getShortDate } from '~/utils/date'
 import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
@@ -22,28 +24,16 @@ import { Message } from '../../Inbox/Message'
 import MessagesFallback from '../../Inbox/MessagesFallback'
 import Search from '../../Inbox/Search'
 import { Modal } from '../../_shared/Modal'
-
-import { useSearchParams } from '@solidjs/router'
 import styles from './Inbox.module.scss'
 
-type InboxSearchParams = {
-  by?: string
-  initChat: string
-  chat: string
-}
 
 const userSearch = (array: Author[], keyword: string) => {
   return array.filter((value) => new RegExp(keyword.trim(), 'gi').test(value.name || ''))
 }
 
-type Props = {
-  authors: Author[]
-  isLoaded: boolean
-}
-
-export const InboxView = (props: Props) => {
+export const InboxView = (props: { authors: Author[]; chat?: Chat }) => {
   const { t } = useLocalize()
-  const { chats, messages, setMessages, loadChats, getMessages, sendMessage, createChat } = useInbox()
+  const { chats, messages, setMessages, loadChats, getMessages, sendMessage } = useInbox()
   const [recipients, setRecipients] = createSignal<Author[]>(props.authors)
   const [sortByGroup, setSortByGroup] = createSignal(false)
   const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
@@ -53,7 +43,6 @@ export const InboxView = (props: Props) => {
   const [isScrollToNewVisible, setIsScrollToNewVisible] = createSignal(false)
   const { session } = useSession()
   const authorId = createMemo<number>(() => session()?.user?.app_data?.profile?.id || 0)
-  const [searchParams, changeSearchParams] = useSearchParams<InboxSearchParams>()
   const { showModal } = useUI()
   const handleOpenInviteModal = () => showModal('inviteMembers')
   let messagesContainerRef: HTMLDivElement | null
@@ -64,12 +53,10 @@ export const InboxView = (props: Props) => {
       setRecipients(match)
     }
   }
-
+  const navigate = useNavigate()
   const handleOpenChat = async (chat: Chat) => {
     setCurrentDialog(chat)
-    changeSearchParams({
-      chat: chat.id
-    })
+    navigate(`/inbox/${chat.id}`)
     try {
       const mmm = await getMessages?.(chat.id)
       if (mmm) {
@@ -98,28 +85,11 @@ export const InboxView = (props: Props) => {
     setClear(false)
   }
 
-  createEffect(async () => {
-    if (searchParams?.chat) {
-      const chatToOpen = chats()?.find((chat) => chat.id.toString() === searchParams?.chat)
-      if (!chatToOpen) return
-      await handleOpenChat(chatToOpen)
-      return
-    }
-    if (searchParams?.initChat) {
-      try {
-        const newChat = await createChat([Number(searchParams?.initChat)], '')
-        await loadChats()
-        changeSearchParams({
-          initChat: undefined,
-          chat: newChat.chat.id
-        })
-        const chatToOpen = chats().find((chat) => chat.id === newChat.chat.id)
-        await handleOpenChat(chatToOpen as Chat)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-  })
+  createEffect(
+    on([() => props.chat, currentDialog], ([c, current]) => {
+      c?.id !== current?.id && handleOpenChat(c as Chat)
+    })
+  )
 
   const chatsToShow = () => {
     if (!chats()) return
@@ -173,8 +143,84 @@ export const InboxView = (props: Props) => {
   }
 
   onMount(async () => {
+    props.chat && setCurrentDialog(props.chat)
     await loadChats()
   })
+
+  const InboxNav = () => (
+    <div class={clsx(styles.chatList, 'col-md-8')}>
+      <div class={styles.sidebarHeader}>
+        <Search placeholder="Поиск" onChange={getQuery} />
+        <button type="button" onClick={handleOpenInviteModal}>
+          <Icon name="plus-button" style={{ width: '40px', height: '40px' }} />
+        </button>
+      </div>
+
+      <Show when={chatsToShow()}>
+        <ul class="view-switcher">
+          <li
+            class={clsx({
+              'view-switcher__item--selected': !(sortByPerToPer() || sortByGroup())
+            })}
+          >
+            <button
+              onClick={() => {
+                setSortByPerToPer(false)
+                setSortByGroup(false)
+              }}
+            >
+              {t('All')}
+            </button>
+          </li>
+          <li
+            class={clsx({
+              'view-switcher__item--selected': sortByPerToPer()
+            })}
+          >
+            <button
+              onClick={() => {
+                setSortByPerToPer(true)
+                setSortByGroup(false)
+              }}
+            >
+              {t('Personal')}
+            </button>
+          </li>
+          <li
+            class={clsx({
+              'view-switcher__item--selected': sortByGroup()
+            })}
+          >
+            <button
+              onClick={() => {
+                setSortByGroup(true)
+                setSortByPerToPer(false)
+              }}
+            >
+              {t('Groups')}
+            </button>
+          </li>
+        </ul>
+      </Show>
+      <div class={styles.holder}>
+        <div class={styles.dialogs}>
+          <For each={chatsToShow()}>
+            {(chat) => (
+              <DialogCard
+                onClick={() => handleOpenChat(chat)}
+                isOpened={chat.id === currentDialog()?.id}
+                members={chat?.members as ChatMember[]}
+                ownId={authorId()}
+                lastUpdate={chat.updated_at || Date.now()}
+                counter={chat.unread || 0}
+                message={chat.messages?.pop()?.body || ''}
+              />
+            )}
+          </For>
+        </div>
+      </div>
+    </div>
+  )
 
   return (
     <div class={clsx('container', styles.Inbox)}>
@@ -183,66 +229,7 @@ export const InboxView = (props: Props) => {
       </Modal>
       {/*<CreateModalContent users={recipients()} />*/}
       <div class={clsx('row', styles.row)}>
-        <div class={clsx(styles.chatList, 'col-md-8')}>
-          <div class={styles.sidebarHeader}>
-            <Search placeholder="Поиск" onChange={getQuery} />
-            <button type="button" onClick={handleOpenInviteModal}>
-              <Icon name="plus-button" style={{ width: '40px', height: '40px' }} />
-            </button>
-          </div>
-
-          <Show when={chatsToShow()}>
-            <ul class="view-switcher">
-              <li class={clsx({ 'view-switcher__item--selected': !(sortByPerToPer() || sortByGroup()) })}>
-                <button
-                  onClick={() => {
-                    setSortByPerToPer(false)
-                    setSortByGroup(false)
-                  }}
-                >
-                  {t('All')}
-                </button>
-              </li>
-              <li class={clsx({ 'view-switcher__item--selected': sortByPerToPer() })}>
-                <button
-                  onClick={() => {
-                    setSortByPerToPer(true)
-                    setSortByGroup(false)
-                  }}
-                >
-                  {t('Personal')}
-                </button>
-              </li>
-              <li class={clsx({ 'view-switcher__item--selected': sortByGroup() })}>
-                <button
-                  onClick={() => {
-                    setSortByGroup(true)
-                    setSortByPerToPer(false)
-                  }}
-                >
-                  {t('Groups')}
-                </button>
-              </li>
-            </ul>
-          </Show>
-          <div class={styles.holder}>
-            <div class={styles.dialogs}>
-              <For each={chatsToShow()}>
-                {(chat) => (
-                  <DialogCard
-                    onClick={() => handleOpenChat(chat)}
-                    isOpened={chat.id === currentDialog()?.id}
-                    members={chat?.members as ChatMember[]}
-                    ownId={authorId()}
-                    lastUpdate={chat.updated_at || Date.now()}
-                    counter={chat.unread || 0}
-                    message={chat.messages?.pop()?.body || ''}
-                  />
-                )}
-              </For>
-            </div>
-          </div>
-        </div>
+        <InboxNav />
 
         <div class={clsx('col-md-16', styles.conversation)}>
           <Show
@@ -283,24 +270,26 @@ export const InboxView = (props: Props) => {
                     />
                   )}
                 </For>
-                {/*<div class={styles.conversationDate}>*/}
-                {/*  <time>12 сентября</time>*/}
-                {/*</div>*/}
+                <Show when={currentDialog()?.created_at}>
+                  <small>
+                    <time>{getShortDate(new Date(currentDialog()?.created_at || 0))}</time>
+                  </small>
+                </Show>
               </div>
             </div>
 
             <div class={styles.messageForm}>
-              <Show when={messageToReply()}>
-                <p>FIXME: messageToReply</p>
-                {/*<QuotedMessage*/}
-                {/*  variant="reply"*/}
-                {/*  author={*/}
-                {/*    currentDialog().members.find((member) => member.id === Number(messageToReply().author))*/}
-                {/*      .name*/}
-                {/*  }*/}
-                {/*  body={messageToReply().body}*/}
-                {/*  cancel={() => setMessageToReply(null)}*/}
-                {/*/>*/}
+              <Show when={messageToReply()?.body}>
+                <QuotedMessage
+                  variant="reply"
+                  author={
+                    currentDialog()?.members?.find(
+                      (member) => member?.id === Number(messageToReply()?.created_by)
+                    )?.name
+                  }
+                  body={messageToReply()?.body || ''}
+                  cancel={() => setMessageToReply(null)}
+                />
               </Show>
               <div class={styles.wrapper}>
                 <SimplifiedEditor

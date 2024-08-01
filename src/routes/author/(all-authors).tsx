@@ -15,7 +15,7 @@ const fetchAuthorsWithStat = async (offset = 0, order?: string) => {
   return await authorsFetcher()
 }
 
-const fetchAllAuthors = async () => {
+export const fetchAllAuthors = async () => {
   const authorsAllFetcher = loadAuthorsAll()
   return await authorsAllFetcher()
 }

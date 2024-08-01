@@ -1,6 +1,6 @@
-import { redirect, useNavigate, useSearchParams } from '@solidjs/router'
+import { redirect, useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { Button } from '~/components/_shared/Button'
 import stylesButton from '~/components/_shared/Button/Button.module.scss'
 import { FollowingCounters } from '~/components/_shared/FollowingCounters/FollowingCounters'
@@ -34,11 +34,7 @@ export const AuthorCard = (props: Props) => {
   const [followsFilter, setFollowsFilter] = createSignal<FollowsFilter>('all')
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
-  const { follow, unfollow, follows, following } = useFollowing()
-
-  onMount(() => {
-    setAuthorSubs(props.flatFollows || [])
-  })
+  const { follow, unfollow, follows, following } = useFollowing() // viewer's followings
 
   createEffect(() => {
     if (!(follows && props.author)) return
@@ -56,30 +52,22 @@ export const AuthorCard = (props: Props) => {
     return props.author.name
   })
 
-  const [, changeSearchParams] = useSearchParams()
   const initChat = () => {
     // eslint-disable-next-line solid/reactivity
     requireAuthentication(() => {
-      navigate('/inbox')
-      changeSearchParams({
-        initChat: props.author?.id.toString()
-      })
+      props.author?.id && navigate(`/inbox/${props.author?.id}`, { replace: true })
     }, 'discussions')
   }
 
-  createEffect(() => {
-    if (props.flatFollows) {
-      if (followsFilter() === 'authors') {
-        setAuthorSubs(props.flatFollows.filter((s) => 'name' in s))
-      } else if (followsFilter() === 'topics') {
-        setAuthorSubs(props.flatFollows.filter((s) => 'title' in s))
-      } else if (followsFilter() === 'communities') {
-        setAuthorSubs(props.flatFollows.filter((s) => 'title' in s))
-      } else {
-        setAuthorSubs(props.flatFollows)
-      }
-    }
-  })
+  createEffect(
+    on(followsFilter, (f = 'all') => {
+      const subs =
+        f !== 'all'
+          ? follows[f as keyof typeof follows]
+          : [...(follows.topics || []), ...(follows.authors || [])]
+      setAuthorSubs(subs || [])
+    })
+  )
 
   const handleFollowClick = () => {
     requireAuthentication(() => {

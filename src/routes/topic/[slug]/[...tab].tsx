@@ -58,7 +58,7 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
     async () => props.data.articles || (await fetchTopicShouts(props.params.slug)) || []
   )
 
-  const title = createMemo(() => `${t('Discours')}${ topic()?.title ? (` :: ${topic()?.title}`) : '' }`)
+  const title = createMemo(() => `${t('Discours')}${topic()?.title ? ` :: ${topic()?.title}` : ''}`)
 
   createEffect(() => {
     if (topic() && window) {

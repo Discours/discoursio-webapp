@@ -26,7 +26,6 @@ import Search from '../../Inbox/Search'
 import { Modal } from '../../_shared/Modal'
 import styles from './Inbox.module.scss'
 
-
 const userSearch = (array: Author[], keyword: string) => {
   return array.filter((value) => new RegExp(keyword.trim(), 'gi').test(value.name || ''))
 }

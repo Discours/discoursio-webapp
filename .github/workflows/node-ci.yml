@@ -42,7 +42,7 @@ jobs:
       - name: Wait for deployment to be live
         run: |
           echo "Waiting for Vercel deployment to be live..."
-          until curl -sSf https://testing3.discours.io > /dev/null; do
+          until curl -sSf https://testing.discours.io > /dev/null; do
             printf '.'
             sleep 10
           done
@@ -51,4 +51,4 @@ jobs:
       - name: Run Playwright tests
         run: npm run e2e:tests:ci
         env:
-          BASE_URL: https://testing3.discours.io
+          BASE_URL: https://testing.discours.io

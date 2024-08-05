@@ -157,10 +157,13 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
     )
 
     setTopicEntities((prevTopicEntities) => {
-      return {
+      const ttt = {
         ...prevTopicEntities,
         ...newTopicEntities
       }
+
+      if (db()) saveTopicsToIndexedDB(db() as IDBDatabase, Object.values(ttt) as Topic[])
+      return ttt
     })
   }
   const [db, setDb] = createSignal()
@@ -179,7 +182,6 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
     const topicsLoader = loadTopics()
     const ttt = await topicsLoader()
     ttt && addTopics(ttt)
-    if (db()) await saveTopicsToIndexedDB(db() as IDBDatabase, ttt as Topic[])
     return ttt || []
   }
 

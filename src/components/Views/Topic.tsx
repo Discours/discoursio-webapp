@@ -20,8 +20,8 @@ import { FullTopic } from '../Topic/Full'
 import { Loading } from '../_shared/Loading'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
-// FIXME: should be 'last_comment' and 'comments_stat' or just one?
-export type TopicFeedSortBy = 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'commented'
+// FIXME: should be 'last_reacted_at' and 'comments_stat' or just one?
+export type TopicFeedSortBy = 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'last_reacted_at'
 
 interface Props {
   topic: Topic

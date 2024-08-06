@@ -76,7 +76,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     const order =
       (props.params.order && paramPattern.test(props.params.order)
         ? props.params.order === 'hot'
-          ? 'last_comment'
+          ? 'last_reacted_at'
           : props.params.order
         : 'created_at') || 'created_at'
 
@@ -112,7 +112,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     return (
       (paramOrderPattern.test(props.params.order)
         ? props.params.order === 'hot'
-          ? 'last_comment'
+          ? 'last_reacted_at'
           : props.params.order
         : 'created_at') || 'created_at'
     )

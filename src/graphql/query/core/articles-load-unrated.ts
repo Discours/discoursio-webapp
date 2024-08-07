@@ -38,7 +38,7 @@ export default gql`
       featured_at
       stat {
         viewed
-
+        last_reacted_at
         rating
         commented
       }

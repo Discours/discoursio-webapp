@@ -6,9 +6,10 @@ import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
 
 const isVercel = Boolean(process?.env.VERCEL)
+const isNetlify = Boolean(process?.env.NETLIFY)
 const isBun = Boolean(process.env.BUN)
-
-console.info(`[app.config] build for ${isVercel ? 'vercel' : isBun ? 'bun' : 'node'}!`)
+const runtime = isNetlify ? 'netlify' : isVercel ? 'vercel' : isBun ? 'bun' : 'node'
+console.info(`[app.config] build for ${runtime}!`)
 
 const polyfillOptions = {
   include: ['path', 'stream', 'util'],
@@ -25,7 +26,7 @@ const polyfillOptions = {
 export default defineConfig({
   ssr: true,
   server: {
-    preset: isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node',
+    preset: runtime,
     port: 3000,
     https: true
   },

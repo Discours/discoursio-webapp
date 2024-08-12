@@ -38,14 +38,17 @@ export type TopicPageProps = { articles?: Shout[]; topics: Topic[]; authors?: Au
 
 export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const { t } = useLocalize()
-  const { addTopics } = useTopics()
+  const { addTopics, sortedTopics } = useTopics()
   const [loadingError, setLoadingError] = createSignal(false)
 
   const topic = createAsync(async () => {
     try {
-      const ttt: Topic[] = props.data.topics || (await fetchAllTopics()) || []
-      addTopics(ttt)
-      console.debug('[route.topic] all topics loaded')
+      let ttt: Topic[] = sortedTopics()
+      if (!ttt) {
+        ttt = props.data.topics || (await fetchAllTopics()) || []
+        addTopics(ttt)
+        console.debug('[route.topic] all topics loaded')
+      }
       const t = ttt.find((x) => x.slug === props.params.slug)
       return t
     } catch (_error) {

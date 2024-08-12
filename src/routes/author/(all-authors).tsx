@@ -15,17 +15,13 @@ const fetchAuthorsWithStat = async (offset = 0, order?: string) => {
   return await authorsFetcher()
 }
 
-export const fetchAllAuthors = async () => {
-  const authorsAllFetcher = loadAuthorsAll()
-  return await authorsAllFetcher()
-}
-
 export const route = {
   load: async ({ location: { query } }: RouteLoadFuncArgs) => {
     const by = query.by
     const isAll = !by || by === 'name'
+    const authorsAllFetcher = loadAuthorsAll()
     return {
-      authors: isAll && (await fetchAllAuthors()),
+      authors: isAll && (await authorsAllFetcher()),
       authorsByFollowers: await fetchAuthorsWithStat(10, 'followers'),
       authorsByShouts: await fetchAuthorsWithStat(10, 'shouts')
     } as AllAuthorsData
@@ -38,13 +34,14 @@ type AllAuthorsData = { authors: Author[]; authorsByFollowers: Author[]; authors
 
 export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>) {
   const { t } = useLocalize()
-  const { addAuthors } = useAuthors()
+  const { addAuthors, authorsSorted } = useAuthors()
 
   // async load data: from ssr or fetch
   const data = createAsync<AllAuthorsData>(async () => {
     if (props.data) return props.data
+    const authorsAllFetcher = loadAuthorsAll()
     return {
-      authors: await fetchAllAuthors(),
+      authors: authorsSorted() || await authorsAllFetcher(),
       authorsByFollowers: await fetchAuthorsWithStat(10, 'followers'),
       authorsByShouts: await fetchAuthorsWithStat(10, 'shouts')
     } as AllAuthorsData

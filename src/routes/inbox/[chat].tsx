@@ -6,14 +6,15 @@ import { ShowOnlyOnClient } from '~/components/_shared/ShowOnlyOnClient'
 import { useInbox } from '~/context/inbox'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
+import { loadAuthorsAll } from '~/graphql/api/public'
 import { Chat } from '~/graphql/schema/chat.gen'
 import { Author } from '~/graphql/schema/core.gen'
-import { fetchAllAuthors } from '../author/(all-authors)'
 
 export const route = {
   load: async () => {
+    const authorsAllFetcher = loadAuthorsAll()
     return {
-      authors: await fetchAllAuthors()
+      authors: await authorsAllFetcher()
     }
   }
 } satisfies RouteDefinition
@@ -24,7 +25,10 @@ export const ChatPage = (props: RouteSectionProps<{ authors: Author[] }>) => {
   const { createChat, chats } = useInbox()
   const [chat, setChat] = createSignal<Chat>()
   const { session } = useSession()
-  const authors = createAsync(async () => props.data.authors || (await fetchAllAuthors()))
+  const authors = createAsync(async () => {
+    const authorsAllFetcher = loadAuthorsAll()
+    return props.data.authors || (await authorsAllFetcher())
+  })
 
   onMount(async () => {
     if (params.id.includes('-')) {

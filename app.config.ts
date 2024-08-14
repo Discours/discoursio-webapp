@@ -24,6 +24,9 @@ const polyfillOptions = {
 } as PolyfillOptions
 
 export default defineConfig({
+  nitro: {
+    timing: true
+  },
   ssr: true,
   server: {
     preset: runtime,

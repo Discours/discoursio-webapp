@@ -180,21 +180,21 @@ export const Header = (props: Props) => {
               <ul class="view-switcher">
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
-                  onMouseOut={hideSubnavigation}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
                   href="/"
                   active={isZineVisible()}
                   body={t('Journal')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
-                  onMouseOut={hideSubnavigation}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
                   href="/feed"
                   active={isFeedVisible()}
                   body={t('Feed')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
-                  onMouseOut={hideSubnavigation}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
                   href="/topic"
                   active={isTopicsVisible()}
                   body={t('Topics')}
@@ -207,7 +207,7 @@ export const Header = (props: Props) => {
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
-                  onMouseOut={() => hideSubnavigation}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
                   href="/guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}

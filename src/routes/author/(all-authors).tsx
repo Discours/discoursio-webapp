@@ -41,7 +41,7 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
     if (props.data) return props.data
     const authorsAllFetcher = loadAuthorsAll()
     return {
-      authors: authorsSorted() || await authorsAllFetcher(),
+      authors: authorsSorted() || (await authorsAllFetcher()),
       authorsByFollowers: await fetchAuthorsWithStat(10, 'followers'),
       authorsByShouts: await fetchAuthorsWithStat(10, 'shouts')
     } as AllAuthorsData

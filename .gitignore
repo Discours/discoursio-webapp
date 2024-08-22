@@ -29,3 +29,4 @@ target
 .vinxi
 *.pem
 edge.*
+.vscode/settings.json

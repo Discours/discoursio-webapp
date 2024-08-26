@@ -19,7 +19,13 @@ export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
   const { t } = useLocalize()
   const topics = createAsync<Topic[]>(async () => props.data.topics || (await fetchData()) || [])
   const { addTopics } = useTopics()
-  createEffect(on(() => topics() || [], (ttt: Topic[]) => ttt && addTopics(ttt), { defer: true}))
+  createEffect(
+    on(
+      () => topics() || [],
+      (ttt: Topic[]) => ttt && addTopics(ttt),
+      { defer: true }
+    )
+  )
   return (
     <PageLayout
       withPadding={true}

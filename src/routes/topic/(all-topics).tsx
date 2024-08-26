@@ -1,5 +1,5 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
-import { Suspense, createEffect } from 'solid-js'
+import { Suspense, createEffect, on } from 'solid-js'
 import { AllTopics } from '~/components/Views/AllTopics'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
@@ -19,7 +19,7 @@ export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
   const { t } = useLocalize()
   const topics = createAsync<Topic[]>(async () => props.data.topics || (await fetchData()) || [])
   const { addTopics } = useTopics()
-  createEffect(() => addTopics(topics() || []))
+  createEffect(on(() => topics() || [], (ttt: Topic[]) => ttt && addTopics(ttt), { defer: true}))
   return (
     <PageLayout
       withPadding={true}

@@ -80,9 +80,7 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   )
 
   const cover = createMemo(() =>
-    topic()?.pic
-      ? getImageUrl(topic()?.pic || '', { width: 1200 })
-      : getImageUrl('production/image/logo_image.png')
+    topic()?.pic ? getImageUrl(topic()?.pic || '', { width: 1200 }) : '/logo.png'
   )
 
   return (

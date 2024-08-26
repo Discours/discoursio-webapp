@@ -201,28 +201,29 @@ export const TopicView = (props: Props) => {
         <Beside
           title={t('Topic is supported by')}
           values={authorsByTopic?.()?.[topic()?.slug || '']?.slice(0, 6)}
-          beside={sortedFeed()[4]}
+          beside={sortedFeed()[3]}
           wrapper={'author'}
         />
         <Show when={reactedTopMonthArticles()?.length > 0} keyed={true}>
           <ArticleCardSwiper title={t('Top month')} slides={reactedTopMonthArticles()} />
         </Show>
         <Beside
-          beside={sortedFeed()[12]}
+          beside={sortedFeed()[11]}
           title={t('Top viewed')}
           values={sortedFeed().slice(0, 5)}
           wrapper={'top-article'}
         />
 
-        <Row2 articles={sortedFeed().slice(13, 15)} isEqual={true} />
-        <Row1 article={sortedFeed()[15]} />
+        <Row2 articles={sortedFeed().slice(12, 14)} isEqual={true} />
+        <Row1 article={sortedFeed()[14]} />
 
         <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
           <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
         </Show>
-        <Show when={sortedFeed().length > 15}>
-          <Row3 articles={sortedFeed().slice(23, 26)} />
-          <Row2 articles={sortedFeed().slice(26, 28)} />
+
+        <Show when={sortedFeed().length > 14}>
+          <Row3 articles={sortedFeed().slice(14, 17)} />
+          <Row2 articles={sortedFeed().slice(17, 19)} />
         </Show>
 
         <For each={pages()}>

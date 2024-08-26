@@ -160,26 +160,26 @@ export const TopicView = (props: Props) => {
       <Beside
         title={t('Topic is supported by')}
         values={authorsByTopic()[topic().slug].slice(0, 6)}
-        beside={sortedArticles()[4]}
+        beside={sortedArticles()[3]}
         wrapper={'author'}
       />
 
-      <ArticleCardSwiper title={title()} slides={sortedArticles().slice(5, 11)} />
+      <ArticleCardSwiper title={title()} slides={sortedArticles().slice(4, 11)} />
 
       <Beside
-        beside={sortedArticles()[12]}
+        beside={sortedArticles()[11]}
         title={t('Top viewed')}
         values={sortedArticles().slice(0, 5)}
         wrapper={'top-article'}
       />
 
-      <Row2 articles={sortedArticles().slice(13, 15)} isEqual={true} />
-      <Row1 article={sortedArticles()[15]} />
+      <Row2 articles={sortedArticles().slice(12, 14)} isEqual={true} />
+      <Row1 article={sortedArticles()[14]} />
 
-      <Show when={sortedArticles().length > 15}>
-        <ArticleCardSwiper slides={sortedArticles().slice(16, 22)} />
-        <Row3 articles={sortedArticles().slice(23, 26)} />
-        <Row2 articles={sortedArticles().slice(26, 28)} />
+      <Show when={sortedArticles().length > 14}>
+        <ArticleCardSwiper slides={sortedArticles().slice(15, 21)} />
+        <Row3 articles={sortedArticles().slice(22, 25)} />
+        <Row2 articles={sortedArticles().slice(25, 27)} />
       </Show>
 
       <For each={pages()}>

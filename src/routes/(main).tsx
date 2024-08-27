@@ -79,7 +79,7 @@ export default function HomePage(props: RouteSectionProps<HomeViewProps>) {
     topFeed: topRatedFeed
   } = useFeed()
 
-  // load more faetured shouts
+  // load more featured shouts
   const loadMoreFeatured = async (offset?: number) => {
     const shoutsLoader = featuredLoader(offset)
     const loaded = await shoutsLoader()

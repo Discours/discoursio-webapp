@@ -36,7 +36,6 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
     saveScrollPosition()
     const newItems = await props.loadFunction(offset())
     if (!Array.isArray(newItems)) return
-    console.debug('[_share] load more items', newItems)
     setItems(
       (prev) =>
         Array.from(new Set([...prev, ...newItems])).sort(

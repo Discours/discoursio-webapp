@@ -1,6 +1,6 @@
 import { RouteSectionProps, createAsync } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { Show, Suspense, createEffect, createMemo, createSignal } from 'solid-js'
+import { Show, Suspense, createEffect, createSignal, on } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { TopicFeedSortBy, TopicView } from '~/components/Views/Topic'
 import { Loading } from '~/components/_shared/Loading'
@@ -21,6 +21,7 @@ const fetchTopicShouts = async (slug: string, offset?: number) => {
 
 const fetchAllTopics = async () => {
   const topicsFetcher = loadTopics()
+  console.debug('all topics fetched')
   return await topicsFetcher()
 }
 
@@ -38,62 +39,53 @@ export type TopicPageProps = { articles?: Shout[]; topics: Topic[]; authors?: Au
 
 export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const { t } = useLocalize()
-  const { addTopics, sortedTopics } = useTopics()
-  const [loadingError, setLoadingError] = createSignal(false)
-
-  const topic = createAsync(async () => {
-    try {
-      let ttt: Topic[] = sortedTopics()
-      if (!ttt) {
-        ttt = props.data.topics || (await fetchAllTopics()) || []
-        addTopics(ttt)
-        console.debug('[route.topic] all topics loaded')
-      }
-      const t = ttt.find((x) => x.slug === props.params.slug)
-      return t
-    } catch (_error) {
-      setLoadingError(true)
-      return null
-    }
+  const { addTopics } = useTopics()
+  const topics = createAsync(async () => props.data.topics || (await fetchAllTopics()) || [])
+  const articles = createAsync(async () => {
+    const result = (await props.data).articles || (await fetchTopicShouts(props.params.slug))
+    setShoutsLoaded(true)
+    return result || []
   })
-
-  const articles = createAsync(
-    async () => props.data.articles || (await fetchTopicShouts(props.params.slug)) || []
-  )
-
-  const title = createMemo(() => `${t('Discours')}${topic()?.title ? ` :: ${topic()?.title}` : ''}`)
-
-  createEffect(() => {
-    if (topic() && window) {
-      window?.gtag?.('event', 'page_view', {
-        page_title: topic()?.title,
-        page_location: window?.location.href,
-        page_path: window?.location.pathname
-      })
+  const [topic, setTopic] = createSignal<Topic>()
+  const [title, setTitle] = createSignal<string>('')
+  const [desc, setDesc] = createSignal<string>('')
+  const [cover, setCover] = createSignal<string>('')
+  const [shoutsLoaded, setShoutsLoaded] = createSignal(false)
+  createEffect(on([topics, () => window], ([ttt, win]) => {
+    if (ttt) {
+      // console.debug('all topics:', ttt)
+      ttt && addTopics(ttt)
+      const tpc = ttt.find((x) => x.slug === props.params.slug)
+      if (!tpc) return
+      setTopic(tpc)
+      setTitle(() => `${t('Discours')}${topic()?.title ? ` :: ${topic()?.title}` : ''}`)
+      setDesc(() =>
+        topic()?.body
+          ? descFromBody(topic()?.body || '')
+          : t('The most interesting publications on the topic', { topicName: title() })
+      )
+      setCover(() =>
+        topic()?.pic ? getImageUrl(topic()?.pic || '', { width: 1200 }) : '/logo.png'
+      )
+      if (win) window?.gtag?.('event', 'page_view', {
+          page_title: tpc.title,
+          page_location: window?.location.href,
+          page_path: window?.location.pathname
+        })
     }
-  })
-
-  const desc = createMemo(() =>
-    topic()?.body
-      ? descFromBody(topic()?.body || '')
-      : t('The most interesting publications on the topic', { topicName: title() })
-  )
-
-  const cover = createMemo(() =>
-    topic()?.pic ? getImageUrl(topic()?.pic || '', { width: 1200 }) : '/logo.png'
-  )
+  }, { defer: true }))
 
   return (
-    <Suspense fallback={<Loading />}>
-      <Show
-        when={!loadingError()}
-        fallback={
-          <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
-            <FourOuFourView />
-            <HttpStatusCode code={404} />
-          </PageLayout>
-        }
-      >
+    <Show
+      when={shoutsLoaded()}
+      fallback={
+        <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
+          <FourOuFourView />
+          <HttpStatusCode code={404} />
+        </PageLayout>
+      }
+    >
+      <Suspense fallback={<Loading />}>
         <PageLayout
           key="topic"
           title={title()}
@@ -109,7 +101,7 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
             selectedTab={props.params.tab as TopicFeedSortBy}
           />
         </PageLayout>
-      </Show>
-    </Suspense>
+      </Suspense>
+    </Show>
   )
 }

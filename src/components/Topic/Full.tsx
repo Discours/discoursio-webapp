@@ -1,7 +1,7 @@
 import type { Author, Topic } from '~/graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { Show, createEffect, createSignal, on } from 'solid-js'
 
 import { useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
@@ -25,16 +25,18 @@ export const FullTopic = (props: Props) => {
   const { follows, changeFollowing } = useFollowing()
   const { requireAuthentication } = useSession()
   const [followed, setFollowed] = createSignal()
+  const [title, setTitle] = createSignal('')
 
-  const title = createMemo(() => {
+  createEffect(on(() => props.topic, (tpc) => {
+    if (!tpc) return
     /* FIXME: use title translation*/
+    setTitle((_) => tpc?.title || '')
     return `#${capitalize(
-      lang() === 'en'
-        ? props.topic.slug.replace(/-/, ' ')
-        : props.topic.title || props.topic.slug.replace(/-/, ' '),
+      lang() === 'en' ? tpc.slug.replace(/-/, ' ') : tpc.title || tpc.slug.replace(/-/, ' '),
       true
     )}`
-  })
+  }, {} ))
+
   createEffect(() => {
     if (follows?.topics?.length !== 0) {
       const items = follows.topics || []

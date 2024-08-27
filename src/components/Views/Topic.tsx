@@ -1,6 +1,6 @@
 import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, Suspense, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Show, Suspense, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { useAuthors } from '~/context/authors'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
@@ -17,6 +17,7 @@ import { Row1 } from '../Feed/Row1'
 import { Row2 } from '../Feed/Row2'
 import { Row3 } from '../Feed/Row3'
 import { FullTopic } from '../Topic/Full'
+import { LoadMoreItems, LoadMoreWrapper } from '../_shared/LoadMoreWrapper'
 import { Loading } from '../_shared/Loading'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
@@ -40,17 +41,28 @@ export const TopicView = (props: Props) => {
   const { topicEntities } = useTopics()
   const { authorsByTopic } = useAuthors()
   const [searchParams, changeSearchParams] = useSearchParams<{ by: TopicFeedSortBy }>()
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
   const [topic, setTopic] = createSignal<Topic>()
   const [followers, setFollowers] = createSignal<Author[]>(props.followers || [])
-  const sortedFeed = createMemo(() => feedByTopic()[topic()?.slug || ''] || []) // TODO: filter + sort
+
+  // TODO: filter + sort
+  const [sortedFeed, setSortedFeed] = createSignal([] as Shout[])
+  createEffect(on(([feedByTopic, () => props.topicSlug, topicEntities]), ([feed, slug, ttt]) => {
+    if (Object.values(ttt).length === 0) return
+    const sss = (feed[slug] || []) as Shout[]
+    sss && setSortedFeed(sss)
+    console.debug('topic slug loaded', slug)
+    const tpc = ttt[slug]
+    console.debug('topics loaded', ttt)
+    tpc && setTopic(tpc)
+  }, {}))
 
   const loadTopicFollowers = async () => {
     const topicFollowersFetcher = loadFollowersByTopic(props.topicSlug)
     const topicFollowers = await topicFollowersFetcher()
     topicFollowers && setFollowers(topicFollowers)
+    console.debug('loadTopicFollowers', topicFollowers)
   }
 
   const [topicAuthors, setTopicAuthors] = createSignal<Author[]>([])
@@ -59,6 +71,7 @@ export const TopicView = (props: Props) => {
     const topicAuthorsFetcher = await loadAuthors({ by, limit: 10, offset: 0 })
     const result = await topicAuthorsFetcher()
     result && setTopicAuthors(result)
+    console.debug('loadTopicAuthors', result)
   }
 
   const loadFavoriteTopArticles = async () => {
@@ -70,6 +83,7 @@ export const TopicView = (props: Props) => {
     const topicRandomShoutsFetcher = loadShouts(options)
     const result = await topicRandomShoutsFetcher()
     result && setFavoriteTopArticles(result)
+    console.debug('loadFavoriteTopArticles', result)
   }
 
   const loadReactedTopMonthArticles = async () => {
@@ -85,27 +99,18 @@ export const TopicView = (props: Props) => {
     const reactedTopMonthShoutsFetcher = loadShouts(options)
     const result = await reactedTopMonthShoutsFetcher()
     result && setReactedTopMonthArticles(result)
+    console.debug('loadReactedTopMonthArticles', result)
   }
 
   // второй этап начальной загрузки данных
-  createEffect(
-    on(
-      topicEntities,
-      (ttt: Record<string, Topic>) => {
-        if (props.topicSlug in ttt) {
-          Promise.all([
-            loadFavoriteTopArticles(),
-            loadReactedTopMonthArticles(),
-            loadTopicAuthors(),
-            loadTopicFollowers()
-          ]).finally(() => {
-            setTopic(ttt[props.topicSlug])
-          })
-        }
-      },
-      { defer: true }
-    )
-  )
+  createEffect(on(topic, (tpc) => {
+    console.debug('topic loaded', tpc)
+    if (!tpc) return
+    loadFavoriteTopArticles()
+    loadReactedTopMonthArticles()
+    loadTopicAuthors()
+    loadTopicFollowers()
+  }, { defer: true }))
 
   // дозагрузка
   const loadMore = async () => {
@@ -117,19 +122,11 @@ export const TopicView = (props: Props) => {
       offset: amountBefore
     })
     const result = await topicShoutsFetcher()
-    if (result) {
-      addFeed(result)
-      const amountAfter = feedByTopic()[props.topicSlug].length
-      setIsLoadMoreButtonVisible(amountBefore !== amountAfter)
-    }
+    result && addFeed(result)
     restoreScrollPosition()
+    return result as LoadMoreItems
   }
 
-  onMount(() => {
-    if (sortedFeed() || [].length === PRERENDERED_ARTICLES_COUNT) {
-      loadMore()
-    }
-  })
   /*
   const selectionTitle = createMemo(() => {
     const m = searchParams?.by
@@ -139,15 +136,14 @@ export const TopicView = (props: Props) => {
     return t('Top recent')
   })
   */
+
   const pages = createMemo<Shout[][]>(() =>
     paginate(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
   )
   return (
     <div class={styles.topicPage}>
       <Suspense fallback={<Loading />}>
-        <Show when={topic()}>
-          <FullTopic topic={topic() as Topic} followers={followers()} authors={topicAuthors()} />
-        </Show>
+        <Show when={topic()}><FullTopic topic={topic() as Topic} followers={followers()} authors={topicAuthors()} /></Show>
         <div class="wide-container">
           <div class={clsx(styles.groupControls, 'row group__controls')}>
             <div class="col-md-16">
@@ -226,23 +222,17 @@ export const TopicView = (props: Props) => {
           <Row2 articles={sortedFeed().slice(17, 19)} />
         </Show>
 
-        <For each={pages()}>
-          {(page) => (
-            <>
-              <Row3 articles={page.slice(0, 3)} />
-              <Row3 articles={page.slice(3, 6)} />
-              <Row3 articles={page.slice(6, 9)} />
-            </>
-          )}
-        </For>
-
-        <Show when={isLoadMoreButtonVisible()}>
-          <p class="load-more-container">
-            <button class="button" onClick={loadMore}>
-              {t('Load more')}
-            </button>
-          </p>
-        </Show>
+        <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE}>
+          <For each={pages()}>
+            {(page) => (
+              <>
+                <Row3 articles={page.slice(0, 3)} />
+                <Row3 articles={page.slice(3, 6)} />
+                <Row3 articles={page.slice(6, 9)} />
+              </>
+            )}
+          </For>
+        </LoadMoreWrapper>
       </Suspense>
     </div>
   )

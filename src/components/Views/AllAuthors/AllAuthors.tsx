@@ -1,6 +1,6 @@
 import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { AuthorBadge } from '~/components/Author/AuthorBadge'
 import { Button } from '~/components/_shared/Button'
 import { InlineLoader } from '~/components/_shared/InlineLoader'
@@ -11,7 +11,7 @@ import { useLocalize } from '~/context/localize'
 import type { Author } from '~/graphql/schema/core.gen'
 import { authorLetterReduce, translateAuthor } from '~/intl/translate'
 import { dummyFilter } from '~/lib/dummyFilter'
-import { byFirstChar, byStat } from '~/lib/sort'
+// import { byFirstChar, byStat } from '~/lib/sort'
 import { scrollHandler } from '~/utils/scroll'
 import styles from './AllAuthors.module.scss'
 import stylesAuthorList from './AuthorsList.module.scss'
@@ -29,57 +29,38 @@ export const ABC = {
   en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
 }
 
+// useAuthors sorted from context, set filter/sort
+
 export const AllAuthors = (props: Props) => {
   const { t, lang } = useLocalize()
   const alphabet = createMemo(() => ABC[lang()] || ABC['ru'])
-  const [searchParams, changeSearchParams] = useSearchParams<{ by?: string }>()
+  const [searchParams, ] = useSearchParams<{ by?: string }>()
   const { authorsSorted, setAuthorsSort, loadAuthors } = useAuthors()
+  const authors = createMemo(() => (searchParams.by || searchParams.by === 'name') ? props.authors : authorsSorted())
   const [loading, setLoading] = createSignal<boolean>(false)
-  const [_currentAuthors, setCurrentAuthors] = createSignal<Author[]>([])
-
-  // UPDATE Fetch authors initially and when searchParams.by changes
-  createEffect(() => {
-    fetchAuthors(searchParams.by || 'name', 0)
-  })
-
-  const authors = createMemo(() => {
-    let sortedAuthors = [...(props.authors || authorsSorted())] // Clone the array to avoid mutating the original
-    console.log('Before Sorting:', sortedAuthors.slice(0, 5)) // Log the first 5 authors for comparison
-    if (searchParams.by === 'name') {
-      sortedAuthors = sortedAuthors.sort(byFirstChar)
-      console.log('Sorted by Name:', sortedAuthors.slice(0, 5))
-    } else if (searchParams.by === 'shouts') {
-      sortedAuthors = sortedAuthors.sort(byStat('shouts'))
-      console.log('Sorted by Shouts:', sortedAuthors.slice(0, 5))
-    } else if (searchParams.by === 'followers') {
-      sortedAuthors = sortedAuthors.sort(byStat('followers'))
-      console.log('Sorted by Followers:', sortedAuthors.slice(0, 5))
-    }
-    console.log('After Sorting:', sortedAuthors.slice(0, 5))
-    return sortedAuthors
-  })
-
-  // Log authors data and searchParams for debugging
-  createEffect(() => {
-    console.log('Authors:', props.authors.slice(0, 5)) // Log the first 5 authors
-    console.log('Sorted Authors:', authors().slice(0, 5)) // Log the first 5 sorted authors
-    console.log('Search Params "by":', searchParams.by)
-  })
 
   // filter
   const [searchQuery, setSearchQuery] = createSignal('')
   const [filteredAuthors, setFilteredAuthors] = createSignal<Author[]>([])
   createEffect(
-    () => authors() && setFilteredAuthors(dummyFilter(authors(), searchQuery(), lang()) as Author[])
+    () =>
+      authors() &&
+      setFilteredAuthors((_prev: Author[]) => dummyFilter(authors(), searchQuery(), lang()) as Author[])
   )
+
+  // sort by
+  // onMount(() => !searchParams?.by && changeSearchParams({ by: 'name' }))
+  createEffect(on(() => searchParams?.by || 'name', setAuthorsSort || ((_) => null), {}))
 
   // store by first char
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
     if (!(filteredAuthors()?.length > 0)) return {}
     console.debug('[components.AllAuthors] update byLetterFiltered', filteredAuthors()?.length)
-    return filteredAuthors().reduce(
-      (acc, author: Author) => authorLetterReduce(acc, author, lang()),
-      {} as { [letter: string]: Author[] }
+    return (
+      filteredAuthors()?.reduce(
+        (acc, author: Author) => authorLetterReduce(acc, author, lang()),
+        {} as { [letter: string]: Author[] }
+      ) || {}
     )
   })
 
@@ -102,24 +83,20 @@ export const AllAuthors = (props: Props) => {
         limit: AUTHORS_PER_PAGE,
         offset
       })
-      // UPDATE authors to currentAuthors state
-      setCurrentAuthors((prev) => [...prev, ...authorsSorted()])
     } catch (error) {
       console.error('[components.AuthorsList] error fetching authors:', error)
     } finally {
       setLoading(false)
     }
   }
-
   const [currentPage, setCurrentPage] = createSignal<{ followers: number; shouts: number }>({
     followers: 0,
     shouts: 0
   })
-
   const loadMoreAuthors = () => {
-    const by = searchParams?.by as 'followers' | 'shouts' | undefined
-    if (!by) return
-    const nextPage = currentPage()[by] + 1
+    const by = searchParams?.by
+    if (!by || by === 'name') return
+    const nextPage = currentPage()[by as 'followers' | 'shouts'] + 1
     fetchAuthors(by, nextPage).then(() => setCurrentPage({ ...currentPage(), [by]: nextPage }))
   }
 
@@ -134,27 +111,21 @@ export const AllAuthors = (props: Props) => {
               ['view-switcher__item--selected']: !searchParams?.by || searchParams?.by === 'shouts'
             })}
           >
-            <a href="#" onClick={() => changeSearchParams({ by: 'shouts' })}>
-              {t('By shouts')}
-            </a>
+            <a href="/author?by=shouts">{t('By shouts')}</a>
           </li>
           <li
             class={clsx({
               ['view-switcher__item--selected']: searchParams?.by === 'followers'
             })}
           >
-            <a href="#" onClick={() => changeSearchParams({ by: 'followers' })}>
-              {t('By popularity')}
-            </a>
+            <a href="/author?by=followers">{t('By popularity')}</a>
           </li>
           <li
             class={clsx({
               ['view-switcher__item--selected']: searchParams?.by === 'name'
             })}
           >
-            <a href="#" onClick={() => changeSearchParams({ by: 'name' })}>
-              {t('By name')}
-            </a>
+            <a href="/author?by=name">{t('By name')}</a>
           </li>
           <Show when={searchParams?.by === 'name'}>
             <li class="view-switcher__search">
@@ -224,7 +195,7 @@ export const AllAuthors = (props: Props) => {
 
   const AuthorsSortedList = () => (
     <div class={clsx(stylesAuthorList.AuthorsList)}>
-      <For each={authors()}>
+      <For each={authorsSorted?.()}>
         {(author) => (
           <div class="row">
             <div class="col-lg-20 col-xl-18">
@@ -236,7 +207,7 @@ export const AllAuthors = (props: Props) => {
       <div class="row">
         <div class="col-lg-20 col-xl-18">
           <div class={stylesAuthorList.action}>
-            <Show when={!loading() && ((authors() || []).length || 0) > 0}>
+            <Show when={searchParams.by !== 'name' && !searchParams.by && !loading() && ((authorsSorted?.() || []).length || 0) > 0}>
               <Button value={t('Load more')} onClick={loadMoreAuthors} aria-live="polite" />
             </Show>
             <Show when={loading()}>

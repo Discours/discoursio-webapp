@@ -40,19 +40,29 @@ export type TopicPageProps = { articles?: Shout[]; topics: Topic[]; authors?: Au
 export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const { t } = useLocalize()
   const { addTopics } = useTopics()
-  const topics = createAsync(async () => props.data.topics || (await fetchAllTopics()) || [])
+  const [loadingError, setLoadingError] = createSignal(false)
+
+  // all topics
+  const topics = createAsync(async () => {
+    const result = props.data.topics || (await fetchAllTopics())
+    if (!result) setLoadingError(true)
+    return result
+  })
+
+  // current topic's shouts
   const articles = createAsync(async () => {
     const result = (await props.data).articles || (await fetchTopicShouts(props.params.slug))
-    setShoutsLoaded(true)
-    return result || []
+    if (!result) setLoadingError(true)
+    return result
   })
+
+  // current topic's data
   const [topic, setTopic] = createSignal<Topic>()
   const [title, setTitle] = createSignal<string>('')
   const [desc, setDesc] = createSignal<string>('')
   const [cover, setCover] = createSignal<string>('')
-  const [shoutsLoaded, setShoutsLoaded] = createSignal(false)
   createEffect(on([topics, () => window], ([ttt, win]) => {
-    if (ttt) {
+    if (ttt && win) {
       // console.debug('all topics:', ttt)
       ttt && addTopics(ttt)
       const tpc = ttt.find((x) => x.slug === props.params.slug)
@@ -67,7 +77,9 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
       setCover(() =>
         topic()?.pic ? getImageUrl(topic()?.pic || '', { width: 1200 }) : '/logo.png'
       )
-      if (win) window?.gtag?.('event', 'page_view', {
+
+      // views google counter increment
+      window?.gtag?.('event', 'page_view', {
           page_title: tpc.title,
           page_location: window?.location.href,
           page_path: window?.location.pathname
@@ -77,7 +89,7 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
 
   return (
     <Show
-      when={shoutsLoaded()}
+      when={!loadingError()}
       fallback={
         <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
           <FourOuFourView />

@@ -16,7 +16,7 @@ export function paginate<T>(arr: T[], startIndex: number, pageSize: number): T[]
     }
 
     // Добавляем текущий элемент на последнюю страницу
-    acc.at(-1)?.push(item)
+    acc[acc.length - 1].push(item)
     return acc
   }, [] as T[][]) // Инициализируем аккумулятор как пустой массив массивов
 }

@@ -19,11 +19,12 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
   const { t } = useLocalize()
   const [items, setItems] = createSignal<LoadMoreItems>([])
   const [offset, setOffset] = createSignal(0)
-  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(false)
+  const [isLoadMoreButtonVisible, setIsLoadMoreButtonVisible] = createSignal(props.hidden)
   const [isLoading, setIsLoading] = createSignal(false)
 
   createEffect(
     on(items, (iii) => {
+      // console.debug('LoadMoreWrapper.fx:', iii)
       if (Array.isArray(iii)) {
         setIsLoadMoreButtonVisible(iii.length - offset() >= 0)
         setOffset(iii.length)
@@ -36,7 +37,8 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
     saveScrollPosition()
     const newItems = await props.loadFunction(offset())
     if (!Array.isArray(newItems)) return
-    setItems(
+    if (newItems.length === 0) setIsLoadMoreButtonVisible(false)
+    else setItems(
       (prev) =>
         Array.from(new Set([...prev, ...newItems])).sort(
           byCreated as SortFunction<unknown>

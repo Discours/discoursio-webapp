@@ -39,10 +39,10 @@ export type TopicPageProps = { articles?: Shout[]; topics: Topic[]; authors?: Au
 
 export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const { t } = useLocalize()
-  const { addTopics } = useTopics()
-  const [loadingError, setLoadingError] = createSignal(false)
 
   // all topics
+  const { addTopics } = useTopics()
+  const [loadingError, setLoadingError] = createSignal(false)
   const topics = createAsync(async () => {
     const result = props.data.topics || (await fetchAllTopics())
     if (!result) setLoadingError(true)
@@ -61,7 +61,7 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const [title, setTitle] = createSignal<string>('')
   const [desc, setDesc] = createSignal<string>('')
   const [cover, setCover] = createSignal<string>('')
-
+  const [viewed, setViewed] = createSignal(false)
   createEffect(on([topics, () => window], ([ttt, win]) => {
     if (ttt && win) {
       // console.debug('all topics:', ttt)
@@ -80,11 +80,14 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
       )
 
       // views google counter increment
-      window?.gtag?.('event', 'page_view', {
+      if (viewed()) {
+        window?.gtag?.('event', 'page_view', {
           page_title: tpc.title,
           page_location: window?.location.href,
           page_path: window?.location.pathname
         })
+        setViewed(true)
+      }
     }
   }, {}))
 

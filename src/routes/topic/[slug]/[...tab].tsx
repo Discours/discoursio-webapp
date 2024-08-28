@@ -61,6 +61,7 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const [title, setTitle] = createSignal<string>('')
   const [desc, setDesc] = createSignal<string>('')
   const [cover, setCover] = createSignal<string>('')
+
   createEffect(on([topics, () => window], ([ttt, win]) => {
     if (ttt && win) {
       // console.debug('all topics:', ttt)
@@ -85,7 +86,7 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
           page_path: window?.location.pathname
         })
     }
-  }, { defer: true }))
+  }, {}))
 
   return (
     <Show

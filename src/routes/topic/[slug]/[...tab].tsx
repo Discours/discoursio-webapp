@@ -62,34 +62,38 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
   const [desc, setDesc] = createSignal<string>('')
   const [cover, setCover] = createSignal<string>('')
   const [viewed, setViewed] = createSignal(false)
-  createEffect(on([topics, () => window], ([ttt, win]) => {
-    if (ttt && win) {
-      // console.debug('all topics:', ttt)
-      ttt && addTopics(ttt)
-      const tpc = ttt.find((x) => x.slug === props.params.slug)
-      if (!tpc) return
-      setTopic(tpc)
-      setTitle(() => `${t('Discours')}${topic()?.title ? ` :: ${topic()?.title}` : ''}`)
-      setDesc(() =>
-        topic()?.body
-          ? descFromBody(topic()?.body || '')
-          : t('The most interesting publications on the topic', { topicName: title() })
-      )
-      setCover(() =>
-        topic()?.pic ? getImageUrl(topic()?.pic || '', { width: 1200 }) : '/logo.png'
-      )
+  createEffect(
+    on(
+      [topics, () => window],
+      ([ttt, win]) => {
+        if (ttt && win) {
+          // console.debug('all topics:', ttt)
+          ttt && addTopics(ttt)
+          const tpc = ttt.find((x) => x.slug === props.params.slug)
+          if (!tpc) return
+          setTopic(tpc)
+          setTitle(() => `${t('Discours')}${topic()?.title ? ` :: ${topic()?.title}` : ''}`)
+          setDesc(() =>
+            topic()?.body
+              ? descFromBody(topic()?.body || '')
+              : t('The most interesting publications on the topic', { topicName: title() })
+          )
+          setCover(() => (topic()?.pic ? getImageUrl(topic()?.pic || '', { width: 1200 }) : '/logo.png'))
 
-      // views google counter increment
-      if (viewed()) {
-        window?.gtag?.('event', 'page_view', {
-          page_title: tpc.title,
-          page_location: window?.location.href,
-          page_path: window?.location.pathname
-        })
-        setViewed(true)
-      }
-    }
-  }, {}))
+          // views google counter increment
+          if (!viewed()) {
+            window?.gtag?.('event', 'page_view', {
+              page_title: tpc.title,
+              page_location: window?.location.href,
+              page_path: window?.location.pathname
+            })
+            setViewed(true)
+          }
+        }
+      },
+      {}
+    )
+  )
 
   return (
     <Show

@@ -138,9 +138,8 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
             >
               <AuthorView
                 author={author() as Author}
-                selectedTab={props.params.tab}
                 authorSlug={props.params.slug}
-                shouts={authorShouts()}
+                shouts={authorShouts() || []}
               />
             </LoadMoreWrapper>
           </ReactionsProvider>

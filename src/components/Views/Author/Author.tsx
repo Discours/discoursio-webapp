@@ -1,6 +1,6 @@
 import { A, useLocation, useParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
 import { coreApiUrl } from '~/config'
 import { useAuthors } from '~/context/authors'
@@ -12,7 +12,6 @@ import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
 import { byCreated } from '~/lib/sort'
-import { paginate } from '~/utils/paginate'
 import stylesArticle from '../../Article/Article.module.scss'
 import { Comment } from '../../Article/Comment'
 import { AuthorCard } from '../../Author/AuthorCard'
@@ -25,20 +24,19 @@ import styles from './Author.module.scss'
 
 type AuthorViewProps = {
   authorSlug: string
-  selectedTab: string
-  shouts?: Shout[]
+  shouts: Shout[]
   author?: Author
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
-const LOAD_MORE_PAGE_SIZE = 9
+// const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: AuthorViewProps) => {
   // contexts
   const { t } = useLocalize()
   const loc = useLocation()
   const params = useParams()
-  const [currentTab, setCurrentTab] = createSignal<string>(props.selectedTab)
+  const [currentTab, setCurrentTab] = createSignal<string>(params.tab)
 
   const { session } = useSession()
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
@@ -56,21 +54,11 @@ export const AuthorView = (props: AuthorViewProps) => {
 
   // derivatives
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const pages = createMemo<Shout[][]>(() =>
-    paginate((props.shouts || []).slice(1), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
-  )
 
   // Переход по табам
-  createEffect(
-    on(
-      () => params.tab,
-      (tab: string) => {
-        // Обновляем текущую вкладку
-        setCurrentTab(tab || '')
-      },
-      {}
-    )
-  )
+  createEffect(() => {
+    setCurrentTab(params.tab)
+  })
 
   // Объединенный эффект для загрузки автора и его подписок
   createEffect(async () => {
@@ -171,7 +159,6 @@ export const AuthorView = (props: AuthorViewProps) => {
       </div>
 
       <Switch>
-
         <Match when={currentTab() === 'about'}>
           <div class="wide-container">
             <div class="row">
@@ -198,7 +185,6 @@ export const AuthorView = (props: AuthorViewProps) => {
         </Match>
 
         <Match when={currentTab() === 'comments'}>
-
           <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
@@ -232,36 +218,29 @@ export const AuthorView = (props: AuthorViewProps) => {
             </div>
           </Show>
 
-          <Show when={Array.isArray(props.shouts) && props.shouts.length > 0 && props.shouts[0]}>
-            <Row1 article={props.shouts?.[0] as Shout} noauthor={true} nodate={true} />
-
-            <Show when={props.shouts && props.shouts.length > 1}>
-              <Switch>
-                <Match when={props.shouts && props.shouts.length === 2}>
-                  <Row2 articles={props.shouts as Shout[]} isEqual={true} noauthor={true} nodate={true} />
-                </Match>
-                <Match when={props.shouts && props.shouts.length === 3}>
-                  <Row3 articles={props.shouts as Shout[]} noauthor={true} nodate={true} />
-                </Match>
-                <Match when={props.shouts && props.shouts.length > 3}>
-                  <For each={pages()}>
-                    {(page) => (
-                      <>
-                        <Row1 article={page[0]} noauthor={true} nodate={true} />
-                        <Row2 articles={page.slice(1, 3)} isEqual={true} noauthor={true} />
-                        <Row1 article={page[3]} noauthor={true} nodate={true} />
-                        <Row2 articles={page.slice(4, 6)} isEqual={true} noauthor={true} />
-                        <Row1 article={page[6]} noauthor={true} nodate={true} />
-                        <Row2 articles={page.slice(7, 9)} isEqual={true} noauthor={true} />
-                      </>
-                    )}
-                  </For>
-                </Match>
-              </Switch>
-            </Show>
+          <Show when={Array.isArray(props.shouts) && props.shouts.length > 0}>
+          <For each={props.shouts.filter((_, i) => i % 3 === 0)}>
+              {(_shout, index) => {
+                const articles = props.shouts.slice(index() * 3, index() * 3 + 3);
+                return (
+                  <>
+                    <Switch>
+                      <Match when={articles.length === 1}>
+                        <Row1 article={articles[0]} noauthor={true} nodate={true} />
+                      </Match>
+                      <Match when={articles.length === 2}>
+                        <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
+                      </Match>
+                      <Match when={articles.length === 3}>
+                        <Row3 articles={articles} noauthor={true} nodate={true} />
+                      </Match>
+                    </Switch>
+                  </>
+                );
+              }}
+            </For>
           </Show>
         </Match>
-
       </Switch>
     </div>
   )

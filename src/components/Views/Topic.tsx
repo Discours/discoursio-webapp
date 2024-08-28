@@ -1,6 +1,6 @@
 import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, Suspense, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Match, Show, Suspense, Switch, createEffect, createSignal, on } from 'solid-js'
 import { useAuthors } from '~/context/authors'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
@@ -9,7 +9,6 @@ import { loadAuthors, loadFollowersByTopic, loadShouts } from '~/graphql/api/pub
 import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { SHOUTS_PER_PAGE } from '~/routes/(main)'
 import { getUnixtime } from '~/utils/date'
-import { paginate } from '~/utils/paginate'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import styles from '../../styles/Topic.module.scss'
 import { Beside } from '../Feed/Beside'
@@ -21,7 +20,6 @@ import { LoadMoreItems, LoadMoreWrapper } from '../_shared/LoadMoreWrapper'
 import { Loading } from '../_shared/Loading'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
 
-// FIXME: should be 'last_comment' and 'comments_stat' or just one?
 export type TopicFeedSortBy = 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'last_comment'
 
 interface Props {
@@ -33,7 +31,7 @@ interface Props {
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 28
-const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
+// const LOAD_MORE_PAGE_SIZE = 9 // Row3 + Row3 + Row3
 
 export const TopicView = (props: Props) => {
   const { t } = useLocalize()
@@ -49,13 +47,13 @@ export const TopicView = (props: Props) => {
   // TODO: filter + sort
   const [sortedFeed, setSortedFeed] = createSignal([] as Shout[])
   createEffect(on(([feedByTopic, () => props.topicSlug, topicEntities]), ([feed, slug, ttt]) => {
-    if (Object.values(ttt).length === 0) return
-    const sss = (feed[slug] || []) as Shout[]
-    sss && setSortedFeed(sss)
-    console.debug('topic slug loaded', slug)
-    const tpc = ttt[slug]
-    console.debug('topics loaded', ttt)
-    tpc && setTopic(tpc)
+        if (Object.values(ttt).length === 0) return
+        const sss = (feed[slug] || []) as Shout[]
+        sss && setSortedFeed(sss)
+        console.debug('topic slug loaded', slug)
+        const tpc = ttt[slug]
+        console.debug('topics loaded', ttt)
+        tpc && setTopic(tpc)
   }, {}))
 
   const loadTopicFollowers = async () => {
@@ -104,12 +102,12 @@ export const TopicView = (props: Props) => {
 
   // второй этап начальной загрузки данных
   createEffect(on(topic, (tpc) => {
-    console.debug('topic loaded', tpc)
-    if (!tpc) return
-    loadFavoriteTopArticles()
-    loadReactedTopMonthArticles()
-    loadTopicAuthors()
-    loadTopicFollowers()
+        console.debug('topic loaded', tpc)
+        if (!tpc) return
+        loadFavoriteTopArticles()
+        loadReactedTopMonthArticles()
+        loadTopicAuthors()
+        loadTopicFollowers()
   }, { defer: true }))
 
   // дозагрузка
@@ -137,9 +135,6 @@ export const TopicView = (props: Props) => {
   })
   */
 
-  const pages = createMemo<Shout[][]>(() =>
-    paginate(sortedFeed(), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
-  )
   return (
     <div class={styles.topicPage}>
       <Suspense fallback={<Loading />}>
@@ -223,15 +218,26 @@ export const TopicView = (props: Props) => {
         </Show>
 
         <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE}>
-          <For each={pages()}>
-            {(page) => (
+        <For each={sortedFeed().slice(19).filter((_, i) => i % 3 === 0)}>
+          {(_shout, index) => {
+            const articles = sortedFeed().slice(19).slice(index() * 3, index() * 3 + 3);
+            return (
               <>
-                <Row3 articles={page.slice(0, 3)} />
-                <Row3 articles={page.slice(3, 6)} />
-                <Row3 articles={page.slice(6, 9)} />
+                <Switch>
+                  <Match when={articles.length === 1}>
+                    <Row1 article={articles[0]} noauthor={true} nodate={true} />
+                  </Match>
+                  <Match when={articles.length === 2}>
+                    <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
+                  </Match>
+                  <Match when={articles.length === 3}>
+                    <Row3 articles={articles} noauthor={true} nodate={true} />
+                  </Match>
+                </Switch>
               </>
-            )}
-          </For>
+            );
+          }}
+        </For>
         </LoadMoreWrapper>
       </Suspense>
     </div>

@@ -1,6 +1,6 @@
-import { A, useLocation } from '@solidjs/router'
+import { A, useLocation, useParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { Loading } from '~/components/_shared/Loading'
 import { coreApiUrl } from '~/config'
 import { useAuthors } from '~/context/authors'
@@ -37,6 +37,8 @@ export const AuthorView = (props: AuthorViewProps) => {
   // contexts
   const { t } = useLocalize()
   const loc = useLocation()
+  const params = useParams()
+  const [currentTab, setCurrentTab] = createSignal<string>(props.selectedTab)
 
   const { session } = useSession()
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
@@ -56,6 +58,18 @@ export const AuthorView = (props: AuthorViewProps) => {
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const pages = createMemo<Shout[][]>(() =>
     paginate((props.shouts || []).slice(1), PRERENDERED_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
+  )
+
+  // Переход по табам
+  createEffect(
+    on(
+      () => params.tab,
+      (tab: string) => {
+        // Обновляем текущую вкладку
+        setCurrentTab(tab || '')
+      },
+      {}
+    )
   )
 
   // Объединенный эффект для загрузки автора и его подписок
@@ -105,6 +119,30 @@ export const AuthorView = (props: AuthorViewProps) => {
     setCommented((prev) => prev.filter((comment) => comment.id !== id))
   }
 
+  const TabNavigator = () => (
+    <div class="col-md-16">
+      <ul class="view-switcher">
+        <li classList={{ 'view-switcher__item--selected': !currentTab() }}>
+          <A href={`/@${props.authorSlug}`}>{t('Publications')}</A>
+          <Show when={author()?.stat}>
+            <span class="view-switcher__counter">{author()?.stat?.shouts || 0}</span>
+          </Show>
+        </li>
+        <li classList={{ 'view-switcher__item--selected': currentTab() === 'comments' }}>
+          <A href={`/@${props.authorSlug}/comments`}>{t('Comments')}</A>
+          <Show when={author()?.stat}>
+            <span class="view-switcher__counter">{author()?.stat?.comments || 0}</span>
+          </Show>
+        </li>
+        <li classList={{ 'view-switcher__item--selected': currentTab() === 'about' }}>
+          <A onClick={() => checkBioHeight()} href={`/@${props.authorSlug}/about`}>
+            {t('About the author')}
+          </A>
+        </li>
+      </ul>
+    </div>
+  )
+
   return (
     <div class={styles.authorPage}>
       <div class="wide-container">
@@ -118,27 +156,7 @@ export const AuthorView = (props: AuthorViewProps) => {
               />
             </div>
             <div class={clsx(styles.groupControls, 'row')}>
-              <div class="col-md-16">
-                <ul class="view-switcher">
-                  <li classList={{ 'view-switcher__item--selected': !props.selectedTab }}>
-                    <A href={`/@${props.authorSlug}`}>{t('Publications')}</A>
-                    <Show when={author()?.stat}>
-                      <span class="view-switcher__counter">{author()?.stat?.shouts || 0}</span>
-                    </Show>
-                  </li>
-                  <li classList={{ 'view-switcher__item--selected': props.selectedTab === 'comment' }}>
-                    <A href={`/@${props.authorSlug}/comments`}>{t('Comments')}</A>
-                    <Show when={author()?.stat}>
-                      <span class="view-switcher__counter">{author()?.stat?.comments || 0}</span>
-                    </Show>
-                  </li>
-                  <li classList={{ 'view-switcher__item--selected': props.selectedTab === 'about' }}>
-                    <A onClick={() => checkBioHeight()} href={`/@${props.authorSlug}/about`}>
-                      {t('About the author')}
-                    </A>
-                  </li>
-                </ul>
-              </div>
+              <TabNavigator />
               <div class={clsx('col-md-8', styles.additionalControls)}>
                 <Show when={author()?.stat?.rating || author()?.stat?.rating === 0}>
                   <div class={styles.ratingContainer}>
@@ -153,7 +171,8 @@ export const AuthorView = (props: AuthorViewProps) => {
       </div>
 
       <Switch>
-        <Match when={props.selectedTab === 'about'}>
+
+        <Match when={currentTab() === 'about'}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -177,7 +196,9 @@ export const AuthorView = (props: AuthorViewProps) => {
             </div>
           </div>
         </Match>
-        <Match when={props.selectedTab === 'comments'}>
+
+        <Match when={currentTab() === 'comments'}>
+
           <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
@@ -203,7 +224,8 @@ export const AuthorView = (props: AuthorViewProps) => {
             </div>
           </div>
         </Match>
-        <Match when={!props.selectedTab}>
+
+        <Match when={!currentTab()}>
           <Show when={me()?.slug === props.authorSlug && !me().stat?.shouts}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
@@ -239,6 +261,7 @@ export const AuthorView = (props: AuthorViewProps) => {
             </Show>
           </Show>
         </Match>
+
       </Switch>
     </div>
   )

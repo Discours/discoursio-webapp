@@ -1,5 +1,5 @@
-import { RouteSectionProps } from '@solidjs/router'
-import { ErrorBoundary, Suspense, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { RouteSectionProps, createAsync } from '@solidjs/router'
+import { ErrorBoundary, Suspense, createEffect, createSignal, on } from 'solid-js'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
@@ -39,9 +39,10 @@ const fetchAuthor = async (slug: string) => {
 export const route = {
   load: async ({ params, location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
     const offset: number = Number.parseInt(query.offset, 10)
+    console.debug('route loading with offset', offset)
     return {
       author: await fetchAuthor(params.slug),
-      shouts: await fetchAuthorShouts(params.slug, offset),
+      articles: await fetchAuthorShouts(params.slug, offset),
       topics: await fetchAllTopics()
     }
   }
@@ -50,39 +51,17 @@ export const route = {
 export type AuthorPageProps = { articles?: Shout[]; author?: Author; topics?: Topic[] }
 
 export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
+  const { t } = useLocalize()
+
+  // load author's profile
   const { addAuthor, authorsEntities } = useAuthors()
   const [author, setAuthor] = createSignal<Author | undefined>(undefined)
-
-  const { t } = useLocalize()
-  const title = createMemo(() => `${author()?.name || ''}`)
-
-  createEffect(() => {
-    if (author()) {
-      console.debug('[routes] author/[slug] author loaded fx')
-      window?.gtag?.('event', 'page_view', {
-        page_title: author()?.name || '',
-        page_location: window?.location.href || '',
-        page_path: window?.location.pathname || ''
-      })
-    }
-  })
-
-  const cover = createMemo(() =>
-    author()?.pic
-      ? getImageUrl(author()?.pic || '', { width: 1200 })
-      : getImageUrl('production/image/logo_image.png')
-  )
-
-  // author shouts
-  const { addFeed, feedByAuthor } = useFeed()
-  const shoutsByAuthor = createMemo(() => feedByAuthor()[props.params.slug])
-
   createEffect(
-    on(
-      [() => props.params.slug || '', author],
-      async ([slug, profile]) => {
+    on(author,
+      async (profile) => {
+        // update only if no profile loaded
         if (!profile) {
-          const loadedAuthor = authorsEntities()[slug] || (await fetchAuthor(slug))
+          const loadedAuthor = authorsEntities()[props.params.slug] || (await fetchAuthor(props.params.slug))
           if (loadedAuthor) {
             addAuthor(loadedAuthor)
             setAuthor(loadedAuthor)
@@ -93,6 +72,48 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
     )
   )
 
+  // author's data, view counter
+  const [title, setTitle] = createSignal<string>('')
+  const [desc, setDesc] = createSignal<string>('')
+  const [cover, setCover] = createSignal<string>('')
+  const [viewed, setViewed] = createSignal(false)
+  createEffect(
+    on(
+      [author, () => window],
+      ([a, win]) => {
+        if (a && win) {
+          console.debug('[routes] author/[slug] author loaded fx')
+          if (!a) return
+          setTitle(() => `${t('Discours')}${a.name ? ` :: ${a.name}` : ''}`)
+          setDesc(() => a.about || a.bio || '')
+          setCover(() => (a.pic ? getImageUrl(a.pic || '', { width: 1200 }) : 'log.png'))
+
+          // views google counter increment
+          if (!viewed()) {
+            window?.gtag?.('event', 'page_view', {
+              page_title: author()?.name || '',
+              page_location: window?.location.href || '',
+              page_path: window?.location.pathname || ''
+            })
+            setViewed(true)
+          }
+        }
+      },
+      {}
+    )
+  )
+
+  // author's shouts
+  const { addFeed, feedByAuthor } = useFeed()
+  const [loadMoreHidden, setLoadMoreHidden] = createSignal(true)
+  const authorShouts = createAsync(async () => {
+    const sss: Shout[] = props.data.articles as Shout[] || feedByAuthor()[props.params.slug] || []
+    const result = sss || (await fetchAuthorShouts(props.params.slug, 0))
+    if (!result) setLoadMoreHidden(true)
+    return result
+  })
+
+  // load more shouts
   const loadAuthorShoutsMore = async (offset: number) => {
     const loadedShouts = await fetchAuthorShouts(props.params.slug, offset)
     loadedShouts && addFeed(loadedShouts)
@@ -103,19 +124,23 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>
         <PageLayout
-          title={`${t('Discours')} :: ${title()}`}
+          title={title()}
           headerTitle={author()?.name || ''}
           slug={author()?.slug}
-          desc={author()?.about || author()?.bio || ''}
+          desc={desc()}
           cover={cover()}
         >
           <ReactionsProvider>
-            <LoadMoreWrapper loadFunction={loadAuthorShoutsMore} pageSize={SHOUTS_PER_PAGE}>
+            <LoadMoreWrapper
+              loadFunction={loadAuthorShoutsMore}
+              pageSize={SHOUTS_PER_PAGE}
+              hidden={loadMoreHidden()}
+            >
               <AuthorView
                 author={author() as Author}
                 selectedTab={props.params.tab}
                 authorSlug={props.params.slug}
-                shouts={shoutsByAuthor()}
+                shouts={authorShouts()}
               />
             </LoadMoreWrapper>
           </ReactionsProvider>

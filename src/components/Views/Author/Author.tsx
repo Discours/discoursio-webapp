@@ -124,7 +124,7 @@ export const AuthorView = (props: AuthorViewProps) => {
         </li>
         <li classList={{ 'view-switcher__item--selected': currentTab() === 'about' }}>
           <A onClick={() => checkBioHeight()} href={`/@${props.authorSlug}/about`}>
-            {t('About the author')}
+            {t('About')}
           </A>
         </li>
       </ul>

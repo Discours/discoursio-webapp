@@ -43,7 +43,6 @@ function filterNulls(arr: InputMaybe<string>[]): string[] {
 
 export const ProfileSettings = () => {
   const { t } = useLocalize()
-  const [prevForm, setPrevForm] = createStore<ProfileInput>({})
   const [isFormInitialized, setIsFormInitialized] = createSignal(false)
   const [isSaving, setIsSaving] = createSignal(false)
   const [social, setSocial] = createSignal<string[]>([])
@@ -59,16 +58,25 @@ export const ProfileSettings = () => {
   const { form, submit, updateFormField, setForm } = useProfile()
   const { showSnackbar } = useSnackbar()
   const { loadSession, session } = useSession()
+  const [prevForm, setPrevForm] = createStore<ProfileInput>()
   const { showConfirm } = useUI()
   const [clearAbout, setClearAbout] = createSignal(false)
   const { showModal, hideModal } = useUI()
+  const [loading, setLoading] = createSignal(true);
 
+  // Используем createEffect для отслеживания данных сессии и инициализации формы
   createEffect(() => {
-    if (Object.keys(form).length > 0 && !isFormInitialized()) {
-      setPrevForm(form)
-      const soc: string[] = filterNulls(form.links || [])
-      setSocial(soc)
-      setIsFormInitialized(true)
+    const s = session()
+    if (s && !isFormInitialized()) {
+      const profileData = s?.user?.app_data?.profile
+      if (profileData) {
+        setPrevForm(profileData)
+        const soc: string[] = filterNulls(profileData.links || [])
+        setSocial(soc);
+        setForm(profileData) // Инициализируем форму с данными профиля
+        setIsFormInitialized(true)
+      }
+      setLoading(false)  // Отключаем загрузку только после инициализации данных
     }
   })
 
@@ -197,7 +205,7 @@ export const ProfileSettings = () => {
   }
 
   return (
-    <Show when={Object.keys(form).length > 0 && isFormInitialized()} fallback={<Loading />}>
+    <Show when={Object.keys(form).length > 0 && isFormInitialized() && !loading()} fallback={<Loading />}>
       <>
         <div class="wide-container">
           <div class="row">

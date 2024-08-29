@@ -46,7 +46,10 @@ export const TopicView = (props: Props) => {
 
   // TODO: filter + sort
   const [sortedFeed, setSortedFeed] = createSignal([] as Shout[])
-  createEffect(on(([feedByTopic, () => props.topicSlug, topicEntities]), ([feed, slug, ttt]) => {
+  createEffect(
+    on(
+      [feedByTopic, () => props.topicSlug, topicEntities],
+      ([feed, slug, ttt]) => {
         if (Object.values(ttt).length === 0) return
         const sss = (feed[slug] || []) as Shout[]
         sss && setSortedFeed(sss)
@@ -54,7 +57,10 @@ export const TopicView = (props: Props) => {
         const tpc = ttt[slug]
         console.debug('topics loaded', ttt)
         tpc && setTopic(tpc)
-  }, {}))
+      },
+      {}
+    )
+  )
 
   const loadTopicFollowers = async () => {
     const topicFollowersFetcher = loadFollowersByTopic(props.topicSlug)
@@ -101,14 +107,20 @@ export const TopicView = (props: Props) => {
   }
 
   // второй этап начальной загрузки данных
-  createEffect(on(topic, (tpc) => {
+  createEffect(
+    on(
+      topic,
+      (tpc) => {
         console.debug('topic loaded', tpc)
         if (!tpc) return
         loadFavoriteTopArticles()
         loadReactedTopMonthArticles()
         loadTopicAuthors()
         loadTopicFollowers()
-  }, { defer: true }))
+      },
+      { defer: true }
+    )
+  )
 
   // дозагрузка
   const loadMore = async () => {
@@ -138,7 +150,9 @@ export const TopicView = (props: Props) => {
   return (
     <div class={styles.topicPage}>
       <Suspense fallback={<Loading />}>
-        <Show when={topic()}><FullTopic topic={topic() as Topic} followers={followers()} authors={topicAuthors()} /></Show>
+        <Show when={topic()}>
+          <FullTopic topic={topic() as Topic} followers={followers()} authors={topicAuthors()} />
+        </Show>
         <div class="wide-container">
           <div class={clsx(styles.groupControls, 'row group__controls')}>
             <div class="col-md-16">
@@ -218,26 +232,32 @@ export const TopicView = (props: Props) => {
         </Show>
 
         <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE}>
-        <For each={sortedFeed().slice(19).filter((_, i) => i % 3 === 0)}>
-          {(_shout, index) => {
-            const articles = sortedFeed().slice(19).slice(index() * 3, index() * 3 + 3);
-            return (
-              <>
-                <Switch>
-                  <Match when={articles.length === 1}>
-                    <Row1 article={articles[0]} noauthor={true} nodate={true} />
-                  </Match>
-                  <Match when={articles.length === 2}>
-                    <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
-                  </Match>
-                  <Match when={articles.length === 3}>
-                    <Row3 articles={articles} noauthor={true} nodate={true} />
-                  </Match>
-                </Switch>
-              </>
-            );
-          }}
-        </For>
+          <For
+            each={sortedFeed()
+              .slice(19)
+              .filter((_, i) => i % 3 === 0)}
+          >
+            {(_shout, index) => {
+              const articles = sortedFeed()
+                .slice(19)
+                .slice(index() * 3, index() * 3 + 3)
+              return (
+                <>
+                  <Switch>
+                    <Match when={articles.length === 1}>
+                      <Row1 article={articles[0]} noauthor={true} nodate={true} />
+                    </Match>
+                    <Match when={articles.length === 2}>
+                      <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
+                    </Match>
+                    <Match when={articles.length === 3}>
+                      <Row3 articles={articles} noauthor={true} nodate={true} />
+                    </Match>
+                  </Switch>
+                </>
+              )
+            }}
+          </For>
         </LoadMoreWrapper>
       </Suspense>
     </div>

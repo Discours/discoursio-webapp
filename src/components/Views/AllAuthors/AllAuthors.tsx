@@ -34,9 +34,11 @@ export const ABC = {
 export const AllAuthors = (props: Props) => {
   const { t, lang } = useLocalize()
   const alphabet = createMemo(() => ABC[lang()] || ABC['ru'])
-  const [searchParams, ] = useSearchParams<{ by?: string }>()
+  const [searchParams] = useSearchParams<{ by?: string }>()
   const { authorsSorted, setAuthorsSort, loadAuthors } = useAuthors()
-  const authors = createMemo(() => (searchParams.by || searchParams.by === 'name') ? props.authors : authorsSorted())
+  const authors = createMemo(() =>
+    searchParams.by || searchParams.by === 'name' ? props.authors : authorsSorted()
+  )
   const [loading, setLoading] = createSignal<boolean>(false)
 
   // filter
@@ -207,7 +209,14 @@ export const AllAuthors = (props: Props) => {
       <div class="row">
         <div class="col-lg-20 col-xl-18">
           <div class={stylesAuthorList.action}>
-            <Show when={searchParams.by !== 'name' && !searchParams.by && !loading() && ((authorsSorted?.() || []).length || 0) > 0}>
+            <Show
+              when={
+                searchParams.by !== 'name' &&
+                !searchParams.by &&
+                !loading() &&
+                ((authorsSorted?.() || []).length || 0) > 0
+              }
+            >
               <Button value={t('Load more')} onClick={loadMoreAuthors} aria-live="polite" />
             </Show>
             <Show when={loading()}>

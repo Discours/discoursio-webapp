@@ -57,11 +57,13 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   const { addAuthor, authorsEntities } = useAuthors()
   const [author, setAuthor] = createSignal<Author | undefined>(undefined)
   createEffect(
-    on(author,
+    on(
+      author,
       async (profile) => {
         // update only if no profile loaded
         if (!profile) {
-          const loadedAuthor = authorsEntities()[props.params.slug] || (await fetchAuthor(props.params.slug))
+          const loadedAuthor =
+            authorsEntities()[props.params.slug] || (await fetchAuthor(props.params.slug))
           if (loadedAuthor) {
             addAuthor(loadedAuthor)
             setAuthor(loadedAuthor)
@@ -107,7 +109,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   const { addFeed, feedByAuthor } = useFeed()
   const [loadMoreHidden, setLoadMoreHidden] = createSignal(true)
   const authorShouts = createAsync(async () => {
-    const sss: Shout[] = props.data.articles as Shout[] || feedByAuthor()[props.params.slug] || []
+    const sss: Shout[] = (props.data.articles as Shout[]) || feedByAuthor()[props.params.slug] || []
     const result = sss || (await fetchAuthorShouts(props.params.slug, 0))
     if (!result) setLoadMoreHidden(true)
     return result

@@ -27,15 +27,21 @@ export const FullTopic = (props: Props) => {
   const [followed, setFollowed] = createSignal()
   const [title, setTitle] = createSignal('')
 
-  createEffect(on(() => props.topic, (tpc) => {
-    if (!tpc) return
-    /* FIXME: use title translation*/
-    setTitle((_) => tpc?.title || '')
-    return `#${capitalize(
-      lang() === 'en' ? tpc.slug.replace(/-/, ' ') : tpc.title || tpc.slug.replace(/-/, ' '),
-      true
-    )}`
-  }, {} ))
+  createEffect(
+    on(
+      () => props.topic,
+      (tpc) => {
+        if (!tpc) return
+        /* FIXME: use title translation*/
+        setTitle((_) => tpc?.title || '')
+        return `#${capitalize(
+          lang() === 'en' ? tpc.slug.replace(/-/, ' ') : tpc.title || tpc.slug.replace(/-/, ' '),
+          true
+        )}`
+      },
+      {}
+    )
+  )
 
   createEffect(() => {
     if (follows?.topics?.length !== 0) {

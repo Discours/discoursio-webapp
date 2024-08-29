@@ -219,9 +219,9 @@ export const AuthorView = (props: AuthorViewProps) => {
           </Show>
 
           <Show when={Array.isArray(props.shouts) && props.shouts.length > 0}>
-          <For each={props.shouts.filter((_, i) => i % 3 === 0)}>
+            <For each={props.shouts.filter((_, i) => i % 3 === 0)}>
               {(_shout, index) => {
-                const articles = props.shouts.slice(index() * 3, index() * 3 + 3);
+                const articles = props.shouts.slice(index() * 3, index() * 3 + 3)
                 return (
                   <>
                     <Switch>
@@ -236,7 +236,7 @@ export const AuthorView = (props: AuthorViewProps) => {
                       </Match>
                     </Switch>
                   </>
-                );
+                )
               }}
             </For>
           </Show>

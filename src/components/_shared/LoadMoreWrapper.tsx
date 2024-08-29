@@ -38,12 +38,13 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
     const newItems = await props.loadFunction(offset())
     if (!Array.isArray(newItems)) return
     if (newItems.length === 0) setIsLoadMoreButtonVisible(false)
-    else setItems(
-      (prev) =>
-        Array.from(new Set([...prev, ...newItems])).sort(
-          byCreated as SortFunction<unknown>
-        ) as LoadMoreItems
-    )
+    else
+      setItems(
+        (prev) =>
+          Array.from(new Set([...prev, ...newItems])).sort(
+            byCreated as SortFunction<unknown>
+          ) as LoadMoreItems
+      )
     setIsLoading(false)
     restoreScrollPosition()
   }

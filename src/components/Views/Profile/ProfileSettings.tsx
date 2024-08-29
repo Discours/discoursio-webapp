@@ -62,7 +62,7 @@ export const ProfileSettings = () => {
   const { showConfirm } = useUI()
   const [clearAbout, setClearAbout] = createSignal(false)
   const { showModal, hideModal } = useUI()
-  const [loading, setLoading] = createSignal(true);
+  const [loading, setLoading] = createSignal(true)
 
   // Используем createEffect для отслеживания данных сессии и инициализации формы
   createEffect(() => {
@@ -72,11 +72,11 @@ export const ProfileSettings = () => {
       if (profileData) {
         setPrevForm(profileData)
         const soc: string[] = filterNulls(profileData.links || [])
-        setSocial(soc);
+        setSocial(soc)
         setForm(profileData) // Инициализируем форму с данными профиля
         setIsFormInitialized(true)
       }
-      setLoading(false)  // Отключаем загрузку только после инициализации данных
+      setLoading(false) // Отключаем загрузку только после инициализации данных
     }
   })
 

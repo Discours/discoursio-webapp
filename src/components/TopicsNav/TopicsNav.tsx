@@ -5,7 +5,7 @@ import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import type { Topic } from '~/graphql/schema/core.gen'
-import { getRandomTopicsFromArray } from '~/lib/getRandomTopicsFromArray'
+import { getRandomItemsFromArray } from '~/utils/random'
 import styles from './TopicsNav.module.scss'
 
 export const RandomTopics = () => {
@@ -17,11 +17,11 @@ export const RandomTopics = () => {
   createEffect(
     on(sortedTopics, (ttt: Topic[]) => {
       if (ttt?.length) {
-        setRandomTopics(getRandomTopicsFromArray(ttt))
+        setRandomTopics(getRandomItemsFromArray(ttt))
       }
     })
   )
-  onMount(() => sortedTopics() && getRandomTopicsFromArray(sortedTopics()))
+  onMount(() => sortedTopics() && getRandomItemsFromArray(sortedTopics()))
   return (
     <ul class="nodash">
       <Show when={randomTopics().length > 0}>

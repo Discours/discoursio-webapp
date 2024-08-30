@@ -12,8 +12,8 @@ import {
 } from 'solid-js'
 import { loadTopics } from '~/graphql/api/public'
 import { Topic } from '~/graphql/schema/core.gen'
-import { getRandomTopicsFromArray } from '~/lib/getRandomTopicsFromArray'
-import { byTopicStatDesc } from '../lib/sort'
+import { getRandomItemsFromArray } from '~/utils/random'
+import { byTopicStatDesc } from '../utils/sort'
 
 type TopicsContextType = {
   topicEntities: Accessor<{ [topicSlug: string]: Topic }>
@@ -198,7 +198,7 @@ export const TopicsProvider = (props: { children: JSX.Element }) => {
           const topics = isCacheValid ? req : await loadAllTopics()
           console.info(`[context.topics] got ${(topics as Topic[]).length || 0} topics from idb`)
           addTopics(topics as Topic[])
-          setRandomTopic(getRandomTopicsFromArray(topics || [], 1).pop())
+          setRandomTopic(getRandomItemsFromArray(topics || [], 1).pop())
         }
       },
       { defer: true }

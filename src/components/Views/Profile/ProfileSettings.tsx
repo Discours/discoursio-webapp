@@ -21,7 +21,6 @@ import { useSnackbar, useUI } from '~/context/ui'
 import { InputMaybe, ProfileInput } from '~/graphql/schema/core.gen'
 import { getImageUrl } from '~/lib/getThumbUrl'
 import { handleImageUpload } from '~/lib/handleImageUpload'
-import { profileSocialLinks } from '~/lib/profileSocialLinks'
 import { clone } from '~/utils/clone'
 import { validateUrl } from '~/utils/validate'
 import { ProfileSettingsNavigation } from '../../ProfileNav'
@@ -33,6 +32,7 @@ import { Modal } from '../../_shared/Modal'
 import { Popover } from '../../_shared/Popover'
 import { SocialNetworkInput } from '../../_shared/SocialNetworkInput'
 import styles from './Settings.module.scss'
+import { profileSocialLinks } from './profileSocialLinks'
 
 const SimplifiedEditor = lazy(() => import('~/components/Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))

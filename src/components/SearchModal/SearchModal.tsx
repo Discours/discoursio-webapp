@@ -5,8 +5,8 @@ import { Icon } from '~/components/_shared/Icon'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import type { Shout } from '~/graphql/schema/core.gen'
-import { byScore } from '~/lib/sort'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
+import { byScore } from '~/utils/sort'
 import { FEED_PAGE_SIZE } from '../Views/Feed/Feed'
 import styles from './SearchModal.module.scss'
 import { SearchResultItem } from './SearchResultItem'
@@ -23,7 +23,7 @@ const getSearchCoincidences = ({ str, intersection }: { str: string; intersectio
   )}</span>`
 
 const prepareSearchResults = (list: Shout[], searchValue: string) =>
-  list.sort(byScore() as (a: Shout, b: Shout) => number).map((article, index) => ({
+  list.sort(byScore as (a: Shout, b: Shout) => number).map((article, index) => ({
     ...article,
     id: index,
     title: article.title

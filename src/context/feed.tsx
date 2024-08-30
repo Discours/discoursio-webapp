@@ -12,7 +12,7 @@ import {
   Topic
 } from '~/graphql/schema/core.gen'
 import { graphqlClientCreate } from '../graphql/client'
-import { byStat } from '../lib/sort'
+import { byStat } from '../utils/sort'
 import { useSession } from './session'
 
 export const PRERENDERED_ARTICLES_COUNT = 5

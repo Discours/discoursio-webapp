@@ -2,9 +2,9 @@ import { JSX, Show, createEffect, createSignal, on, onMount } from 'solid-js'
 import { Button } from '~/components/_shared/Button'
 import { useLocalize } from '~/context/localize'
 import { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
-import { byCreated } from '~/lib/sort'
 import { SortFunction } from '~/types/common'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
+import { byCreated } from '~/utils/sort'
 
 export type LoadMoreItems = Shout[] | Author[] | Reaction[]
 

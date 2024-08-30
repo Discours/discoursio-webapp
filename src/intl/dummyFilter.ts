@@ -1,5 +1,5 @@
 import type { Author, Topic } from '~/graphql/schema/core.gen'
-import { translit } from '../intl/translit'
+import { translit } from './translit'
 
 const prepareQuery = (searchQuery: string, lang: string) => {
   const q = searchQuery.toLowerCase()

@@ -35,16 +35,6 @@ export default defineConfig({
   },
   devOverlay: true,
   vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'icons': ['./src/components/_shared/Icon/Icon.tsx'],
-            'localize': ['./src/context/localize.tsx']
-          }
-        }
-      }
-    },
     envPrefix: 'PUBLIC_',
     plugins: [!isVercel && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
     css: {

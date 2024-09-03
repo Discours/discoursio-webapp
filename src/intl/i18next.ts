@@ -4,6 +4,8 @@ import ICU from 'i18next-icu'
 import TimeAgo from 'javascript-time-ago'
 import enTime from 'javascript-time-ago/locale/en'
 import ruTime from 'javascript-time-ago/locale/ru'
+import en from '~/intl/locales/en/translation.json'
+import ru from '~/intl/locales/ru/translation.json'
 
 TimeAgo.addLocale(enTime)
 TimeAgo.addLocale(ruTime)
@@ -11,8 +13,6 @@ TimeAgo.addLocale(ruTime)
 export const i18nextInit = async (lng = 'ru') => {
   if (!i18next.isInitialized) {
     console.debug('[i18next] initializing...')
-    const en = await import('~/intl/locales/en/translation.json')
-    const ru = await import('~/intl/locales/ru/translation.json')
     await i18next
       .use(HttpApi)
       .use(ICU)

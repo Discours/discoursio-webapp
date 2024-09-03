@@ -1,7 +1,6 @@
 import { useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Match, Show, Suspense, Switch, createEffect, createSignal, on } from 'solid-js'
-import { useAuthors } from '~/context/authors'
+import { For, Match, Show, Suspense, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
@@ -10,6 +9,7 @@ import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '~/graphql/sc
 import { SHOUTS_PER_PAGE } from '~/routes/(main)'
 import { getUnixtime } from '~/utils/date'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
+import { byPublished, byStat } from '~/utils/sort'
 import styles from '../../styles/Topic.module.scss'
 import { Beside } from '../Feed/Beside'
 import { Row1 } from '../Feed/Row1'
@@ -37,7 +37,6 @@ export const TopicView = (props: Props) => {
   const { t } = useLocalize()
   const { feedByTopic, addFeed } = useFeed()
   const { topicEntities } = useTopics()
-  const { authorsByTopic } = useAuthors()
   const [searchParams, changeSearchParams] = useSearchParams<{ by: TopicFeedSortBy }>()
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
@@ -147,6 +146,14 @@ export const TopicView = (props: Props) => {
   })
   */
 
+  const topViewedShouts = createMemo(() => {
+    const loaded = feedByTopic()?.[props.topicSlug] || []
+    const sss = [...loaded] as Shout[]
+    const sortfn = byStat('views') || byPublished
+    sortfn && sss.sort(sortfn as ((a: Shout, b: Shout) => number) | undefined)
+    return sss
+  })
+
   return (
     <div class={styles.topicPage}>
       <Suspense fallback={<Loading />}>
@@ -204,42 +211,42 @@ export const TopicView = (props: Props) => {
         <Row2 articles={sortedFeed().slice(1, 3)} isEqual={true} />
 
         <Beside
-          title={t('Topic is supported by')}
-          values={authorsByTopic?.()?.[topic()?.slug || '']?.slice(0, 6)}
           beside={sortedFeed()[3]}
+          title={t('Topic is supported by')}
+          values={topicAuthors().slice(0, 6)}
           wrapper={'author'}
         />
         <Show when={reactedTopMonthArticles()?.length > 0} keyed={true}>
           <ArticleCardSwiper title={t('Top month')} slides={reactedTopMonthArticles()} />
         </Show>
         <Beside
-          beside={sortedFeed()[11]}
+          beside={sortedFeed()[4]}
           title={t('Top viewed')}
-          values={sortedFeed().slice(0, 5)}
+          values={topViewedShouts().slice(0, 5)}
           wrapper={'top-article'}
         />
 
-        <Row2 articles={sortedFeed().slice(12, 14)} isEqual={true} />
-        <Row1 article={sortedFeed()[14]} />
+        <Row2 articles={sortedFeed().slice(5, 7)} isEqual={true} />
+        <Row1 article={sortedFeed()[7]} />
 
         <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
           <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
         </Show>
 
-        <Show when={sortedFeed().length > 14}>
-          <Row3 articles={sortedFeed().slice(14, 17)} />
-          <Row2 articles={sortedFeed().slice(17, 19)} />
+        <Show when={sortedFeed().length > 7}>
+          <Row3 articles={sortedFeed().slice(8, 11)} />
+          <Row2 articles={sortedFeed().slice(11, 13)} />
         </Show>
 
         <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE}>
           <For
             each={sortedFeed()
-              .slice(19)
+              .slice(13)
               .filter((_, i) => i % 3 === 0)}
           >
             {(_shout, index) => {
               const articles = sortedFeed()
-                .slice(19)
+                .slice(13)
                 .slice(index() * 3, index() * 3 + 3)
               return (
                 <>

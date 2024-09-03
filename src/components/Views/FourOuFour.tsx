@@ -40,7 +40,7 @@ export const FourOuFourView = () => {
                 <form
                   class={clsx(styles.prettyForm, 'pretty-form')}
                   method="get"
-                  onSubmit={(ev) => search(ev)}
+                  onSubmit={(ev) => search(ev as EvType)}
                 >
                   <div class={clsx(styles.prettyFormItem, 'pretty-form__item')}>
                     <input

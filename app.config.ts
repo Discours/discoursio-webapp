@@ -55,7 +55,6 @@ export default defineConfig({
             icons: ['./src/components/_shared/Icon/Icon.tsx'],
             session: ['./src/context/session.tsx'],
             editor: ['./src/context/editor.tsx'],
-            localize: ['./src/context/localize.tsx'],
             connect: ['./src/context/connect.tsx']
           }
         }

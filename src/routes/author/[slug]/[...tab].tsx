@@ -105,7 +105,9 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   )
 
   // author's shouts
-  const authorShouts = createAsync(async () => props.data.articles as Shout[] || await fetchAuthorShouts(props.params.slug, 0))
+  const authorShouts = createAsync(
+    async () => (props.data.articles as Shout[]) || (await fetchAuthorShouts(props.params.slug, 0))
+  )
 
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>

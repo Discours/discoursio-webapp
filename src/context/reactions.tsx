@@ -68,7 +68,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     const newCommentsByAuthor = Object.fromEntries(
       Object.entries(newReactionsByAuthor).map(([authorId, reactions]) => [
         authorId,
-        reactions.filter((x: Reaction) => x.kind === ReactionKind.Comment),
+        reactions.filter((x: Reaction) => x.kind === ReactionKind.Comment)
       ])
     )
 

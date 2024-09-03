@@ -110,7 +110,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   })
 
   const handleDeleteComment = (id: number) => {
-    setCommented((prev) => (prev||[]).filter((comment) => comment.id !== id))
+    setCommented((prev) => (prev || []).filter((comment) => comment.id !== id))
   }
 
   const TabNavigator = () => (
@@ -154,11 +154,17 @@ export const AuthorView = (props: AuthorViewProps) => {
   }
 
   // fx to update author's feed
-  createEffect(on(feedByAuthor, (byAuthor) => {
-    const feed = byAuthor[props.authorSlug] as Shout[]
-    if (!feed) return
-    setSortedFeed(feed)
-  },{}))
+  createEffect(
+    on(
+      feedByAuthor,
+      (byAuthor) => {
+        const feed = byAuthor[props.authorSlug] as Shout[]
+        if (!feed) return
+        setSortedFeed(feed)
+      },
+      {}
+    )
+  )
 
   const [loadMoreCommentsHidden, setLoadMoreCommentsHidden] = createSignal(false)
   const { commentsByAuthor, addReactions } = useReactions()
@@ -176,14 +182,27 @@ export const AuthorView = (props: AuthorViewProps) => {
     })
     const result = await authorCommentsFetcher()
     result && addReactions(result)
-    result && setCommented((prev) => [...new Set([...(prev||[]), ...result])])
+    result && setCommented((prev) => [...new Set([...(prev || []), ...result])])
     restoreScrollPosition()
     return result as LoadMoreItems
   }
 
   createEffect(() => setCurrentTab(params.tab))
-  createEffect(on([author, commented], ([a, ccc]) => a && setLoadMoreCommentsHidden(ccc?.length === a.stat?.comments), {}))
-  createEffect(on([author, feedByAuthor], ([a, feed]) => a && feed[props.authorSlug] && setLoadMoreHidden(feed[props.authorSlug]?.length === a.stat?.shouts), {}))
+  createEffect(
+    on(
+      [author, commented],
+      ([a, ccc]) => a && setLoadMoreCommentsHidden(ccc?.length === a.stat?.comments),
+      {}
+    )
+  )
+  createEffect(
+    on(
+      [author, feedByAuthor],
+      ([a, feed]) =>
+        a && feed[props.authorSlug] && setLoadMoreHidden(feed[props.authorSlug]?.length === a.stat?.shouts),
+      {}
+    )
+  )
 
   return (
     <div class={styles.authorPage}>
@@ -245,26 +264,29 @@ export const AuthorView = (props: AuthorViewProps) => {
             </div>
           </Show>
 
-
-          <LoadMoreWrapper loadFunction={loadMoreComments} pageSize={COMMENTS_PER_PAGE} hidden={loadMoreCommentsHidden()}>
-          <div class="wide-container">
-            <div class="row">
-              <div class="col-md-20 col-lg-18">
-                <ul class={stylesArticle.comments}>
-                  <For each={commented()?.sort(byCreated).reverse()}>
-                    {(comment) => (
-                      <Comment
-                        comment={comment}
-                        class={styles.comment}
-                        showArticleLink={true}
-                        onDelete={(id) => handleDeleteComment(id)}
-                      />
-                    )}
-                  </For>
-                </ul>
+          <LoadMoreWrapper
+            loadFunction={loadMoreComments}
+            pageSize={COMMENTS_PER_PAGE}
+            hidden={loadMoreCommentsHidden()}
+          >
+            <div class="wide-container">
+              <div class="row">
+                <div class="col-md-20 col-lg-18">
+                  <ul class={stylesArticle.comments}>
+                    <For each={commented()?.sort(byCreated).reverse()}>
+                      {(comment) => (
+                        <Comment
+                          comment={comment}
+                          class={styles.comment}
+                          showArticleLink={true}
+                          onDelete={(id) => handleDeleteComment(id)}
+                        />
+                      )}
+                    </For>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
           </LoadMoreWrapper>
         </Match>
 
@@ -276,13 +298,9 @@ export const AuthorView = (props: AuthorViewProps) => {
           </Show>
 
           <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE} hidden={loadMoreHidden()}>
-            <For
-              each={sortedFeed()
-                .filter((_, i) => i % 3 === 0)}
-            >
+            <For each={sortedFeed().filter((_, i) => i % 3 === 0)}>
               {(_shout, index) => {
-                const articles = sortedFeed()
-                  .slice(index() * 3, index() * 3 + 3)
+                const articles = sortedFeed().slice(index() * 3, index() * 3 + 3)
                 return (
                   <>
                     <Switch>

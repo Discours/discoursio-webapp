@@ -182,19 +182,25 @@ export const AuthorView = (props: AuthorViewProps) => {
     })
     const result = await authorCommentsFetcher()
     result && addReactions(result)
-    result && setCommented((prev) => [...new Set([...(prev || []), ...result])])
     restoreScrollPosition()
     return result as LoadMoreItems
   }
 
   createEffect(() => setCurrentTab(params.tab))
+
   createEffect(
     on(
-      [author, commented],
-      ([a, ccc]) => a && setLoadMoreCommentsHidden(ccc?.length === a.stat?.comments),
+      [author, commentsByAuthor],
+      ([a, ccc]) => {
+        if (a && ccc && ccc[a.id]) {
+          setCommented(ccc[a.id])
+          setLoadMoreCommentsHidden(ccc[a.id]?.length === a.stat?.comments)
+        }
+      },
       {}
     )
   )
+
   createEffect(
     on(
       [author, feedByAuthor],

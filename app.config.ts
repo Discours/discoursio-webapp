@@ -34,11 +34,6 @@ export default defineConfig({
     https: true
   },
   devOverlay: true,
-  build: {
-    chunkSizeWarningLimit: 1024,
-    target: 'esnext',
-    sourcemap: true
-  },
   vite: {
     envPrefix: 'PUBLIC_',
     plugins: [!isVercel && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
@@ -49,6 +44,23 @@ export default defineConfig({
           includePaths: ['./public', './src/styles']
         }
       } as CSSOptions['preprocessorOptions']
+    },
+    build: {
+      chunkSizeWarningLimit: 800,
+      target: 'esnext',
+      sourcemap: true,
+      rollupOptions: {
+        // plugins: [visualizer()]
+        output: {
+          manualChunks: {
+            'icons': ['./src/components/_shared/Icon/Icon.tsx'],
+            'session': ['./src/context/session.tsx'],
+            'editor': ['./src/context/editor.tsx'],
+            'localize': ['./src/context/localize.tsx'],
+            'connect': ['./src/context/connect.tsx']
+          }
+        }
+      }
     }
   }
 } as SolidStartInlineConfig)

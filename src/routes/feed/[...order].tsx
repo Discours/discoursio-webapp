@@ -1,7 +1,6 @@
 import { RouteSectionProps, createAsync, useSearchParams } from '@solidjs/router'
 import { Client } from '@urql/core'
 import { createEffect, createMemo } from 'solid-js'
-import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
 import { Feed } from '~/components/Views/Feed'
 import { FeedProps } from '~/components/Views/Feed/Feed'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
@@ -125,7 +124,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
       key="feed"
       desc="Independent media project about culture, science, art and society with horizontal editing"
     >
-      <LoadMoreWrapper loadFunction={loadMoreFeed} pageSize={AUTHORS_PER_PAGE}>
+      <LoadMoreWrapper loadFunction={loadMoreFeed} pageSize={SHOUTS_PER_PAGE}>
         <ReactionsProvider>
           <Feed shouts={feed() || (shouts() as Shout[])} order={order() as FeedProps['order']} />
         </ReactionsProvider>

@@ -1,16 +1,20 @@
 import { A, useLocation, useParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { Loading } from '~/components/_shared/Loading'
 import { coreApiUrl } from '~/config'
 import { useAuthors } from '~/context/authors'
+import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
+import { loadShouts } from '~/graphql/api/public'
 import { graphqlClientCreate } from '~/graphql/client'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
+import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { byCreated } from '~/utils/sort'
 import stylesArticle from '../../Article/Article.module.scss'
 import { Comment } from '../../Article/Comment'
@@ -131,6 +135,32 @@ export const AuthorView = (props: AuthorViewProps) => {
     </div>
   )
 
+  const { feedByAuthor, addFeed } = useFeed()
+  const [sortedFeed, setSortedFeed] = createSignal<Shout[]>([])
+  const [loadMoreHidden, setLoadMoreHidden] = createSignal(false)
+  const loadMore = async () => {
+    saveScrollPosition()
+    const amountBefore = feedByAuthor()?.[props.authorSlug]?.length || 0
+    const topicShoutsFetcher = loadShouts({
+      filters: { author: props.authorSlug },
+      limit: SHOUTS_PER_PAGE,
+      offset: amountBefore
+    })
+    const result = await topicShoutsFetcher()
+    result && addFeed(result)
+    const amountAfter = feedByAuthor()?.[props.authorSlug].length
+    setLoadMoreHidden(amountAfter === amountBefore)
+    restoreScrollPosition()
+    return result as LoadMoreItems
+  }
+
+  // fx to update author's feed
+  createEffect(on(feedByAuthor, (byAuthor) => {
+    const feed = byAuthor[props.authorSlug] as Shout[]
+    if (!feed) return
+    setSortedFeed(feed)
+  },{}))
+
   return (
     <div class={styles.authorPage}>
       <div class="wide-container">
@@ -218,10 +248,14 @@ export const AuthorView = (props: AuthorViewProps) => {
             </div>
           </Show>
 
-          <Show when={Array.isArray(props.shouts) && props.shouts.length > 0}>
-            <For each={props.shouts.filter((_, i) => i % 3 === 0)}>
+          <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE} hidden={loadMoreHidden()}>
+            <For
+              each={sortedFeed()
+                .filter((_, i) => i % 3 === 0)}
+            >
               {(_shout, index) => {
-                const articles = props.shouts.slice(index() * 3, index() * 3 + 3)
+                const articles = sortedFeed()
+                  .slice(index() * 3, index() * 3 + 3)
                 return (
                   <>
                     <Switch>
@@ -239,7 +273,7 @@ export const AuthorView = (props: AuthorViewProps) => {
                 )
               }}
             </For>
-          </Show>
+          </LoadMoreWrapper>
         </Match>
       </Switch>
     </div>

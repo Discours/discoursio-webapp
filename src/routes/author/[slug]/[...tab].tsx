@@ -2,11 +2,10 @@ import { RouteSectionProps, createAsync } from '@solidjs/router'
 import { ErrorBoundary, Suspense, createEffect, createSignal, on } from 'solid-js'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
-import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
-import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
+import { SHOUTS_PER_PAGE } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { loadAuthors, loadShouts, loadTopics } from '~/graphql/api/public'
@@ -106,21 +105,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   )
 
   // author's shouts
-  const { addFeed, feedByAuthor } = useFeed()
-  const [loadMoreHidden, setLoadMoreHidden] = createSignal(true)
-  const authorShouts = createAsync(async () => {
-    const sss: Shout[] = (props.data.articles as Shout[]) || feedByAuthor()[props.params.slug] || []
-    const result = sss || (await fetchAuthorShouts(props.params.slug, 0))
-    if (!result) setLoadMoreHidden(true)
-    return result
-  })
-
-  // load more shouts
-  const loadAuthorShoutsMore = async (offset: number) => {
-    const loadedShouts = await fetchAuthorShouts(props.params.slug, offset)
-    loadedShouts && addFeed(loadedShouts)
-    return (loadedShouts || []) as LoadMoreItems
-  }
+  const authorShouts = createAsync(async () => props.data.articles as Shout[] || await fetchAuthorShouts(props.params.slug, 0))
 
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
@@ -133,17 +118,11 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
           cover={cover()}
         >
           <ReactionsProvider>
-            <LoadMoreWrapper
-              loadFunction={loadAuthorShoutsMore}
-              pageSize={SHOUTS_PER_PAGE}
-              hidden={loadMoreHidden()}
-            >
-              <AuthorView
-                author={author() as Author}
-                authorSlug={props.params.slug}
-                shouts={authorShouts() || []}
-              />
-            </LoadMoreWrapper>
+            <AuthorView
+              author={author() as Author}
+              authorSlug={props.params.slug}
+              shouts={authorShouts() || []}
+            />
           </ReactionsProvider>
         </PageLayout>
       </Suspense>

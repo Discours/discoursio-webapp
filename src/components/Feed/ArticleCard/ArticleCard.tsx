@@ -62,8 +62,8 @@ const getTitleAndSubtitle = (
   title: string
   subtitle: string
 } => {
-  let title = article?.title || ''
-  let subtitle: string = article?.subtitle || ''
+  let title = article.title || ''
+  let subtitle: string = article.subtitle || ''
 
   if (!subtitle) {
     let titleParts = article.title?.split('. ') || []
@@ -85,8 +85,8 @@ const getTitleAndSubtitle = (
 }
 
 const getMainTopicTitle = (article: Shout, lng: string) => {
-  const mainTopicSlug = article?.main_topic || ''
-  const mainTopic = (article?.topics || []).find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
+  const mainTopicSlug = article.main_topic || ''
+  const mainTopic = (article.topics || []).find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
   const mainTopicTitle =
     mainTopicSlug && lng === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
 
@@ -109,29 +109,30 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
-  const description = descFromBody(props.article?.body)
-  const aspectRatio: Accessor<string> = () => LAYOUT_ASPECT[props.article?.layout as string]
+  const description = descFromBody(props.article.body)
+  const aspectRatio: Accessor<string> = () => LAYOUT_ASPECT[props.article.layout as string]
   const [mainTopicTitle, mainTopicSlug] = getMainTopicTitle(props.article, lang())
   const { title, subtitle } = getTitleAndSubtitle(props.article)
 
   const formattedDate = createMemo<string>(() =>
-    props.article?.published_at ? formatDate(new Date(props.article.published_at * 1000)) : ''
+    props.article.published_at ? formatDate(new Date(props.article.published_at * 1000)) : ''
   )
 
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
-      (props.article?.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
-        props.article?.created_by?.id === author().id ||
+      (props.article.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
+        props.article.created_by?.id === author().id ||
         session()?.user?.roles?.includes('editor'))
   )
   const navigate = useNavigate()
+
   const scrollToComments = (event: MouseEvent & { currentTarget: HTMLAnchorElement; target: Element }) => {
     event.preventDefault()
-    navigate(`/${props.article.slug}`)
     changeSearchParams({
       scrollTo: 'comments'
     })
+    navigate(`/${props.article.slug}`)
   }
 
   const onInvite = () => {
@@ -196,10 +197,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
           }
         >
           <div class={styles.shoutCardType}>
-            <a href={`/expo/${props.article.layout}`}>
+            <A href={`/expo/${props.article.layout}`}>
               <Icon name={props.article.layout} class={styles.icon} />
-              {/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
-            </a>
+            </A>
           </div>
         </Show>
 
@@ -220,7 +220,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             [styles.shoutCardTitlesContainerFeedMode]: props.settings?.isFeedMode
           })}
         >
-          <A href={`/${props.article?.slug || ''}`}>
+          <A href={`/${props.article.slug}`}>
             <div class={styles.shoutCardTitle}>
               <span class={styles.shoutCardLinkWrapper}>
                 <span class={styles.shoutCardLinkContainer} innerHTML={title} />
@@ -280,10 +280,9 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 }
               >
                 <div class={styles.shoutCardType}>
-                  <a href={`/expo/${props.article.layout}`}>
+                  <A href={`/expo/${props.article.layout}`}>
                     <Icon name={props.article.layout} class={styles.icon} />
-                    {/*<Icon name={`${layout}-hover`} class={clsx(styles.icon, styles.iconHover)} />*/}
-                  </a>
+                  </A>
                 </div>
               </Show>
               <div class={styles.shoutCardCover}>
@@ -332,7 +331,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
                 <Popover content={t('Edit')} disabled={isActionPopupActive()}>
                   {(triggerRef: (el: HTMLElement) => void) => (
                     <div class={styles.shoutCardDetailsItem} ref={triggerRef}>
-                      <A href={`/edit/${props.article?.id}`}>
+                      <A href={`/edit/${props.article.id}`}>
                         <Icon name="pencil-outline" class={clsx(styles.icon, styles.feedControlIcon)} />
                         <Icon
                           name="pencil-outline-hover"

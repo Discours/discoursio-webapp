@@ -36,7 +36,8 @@ export default defineConfig({
   devOverlay: true,
   build: {
     chunkSizeWarningLimit: 1024,
-    target: 'esnext'
+    target: 'esnext',
+    sourcemap: true
   },
   vite: {
     envPrefix: 'PUBLIC_',

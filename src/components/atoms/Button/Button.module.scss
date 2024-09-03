@@ -1,0 +1,195 @@
+.button {
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &.primary {
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
+
+    &:hover {
+      color: #ccc;
+    }
+
+    &:active {
+      color: #9fa1a7;
+    }
+  }
+
+  &.secondary {
+    border: 1px solid #f7f7f7;
+    background: #f7f7f7;
+    color: #141414;
+
+    &:hover {
+      background: #000;
+      color: #fff;
+    }
+  }
+
+  &.danger {
+    border: 3px solid var(--danger-color);
+    background: var(--background-color);
+    color: var(--danger-color);
+
+    &:hover {
+      background: var(--danger-color);
+      color: #fff;
+    }
+  }
+
+  &.inline {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 21px;
+    color: #696969;
+
+    &:hover,
+    &:active {
+      text-decoration: underline;
+      color: #141414;
+    }
+  }
+
+  &.light {
+    font-weight: inherit;
+    padding: 0;
+  }
+
+  &.outline,
+  &.bordered {
+    border: 3px solid #f2f2f2;
+    border-radius: 1.2em;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 0.8em;
+    min-width: auto !important;
+    padding: 0;
+    transition:
+      border-color 0.3s,
+      background-color 0.3s,
+      color 0.3s;
+
+    &:hover,
+    &:active {
+      background: var(--link-color);
+      border-color: var(--link-color);
+      color: var(--link-hover-color);
+
+      :global(.icon) {
+        filter: var(--icon-filter-hover);
+      }
+    }
+
+    :global(.icon) {
+      margin: 0 -0.5em;
+      filter: var(--icon-filter);
+      transition: filter 0.3s;
+    }
+  }
+
+  &.bordered {
+    border-radius: 2px;
+    border: 2px solid #000;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  &:disabled,
+  &:disabled:hover {
+    cursor: default;
+    color: #9fa1a7;
+    background: #f6f6f6;
+  }
+
+  &.loading,
+  &.loading:hover {
+    background: #f6f6f6;
+  }
+
+  &.L {
+    height: 56px;
+    min-width: 80px;
+    font-size: 20px;
+    padding: 16px 20px;
+  }
+
+  &.M {
+    height: 40px;
+    min-width: 64px;
+    font-size: 17px;
+    padding: 8px 16px;
+  }
+
+  &.S {
+    height: 32px;
+    min-width: 53px;
+    font-size: 15px;
+    padding: 1rem 1.2rem;
+  }
+
+  &.subscribeButton {
+    aspect-ratio: auto;
+    background-color: #000;
+    border: 2px solid #000;
+    border-radius: 0.8rem;
+    color: #fff;
+    float: none;
+    padding-bottom: 0.6rem;
+    padding-top: 0.6rem;
+    width: 9em;
+
+    .icon {
+      img {
+        filter: invert(1);
+      }
+    }
+
+    &:hover {
+      background: #fff;
+      color: #000;
+
+      .icon img {
+        filter: invert(0) !important;
+      }
+
+      .buttonSubscribeLabel {
+        display: none;
+      }
+
+      .buttonSubscribeLabelHovered {
+        display: block;
+      }
+    }
+
+    .buttonSubscribeLabelHovered {
+      display: none;
+    }
+
+    img {
+      vertical-align: text-top;
+    }
+  }
+
+  &.followed {
+    background: #fff;
+    color: #000;
+
+    .icon img {
+      filter: invert(0);
+    }
+
+    &:hover {
+      background: #000;
+      color: #fff;
+
+      .icon img {
+        filter: invert(1) !important;
+      }
+    }
+  }
+}

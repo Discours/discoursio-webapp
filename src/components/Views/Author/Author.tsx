@@ -30,6 +30,7 @@ import styles from './Author.module.scss'
 type AuthorViewProps = {
   authorSlug: string
   shouts: Shout[]
+  comments: Reaction[]
   author?: Author
 }
 
@@ -56,7 +57,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [followers, setFollowers] = createSignal<Author[]>([] as Author[])
   const [following, changeFollowing] = createSignal<Array<Author | Topic>>([] as Array<Author | Topic>) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
-  const [commented, setCommented] = createSignal<Reaction[]>([])
+  const [commented, setCommented] = createSignal<Reaction[]>(props.comments || [])
   const [followersLoaded, setFollowersLoaded] = createSignal(false)
   const [followingsLoaded, setFollowingsLoaded] = createSignal(false)
 
@@ -64,36 +65,41 @@ export const AuthorView = (props: AuthorViewProps) => {
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
 
   // Объединенный эффект для загрузки автора и его подписок
-  createEffect(async () => {
-    const meData = session()?.user?.app_data?.profile as Author
-    const slug = props.authorSlug
+  createEffect(
+    on(
+      () => session()?.user?.app_data?.profile,
+      async (meData?: Author) => {
+        const slug = props.authorSlug
 
-    if (slug && meData?.slug === slug) {
-      setAuthor(meData)
-      setFollowers(myFollowers() || [])
-      setFollowersLoaded(true)
-      changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
-    } else if (slug && !author()) {
-      await loadAuthor({ slug })
-      const foundAuthor = authorsEntities()[slug]
-      setAuthor(foundAuthor)
+        if (slug && meData?.slug === slug) {
+          setAuthor(meData)
+          setFollowers(myFollowers() || [])
+          setFollowersLoaded(true)
+          changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
+        } else if (slug && !author()) {
+          await loadAuthor({ slug })
+          const foundAuthor = authorsEntities()[slug]
+          setAuthor(foundAuthor)
 
-      if (foundAuthor) {
-        const followsResp = await client()
-          ?.query(getAuthorFollowsQuery, { slug: foundAuthor.slug })
-          .toPromise()
-        const follows = followsResp?.data?.get_author_followers || {}
-        changeFollowing([...(follows?.authors || []), ...(follows?.topics || [])])
-        setFollowingsLoaded(true)
+          if (foundAuthor) {
+            const followsResp = await client()
+              ?.query(getAuthorFollowsQuery, { slug: foundAuthor.slug })
+              .toPromise()
+            const follows = followsResp?.data?.get_author_followers || {}
+            changeFollowing([...(follows?.authors || []), ...(follows?.topics || [])])
+            setFollowingsLoaded(true)
 
-        const followersResp = await client()
-          ?.query(getAuthorFollowersQuery, { slug: foundAuthor.slug })
-          .toPromise()
-        setFollowers(followersResp?.data?.get_author_followers || [])
-        setFollowersLoaded(true)
-      }
-    }
-  })
+            const followersResp = await client()
+              ?.query(getAuthorFollowersQuery, { slug: foundAuthor.slug })
+              .toPromise()
+            setFollowers(followersResp?.data?.get_author_followers || [])
+            setFollowersLoaded(true)
+          }
+        }
+      },
+      {}
+    )
+  )
 
   // Обработка биографии
   let bioContainerRef: HTMLDivElement
@@ -138,7 +144,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   )
 
   const { feedByAuthor, addFeed } = useFeed()
-  const [sortedFeed, setSortedFeed] = createSignal<Shout[]>([])
+  const [sortedFeed, setSortedFeed] = createSignal<Shout[]>(props.shouts || [])
   const [loadMoreHidden, setLoadMoreHidden] = createSignal(false)
   const loadMore = async () => {
     saveScrollPosition()
@@ -166,7 +172,9 @@ export const AuthorView = (props: AuthorViewProps) => {
     )
   )
 
-  const [loadMoreCommentsHidden, setLoadMoreCommentsHidden] = createSignal(false)
+  const [loadMoreCommentsHidden, setLoadMoreCommentsHidden] = createSignal(
+    Boolean(props.author?.stat && props.author?.stat?.comments === 0)
+  )
   const { commentsByAuthor, addReactions } = useReactions()
   const loadMoreComments = async () => {
     if (!author()) return [] as LoadMoreItems
@@ -189,15 +197,13 @@ export const AuthorView = (props: AuthorViewProps) => {
   createEffect(() => setCurrentTab(params.tab))
 
   createEffect(
+    on([author, commentsByAuthor], ([a, ccc]) => a && ccc && ccc[a.id] && setCommented(ccc[a.id]), {})
+  )
+
+  createEffect(
     on(
-      [author, commentsByAuthor],
-      ([a, ccc]) => {
-        if (a && ccc && ccc[a.id]) {
-          setCommented(ccc[a.id])
-          setLoadMoreCommentsHidden(ccc[a.id]?.length === a.stat?.comments)
-        }
-      },
-      {}
+      [author, commented],
+      ([a, ccc]) => a && ccc && setLoadMoreCommentsHidden((ccc || []).length === a.stat?.comments)
     )
   )
 

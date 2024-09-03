@@ -1,5 +1,6 @@
 import { RouteSectionProps, createAsync } from '@solidjs/router'
 import { ErrorBoundary, Suspense, createEffect, createSignal, on } from 'solid-js'
+import { COMMENTS_PER_PAGE } from '~/components/Article/FullArticle'
 import { AuthorView } from '~/components/Views/Author'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
@@ -8,11 +9,13 @@ import { useAuthors } from '~/context/authors'
 import { SHOUTS_PER_PAGE } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
-import { loadAuthors, loadShouts, loadTopics } from '~/graphql/api/public'
+import { loadAuthors, loadReactions, loadShouts, loadTopics } from '~/graphql/api/public'
 import {
   Author,
   LoadShoutsOptions,
   QueryLoad_Authors_ByArgs,
+  QueryLoad_Reactions_ByArgs,
+  Reaction,
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
@@ -21,6 +24,16 @@ import { getImageUrl } from '~/lib/getThumbUrl'
 const fetchAuthorShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { author: slug }, limit: SHOUTS_PER_PAGE, offset }
   const shoutsLoader = loadShouts(opts)
+  return await shoutsLoader()
+}
+
+const fetchAuthorComments = async (slug: string, offset?: number) => {
+  const opts: QueryLoad_Reactions_ByArgs = {
+    by: { comment: true, author: slug },
+    limit: COMMENTS_PER_PAGE,
+    offset
+  }
+  const shoutsLoader = loadReactions(opts)
   return await shoutsLoader()
 }
 
@@ -47,7 +60,12 @@ export const route = {
   }
 }
 
-export type AuthorPageProps = { articles?: Shout[]; author?: Author; topics?: Topic[] }
+export type AuthorPageProps = {
+  articles?: Shout[]
+  author?: Author
+  topics?: Topic[]
+  comments?: Reaction[]
+}
 
 export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   const { t } = useLocalize()
@@ -109,6 +127,11 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
     async () => (props.data.articles as Shout[]) || (await fetchAuthorShouts(props.params.slug, 0))
   )
 
+  // author's comments
+  const authorComments = createAsync(
+    async () => (props.data.comments as Reaction[]) || (await fetchAuthorComments(props.params.slug, 0))
+  )
+
   return (
     <ErrorBoundary fallback={(_err) => <FourOuFourView />}>
       <Suspense fallback={<Loading />}>
@@ -124,6 +147,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
               author={author() as Author}
               authorSlug={props.params.slug}
               shouts={authorShouts() || []}
+              comments={authorComments() || []}
             />
           </ReactionsProvider>
         </PageLayout>

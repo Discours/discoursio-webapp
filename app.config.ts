@@ -46,7 +46,6 @@ export default defineConfig({
       } as CSSOptions['preprocessorOptions']
     },
     build: {
-      chunkSizeWarningLimit: 800,
       target: 'esnext',
       sourcemap: true,
       rollupOptions: {

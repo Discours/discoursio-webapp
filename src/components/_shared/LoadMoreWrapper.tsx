@@ -49,7 +49,10 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
     restoreScrollPosition()
   }
 
-  onMount(loadItems)
+  onMount(() => {
+    loadItems()
+    console.debug(`load on mount ${items()}`)
+  })
 
   return (
     <>

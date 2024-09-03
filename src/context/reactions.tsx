@@ -1,6 +1,6 @@
-import type { JSX } from 'solid-js'
+import type { Accessor, JSX } from 'solid-js'
 
-import { createContext, createMemo, onCleanup, useContext } from 'solid-js'
+import { createContext, createMemo, createSignal, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
 import { coreApiUrl } from '~/config'
 import { loadReactions } from '~/graphql/api/public'
@@ -21,7 +21,8 @@ import { useSnackbar } from './ui'
 
 type ReactionsContextType = {
   reactionEntities: Record<number, Reaction>
-  reactionsByShout: Record<string, Reaction[]>
+  reactionsByShout: Record<number, Reaction[]>
+  commentsByAuthor: Accessor<Record<number, Reaction[]>>
   loadReactionsBy: (args: QueryLoad_Reactions_ByArgs) => Promise<Reaction[]>
   createReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
   updateReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction>
@@ -38,24 +39,40 @@ export function useReactions() {
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
   const [reactionsByShout, setReactionsByShout] = createStore<Record<number, Reaction[]>>({})
+  const [reactionsByAuthor, setReactionsByAuthor] = createStore<Record<number, Reaction[]>>({})
+  const [commentsByAuthor, setCommentsByAuthor] = createSignal<Record<number, Reaction[]>>({})
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
   const { session } = useSession()
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   const addReactions = (rrr: Reaction[]) => {
-    const newReactionsByShout: Record<string, Reaction[]> = { ...reactionsByShout }
+    const newReactionsByShout: Record<number, Reaction[]> = { ...reactionsByShout }
+    const newReactionsByAuthor: Record<number, Reaction[]> = { ...reactionsByAuthor }
     const newReactionEntities = rrr.reduce(
       (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {
         acc[reaction.id] = reaction
-        if (!newReactionsByShout[reaction.shout.slug]) newReactionsByShout[reaction.shout.slug] = []
-        newReactionsByShout[reaction.shout.slug].push(reaction)
+        if (!newReactionsByShout[reaction.shout.id]) newReactionsByShout[reaction.shout.id] = []
+        newReactionsByShout[reaction.shout.id].push(reaction)
+        if (!newReactionsByAuthor[reaction.created_by.id]) newReactionsByAuthor[reaction.created_by.id] = []
+        newReactionsByAuthor[reaction.created_by.id].push(reaction)
         return acc
       },
       { ...reactionEntities }
     )
+
     setReactionEntities(newReactionEntities)
     setReactionsByShout(newReactionsByShout)
+    setReactionsByAuthor(newReactionsByAuthor)
+
+    const newCommentsByAuthor = Object.fromEntries(
+      Object.entries(newReactionsByAuthor).map(([authorId, reactions]) => [
+        authorId,
+        reactions.filter((x: Reaction) => x.kind === ReactionKind.Comment),
+      ])
+    )
+
+    setCommentsByAuthor(newCommentsByAuthor)
   }
 
   const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
@@ -132,7 +149,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     addReactions
   }
 
-  const value: ReactionsContextType = { reactionEntities, reactionsByShout, ...actions }
+  const value: ReactionsContextType = { reactionEntities, reactionsByShout, commentsByAuthor, ...actions }
 
   return <ReactionsContext.Provider value={value}>{props.children}</ReactionsContext.Provider>
 }

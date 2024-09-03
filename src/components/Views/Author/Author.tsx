@@ -8,8 +8,9 @@ import { useAuthors } from '~/context/authors'
 import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
+import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
-import { loadShouts } from '~/graphql/api/public'
+import { loadReactions, loadShouts } from '~/graphql/api/public'
 import { graphqlClientCreate } from '~/graphql/client'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
@@ -33,6 +34,7 @@ type AuthorViewProps = {
 }
 
 export const PRERENDERED_ARTICLES_COUNT = 12
+const COMMENTS_PER_PAGE = 12
 // const LOAD_MORE_PAGE_SIZE = 9
 
 export const AuthorView = (props: AuthorViewProps) => {
@@ -55,14 +57,11 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [following, changeFollowing] = createSignal<Array<Author | Topic>>([] as Array<Author | Topic>) // flat AuthorFollowsResult
   const [showExpandBioControl, setShowExpandBioControl] = createSignal(false)
   const [commented, setCommented] = createSignal<Reaction[]>([])
+  const [followersLoaded, setFollowersLoaded] = createSignal(false)
+  const [followingsLoaded, setFollowingsLoaded] = createSignal(false)
 
   // derivatives
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-
-  // Переход по табам
-  createEffect(() => {
-    setCurrentTab(params.tab)
-  })
 
   // Объединенный эффект для загрузки автора и его подписок
   createEffect(async () => {
@@ -72,6 +71,7 @@ export const AuthorView = (props: AuthorViewProps) => {
     if (slug && meData?.slug === slug) {
       setAuthor(meData)
       setFollowers(myFollowers() || [])
+      setFollowersLoaded(true)
       changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
     } else if (slug && !author()) {
       await loadAuthor({ slug })
@@ -84,11 +84,13 @@ export const AuthorView = (props: AuthorViewProps) => {
           .toPromise()
         const follows = followsResp?.data?.get_author_followers || {}
         changeFollowing([...(follows?.authors || []), ...(follows?.topics || [])])
+        setFollowingsLoaded(true)
 
         const followersResp = await client()
           ?.query(getAuthorFollowersQuery, { slug: foundAuthor.slug })
           .toPromise()
         setFollowers(followersResp?.data?.get_author_followers || [])
+        setFollowersLoaded(true)
       }
     }
   })
@@ -108,7 +110,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   })
 
   const handleDeleteComment = (id: number) => {
-    setCommented((prev) => prev.filter((comment) => comment.id !== id))
+    setCommented((prev) => (prev||[]).filter((comment) => comment.id !== id))
   }
 
   const TabNavigator = () => (
@@ -140,16 +142,13 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [loadMoreHidden, setLoadMoreHidden] = createSignal(false)
   const loadMore = async () => {
     saveScrollPosition()
-    const amountBefore = feedByAuthor()?.[props.authorSlug]?.length || 0
-    const topicShoutsFetcher = loadShouts({
+    const authorhoutsFetcher = loadShouts({
       filters: { author: props.authorSlug },
       limit: SHOUTS_PER_PAGE,
-      offset: amountBefore
+      offset: feedByAuthor()?.[props.authorSlug]?.length || 0
     })
-    const result = await topicShoutsFetcher()
+    const result = await authorhoutsFetcher()
     result && addFeed(result)
-    const amountAfter = feedByAuthor()?.[props.authorSlug].length
-    setLoadMoreHidden(amountAfter === amountBefore)
     restoreScrollPosition()
     return result as LoadMoreItems
   }
@@ -161,10 +160,35 @@ export const AuthorView = (props: AuthorViewProps) => {
     setSortedFeed(feed)
   },{}))
 
+  const [loadMoreCommentsHidden, setLoadMoreCommentsHidden] = createSignal(false)
+  const { commentsByAuthor, addReactions } = useReactions()
+  const loadMoreComments = async () => {
+    if (!author()) return [] as LoadMoreItems
+    saveScrollPosition()
+    const aid = author()?.id || 0
+    const authorCommentsFetcher = loadReactions({
+      by: {
+        comment: true,
+        author: author()?.slug
+      },
+      limit: COMMENTS_PER_PAGE,
+      offset: commentsByAuthor()[aid]?.length || 0
+    })
+    const result = await authorCommentsFetcher()
+    result && addReactions(result)
+    result && setCommented((prev) => [...new Set([...(prev||[]), ...result])])
+    restoreScrollPosition()
+    return result as LoadMoreItems
+  }
+
+  createEffect(() => setCurrentTab(params.tab))
+  createEffect(on([author, commented], ([a, ccc]) => a && setLoadMoreCommentsHidden(ccc?.length === a.stat?.comments), {}))
+  createEffect(on([author, feedByAuthor], ([a, feed]) => a && feed[props.authorSlug] && setLoadMoreHidden(feed[props.authorSlug]?.length === a.stat?.shouts), {}))
+
   return (
     <div class={styles.authorPage}>
       <div class="wide-container">
-        <Show when={author()} fallback={<Loading />}>
+        <Show when={author() && followersLoaded() && followingsLoaded()} fallback={<Loading />}>
           <>
             <div class={styles.authorHeader}>
               <AuthorCard
@@ -221,6 +245,8 @@ export const AuthorView = (props: AuthorViewProps) => {
             </div>
           </Show>
 
+
+          <LoadMoreWrapper loadFunction={loadMoreComments} pageSize={COMMENTS_PER_PAGE} hidden={loadMoreCommentsHidden()}>
           <div class="wide-container">
             <div class="row">
               <div class="col-md-20 col-lg-18">
@@ -239,6 +265,7 @@ export const AuthorView = (props: AuthorViewProps) => {
               </div>
             </div>
           </div>
+          </LoadMoreWrapper>
         </Match>
 
         <Match when={!currentTab()}>

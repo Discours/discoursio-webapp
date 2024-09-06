@@ -1,6 +1,5 @@
 import type { Accessor, JSX } from 'solid-js'
 import { createContext, createMemo, createSignal, onCleanup, useContext } from 'solid-js'
-import { createStore, reconcile } from 'solid-js/store'
 import { coreApiUrl } from '~/config'
 import { loadReactions } from '~/graphql/api/public'
 import createReactionMutation from '~/graphql/mutation/core/reaction-create'
@@ -19,8 +18,8 @@ import { useSession } from './session'
 import { useSnackbar } from './ui'
 
 type ReactionsContextType = {
-  reactionEntities: Record<number, Reaction>
-  reactionsByShout: Record<number, Reaction[]>
+  reactionEntities: Accessor<Record<number, Reaction>>
+  reactionsByShout: Accessor<Record<number, Reaction[]>>
   commentsByAuthor: Accessor<Record<number, Reaction[]>>
   loadReactionsBy: (args: QueryLoad_Reactions_ByArgs) => Promise<Reaction[]>
   createShoutReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
@@ -36,9 +35,9 @@ export function useReactions() {
 }
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
-  const [reactionEntities, setReactionEntities] = createStore<Record<number, Reaction>>({})
-  const [reactionsByShout, setReactionsByShout] = createStore<Record<number, Reaction[]>>({})
-  const [reactionsByAuthor, setReactionsByAuthor] = createStore<Record<number, Reaction[]>>({})
+  const [reactionEntities, setReactionEntities] = createSignal<Record<number, Reaction>>({})
+  const [reactionsByShout, setReactionsByShout] = createSignal<Record<number, Reaction[]>>({})
+  const [reactionsByAuthor, setReactionsByAuthor] = createSignal<Record<number, Reaction[]>>({})
   const [commentsByAuthor, setCommentsByAuthor] = createSignal<Record<number, Reaction[]>>({})
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
@@ -46,18 +45,13 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   const addShoutReactions = (rrr: Reaction[]) => {
-    const newReactionEntities = rrr.reduce(
-      (acc: Record<number, Reaction>, reaction: Reaction) => {
-        acc[reaction.id] = reaction
-        return acc
-      },
-      { ...reactionEntities }
-    )
-
-    const newReactionsByShout = { ...reactionsByShout }
-    const newReactionsByAuthor = { ...reactionsByAuthor }
+    const newReactionEntities = { ...reactionEntities() }
+    const newReactionsByShout = { ...reactionsByShout() }
+    const newReactionsByAuthor = { ...reactionsByAuthor() }
 
     rrr.forEach((reaction) => {
+      newReactionEntities[reaction.id] = reaction
+
       if (!newReactionsByShout[reaction.shout.id]) newReactionsByShout[reaction.shout.id] = []
       newReactionsByShout[reaction.shout.id].push(reaction)
 
@@ -65,14 +59,14 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
       newReactionsByAuthor[reaction.created_by.id].push(reaction)
     })
 
-    setReactionEntities(reconcile(newReactionEntities))
-    setReactionsByShout(reconcile(newReactionsByShout))
-    setReactionsByAuthor(reconcile(newReactionsByAuthor))
+    setReactionEntities(newReactionEntities)
+    setReactionsByShout(newReactionsByShout)
+    setReactionsByAuthor(newReactionsByAuthor)
 
     const newCommentsByAuthor = Object.fromEntries(
       Object.entries(newReactionsByAuthor).map(([authorId, reactions]) => [
         authorId,
-        reactions.filter((x: Reaction) => x.kind === ReactionKind.Comment)
+        reactions.filter((x) => x.kind === ReactionKind.Comment)
       ])
     )
 
@@ -104,16 +98,13 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
       const result = resp?.data?.destroy_reaction
 
       if (!result.error) {
-        // Находим реакцию, которую нужно удалить
-        const reactionToDelete = reactionEntities[reaction_id]
+        const reactionToDelete = reactionEntities()[reaction_id]
 
         if (reactionToDelete) {
-          // Удаляем из reactionEntities
-          const newReactionEntities = { ...reactionEntities }
+          const newReactionEntities = { ...reactionEntities() }
           delete newReactionEntities[reaction_id]
 
-          // Удаляем из reactionsByShout
-          const newReactionsByShout = { ...reactionsByShout }
+          const newReactionsByShout = { ...reactionsByShout() }
           const shoutReactions = newReactionsByShout[reactionToDelete.shout.id]
           if (shoutReactions) {
             newReactionsByShout[reactionToDelete.shout.id] = shoutReactions.filter(
@@ -121,8 +112,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
             )
           }
 
-          // Удаляем из reactionsByAuthor
-          const newReactionsByAuthor = { ...reactionsByAuthor }
+          const newReactionsByAuthor = { ...reactionsByAuthor() }
           const authorReactions = newReactionsByAuthor[reactionToDelete.created_by.id]
           if (authorReactions) {
             newReactionsByAuthor[reactionToDelete.created_by.id] = authorReactions.filter(
@@ -130,10 +120,9 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
             )
           }
 
-          // Обновляем стои с использованием reconcile
-          setReactionEntities(reconcile(newReactionEntities))
-          setReactionsByShout(reconcile(newReactionsByShout))
-          setReactionsByAuthor(reconcile(newReactionsByAuthor))
+          setReactionEntities(newReactionEntities)
+          setReactionsByShout(newReactionsByShout)
+          setReactionsByAuthor(newReactionsByAuthor)
         }
       }
 
@@ -148,11 +137,15 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     if (!result) throw new Error('cannot update reaction')
     const { error, reaction } = result
     if (error) await showSnackbar({ type: 'error', body: t(error) })
-    if (reaction) setReactionEntities(reaction.id, reaction) // use setter to update store
+    if (reaction) {
+      const newReactionEntities = { ...reactionEntities() }
+      newReactionEntities[reaction.id] = reaction
+      setReactionEntities(newReactionEntities)
+    }
     return reaction
   }
 
-  onCleanup(() => setReactionEntities(reconcile({})))
+  onCleanup(() => setReactionEntities({}))
 
   const actions = {
     loadReactionsBy,

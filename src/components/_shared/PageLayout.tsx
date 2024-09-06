@@ -2,7 +2,7 @@ import { Meta, Title } from '@solidjs/meta'
 import { useLocation } from '@solidjs/router'
 import { clsx } from 'clsx'
 import type { JSX } from 'solid-js'
-import { Show, createEffect, createMemo, createSignal } from 'solid-js'
+import { Show, createMemo } from 'solid-js'
 import { useLocalize } from '~/context/localize'
 import { Shout } from '~/graphql/schema/core.gen'
 import enKeywords from '~/intl/locales/en/keywords.json'
@@ -27,7 +27,6 @@ type PageLayoutProps = {
   class?: string
   withPadding?: boolean
   zeroBottomPadding?: boolean
-  scrollToComments?: (value: boolean) => void
   key?: string
 }
 
@@ -48,12 +47,10 @@ export const PageLayout = (props: PageLayoutProps) => {
       : imageUrl
   )
   const description = createMemo(() => props.desc || (props.article && descFromBody(props.article.body)))
-  const keypath = createMemo(() => (props.key || loc?.pathname.split('/')[0]) as keyof typeof ruKeywords)
-  const keywords = createMemo(
-    () => props.keywords || (lang() === 'ru' ? ruKeywords[keypath()] : enKeywords[keypath()])
-  )
-  const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
-  createEffect(() => props.scrollToComments?.(scrollToComments()))
+  const keywords = createMemo(() => {
+    const keypath = (props.key || loc?.pathname.split('/')[0]) as keyof typeof ruKeywords
+    return props.keywords || lang() === 'ru' ? ruKeywords[keypath] : enKeywords[keypath]
+  })
   return (
     <>
       <Title>{props.article?.title || t(props.title)}</Title>
@@ -63,7 +60,6 @@ export const PageLayout = (props: PageLayoutProps) => {
         desc={props.desc}
         cover={imageUrl}
         isHeaderFixed={isHeaderFixed}
-        scrollToComments={(value) => setScrollToComments(value)}
       />
       <Meta name="descprition" content={description() || ''} />
       <Meta name="keywords" content={keywords()} />

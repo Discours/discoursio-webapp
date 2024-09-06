@@ -28,7 +28,12 @@ export const route: RouteDefinition = {
   })
 }
 
-export type ArticlePageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author }
+export type ArticlePageProps = {
+  article?: Shout
+  comments?: Reaction[]
+  votes?: Reaction[]
+  author?: Author
+}
 
 export type SlugPageProps = {
   article?: Shout
@@ -125,4 +130,3 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
   }
   return <ArticlePage {...props} />
 }
-

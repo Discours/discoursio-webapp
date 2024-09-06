@@ -24,10 +24,10 @@ type ReactionsContextType = {
   reactionsByShout: Record<number, Reaction[]>
   commentsByAuthor: Accessor<Record<number, Reaction[]>>
   loadReactionsBy: (args: QueryLoad_Reactions_ByArgs) => Promise<Reaction[]>
-  createReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
-  updateReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction>
-  deleteReaction: (id: number) => Promise<{ error: string } | null>
-  addReactions: (rrr: Reaction[]) => void
+  createShoutReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
+  updateShoutReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction>
+  deleteShoutReaction: (id: number) => Promise<{ error: string } | null>
+  addShoutReactions: (rrr: Reaction[]) => void
 }
 
 const ReactionsContext = createContext<ReactionsContextType>({} as ReactionsContextType)
@@ -46,7 +46,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const { session } = useSession()
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
-  const addReactions = (rrr: Reaction[]) => {
+  const addShoutReactions = (rrr: Reaction[]) => {
     const newReactionsByShout: Record<number, Reaction[]> = { ...reactionsByShout }
     const newReactionsByAuthor: Record<number, Reaction[]> = { ...reactionsByAuthor }
     const newReactionEntities = rrr.reduce(
@@ -80,18 +80,16 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     const fetcher = await loadReactions(opts)
     const result = (await fetcher()) || []
     console.debug('[context.reactions] loaded', result)
-    result && addReactions(result)
+    result && addShoutReactions(result)
     return result
   }
 
-  const createReaction = async (input: MutationCreate_ReactionArgs): Promise<void> => {
+  const createShoutReaction = async (input: MutationCreate_ReactionArgs): Promise<void> => {
     const resp = await client()?.mutation(createReactionMutation, input).toPromise()
     const { error, reaction } = resp?.data?.create_reaction || {}
     if (error) await showSnackbar({ type: 'error', body: t(error) })
     if (!reaction) return
-    const changes = {
-      [reaction.id]: reaction
-    }
+    const changes = { [reaction.id]: reaction }
 
     if ([ReactionKind.Like, ReactionKind.Dislike].includes(reaction.kind)) {
       const oppositeReactionKind =
@@ -110,10 +108,11 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
       }
     }
 
-    setReactionEntities(changes)
+    addShoutReactions([reaction])
+    return reaction
   }
 
-  const deleteReaction = async (
+  const deleteShoutReaction = async (
     reaction_id: number
   ): Promise<{ error: string; reaction?: string } | null> => {
     if (reaction_id) {
@@ -129,7 +128,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     return null
   }
 
-  const updateReaction = async (input: MutationUpdate_ReactionArgs): Promise<Reaction> => {
+  const updateShoutReaction = async (input: MutationUpdate_ReactionArgs): Promise<Reaction> => {
     const resp = await client()?.mutation(updateReactionMutation, input).toPromise()
     const result = resp?.data?.update_reaction
     if (!result) throw new Error('cannot update reaction')
@@ -143,10 +142,10 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
 
   const actions = {
     loadReactionsBy,
-    createReaction,
-    updateReaction,
-    deleteReaction,
-    addReactions
+    createShoutReaction,
+    updateShoutReaction,
+    deleteShoutReaction,
+    addShoutReactions
   }
 
   const value: ReactionsContextType = { reactionEntities, reactionsByShout, commentsByAuthor, ...actions }

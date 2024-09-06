@@ -22,7 +22,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const { loadShout } = useFeed()
   const { requireAuthentication, session } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
+  const { reactionEntities, createShoutReaction, deleteShoutReaction, loadReactionsBy } = useReactions()
   const [isLoading, setIsLoading] = createSignal(false)
 
   const checkReaction = (reactionKind: ReactionKind) =>
@@ -43,7 +43,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
     )
   )
 
-  const deleteShoutReaction = async (reactionKind: ReactionKind) => {
+  const removeReaction = async (reactionKind: ReactionKind) => {
     const reactionToDelete = Object.values(reactionEntities).find(
       (r) =>
         r.kind === reactionKind &&
@@ -51,18 +51,18 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
         r.shout.id === props.shout.id &&
         !r.reply_to
     )
-    if (reactionToDelete) return deleteReaction(reactionToDelete.id)
+    if (reactionToDelete) return deleteShoutReaction(reactionToDelete.id)
   }
 
   const handleRatingChange = (isUpvote: boolean) => {
     requireAuthentication(async () => {
       setIsLoading(true)
       if (isUpvoted()) {
-        await deleteShoutReaction(ReactionKind.Like)
+        await removeReaction(ReactionKind.Like)
       } else if (isDownvoted()) {
-        await deleteShoutReaction(ReactionKind.Dislike)
+        await removeReaction(ReactionKind.Dislike)
       } else {
-        await createReaction({
+        await createShoutReaction({
           reaction: {
             kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
             shout: props.shout.id

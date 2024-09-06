@@ -1,4 +1,4 @@
-import { A, useNavigate, useSearchParams } from '@solidjs/router'
+import { A, useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Accessor, For, Show, createMemo, createSignal } from 'solid-js'
 import { Icon } from '~/components/_shared/Icon'
@@ -105,7 +105,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { session } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const [, changeSearchParams] = useSearchParams()
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
@@ -129,10 +128,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const scrollToComments = (event: MouseEvent & { currentTarget: HTMLAnchorElement; target: Element }) => {
     event.preventDefault()
-    changeSearchParams({
-      scrollTo: 'comments'
-    })
-    navigate(`/${props.article.slug}`)
+    navigate(`/${props.article.slug}?commentId=0`)
   }
 
   const onInvite = () => {

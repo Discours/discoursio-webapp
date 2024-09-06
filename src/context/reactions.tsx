@@ -1,5 +1,4 @@
 import type { Accessor, JSX } from 'solid-js'
-
 import { createContext, createMemo, createSignal, onCleanup, useContext } from 'solid-js'
 import { createStore, reconcile } from 'solid-js/store'
 import { coreApiUrl } from '~/config'
@@ -47,23 +46,28 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   const addShoutReactions = (rrr: Reaction[]) => {
-    const newReactionsByShout: Record<number, Reaction[]> = { ...reactionsByShout }
-    const newReactionsByAuthor: Record<number, Reaction[]> = { ...reactionsByAuthor }
     const newReactionEntities = rrr.reduce(
-      (acc: { [reaction_id: number]: Reaction }, reaction: Reaction) => {
+      (acc: Record<number, Reaction>, reaction: Reaction) => {
         acc[reaction.id] = reaction
-        if (!newReactionsByShout[reaction.shout.id]) newReactionsByShout[reaction.shout.id] = []
-        newReactionsByShout[reaction.shout.id].push(reaction)
-        if (!newReactionsByAuthor[reaction.created_by.id]) newReactionsByAuthor[reaction.created_by.id] = []
-        newReactionsByAuthor[reaction.created_by.id].push(reaction)
         return acc
       },
       { ...reactionEntities }
     )
 
-    setReactionEntities(newReactionEntities)
-    setReactionsByShout(newReactionsByShout)
-    setReactionsByAuthor(newReactionsByAuthor)
+    const newReactionsByShout = { ...reactionsByShout }
+    const newReactionsByAuthor = { ...reactionsByAuthor }
+
+    rrr.forEach((reaction) => {
+      if (!newReactionsByShout[reaction.shout.id]) newReactionsByShout[reaction.shout.id] = []
+      newReactionsByShout[reaction.shout.id].push(reaction)
+
+      if (!newReactionsByAuthor[reaction.created_by.id]) newReactionsByAuthor[reaction.created_by.id] = []
+      newReactionsByAuthor[reaction.created_by.id].push(reaction)
+    })
+
+    setReactionEntities(reconcile(newReactionEntities))
+    setReactionsByShout(reconcile(newReactionsByShout))
+    setReactionsByAuthor(reconcile(newReactionsByAuthor))
 
     const newCommentsByAuthor = Object.fromEntries(
       Object.entries(newReactionsByAuthor).map(([authorId, reactions]) => [
@@ -76,11 +80,11 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
-    !opts.by && console.warn('reactions provider got wrong opts')
+    if (!opts.by) console.warn('reactions provider got wrong opts')
     const fetcher = await loadReactions(opts)
     const result = (await fetcher()) || []
     console.debug('[context.reactions] loaded', result)
-    result && addShoutReactions(result)
+    if (result) addShoutReactions(result)
     return result
   }
 
@@ -89,27 +93,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     const { error, reaction } = resp?.data?.create_reaction || {}
     if (error) await showSnackbar({ type: 'error', body: t(error) })
     if (!reaction) return
-    const changes = { [reaction.id]: reaction }
-
-    if ([ReactionKind.Like, ReactionKind.Dislike].includes(reaction.kind)) {
-      const oppositeReactionKind =
-        reaction.kind === ReactionKind.Like ? ReactionKind.Dislike : ReactionKind.Like
-
-      const oppositeReaction = Object.values(reactionEntities).find(
-        (r) =>
-          r.kind === oppositeReactionKind &&
-          r.created_by.slug === reaction.created_by.slug &&
-          r.shout.id === reaction.shout.id &&
-          r.reply_to === reaction.reply_to
-      )
-
-      if (oppositeReaction) {
-        changes[oppositeReaction.id] = undefined
-      }
-    }
-
     addShoutReactions([reaction])
-    return reaction
   }
 
   const deleteShoutReaction = async (
@@ -118,11 +102,41 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     if (reaction_id) {
       const resp = await client()?.mutation(destroyReactionMutation, { reaction_id }).toPromise()
       const result = resp?.data?.destroy_reaction
+
       if (!result.error) {
-        setReactionEntities({
-          [reaction_id]: undefined
-        })
+        // Находим реакцию, которую нужно удалить
+        const reactionToDelete = reactionEntities[reaction_id]
+
+        if (reactionToDelete) {
+          // Удаляем из reactionEntities
+          const newReactionEntities = { ...reactionEntities }
+          delete newReactionEntities[reaction_id]
+
+          // Удаляем из reactionsByShout
+          const newReactionsByShout = { ...reactionsByShout }
+          const shoutReactions = newReactionsByShout[reactionToDelete.shout.id]
+          if (shoutReactions) {
+            newReactionsByShout[reactionToDelete.shout.id] = shoutReactions.filter(
+              (r) => r.id !== reaction_id
+            )
+          }
+
+          // Удаляем из reactionsByAuthor
+          const newReactionsByAuthor = { ...reactionsByAuthor }
+          const authorReactions = newReactionsByAuthor[reactionToDelete.created_by.id]
+          if (authorReactions) {
+            newReactionsByAuthor[reactionToDelete.created_by.id] = authorReactions.filter(
+              (r) => r.id !== reaction_id
+            )
+          }
+
+          // Обновляем стои с использованием reconcile
+          setReactionEntities(reconcile(newReactionEntities))
+          setReactionsByShout(reconcile(newReactionsByShout))
+          setReactionsByAuthor(reconcile(newReactionsByAuthor))
+        }
       }
+
       return result
     }
     return null
@@ -134,7 +148,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     if (!result) throw new Error('cannot update reaction')
     const { error, reaction } = result
     if (error) await showSnackbar({ type: 'error', body: t(error) })
-    if (reaction) setReactionEntities(reaction.id, reaction)
+    if (reaction) setReactionEntities(reaction.id, reaction) // use setter to update store
     return reaction
   }
 
@@ -148,7 +162,12 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     addShoutReactions
   }
 
-  const value: ReactionsContextType = { reactionEntities, reactionsByShout, commentsByAuthor, ...actions }
+  const value: ReactionsContextType = {
+    reactionEntities,
+    reactionsByShout,
+    commentsByAuthor,
+    ...actions
+  }
 
   return <ReactionsContext.Provider value={value}>{props.children}</ReactionsContext.Provider>
 }

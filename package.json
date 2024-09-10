@@ -49,6 +49,8 @@
     "@storybook/addon-themes": "^8.2.9",
     "@storybook/addon-viewport": "^8.2.9",
     "@storybook/blocks": "^8.2.9",
+    "@storybook/builder-vite": "8.2.9",
+    "@storybook/docs-tools": "8.2.9",
     "@storybook/html": "^8.2.9",
     "@storybook/react": "^8.2.9",
     "@storybook/test-runner": "^0.19.1",
@@ -139,7 +141,11 @@
   "engines": {
     "node": ">= 20"
   },
-  "trustedDependencies": ["@biomejs/biome", "esbuild", "protobufjs"],
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "esbuild",
+    "protobufjs"
+  ],
   "dependencies": {
     "form-data": "^4.0.0",
     "idb": "^8.0.0",

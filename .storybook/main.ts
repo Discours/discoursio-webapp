@@ -1,4 +1,5 @@
 import type { FrameworkOptions, StorybookConfig } from 'storybook-solidjs-vite'
+import {CSSOptions} from "vite";
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
@@ -19,6 +20,15 @@ const config: StorybookConfig = {
   },
   docs: {
     autodocs: 'tag'
+  },
+
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@import "src/styles/imports";\n',
+        includePaths: ['./public', './src/styles']
+      }
+    } as CSSOptions['preprocessorOptions']
   },
   previewHead: (head) => `
     ${head}

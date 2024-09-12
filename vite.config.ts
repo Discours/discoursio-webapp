@@ -1,0 +1,51 @@
+import { CSSOptions } from 'vite'
+// import { visualizer } from 'rollup-plugin-visualizer'
+import mkcert from 'vite-plugin-mkcert'
+import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
+import sassDts from 'vite-plugin-sass-dts'
+
+const isVercel = Boolean(process?.env.VERCEL)
+const isNetlify = Boolean(process?.env.NETLIFY)
+const isBun = Boolean(process.env.BUN)
+export const runtime = isNetlify ? 'netlify' : isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node'
+console.info(`[app.config] build for ${runtime}!`)
+
+const polyfillOptions = {
+  include: ['path', 'stream', 'util'],
+  exclude: ['http'],
+  globals: {
+    Buffer: true
+  },
+  overrides: {
+    fs: 'memfs'
+  },
+  protocolImports: true
+} as PolyfillOptions
+
+export default {
+  envPrefix: 'PUBLIC_',
+  plugins: [!isVercel && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@import "src/styles/imports";\n',
+        includePaths: ['./public', './src/styles']
+      }
+    } as CSSOptions['preprocessorOptions']
+  },
+  build: {
+    target: 'esnext',
+    sourcemap: true,
+    rollupOptions: {
+      // plugins: [visualizer()]
+      output: {
+        manualChunks: {
+          icons: ['./src/components/_shared/Icon/Icon.tsx'],
+          session: ['./src/context/session.tsx'],
+          editor: ['./src/context/editor.tsx'],
+          connect: ['./src/context/connect.tsx']
+        }
+      }
+    }
+  }
+}

@@ -1,12 +1,12 @@
 // src/components/atoms/Button/Button.stories.tsx
 // import type { Meta, StoryObj } from '@storybook/html'
 
-import { Meta, StoryObj} from "storybook-solidjs";
-import { Button } from './Button';
-import './Button.module.scss';
+import { Meta, StoryObj } from 'storybook-solidjs'
+import { Button } from './Button'
+import './Button.module.scss'
 
 // Примените корректную типизацию для Storybook
-const meta: Meta <typeof Button> = {
+const meta: Meta<typeof Button> = {
   title: 'Atom/Button',
   component: Button,
 
@@ -14,11 +14,11 @@ const meta: Meta <typeof Button> = {
     value: { control: 'text' },
     variant: {
       options: ['primary', 'secondary', 'bordered', 'inline', 'light', 'outline', 'danger'],
-      control: {type: 'select'}
+      control: { type: 'select' }
     },
     size: {
       options: ['S', 'M', 'L'],
-      control: {type: 'radio'}
+      control: { type: 'radio' }
     },
     loading: { control: 'boolean' },
     disabled: { control: 'boolean' },
@@ -27,19 +27,17 @@ const meta: Meta <typeof Button> = {
   }
 }
 
-export default meta;
+export default meta
 
 type Story = StoryObj<typeof Button>
 
 export const Default: Story = {
   args: {
     value: 'Button',
-    variant: "primary",
+    variant: 'primary',
     size: 'M',
     loading: false,
     disabled: false,
     isSubscribeButton: false
   }
 }
-
-

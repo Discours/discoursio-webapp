@@ -89,7 +89,19 @@ export const Placeholder = (props: PlaceholderProps) => {
   const { t } = useLocalize()
   const { session } = useSession()
 
-  const placeholderData = createMemo(() => data[props.type])
+  // dufok + mem for placeholder data without a fallback, it will be `undefined` if not found
+  const placeholderData = createMemo(() => {
+    const dataForType = data[props.type];
+    if (!dataForType) {
+      console.warn(`No placeholder data found for type: ${props.type}`);
+    }
+    return dataForType; // No fallback to ensure it is empty when data is missing
+  });
+
+  // Return null if no placeholder data is found
+  if (!placeholderData()) {
+    return null;
+  }
 
   return (
     <div
@@ -100,17 +112,17 @@ export const Placeholder = (props: PlaceholderProps) => {
       )}
     >
       <div class={styles.placeholderCover}>
-        <img src={`/${placeholderData().image}`} alt={placeholderData().header} />
+        <img src={`/${placeholderData()?.image}`} alt={placeholderData()?.header} />
       </div>
       <div class={styles.placeholderContent}>
         <div>
-          <h3 innerHTML={t(placeholderData().header)} />
-          <p innerHTML={t(placeholderData().text)} />
+          <h3 innerHTML={t(placeholderData()?.header)} />
+          <p innerHTML={t(placeholderData()?.text)} />
         </div>
 
-        <Show when={placeholderData().profileLinks}>
+        <Show when={placeholderData()?.profileLinks}>
           <div class={styles.bottomLinks}>
-            <For each={placeholderData().profileLinks}>
+            <For each={placeholderData()?.profileLinks}>
               {(link) => (
                 <a href={link.href}>
                   <Icon name="link-white" class={styles.icon} />
@@ -133,7 +145,7 @@ export const Placeholder = (props: PlaceholderProps) => {
             </a>
           }
         >
-          <a class={styles.button} href={placeholderData().href}>
+          <a class={styles.button} href={placeholderData()?.href}>
             {t(
               session()?.access_token
                 ? placeholderData()?.buttonLabelAuthor || ''

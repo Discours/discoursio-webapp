@@ -7,18 +7,26 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
-    '@storybook/addon-themes'
+    '@storybook/addon-themes',
+    '@storybook/addon-style-config'
   ],
   framework: {
     name: 'storybook-solidjs-vite',
     options: {
       builder: {
-        viteConfigPath: './app.config.ts'
+        viteConfigPath: './vite.config.ts'
       }
     } as FrameworkOptions
   },
   docs: {
     autodocs: 'tag'
+  },
+  viteFinal: (config) => {
+    if (config.build) {
+      config.build.sourcemap = true
+      config.build.minify = process.env.NODE_ENV === 'production'
+    }
+    return config
   },
   previewHead: (head) => `
     ${head}

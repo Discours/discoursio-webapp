@@ -55,7 +55,7 @@ const desktopCoverImageWidths: Record<string, number> = {
   M: 600,
   L: 800
 }
-
+const titleSeparator = /{!|\?|:|;}\s/
 const getTitleAndSubtitle = (
   article: Shout
 ): {
@@ -69,7 +69,7 @@ const getTitleAndSubtitle = (
     let titleParts = article.title?.split('. ') || []
 
     if (titleParts?.length === 1) {
-      titleParts = article.title?.split(/{!|\?|:|;}\s/) || []
+      titleParts = article.title?.split(titleSeparator) || []
     }
 
     if (titleParts && titleParts.length > 1) {
@@ -88,7 +88,7 @@ const getMainTopicTitle = (article: Shout, lng: string) => {
   const mainTopicSlug = article.main_topic || ''
   const mainTopic = (article.topics || []).find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
   const mainTopicTitle =
-    mainTopicSlug && lng === 'en' ? mainTopicSlug.replace(/-/, ' ') : mainTopic?.title || ''
+    mainTopicSlug && lng === 'en' ? mainTopicSlug.replaceAll('-', ' ') : mainTopic?.title || ''
 
   return [mainTopicTitle, mainTopicSlug]
 }

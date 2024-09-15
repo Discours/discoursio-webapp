@@ -250,7 +250,7 @@ export const ProfileSecurityView = (_props: any) => {
                           class={clsx(
                             styles.socialButton,
                             styles.socialButtonApple,
-                            'button' + ' button--light'
+                            'button button--light'
                           )}
                           type="button"
                         >

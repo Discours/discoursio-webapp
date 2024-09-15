@@ -1,5 +1,4 @@
 import { useMatch, useNavigate } from '@solidjs/router'
-import { Editor } from '@tiptap/core'
 import type { JSX } from 'solid-js'
 import { Accessor, createContext, createMemo, createSignal, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
@@ -39,7 +38,6 @@ type EditorContextType = {
   wordCounter: Accessor<WordCounter>
   form: ShoutForm
   formErrors: Record<keyof ShoutForm, string>
-  editor: Accessor<Editor | undefined>
   saveShout: (form: ShoutForm) => Promise<void>
   saveDraft: (form: ShoutForm) => Promise<void>
   saveDraftToLocalStorage: (form: ShoutForm) => void
@@ -51,10 +49,9 @@ type EditorContextType = {
   countWords: (value: WordCounter) => void
   setForm: SetStoreFunction<ShoutForm>
   setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
-  setEditor: (editor: Editor) => void
 }
 
-const EditorContext = createContext<EditorContextType>({ editor: () => new Editor() } as EditorContextType)
+const EditorContext = createContext<EditorContextType>({} as EditorContextType)
 
 export function useEditorContext() {
   return useContext(EditorContext)
@@ -90,7 +87,6 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const { addFeed } = useFeed()
   const snackbar = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
-  const [editor, setEditor] = createSignal<Editor>()
   const [form, setForm] = createStore<ShoutForm>({
     body: '',
     slug: '',
@@ -283,14 +279,12 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     countWords,
     setForm,
     setFormErrors,
-    setEditor
   }
 
   const value: EditorContextType = {
     ...actions,
     form,
     formErrors,
-    editor,
     isEditorPanelVisible,
     wordCounter
   }

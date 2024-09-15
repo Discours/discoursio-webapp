@@ -1,3 +1,10 @@
+/**
+ * Placeholder component displays different placeholder content based on type and mode.
+ *
+ * @param {PlaceholderProps} props - The properties for the component.
+ * @returns {JSX.Element | null} The rendered placeholder or null if data is missing.
+ */
+
 import { clsx } from 'clsx'
 import { For, Show, createMemo } from 'solid-js'
 
@@ -89,16 +96,18 @@ export const Placeholder = (props: PlaceholderProps) => {
   const { t } = useLocalize()
   const { session } = useSession()
 
-  // dufok + mem for placeholder data without a fallback, it will be `undefined` if not found
+  // dufok (^-^') mem for placeholder data without a fallback, it will be `undefined` if not found
+
   const placeholderData = createMemo(() => {
     const dataForType = data[props.type];
     if (!dataForType) {
       console.warn(`No placeholder data found for type: ${props.type}`);
     }
-    return dataForType; // No fallback to ensure it is empty when data is missing
+    return dataForType;
+  // (^-^') No fallback to ensure it is empty when data is missing
   });
 
-  // Return null if no placeholder data is found
+  // (^-^') Return null if no placeholder data is found
   if (!placeholderData()) {
     return null;
   }

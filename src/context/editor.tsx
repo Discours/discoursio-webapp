@@ -278,7 +278,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     toggleEditorPanel,
     countWords,
     setForm,
-    setFormErrors,
+    setFormErrors
   }
 
   const value: EditorContextType = {

@@ -10,6 +10,10 @@
 }
 
 .notificationsCounter {
+  @include media-breakpoint-up(md) {
+    left: 1.8rem;
+  }
+
   align-items: center;
   background-color: #E84500;
   border-radius: 0.8rem;
@@ -25,8 +29,4 @@
   position: absolute;
   text-align: center;
   top: -0.5rem;
-
-  @include media-breakpoint-up(md) {
-    left: 1.8rem;
-  }
 }

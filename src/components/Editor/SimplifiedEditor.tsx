@@ -81,7 +81,8 @@ const SimplifiedEditor = (props: Props) => {
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
         element: textBubbleMenuRef(),
-        shouldShow: ({ view, state }) => Boolean(props.onlyBubbleControls && view.hasFocus() && !state.selection.empty)
+        shouldShow: ({ view, state }) =>
+          Boolean(props.onlyBubbleControls && view.hasFocus() && !state.selection.empty)
       }),
       BubbleMenu.configure({
         pluginKey: 'linkBubbleMenu',

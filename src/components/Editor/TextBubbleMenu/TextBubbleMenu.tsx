@@ -91,9 +91,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
 
   const handleAddFootnote = (footnote: string) => {
     if (footNote()) {
-      props.editor.chain().focus().updateFootnote({ value: footnote }).run()
+      props.editor?.chain().focus().updateFootnote({ value: footnote }).run()
     } else {
-      props.editor.chain().focus().setFootnote({ value: footnote }).run()
+      props.editor?.chain().focus().setFootnote({ value: footnote }).run()
     }
     setFootNote()
     setLinkEditorOpen(false)
@@ -108,16 +108,16 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
 
   const handleSetPunchline = () => {
     if (isPunchLine()) {
-      props.editor.chain().focus().toggleBlockquote('punchline').run()
+      props.editor?.chain().focus().toggleBlockquote('punchline').run()
     }
-    props.editor.chain().focus().toggleBlockquote('quote').run()
+    props.editor?.chain().focus().toggleBlockquote('quote').run()
     toggleTextSizePopup()
   }
   const handleSetQuote = () => {
     if (isQuote()) {
-      props.editor.chain().focus().toggleBlockquote('quote').run()
+      props.editor?.chain().focus().toggleBlockquote('quote').run()
     }
-    props.editor.chain().focus().toggleBlockquote('punchline').run()
+    props.editor?.chain().focus().toggleBlockquote('punchline').run()
     toggleTextSizePopup()
   }
 
@@ -130,13 +130,13 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   })
 
   const handleOpenLinkForm = () => {
-    props.editor.chain().focus().addTextWrap({ class: 'highlight-fake-selection' }).run()
+    props.editor?.chain().focus().addTextWrap({ class: 'highlight-fake-selection' }).run()
     setLinkEditorOpen(true)
   }
 
   const handleCloseLinkForm = () => {
     setLinkEditorOpen(false)
-    props.editor.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
+    props.editor?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
   }
 
   return (
@@ -188,7 +188,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isH1()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleHeading({ level: 2 }).run()
+                                props.editor?.chain().focus().toggleHeading({ level: 2 }).run()
                                 toggleTextSizePopup()
                               }}
                             >
@@ -205,7 +205,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isH2()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleHeading({ level: 3 }).run()
+                                props.editor?.chain().focus().toggleHeading({ level: 3 }).run()
                                 toggleTextSizePopup()
                               }}
                             >
@@ -222,7 +222,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isH3()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleHeading({ level: 4 }).run()
+                                props.editor?.chain().focus().toggleHeading({ level: 4 }).run()
                                 toggleTextSizePopup()
                               }}
                             >
@@ -273,7 +273,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isIncut()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleArticle().run()
+                                props.editor?.chain().focus().toggleArticle().run()
                                 toggleTextSizePopup()
                               }}
                             >
@@ -296,7 +296,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   class={clsx(styles.bubbleMenuButton, {
                     [styles.bubbleMenuButtonActive]: isBold()
                   })}
-                  onClick={() => props.editor.chain().focus().toggleBold().run()}
+                  onClick={() => props.editor?.chain().focus().toggleBold().run()}
                 >
                   <Icon name="editor-bold" />
                 </button>
@@ -310,7 +310,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                   class={clsx(styles.bubbleMenuButton, {
                     [styles.bubbleMenuButtonActive]: isItalic()
                   })}
-                  onClick={() => props.editor.chain().focus().toggleItalic().run()}
+                  onClick={() => props.editor?.chain().focus().toggleItalic().run()}
                 >
                   <Icon name="editor-italic" />
                 </button>
@@ -326,7 +326,9 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                     class={clsx(styles.bubbleMenuButton, {
                       [styles.bubbleMenuButtonActive]: isHighlight()
                     })}
-                    onClick={() => props.editor.chain().focus().toggleHighlight({ color: '#f6e3a1' }).run()}
+                    onClick={() =>
+                      props.editor?.chain().focus().toggleHighlight({ color: '#f6e3a1' }).run()
+                    }
                   >
                     <div class={styles.toggleHighlight} />
                   </button>
@@ -389,7 +391,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isBulletList()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleBulletList().run()
+                                props.editor?.chain().focus().toggleBulletList().run()
                                 toggleListPopup()
                               }}
                             >
@@ -406,7 +408,7 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
                                 [styles.bubbleMenuButtonActive]: isOrderedList()
                               })}
                               onClick={() => {
-                                props.editor.chain().focus().toggleOrderedList().run()
+                                props.editor?.chain().focus().toggleOrderedList().run()
                                 toggleListPopup()
                               }}
                             >

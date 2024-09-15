@@ -35,7 +35,7 @@ export const FullTopic = (props: Props) => {
         /* FIXME: use title translation*/
         setTitle((_) => tpc?.title || '')
         return `#${capitalize(
-          lang() === 'en' ? tpc.slug.replace(/-/, ' ') : tpc.title || tpc.slug.replace(/-/, ' '),
+          lang() === 'en' ? tpc.slug.replaceAll('-', ' ') : tpc.title || tpc.slug.replaceAll('-', ' '),
           true
         )}`
       },

@@ -55,7 +55,6 @@ export const ShareLinks = (props: Props) => {
       <ul class="nodash">
         <li>
           <button
-            role="button"
             class={clsx(styles.shareControl, popupStyles.action)}
             onClick={() => handleShare(FACEBOOK)}
           >
@@ -65,7 +64,6 @@ export const ShareLinks = (props: Props) => {
         </li>
         <li>
           <button
-            role="button"
             class={clsx(styles.shareControl, popupStyles.action)}
             onClick={() => handleShare(TWITTER)}
           >
@@ -75,7 +73,6 @@ export const ShareLinks = (props: Props) => {
         </li>
         <li>
           <button
-            role="button"
             class={clsx(styles.shareControl, popupStyles.action)}
             onClick={() => handleShare(TELEGRAM)}
           >
@@ -84,11 +81,7 @@ export const ShareLinks = (props: Props) => {
           </button>
         </li>
         <li>
-          <button
-            role="button"
-            class={clsx(styles.shareControl, popupStyles.action)}
-            onClick={() => handleShare(VK)}
-          >
+          <button class={clsx(styles.shareControl, popupStyles.action)} onClick={() => handleShare(VK)}>
             <Icon name="vk-white" class={clsx(styles.icon, popupStyles.icon)} />
             VK
           </button>
@@ -97,11 +90,7 @@ export const ShareLinks = (props: Props) => {
           <Show
             when={props.variant === 'inModal'}
             fallback={
-              <button
-                role="button"
-                class={clsx(styles.shareControl, popupStyles.action)}
-                onClick={copyLink}
-              >
+              <button class={clsx(styles.shareControl, popupStyles.action)} onClick={copyLink}>
                 <Icon name="link-white" class={clsx(styles.icon, popupStyles.icon)} />
                 {t('Copy link')}
               </button>

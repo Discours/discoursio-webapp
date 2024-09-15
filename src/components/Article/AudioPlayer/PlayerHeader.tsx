@@ -74,7 +74,7 @@ export const PlayerHeader = (props: Props) => {
               onChange={({ target }) => props.onVolumeChange(Number(target.value))}
             />
           </Show>
-          <button onClick={toggleVolumeBar} class={styles.volumeButton} role="button" aria-label="Volume">
+          <button onClick={toggleVolumeBar} class={styles.volumeButton} aria-label="Volume">
             <Icon name="volume" />
           </button>
         </div>

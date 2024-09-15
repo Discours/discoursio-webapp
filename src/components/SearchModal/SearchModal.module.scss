@@ -1,6 +1,4 @@
 @mixin search-filter-control {
-  @include font-size(1.4rem);
-
   height: 4rem;
   padding: 0 2rem;
   background: rgb(64 64 64 / 50%);
@@ -8,6 +6,8 @@
   color: #fff;
   font-weight: 500;
   white-space: nowrap;
+
+  @include font-size(1.4rem);
 
   &:hover {
     background: #404040;
@@ -23,8 +23,6 @@
 }
 
 .searchInput {
-  @include font-size(4.8rem);
-
   width: 100%;
   padding: 0 0 0.5rem;
   background: none;
@@ -33,6 +31,8 @@
   color: #fff;
   font-weight: bold;
   outline: none;
+
+  @include font-size(4.8rem);
 
   &::placeholder {
     color: rgb(255 255 255 / 32%);
@@ -60,10 +60,10 @@
 }
 
 .searchDescription {
-  @include font-size(1.6rem);
-
   margin-bottom: 44px;
   color: rgb(255 255 255 / 64%);
+
+  @include font-size(1.6rem);
 }
 
 .topicsList {

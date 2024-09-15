@@ -13,6 +13,8 @@ import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { SHOUTS_PER_PAGE } from '../(main)'
 
+const paramPattern = /^(hot|likes)$/
+
 export type FeedPeriod = 'week' | 'month' | 'year'
 
 export type PeriodItem = {
@@ -32,12 +34,13 @@ const getFromDate = (period: FeedPeriod): number => {
       d = new Date(now.setDate(now.getDate() - 7))
       break
     }
-    case 'month': {
-      d = new Date(now.setMonth(now.getMonth() - 1))
-      break
-    }
     case 'year': {
       d = new Date(now.setFullYear(now.getFullYear() - 1))
+      break
+    }
+    // case 'month': {
+    default: {
+      d = new Date(now.setMonth(now.getMonth() - 1))
       break
     }
   }
@@ -71,7 +74,6 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
   // load more feed
   const loadMoreFeed = async (offset?: number) => {
     // /feed/:order: - select order setting
-    const paramPattern = /^(hot|likes)$/
     const order =
       (props.params.order && paramPattern.test(props.params.order)
         ? props.params.order === 'hot'
@@ -107,9 +109,8 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
   })
 
   const order = createMemo(() => {
-    const paramOrderPattern = /^(hot|likes)$/
     return (
-      (paramOrderPattern.test(props.params.order)
+      (paramPattern.test(props.params.order)
         ? props.params.order === 'hot'
           ? 'last_comment'
           : props.params.order

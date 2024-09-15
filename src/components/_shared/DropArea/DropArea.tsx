@@ -37,14 +37,12 @@ export const DropArea = (props: Props) => {
   const runUpload = async (files: UploadFile[]) => {
     try {
       setLoading(true)
-
-      const results = []
-      for (const file of files) {
-        const handler = props.fileType === 'image' ? handleImageUpload : handleFileUpload
-        const result = await handler(file, session()?.access_token as string)
-        results.push(result)
-      }
-      props.onUpload(results)
+      const tkn = session()?.access_token as string
+      const handler = props.fileType === 'image' ? handleImageUpload : handleFileUpload
+      tkn &&
+        Promise.all(files.map((file) => handler(file, tkn)))
+          .then(props.onUpload)
+          .catch(console.error)
       setLoading(false)
     } catch (error) {
       setLoading(false)

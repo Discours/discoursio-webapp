@@ -6,6 +6,7 @@ import { SearchField } from '~/components/_shared/SearchField'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import type { Topic } from '~/graphql/schema/core.gen'
+import { enChars, ruChars } from '~/intl/chars'
 import { dummyFilter } from '~/intl/dummyFilter'
 import { scrollHandler } from '~/utils/scroll'
 import { TopicBadge } from '../../Topic/TopicBadge'
@@ -35,8 +36,8 @@ export const AllTopics = (props: Props) => {
     return topics().reduce(
       (acc, topic) => {
         let letter = lang() === 'en' ? topic.slug[0].toUpperCase() : (topic?.title?.[0] || '').toUpperCase()
-        if (/[^ËА-яё]/.test(letter) && lang() === 'ru') letter = '#'
-        if (/[^A-z]/.test(letter) && lang() === 'en') letter = '#'
+        if (enChars.test(letter) && lang() === 'ru') letter = '#'
+        if (ruChars.test(letter) && lang() === 'en') letter = '#'
         if (!acc[letter]) acc[letter] = []
         acc[letter].push(topic)
         return acc

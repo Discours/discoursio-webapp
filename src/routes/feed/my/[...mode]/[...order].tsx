@@ -30,6 +30,8 @@ const feeds = {
 export type FeedPeriod = 'week' | 'month' | 'year'
 export type FeedSearchParams = { period?: FeedPeriod }
 
+const paramModePattern = /^(followed|discussed|liked|coauthored|unrated)$/
+const paramPattern = /(hot|likes)/
 const getFromDate = (period: FeedPeriod): number => {
   const now = new Date()
   let d: Date = now
@@ -38,12 +40,13 @@ const getFromDate = (period: FeedPeriod): number => {
       d = new Date(now.setDate(now.getDate() - 7))
       break
     }
-    case 'month': {
-      d = new Date(now.setMonth(now.getMonth() - 1))
-      break
-    }
     case 'year': {
       d = new Date(now.setFullYear(now.getFullYear() - 1))
+      break
+    }
+    // case 'month':
+    default: {
+      d = new Date(now.setMonth(now.getMonth() - 1))
       break
     }
   }
@@ -67,14 +70,12 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
 
   // /feed/my/:mode:
   const mode = createMemo(() => {
-    const paramModePattern = /^(followed|discussed|liked|coauthored|unrated)$/
     return props.params.mode && paramModePattern.test(props.params.mode) ? props.params.mode : 'followed'
   })
 
   const order = createMemo(() => {
-    const paramOrderPattern = /^(hot|likes)$/
     return (
-      (paramOrderPattern.test(props.params.order)
+      (paramPattern.test(props.params.order)
         ? props.params.order === 'hot'
           ? 'last_comment'
           : props.params.order

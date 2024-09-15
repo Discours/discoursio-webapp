@@ -50,6 +50,7 @@ test.beforeAll(async ({ browser }) => {
   page = await browser.newPage()
   test.setTimeout(150000)
   await page.goto(baseURL)
+  // biome-ignore lint/performance/useTopLevelRegex: <explanation>
   await expect(page).toHaveTitle(/Дискурс/)
   console.log('Localhost server started successfully!')
 })

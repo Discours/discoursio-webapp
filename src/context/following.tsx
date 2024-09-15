@@ -151,16 +151,6 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
     setFollows((prevFollows: AuthorFollowsResult) => {
       const updatedFollows = { ...prevFollows }
       switch (what) {
-        case 'AUTHOR': {
-          if (value) {
-            if (!updatedFollows.authors?.some((author) => author.slug === slug)) {
-              updatedFollows.authors = [...(updatedFollows.authors || []), { slug } as Author]
-            }
-          } else {
-            updatedFollows.authors = updatedFollows.authors?.filter((author) => author.slug !== slug) || []
-          }
-          break
-        }
         case 'TOPIC': {
           if (value) {
             if (!updatedFollows.topics?.some((topic) => topic.slug === slug)) {
@@ -179,6 +169,17 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
           } else {
             updatedFollows.communities =
               updatedFollows.communities?.filter((community) => community.slug !== slug) || []
+          }
+          break
+        }
+        // case 'AUTHOR': {
+        default: {
+          if (value) {
+            if (!updatedFollows.authors?.some((author) => author.slug === slug)) {
+              updatedFollows.authors = [...(updatedFollows.authors || []), { slug } as Author]
+            }
+          } else {
+            updatedFollows.authors = updatedFollows.authors?.filter((author) => author.slug !== slug) || []
           }
           break
         }

@@ -19,7 +19,7 @@ export const IncutBubbleMenu = (props: Props) => {
   const { t } = useLocalize()
   const [substratBubbleOpen, setSubstratBubbleOpen] = createSignal(false)
   const handleChangeBg = (bg: string | null) => {
-    props.editor.chain().focus().setArticleBg(bg).run()
+    props.editor?.chain().focus().setArticleBg(bg).run()
     setSubstratBubbleOpen(false)
   }
   return (
@@ -27,14 +27,14 @@ export const IncutBubbleMenu = (props: Props) => {
       <button
         type="button"
         class={styles.bubbleMenuButton}
-        onClick={() => props.editor.chain().focus().setArticleFloat('half-left').run()}
+        onClick={() => props.editor?.chain().focus().setArticleFloat('half-left').run()}
       >
         <Icon name="editor-image-half-align-left" />
       </button>
       <button
         type="button"
         class={styles.bubbleMenuButton}
-        onClick={() => props.editor.chain().focus().setArticleFloat(null).run()}
+        onClick={() => props.editor?.chain().focus().setArticleFloat(null).run()}
       >
         <Icon name="editor-image-align-center" />
       </button>
@@ -42,7 +42,7 @@ export const IncutBubbleMenu = (props: Props) => {
       <button
         type="button"
         class={styles.bubbleMenuButton}
-        onClick={() => props.editor.chain().focus().setArticleFloat('half-right').run()}
+        onClick={() => props.editor?.chain().focus().setArticleFloat('half-right').run()}
       >
         <Icon name="editor-image-half-align-right" />
       </button>

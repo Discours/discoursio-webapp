@@ -38,7 +38,7 @@ export const Figure = Node.create({
           }
           const img = node.querySelector('img')
           const iframe = node.querySelector('iframe')
-          let dataType = null
+          let dataType: string | undefined
           if (img) {
             dataType = 'image'
           } else if (iframe) {

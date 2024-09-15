@@ -61,7 +61,7 @@ export const Popover = (props: Props) => {
     <>
       {props.children(setAnchor)}
       <Show when={show() && !props.disabled}>
-        <div ref={setPopper} class={styles.tooltip} role="tooltip">
+        <div ref={setPopper} class={styles.tooltip}>
           {props.content}
           <div class={styles.arrow} data-popper-arrow={true} />
         </div>

@@ -33,7 +33,6 @@ export const FeedArticlePopup = (props: Props) => {
           <li>
             <button
               class={styles.action}
-              role="button"
               onClick={() => {
                 props.onShareClick()
                 setHidePopup(true)
@@ -47,7 +46,6 @@ export const FeedArticlePopup = (props: Props) => {
             <li>
               <button
                 class={styles.action}
-                role="button"
                 onClick={() => {
                   alert('Help to edit')
                   setHidePopup(true)
@@ -61,7 +59,6 @@ export const FeedArticlePopup = (props: Props) => {
           <li>
             <button
               class={styles.action}
-              role="button"
               onClick={() => {
                 props.onInviteClick()
                 setHidePopup(false)
@@ -73,7 +70,7 @@ export const FeedArticlePopup = (props: Props) => {
           </li>
           <Show when={!props.canEdit}>
             <li>
-              <button class={clsx(styles.action, styles.soon)} role="button">
+              <button class={clsx(styles.action, styles.soon)}>
                 <Icon name="bell-white" class={styles.icon} />
                 <div class={styles.title}>{t('Subscribe to comments')}</div>
                 <SoonChip />
@@ -81,7 +78,7 @@ export const FeedArticlePopup = (props: Props) => {
             </li>
           </Show>
           <li>
-            <button class={clsx(styles.action, styles.soon)} role="button">
+            <button class={clsx(styles.action, styles.soon)}>
               <Icon name="bookmark" class={styles.icon} />
               <div class={styles.title}>{t('Add to bookmarks')}</div>
               <SoonChip />
@@ -91,7 +88,7 @@ export const FeedArticlePopup = (props: Props) => {
           {/*  <li>*/}
           {/*    <button*/}
           {/*      class={styles.action}*/}
-          {/*      role="button"*/}
+          {/*      */}
           {/*      onClick={() => {*/}
           {/*        alert('Complain')*/}
           {/*      }}*/}
@@ -103,7 +100,7 @@ export const FeedArticlePopup = (props: Props) => {
           {/*<li>*/}
           {/*  <button*/}
           {/*    class={styles.action}*/}
-          {/*    role="button"*/}
+          {/*    */}
           {/*    onClick={() => {*/}
           {/*      alert('Get notifications')*/}
           {/*    }}*/}

@@ -84,7 +84,6 @@ export const CommentRatingControl = (props: Props) => {
   return (
     <div class={styles.commentRating}>
       <button
-        role="button"
         disabled={!(canVote() && uid())}
         onClick={() => handleRatingChange(true)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlUp, {
@@ -110,7 +109,6 @@ export const CommentRatingControl = (props: Props) => {
         />
       </Popup>
       <button
-        role="button"
         disabled={!(canVote() && uid())}
         onClick={() => handleRatingChange(false)}
         class={clsx(styles.commentRatingControl, styles.commentRatingControlDown, {

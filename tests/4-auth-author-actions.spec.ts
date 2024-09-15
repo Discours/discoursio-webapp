@@ -54,6 +54,7 @@ test.beforeAll(async ({ browser }) => {
   page = await context.newPage()
   test.setTimeout(150000)
   await page.goto(baseURL)
+  // biome-ignore lint/performance/useTopLevelRegex: <explanation>
   await expect(page).toHaveTitle(/Дискурс/)
   await page.getByRole('link', { name: 'Войти' }).click()
   console.log('Localhost server started successfully!')

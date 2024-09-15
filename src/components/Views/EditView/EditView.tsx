@@ -1,4 +1,3 @@
-import { Editor } from '@tiptap/core'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
 import {
@@ -46,7 +45,6 @@ const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/
 
 type Props = {
   shout: Shout
-  editor: Editor
 }
 
 export const MAX_HEADER_LIMIT = 100

@@ -1,13 +1,13 @@
 import translitConfig from './abc-translit.json'
 
 const ru2en: { [key: string]: string } = translitConfig
-
+const rusChars = /[ЁА-яё]/
 export const translit = (str: string) => {
   if (!str) {
     return ''
   }
 
-  const isCyrillic = /[ЁА-яё]/.test(str)
+  const isCyrillic = rusChars.test(str)
 
   if (!isCyrillic) {
     return str

@@ -5,7 +5,7 @@ import { type Page, expect, test } from '@playwright/test'
 /* Global starting test config */
 
 let page: Page
-
+const discoursPattern = /Дискурс/
 function httpsGet(url: string): Promise<void> {
   return new Promise((resolve, reject) => {
     https
@@ -50,7 +50,7 @@ test.beforeAll(async ({ browser }) => {
   page = await browser.newPage()
   test.setTimeout(150000)
   await page.goto(baseURL)
-  await expect(page).toHaveTitle(/Дискурс/)
+  await expect(page).toHaveTitle(discoursPattern)
   console.log('Localhost server started successfully!')
 })
 test.afterAll(async () => {

@@ -3,6 +3,7 @@ import { Router } from '@solidjs/router'
 import { FileRoutes } from '@solidjs/start/router'
 import { type JSX, Suspense } from 'solid-js'
 
+import { AuthToken } from '@authorizerdev/authorizer-js'
 import { Loading } from './components/_shared/Loading'
 import { AuthorsProvider } from './context/authors'
 import { EditorProvider } from './context/editor'
@@ -10,9 +11,9 @@ import { FeedProvider } from './context/feed'
 import { LocalizeProvider } from './context/localize'
 import { SessionProvider } from './context/session'
 import { TopicsProvider } from './context/topics'
-import { UIProvider } from './context/ui' // snackbar included
+import { UIProvider } from './context/ui'
+
 import '~/styles/app.scss'
-import { AuthToken } from '@authorizerdev/authorizer-js'
 
 export const Providers = (props: { children?: JSX.Element }) => {
   const sessionStateChanged = (payload: AuthToken) => {

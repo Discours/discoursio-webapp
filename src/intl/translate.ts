@@ -2,15 +2,21 @@ import { Author } from '~/graphql/schema/core.gen'
 import { capitalize } from '~/utils/capitalize'
 import { translit } from './translit'
 
-export const isCyrillic = (s: string): boolean => {
-  const cyrillicRegex = /[\u0400-\u04FF]/ // Range for Cyrillic characters
+const cyrillicRegex = /[\u0400-\u04FF]/ // Range for Cyrillic characters
+const allChars = /[^\dA-zА-я]/
+const rusChars = /[^ËА-яё]/
+const enChars = /[^A-z]/
 
+export const isCyrillic = (s: string): boolean => {
   return cyrillicRegex.test(s)
 }
 
 export const translateAuthor = (author: Author, lng: string) =>
   lng === 'en' && isCyrillic(author?.name || '')
-    ? capitalize(translit((author?.name || '').replace(/ё/, 'e').replace(/ь/, '')).replace(/-/, ' '), true)
+    ? capitalize(
+        translit((author?.name || '').replaceAll('ё', 'e').replaceAll('ь', '')).replaceAll('-', ' '),
+        true
+      )
     : author.name
 
 export const authorLetterReduce = (acc: { [x: string]: Author[] }, author: Author, lng: string) => {
@@ -18,7 +24,7 @@ export const authorLetterReduce = (acc: { [x: string]: Author[] }, author: Autho
   if (!letter && author && author.name) {
     const name =
       translateAuthor(author, lng || 'ru')
-        ?.replace(/[^\dA-zА-я]/, ' ')
+        ?.replace(allChars, ' ')
         .trim() || ''
     const nameParts = name.trim().split(' ')
     const found = nameParts.filter(Boolean).pop()
@@ -26,8 +32,8 @@ export const authorLetterReduce = (acc: { [x: string]: Author[] }, author: Autho
       letter = found[0].toUpperCase()
     }
   }
-  if (/[^ËА-яё]/.test(letter) && lng === 'ru') letter = '@'
-  if (/[^A-z]/.test(letter) && lng === 'en') letter = '@'
+  if (rusChars.test(letter) && lng === 'ru') letter = '@'
+  if (enChars.test(letter) && lng === 'en') letter = '@'
 
   if (!acc[letter]) acc[letter] = []
   author.name = translateAuthor(author, lng)

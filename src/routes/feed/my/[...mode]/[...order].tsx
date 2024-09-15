@@ -19,6 +19,7 @@ import {
 } from '~/graphql/api/private'
 import { graphqlClientCreate } from '~/graphql/client'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
+import { FromPeriod, getFromDate } from '~/lib/fromPeriod'
 
 const feeds = {
   followed: loadFollowedShouts,
@@ -26,31 +27,12 @@ const feeds = {
   coauthored: loadCoauthoredShouts,
   unrated: loadUnratedShouts
 }
-
-export type FeedPeriod = 'week' | 'month' | 'year'
-export type FeedSearchParams = { period?: FeedPeriod }
-
-const getFromDate = (period: FeedPeriod): number => {
-  const now = new Date()
-  let d: Date = now
-  switch (period) {
-    case 'week': {
-      d = new Date(now.setDate(now.getDate() - 7))
-      break
-    }
-    case 'month': {
-      d = new Date(now.setMonth(now.getMonth() - 1))
-      break
-    }
-    case 'year': {
-      d = new Date(now.setFullYear(now.getFullYear() - 1))
-      break
-    }
-  }
-  return Math.floor(d.getTime() / 1000)
-}
+export type FeedSearchParams = { period?: FromPeriod }
 
 // /feed/my/followed/hot
+
+const paramModePattern = /^(followed|discussed|liked|coauthored|unrated)$/
+const paramOrderPattern = /^(hot|likes)$/
 
 export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) => {
   const [searchParams] = useSearchParams<FeedSearchParams>() // ?period=month
@@ -67,12 +49,10 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
 
   // /feed/my/:mode:
   const mode = createMemo(() => {
-    const paramModePattern = /^(followed|discussed|liked|coauthored|unrated)$/
     return props.params.mode && paramModePattern.test(props.params.mode) ? props.params.mode : 'followed'
   })
 
   const order = createMemo(() => {
-    const paramOrderPattern = /^(hot|likes)$/
     return (
       (paramOrderPattern.test(props.params.order)
         ? props.params.order === 'hot'
@@ -96,7 +76,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     // ?period=month - time period filter
     if (searchParams?.period) {
       const period = searchParams?.period || 'month'
-      options.filters = { after: getFromDate(period as FeedPeriod) }
+      options.filters = { after: getFromDate(period as FromPeriod) }
     }
 
     const shoutsLoader = gqlHandler(client(), options)

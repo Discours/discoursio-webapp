@@ -77,16 +77,14 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   }
 
   createEffect(() => {
-    switch (selectedMenuItem()) {
-      case 'image': {
-        showModal('uploadImage')
-        return
-      }
-      case 'horizontal-rule': {
-        props.editor?.chain().focus().setHorizontalRule().run()
-        setSelectedMenuItem()
-        return
-      }
+    if (selectedMenuItem() === 'image') {
+      showModal('uploadImage')
+      return
+    }
+    if (selectedMenuItem() === 'horizontal-rule') {
+      props.editor?.chain().focus().setHorizontalRule().run()
+      setSelectedMenuItem()
+      return
     }
   })
 

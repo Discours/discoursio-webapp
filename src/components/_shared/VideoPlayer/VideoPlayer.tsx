@@ -16,6 +16,9 @@ type Props = {
   onVideoDelete?: () => void
   articleView?: boolean
 }
+const watchPattern = /watch=(\w+)/
+const ytPattern = /youtu.be\/(\w+)/
+const vimeoPattern = /vimeo.com\/(\d+)/
 
 export const VideoPlayer = (props: Props) => {
   const { t } = useLocalize()
@@ -27,14 +30,14 @@ export const VideoPlayer = (props: Props) => {
     setIsVimeo(!isYoutube)
     if (isYoutube) {
       if (props.videoUrl.includes('youtube.com')) {
-        const videoIdMatch = props.videoUrl.match(/watch=(\w+)/)
+        const videoIdMatch = props.videoUrl.match(watchPattern)
         setVideoId(videoIdMatch?.[1])
       } else {
-        const videoIdMatch = props.videoUrl.match(/youtu.be\/(\w+)/)
+        const videoIdMatch = props.videoUrl.match(ytPattern)
         setVideoId(videoIdMatch?.[1])
       }
     } else {
-      const videoIdMatch = props.videoUrl.match(/vimeo.com\/(\d+)/)
+      const videoIdMatch = props.videoUrl.match(vimeoPattern)
       setVideoId(videoIdMatch?.[1])
     }
   })

@@ -118,7 +118,7 @@ export const FeedView = (props: FeedProps) => {
             <Placeholder type={loc?.pathname} mode="feed" />
           </Show>
 
-          <Show when={(session() || loc?.pathname === 'feed') && props.shouts?.length}>
+          <Show when={(session() || loc?.pathname === 'feed') && props.shouts}>
             <div class={styles.filtersContainer}>
               <ul class={clsx('view-switcher', styles.feedFilter)}>
                 <li class={clsx({ 'view-switcher__item--selected': !props.order })}>

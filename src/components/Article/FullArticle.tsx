@@ -112,7 +112,7 @@ export const FullArticle = (props: Props) => {
     const mainTopicSlug = (props.article.topics?.length || 0) > 0 ? props.article.main_topic : null
     const mt = props.article.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
     if (mt) {
-      mt.title = lang() === 'en' ? capitalize(mt.slug.replace(/-/, ' ')) : mt.title
+      mt.title = lang() === 'en' ? capitalize(mt.slug.replaceAll('-', ' ')) : mt.title
       return mt
     }
     return props.article.topics?.[0]
@@ -319,7 +319,7 @@ export const FullArticle = (props: Props) => {
 
   const shareUrl = createMemo(() => getShareUrl({ pathname: `/${props.article.slug || ''}` }))
   const getAuthorName = (a: Author) =>
-    lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replace(/-/, ' ')) : a.name
+    lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replaceAll('-', ' ')) : a.name
   return (
     <>
       <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>

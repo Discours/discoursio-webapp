@@ -8,15 +8,17 @@ import type { Topic } from '~/graphql/schema/core.gen'
 import { getRandomItemsFromArray } from '~/utils/random'
 import styles from './TopicsNav.module.scss'
 
+const russianChars = /[ЁА-яё]/
+
 export const RandomTopics = () => {
   const { sortedTopics } = useTopics()
   const { lang, t } = useLocalize()
   const tag = (topic: Topic) =>
-    /[ЁА-яё]/.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
+    russianChars.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
   const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
   createEffect(
     on(sortedTopics, (ttt: Topic[]) => {
-      if (ttt?.length) {
+      if (ttt?.length > 0) {
         setRandomTopics(getRandomItemsFromArray(ttt))
       }
     })

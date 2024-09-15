@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
   "files": {
     "include": ["*.tsx", "*.ts", "*.js", "*.json"],
     "ignore": ["./dist", "./node_modules", ".husky", "docs", "gen", "*.gen.ts", "*.d.ts"]
@@ -42,7 +42,9 @@
         "noExcessiveCognitiveComplexity": "off"
       },
       "correctness": {
-        "useHookAtTopLevel": "off"
+        "useHookAtTopLevel": "off",
+        "useImportExtensions": "off",
+        "noUndeclaredDependencies": "off"
       },
       "a11y": {
         "useHeadingContent": "off",
@@ -54,7 +56,8 @@
         "useAltText": "off",
         "useButtonType": "off",
         "noRedundantAlt": "off",
-        "noSvgWithoutTitle": "off"
+        "noSvgWithoutTitle": "off",
+        "noLabelWithoutControl": "off"
       },
       "nursery": {
         "useImportRestrictions": "off"
@@ -70,9 +73,11 @@
         "useNamingConvention": "off",
         "useImportType": "off",
         "noDefaultExport": "off",
-        "useFilenamingConvention": "off"
+        "useFilenamingConvention": "off",
+        "useExplicitLengthCheck": "off"
       },
       "suspicious": {
+        "noConsole": "off",
         "noConsoleLog": "off",
         "noAssignInExpressions": "off"
       }

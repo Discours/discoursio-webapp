@@ -1,6 +1,6 @@
 import { useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { Show, createEffect, createMemo, createSignal, lazy, onMount } from 'solid-js'
+import { Show, createEffect, createSignal, lazy, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
@@ -76,7 +76,7 @@ export const PublishSettings = (props: Props) => {
     return props.form.description
   }
 
-  const initialData = createMemo(() => {
+  const initialData = () => {
     return {
       coverImageUrl: props.form?.coverImageUrl,
       mainTopic: props.form?.mainTopic || EMPTY_TOPIC,
@@ -86,7 +86,7 @@ export const PublishSettings = (props: Props) => {
       description: composeDescription() || '',
       selectedTopics: []
     }
-  })
+  }
 
   const [settingsForm, setSettingsForm] = createStore<FormConfig>(emptyConfig)
 
@@ -239,8 +239,16 @@ export const PublishSettings = (props: Props) => {
 
             <h4>{t('Slug')}</h4>
             <div class="pretty-form__item">
-              <input type="text" name="slug" id="slug" value={settingsForm.slug} onInput={removeSpecial} />
-              <label for="slug">{t('Slug')}</label>
+              <label for="slug">
+                <input
+                  type="text"
+                  name="slug"
+                  id="slug"
+                  value={settingsForm.slug}
+                  onInput={removeSpecial}
+                />
+                {t('Slug')}
+              </label>
             </div>
 
             <h4>{t('Topics')}</h4>

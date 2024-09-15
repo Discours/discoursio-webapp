@@ -1,7 +1,7 @@
+import { useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Show, createEffect, createMemo, createSignal, lazy, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
-
 import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
 import { Image } from '~/components/_shared/Image'
@@ -11,11 +11,10 @@ import { useSession } from '~/context/session'
 import { useTopics } from '~/context/topics'
 import { useSnackbar, useUI } from '~/context/ui'
 import { Topic } from '~/graphql/schema/core.gen'
+import { UploadedFile } from '~/types/upload'
 import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../_shared/Modal'
 
-import { useNavigate } from '@solidjs/router'
-import { UploadedFile } from '~/types/upload'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import styles from './PublishSettings.module.scss'
 

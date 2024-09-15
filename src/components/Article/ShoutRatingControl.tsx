@@ -26,7 +26,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const [isLoading, setIsLoading] = createSignal(false)
 
   const checkReaction = (reactionKind: ReactionKind) =>
-    Object.values(reactionEntities).some(
+    Object.values(reactionEntities()).some(
       (r) =>
         r.kind === reactionKind &&
         r.created_by.id === author()?.id &&
@@ -38,7 +38,7 @@ export const ShoutRatingControl = (props: ShoutRatingControlProps) => {
   const isDownvoted = createMemo(() => checkReaction(ReactionKind.Dislike))
 
   const shoutRatingReactions = createMemo(() =>
-    Object.values(reactionEntities).filter(
+    Object.values(reactionEntities()).filter(
       (r) => ['LIKE', 'DISLIKE'].includes(r.kind) && r.shout.id === props.shout.id && !r.reply_to
     )
   )

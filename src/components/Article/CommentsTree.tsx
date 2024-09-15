@@ -32,7 +32,7 @@ export const CommentsTree = (props: Props) => {
   const { reactionEntities, createShoutReaction, loadReactionsBy } = useReactions()
 
   const comments = createMemo(() =>
-    Object.values(reactionEntities).filter((reaction) => reaction.kind === 'COMMENT')
+    Object.values(reactionEntities()).filter((reaction) => reaction.kind === 'COMMENT')
   )
 
   const sortedComments = createMemo(() => {
@@ -158,11 +158,11 @@ export const CommentsTree = (props: Props) => {
         <SimplifiedEditor
           quoteEnabled={true}
           imageEnabled={true}
-          autoFocus={false}
+          options={{ autofocus: false }}
           submitByCtrlEnter={true}
           placeholder={t('Write a comment...')}
           onSubmit={(value) => handleSubmitComment(value)}
-          setClear={clearEditor()}
+          reset={clearEditor()}
           isPosting={posting()}
         />
       </ShowIfAuthenticated>

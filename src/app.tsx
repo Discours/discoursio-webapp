@@ -12,11 +12,16 @@ import { SessionProvider } from './context/session'
 import { TopicsProvider } from './context/topics'
 import { UIProvider } from './context/ui' // snackbar included
 import '~/styles/app.scss'
+import { AuthToken } from '@authorizerdev/authorizer-js'
 
 export const Providers = (props: { children?: JSX.Element }) => {
+  const sessionStateChanged = (payload: AuthToken) => {
+    console.debug(payload)
+    // TODO: maybe load subs here
+  }
   return (
     <LocalizeProvider>
-      <SessionProvider onStateChangeCallback={console.info}>
+      <SessionProvider onStateChangeCallback={sessionStateChanged}>
         <TopicsProvider>
           <FeedProvider>
             <MetaProvider>

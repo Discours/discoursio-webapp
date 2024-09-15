@@ -63,6 +63,7 @@
         "noBarrelFile": "off"
       },
       "style": {
+        "noNonNullAssertion": "off",
         "noNamespaceImport": "warn",
         "useBlockStatements": "off",
         "noImplicitBoolean": "off",

@@ -40,7 +40,6 @@ export const InsertLinkForm = (props: Props) => {
       .setLink({ href: checkUrl(value) })
       .run()
   }
-
   return (
     <div>
       <InlineForm
@@ -49,7 +48,7 @@ export const InsertLinkForm = (props: Props) => {
         onClear={handleClearLinkForm}
         validate={(value) => (validateUrl(value) ? '' : t('Invalid url format'))}
         onSubmit={handleLinkFormSubmit}
-        onClose={() => props.onClose()}
+        onClose={props.onClose}
       />
     </div>
   )

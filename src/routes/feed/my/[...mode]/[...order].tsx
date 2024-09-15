@@ -54,7 +54,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
 
   const order = createMemo(() => {
     return (
-      (paramOrderPattern.test(props.params.order)
+      (paramPattern.test(props.params.order)
         ? props.params.order === 'hot'
           ? 'last_comment'
           : props.params.order

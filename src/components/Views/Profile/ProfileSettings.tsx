@@ -340,8 +340,16 @@ export const ProfileSettings = () => {
                     />
 
                     <h4>{t('About')}</h4>
-                    <MiniEditor
-                      content={about() || ''}
+                    <SimplifiedEditor
+                      resetToInitial={clearAbout()}
+                      noLimits={true}
+                      variant="bordered"
+                      onlyBubbleControls={true}
+                      smallHeight={true}
+                      placeholder={t('About')}
+                      label={t('About')}
+                      initialContent={form.about || ''}
+                      autoFocus={false}
                       onChange={(value) => updateFormField('about', value)}
                       placeholder={t('About')}
                     />

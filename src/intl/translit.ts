@@ -1,4 +1,5 @@
 import translitConfig from './abc-translit.json'
+import { ruChars, slugChars } from './chars'
 
 const ru2en: { [key: string]: string } = translitConfig
 const rusChars = /[ЁА-яё]/
@@ -7,7 +8,7 @@ export const translit = (str: string) => {
     return ''
   }
 
-  const isCyrillic = rusChars.test(str)
+  const isCyrillic = ruChars.test(str)
 
   if (!isCyrillic) {
     return str
@@ -17,7 +18,5 @@ export const translit = (str: string) => {
 }
 
 export const slugify = (text: string) => {
-  return translit(text.toLowerCase())
-    .replaceAll(' ', '-')
-    .replaceAll(/[^\da-z]/g, '')
+  return translit(text.toLowerCase()).replaceAll(' ', '-').replaceAll(slugChars, '')
 }

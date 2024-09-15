@@ -172,7 +172,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
           }
           break
         }
-        // case 'AUTHOR':
+        // case 'AUTHOR': {
         default: {
           if (value) {
             if (!updatedFollows.authors?.some((author) => author.slug === slug)) {

@@ -1,11 +1,7 @@
 import { Author } from '~/graphql/schema/core.gen'
 import { capitalize } from '~/utils/capitalize'
+import { allChars, cyrillicRegex, enChars, ruChars } from './chars'
 import { translit } from './translit'
-
-const cyrillicRegex = /[\u0400-\u04FF]/ // Range for Cyrillic characters
-const allChars = /[^\dA-zА-я]/
-const rusChars = /[^ËА-яё]/
-const enChars = /[^A-z]/
 
 export const isCyrillic = (s: string): boolean => {
   return cyrillicRegex.test(s)
@@ -32,7 +28,7 @@ export const authorLetterReduce = (acc: { [x: string]: Author[] }, author: Autho
       letter = found[0].toUpperCase()
     }
   }
-  if (rusChars.test(letter) && lng === 'ru') letter = '@'
+  if (ruChars.test(letter) && lng === 'ru') letter = '@'
   if (enChars.test(letter) && lng === 'en') letter = '@'
 
   if (!acc[letter]) acc[letter] = []

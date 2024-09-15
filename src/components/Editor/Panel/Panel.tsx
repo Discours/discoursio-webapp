@@ -25,12 +25,12 @@ export const Panel = (props: Props) => {
   const {
     isEditorPanelVisible,
     wordCounter,
-    editor,
     form,
     toggleEditorPanel,
     saveShout,
     saveDraft,
-    publishShout
+    publishShout,
+    editor
   } = useEditorContext()
 
   let containerRef: HTMLElement | undefined
@@ -58,7 +58,7 @@ export const Panel = (props: Props) => {
     }
   }
 
-  const html = useEditorHTML(() => editor()) // FIXME: lost current() call
+  const html = useEditorHTML(editor)
 
   const handleFixTypographyClick = () => {
     editor()?.commands.setContent(typograf.execute(html() || '')) // here too

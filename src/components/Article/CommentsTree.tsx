@@ -158,11 +158,11 @@ export const CommentsTree = (props: Props) => {
         <SimplifiedEditor
           quoteEnabled={true}
           imageEnabled={true}
-          options={{ autofocus: false }}
+          autoFocus={false}
           submitByCtrlEnter={true}
           placeholder={t('Write a comment...')}
           onSubmit={(value) => handleSubmitComment(value)}
-          reset={clearEditor()}
+          setClear={clearEditor()}
           isPosting={posting()}
         />
       </ShowIfAuthenticated>

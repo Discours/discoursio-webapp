@@ -1,3 +1,4 @@
+import { Editor } from '@tiptap/core'
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { CharacterCount } from '@tiptap/extension-character-count'
@@ -14,12 +15,14 @@ import {
   useEditorIsEmpty,
   useEditorIsFocused
 } from 'solid-tiptap'
-
 import { useLocalize } from '~/context/localize'
+import { useUI } from '~/context/ui'
+import { base } from '~/lib/editorOptions'
 import { UploadedFile } from '~/types/upload'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../_shared/Loading'
+import { Modal } from '../_shared/Modal/Modal'
 import { Popover } from '../_shared/Popover'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
 import { LinkBubbleMenuModule } from './LinkBubbleMenu'
@@ -27,13 +30,9 @@ import { TextBubbleMenu } from './TextBubbleMenu'
 import { UploadModalContent } from './UploadModalContent'
 import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
-
-import { Editor } from '@tiptap/core'
-import { useUI } from '~/context/ui'
-import { base } from '~/lib/editorOptions'
-import { Modal } from '../_shared/Modal/Modal'
-import styles from './SimplifiedEditor.module.scss'
 import { renderUploadedImage } from './renderUploadedImage'
+
+import styles from './SimplifiedEditor.module.scss'
 
 type Props = {
   placeholder: string

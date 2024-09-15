@@ -11,7 +11,6 @@ import { useLocalize } from '~/context/localize'
 import type { Author } from '~/graphql/schema/core.gen'
 import { dummyFilter } from '~/intl/dummyFilter'
 import { authorLetterReduce, translateAuthor } from '~/intl/translate'
-// import { byFirstChar, byStat } from '~/lib/sort'
 import { scrollHandler } from '~/utils/scroll'
 import styles from './AllAuthors.module.scss'
 import stylesAuthorList from './AuthorsList.module.scss'
@@ -25,8 +24,8 @@ type Props = {
 
 export const AUTHORS_PER_PAGE = 20
 export const ABC = {
-  ru: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ#',
-  en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
+  ru: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ@',
+  en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ@'
 }
 
 // useAuthors sorted from context, set filter/sort

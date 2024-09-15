@@ -5,7 +5,7 @@ import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import type { Topic } from '~/graphql/schema/core.gen'
-import { ruChars } from '~/intl/chars'
+import { notLatin } from '~/intl/chars'
 import { getRandomItemsFromArray } from '~/utils/random'
 import styles from './TopicsNav.module.scss'
 
@@ -13,7 +13,7 @@ export const RandomTopics = () => {
   const { sortedTopics } = useTopics()
   const { lang, t } = useLocalize()
   const tag = (topic: Topic) =>
-    ruChars.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
+    notLatin.test(topic.title || '') && lang() !== 'ru' ? topic.slug : topic.title
   const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
   createEffect(
     on(sortedTopics, (ttt: Topic[]) => {

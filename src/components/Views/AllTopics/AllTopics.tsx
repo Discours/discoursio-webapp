@@ -6,8 +6,9 @@ import { SearchField } from '~/components/_shared/SearchField'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import type { Topic } from '~/graphql/schema/core.gen'
-import { enChars, ruChars } from '~/intl/chars'
+import { findFirstReadableCharIndex, notLatin, notRus } from '~/intl/chars'
 import { dummyFilter } from '~/intl/dummyFilter'
+import { capitalize } from '~/utils/capitalize'
 import { scrollHandler } from '~/utils/scroll'
 import { TopicBadge } from '../../Topic/TopicBadge'
 import styles from './AllTopics.module.scss'
@@ -28,16 +29,20 @@ export const AllTopics = (props: Props) => {
   const { setTopicsSort, sortedTopics } = useTopics()
   const topics = createMemo(() => sortedTopics() || props.topics)
   const [searchParams, changeSearchParams] = useSearchParams<{ by?: string }>()
+  onMount(() => changeSearchParams({ by: 'shouts' }))
   createEffect(on(() => searchParams?.by || 'shouts', setTopicsSort, { defer: true }))
-  onMount(() => !searchParams?.by && changeSearchParams({ by: 'shouts' }))
 
   // sorted derivative
   const byLetter = createMemo<{ [letter: string]: Topic[] }>(() => {
     return topics().reduce(
       (acc, topic) => {
-        let letter = lang() === 'en' ? topic.slug[0].toUpperCase() : (topic?.title?.[0] || '').toUpperCase()
-        if (enChars.test(letter) && lang() === 'ru') letter = '#'
-        if (ruChars.test(letter) && lang() === 'en') letter = '#'
+        const firstCharIndex = findFirstReadableCharIndex(topic?.title || '')
+        let letter =
+          lang() === 'en'
+            ? topic.slug[0].toUpperCase()
+            : (topic?.title?.[firstCharIndex] || '').toUpperCase()
+        if (notRus.test(letter) && lang() === 'ru') letter = '#'
+        if (notLatin.test(letter) && lang() === 'en') letter = '#'
         if (!acc[letter]) acc[letter] = []
         acc[letter].push(topic)
         return acc
@@ -124,7 +129,9 @@ export const AllTopics = (props: Props) => {
                 <For each={byLetter()[letter]}>
                   {(topic) => (
                     <div class={clsx(styles.topicTitle, 'col-sm-12 col-md-8')}>
-                      <A href={`/topic/${topic.slug}`}>{topic.title || topic.slug}</A>
+                      <A href={`/topic/${topic.slug}`}>
+                        {lang() !== 'ru' ? capitalize(topic.slug.replaceAll('-', ' ')) : topic.title}
+                      </A>
                       <Show when={topic.stat?.shouts || 0}>
                         <span class={styles.articlesCounter}>{topic.stat?.shouts || 0}</span>
                       </Show>

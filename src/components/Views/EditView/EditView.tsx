@@ -1,3 +1,4 @@
+import { Editor } from '@tiptap/core'
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
 import {
@@ -32,7 +33,7 @@ import { isDesktop } from '~/lib/mediaQuery'
 import { LayoutType } from '~/types/common'
 import { MediaItem } from '~/types/mediaitem'
 import { clone } from '~/utils/clone'
-import { Editor, Panel } from '../../Editor'
+import { Editor as EditorComponent, Panel } from '../../Editor'
 import { AudioUploader } from '../../Editor/AudioUploader'
 import { AutoSaveNotice } from '../../Editor/AutoSaveNotice'
 import { VideoUploader } from '../../Editor/VideoUploader'
@@ -45,6 +46,7 @@ const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/
 
 type Props = {
   shout: Shout
+  editor: Editor
 }
 
 export const MAX_HEADER_LIMIT = 100
@@ -456,10 +458,10 @@ export const EditView = (props: Props) => {
               </div>
             </div>
             <Show when={form?.shoutId} fallback={<Loading />}>
-              <Editor
+              <EditorComponent
                 shoutId={form.shoutId}
                 initialContent={form.body}
-                onChange={(body) => handleInputChange('body', body)}
+                onChange={(body: string) => handleInputChange('body', body)}
               />
             </Show>
           </div>

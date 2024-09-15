@@ -17,12 +17,12 @@ type SnackbarMessage = {
   duration?: number
 }
 
-type SnackbarContextType = {
+export type SnackbarContextType = {
   snackbarMessage: Accessor<SnackbarMessage | null | undefined>
   showSnackbar: (message: SnackbarMessage) => Promise<void>
 }
 
-const SnackbarContext = createContext<SnackbarContextType>({
+export const SnackbarContext = createContext<SnackbarContextType>({
   snackbarMessage: () => undefined,
   showSnackbar: async (_m: SnackbarMessage) => undefined
 } as SnackbarContextType)

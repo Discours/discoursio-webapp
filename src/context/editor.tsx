@@ -1,4 +1,5 @@
 import { useMatch, useNavigate } from '@solidjs/router'
+import { Editor } from '@tiptap/core'
 import type { JSX } from 'solid-js'
 import { Accessor, createContext, createMemo, createSignal, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
@@ -33,7 +34,7 @@ export type ShoutForm = {
   media?: string
 }
 
-type EditorContextType = {
+export type EditorContextType = {
   isEditorPanelVisible: Accessor<boolean>
   wordCounter: Accessor<WordCounter>
   form: ShoutForm
@@ -49,9 +50,11 @@ type EditorContextType = {
   countWords: (value: WordCounter) => void
   setForm: SetStoreFunction<ShoutForm>
   setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
+  editor: Accessor<Editor | undefined>
+  setEditor: (e: Editor) => void
 }
 
-const EditorContext = createContext<EditorContextType>({} as EditorContextType)
+export const EditorContext = createContext<EditorContextType>({} as EditorContextType)
 
 export function useEditorContext() {
   return useContext(EditorContext)
@@ -83,7 +86,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const matchEditSettings = useMatch(() => '/editSettings')
   const { session } = useSession()
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
-
+  const [editor, setEditor] = createSignal<Editor | undefined>()
   const { addFeed } = useFeed()
   const snackbar = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
@@ -278,7 +281,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     toggleEditorPanel,
     countWords,
     setForm,
-    setFormErrors
+    setFormErrors,
+    editor,
+    setEditor
   }
 
   const value: EditorContextType = {

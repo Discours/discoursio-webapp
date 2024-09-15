@@ -46,7 +46,6 @@ export const EditSettingsView = (props: Props) => {
   const [isScrolled, setIsScrolled] = createSignal(false)
   const { session } = useSession()
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
-
   const { form, setForm, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage } = useEditorContext()
   const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
   const [draft, setDraft] = createSignal()

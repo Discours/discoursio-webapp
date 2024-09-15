@@ -15,7 +15,7 @@ import { processPrepositions } from '~/intl/prepositions'
 
 i18nextInit()
 
-type LocalizeContextType = {
+export type LocalizeContextType = {
   t: i18n['t']
   lang: Accessor<Language>
   setLang: (lang: Language) => void
@@ -26,7 +26,7 @@ type LocalizeContextType = {
 
 export type Language = 'ru' | 'en'
 
-const LocalizeContext = createContext<LocalizeContextType>({
+export const LocalizeContext = createContext<LocalizeContextType>({
   t: (s: string) => s
 } as LocalizeContextType)
 

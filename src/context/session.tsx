@@ -85,7 +85,8 @@ const metaRes = {
     }
   }
 }
-const SessionContext = createContext<SessionContextType>({} as SessionContextType)
+
+export const SessionContext = createContext<SessionContextType>({} as SessionContextType)
 
 export function useSession() {
   return useContext(SessionContext)

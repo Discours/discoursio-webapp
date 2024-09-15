@@ -24,7 +24,7 @@ const polyfillOptions = {
 export default {
   resolve: {
     alias: {
-      '~': path.resolve(__dirname, './src')
+      '~': path.resolve('./src')
     }
   },
   envPrefix: 'PUBLIC_',

@@ -56,7 +56,7 @@ export const AllAuthors = (props: Props) => {
 
   // store by first char
   const byLetterFiltered = createMemo<{ [letter: string]: Author[] }>(() => {
-    if (!(filteredAuthors()?.length > 0)) return {}
+    if (!filteredAuthors()) return {}
     console.debug('[components.AllAuthors] update byLetterFiltered', filteredAuthors()?.length)
     return (
       filteredAuthors()?.reduce(

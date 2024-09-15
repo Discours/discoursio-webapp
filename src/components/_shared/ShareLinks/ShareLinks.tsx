@@ -97,8 +97,10 @@ export const ShareLinks = (props: Props) => {
             }
           >
             <form class={clsx('pretty-form__item', styles.linkInput)}>
-              <input type="text" name="link" readonly value={props.shareUrl} />
-              <label for="link">{t('Copy link')}</label>
+              <label for="link">
+                <input type="text" name="link" readonly value={props.shareUrl} />
+                {t('Copy link')}
+              </label>
 
               <Popover content={t('Copy link')}>
                 {(triggerRef: (el: HTMLElement) => void) => (

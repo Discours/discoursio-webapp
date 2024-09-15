@@ -130,7 +130,7 @@ export const EditView = (props: Props) => {
       draft,
       (d) => {
         if (d) {
-          const draftForm = Object.keys(d).length !== 0 ? d : { shoutId: props.shout.id }
+          const draftForm = Object.keys(d) ? d : { shoutId: props.shout.id }
           setForm(draftForm)
           console.debug('draft from localstorage: ', draftForm)
         }

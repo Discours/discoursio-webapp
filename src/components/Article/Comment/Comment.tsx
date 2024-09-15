@@ -47,7 +47,7 @@ export const Comment = (props: Props) => {
   const [editedBody, setEditedBody] = createSignal<string>()
   const { session } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const { createReaction, updateReaction } = useReactions()
+  const { createShoutReaction, updateShoutReaction } = useReactions()
   const { showConfirm } = useUI()
   const { showSnackbar } = useSnackbar()
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
@@ -99,7 +99,7 @@ export const Comment = (props: Props) => {
   const handleCreate = async (value: string) => {
     try {
       setLoading(true)
-      await createReaction({
+      await createShoutReaction({
         reaction: {
           kind: ReactionKind.Comment,
           reply_to: props.comment.id,
@@ -123,7 +123,7 @@ export const Comment = (props: Props) => {
   const handleUpdate = async (value: string) => {
     setLoading(true)
     try {
-      const reaction = await updateReaction({
+      const reaction = await updateShoutReaction({
         reaction: {
           id: props.comment.id || 0,
           kind: ReactionKind.Comment,

@@ -1,4 +1,4 @@
-import { A, useNavigate, useSearchParams } from '@solidjs/router'
+import { A, useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Accessor, For, Show, createMemo, createSignal } from 'solid-js'
 import { Icon } from '~/components/_shared/Icon'
@@ -7,7 +7,6 @@ import { Popover } from '~/components/_shared/Popover'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
-import { sentenceSeparator } from '~/intl/chars'
 import { capitalize } from '~/utils/capitalize'
 import { descFromBody } from '~/utils/meta'
 import { CoverImage } from '../../Article/CoverImage'
@@ -56,7 +55,7 @@ const desktopCoverImageWidths: Record<string, number> = {
   M: 600,
   L: 800
 }
-
+const titleSeparator = /{!|\?|:|;}\s/
 const getTitleAndSubtitle = (
   article: Shout
 ): {
@@ -70,7 +69,7 @@ const getTitleAndSubtitle = (
     let titleParts = article.title?.split('. ') || []
 
     if (titleParts?.length === 1) {
-      titleParts = article.title?.split(sentenceSeparator) || []
+      titleParts = article.title?.split(titleSeparator) || []
     }
 
     if (titleParts && titleParts.length > 1) {
@@ -106,7 +105,6 @@ export const ArticleCard = (props: ArticleCardProps) => {
   const { t, lang, formatDate } = useLocalize()
   const { session } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const [, changeSearchParams] = useSearchParams()
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const [isCoverImageLoadError, setIsCoverImageLoadError] = createSignal(false)
   const [isCoverImageLoading, setIsCoverImageLoading] = createSignal(true)
@@ -130,10 +128,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
 
   const scrollToComments = (event: MouseEvent & { currentTarget: HTMLAnchorElement; target: Element }) => {
     event.preventDefault()
-    changeSearchParams({
-      scrollTo: 'comments'
-    })
-    navigate(`/${props.article.slug}`)
+    navigate(`/${props.article.slug}?commentId=0`)
   }
 
   const onInvite = () => {

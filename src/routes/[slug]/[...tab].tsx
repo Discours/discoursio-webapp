@@ -1,6 +1,6 @@
 import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { ErrorBoundary, Show, Suspense, createEffect, createSignal, on, onMount } from 'solid-js'
+import { ErrorBoundary, Show, Suspense, createEffect, on, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -28,9 +28,14 @@ export const route: RouteDefinition = {
   })
 }
 
-type ArticlePageProps = { article?: Shout; comments?: Reaction[]; votes?: Reaction[]; author?: Author }
+export type ArticlePageProps = {
+  article?: Shout
+  comments?: Reaction[]
+  votes?: Reaction[]
+  author?: Author
+}
 
-type SlugPageProps = {
+export type SlugPageProps = {
   article?: Shout
   comments?: Reaction[]
   votes?: Reaction[]
@@ -38,7 +43,7 @@ type SlugPageProps = {
   topics: Topic[]
 }
 
-export default (props: RouteSectionProps<SlugPageProps>) => {
+export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
   if (props.params.slug.startsWith('@')) {
     console.debug('[routes] [slug]/[...tab] starts with @, render as author page')
     const patchedProps = {
@@ -66,7 +71,6 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
   function ArticlePage(props: RouteSectionProps<ArticlePageProps>) {
     const loc = useLocation()
     const { t } = useLocalize()
-    const [scrollToComments, setScrollToComments] = createSignal<boolean>(false)
     const data = createAsync(async () => props.data?.article || (await fetchShout(props.params.slug)))
 
     onMount(async () => {
@@ -114,10 +118,9 @@ export default (props: RouteSectionProps<SlugPageProps>) => {
               headerTitle={data()?.title || ''}
               slug={data()?.slug}
               cover={data()?.cover || ''}
-              scrollToComments={(value) => setScrollToComments(value)}
             >
               <ReactionsProvider>
-                <FullArticle article={data() as Shout} scrollToComments={scrollToComments()} />
+                <FullArticle article={data() as Shout} />
               </ReactionsProvider>
             </PageLayout>
           </Show>

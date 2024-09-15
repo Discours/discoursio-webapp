@@ -17,8 +17,9 @@ type Props = {
   articleView?: boolean
 }
 const watchPattern = /watch=(\w+)/
-const ytPattern = /(youtu.be)\/(\w+)/
+const ytPattern = /youtu.be\/(\w+)/
 const vimeoPattern = /vimeo.com\/(\d+)/
+
 export const VideoPlayer = (props: Props) => {
   const { t } = useLocalize()
   const [videoId, setVideoId] = createSignal<string | undefined>()

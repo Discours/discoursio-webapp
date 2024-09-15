@@ -14,6 +14,7 @@ import {
   onMount
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import SimplifiedEditor from '~/components/Editor/SimplifiedEditor'
 import { useLocalize } from '~/context/localize'
 import { useProfile } from '~/context/profile'
 import { useSession } from '~/context/session'
@@ -34,7 +35,7 @@ import { SocialNetworkInput } from '../../_shared/SocialNetworkInput'
 import styles from './Settings.module.scss'
 import { profileSocialLinks } from './profileSocialLinks'
 
-const SimplifiedEditor = lazy(() => import('~/components/Editor/SimplifiedEditor'))
+// const SimplifiedEditor = lazy(() => import('~/components/Editor/SimplifiedEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 function filterNulls(arr: InputMaybe<string>[]): string[] {
@@ -56,11 +57,11 @@ export const ProfileSettings = () => {
   const [slugError, setSlugError] = createSignal<string>()
   const [nameError, setNameError] = createSignal<string>()
   const { form, submit, updateFormField, setForm } = useProfile()
+  const [about, setAbout] = createSignal(form.about)
   const { showSnackbar } = useSnackbar()
   const { loadSession, session } = useSession()
   const [prevForm, setPrevForm] = createStore<ProfileInput>()
   const { showConfirm } = useUI()
-  const [clearAbout, setClearAbout] = createSignal(false)
   const { showModal, hideModal } = useUI()
   const [loading, setLoading] = createSignal(true)
 
@@ -111,6 +112,7 @@ export const ProfileSettings = () => {
     try {
       await submit(form)
       setPrevForm(clone(form))
+      setAbout(form.about)
       showSnackbar({ body: t('Profile successfully saved') })
     } catch (error) {
       if (error?.toString().search('duplicate_slug')) {
@@ -132,11 +134,7 @@ export const ProfileSettings = () => {
       confirmButtonVariant: 'primary',
       declineButtonVariant: 'secondary'
     })
-    if (isConfirmed) {
-      setClearAbout(true)
-      setForm(clone(prevForm))
-      setClearAbout(false)
-    }
+    isConfirmed && setForm(clone(prevForm))
   }
 
   const handleCropAvatar = () => {
@@ -254,7 +252,7 @@ export const ProfileSettings = () => {
                               </Popover>
 
                               {/* @@TODO inspect popover below. onClick causes page refreshing */}
-                              {/* <Popover content={t('Upload userpic')}>
+                              <Popover content={t('Upload userpic')}>
                                 {(triggerRef: (el: HTMLElement) => void) => (
                                   <button
                                     ref={triggerRef}
@@ -264,7 +262,7 @@ export const ProfileSettings = () => {
                                     <Icon name="user-image-black" />
                                   </button>
                                 )}
-                              </Popover> */}
+                              </Popover>
                             </div>
                           </Match>
                           <Match when={!form.pic}>
@@ -284,18 +282,20 @@ export const ProfileSettings = () => {
                       )}
                     </p>
                     <div class="pretty-form__item">
-                      <input
-                        type="text"
-                        name="nameOfUser"
-                        id="nameOfUser"
-                        data-lpignore="true"
-                        autocomplete="one-time-code"
-                        placeholder={t('Name')}
-                        onInput={(event) => updateFormField('name', event.currentTarget.value)}
-                        value={form.name || ''}
-                        ref={(el) => (nameInputRef = el)}
-                      />
-                      <label for="nameOfUser">{t('Name')}</label>
+                      <label for="nameOfUser">
+                        <input
+                          type="text"
+                          name="nameOfUser"
+                          id="nameOfUser"
+                          data-lpignore="true"
+                          autocomplete="one-time-code"
+                          placeholder={t('Name')}
+                          onInput={(event) => updateFormField('name', event.currentTarget.value)}
+                          value={form.name || ''}
+                          ref={(el) => (nameInputRef = el)}
+                        />
+                        {t('Name')}
+                      </label>
                       <Show when={nameError()}>
                         <div
                           style={{ position: 'absolute', 'margin-top': '-4px' }}
@@ -341,16 +341,16 @@ export const ProfileSettings = () => {
 
                     <h4>{t('About')}</h4>
                     <SimplifiedEditor
-                      resetToInitial={clearAbout()}
+                      resetToInitial={true}
                       noLimits={true}
                       variant="bordered"
                       onlyBubbleControls={true}
                       smallHeight={true}
-                      placeholder={t('About')}
                       label={t('About')}
-                      initialContent={form.about || ''}
+                      initialContent={about() || ''}
                       autoFocus={false}
-                      onChange={(value) => updateFormField('about', value)}
+                      onChange={setAbout}
+                      placeholder={t('About')}
                     />
                     <div class={clsx(styles.multipleControls, 'pretty-form__item')}>
                       <div class={styles.multipleControlsHeader}>

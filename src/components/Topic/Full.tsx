@@ -44,7 +44,7 @@ export const FullTopic = (props: Props) => {
   )
 
   createEffect(() => {
-    if (follows?.topics?.length !== 0) {
+    if (follows?.topics?.length ?? true) {
       const items = follows.topics || []
       setFollowed(items.some((x: Topic) => x?.slug === props.topic?.slug))
     }

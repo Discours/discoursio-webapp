@@ -38,7 +38,6 @@ import { ShoutRatingControl } from './ShoutRatingControl'
 
 type Props = {
   article: Shout
-  scrollToComments?: boolean
 }
 
 type IframeSize = {
@@ -47,8 +46,7 @@ type IframeSize = {
 }
 
 export type ArticlePageSearchParams = {
-  scrollTo: 'comments'
-  commentId: string
+  commentId?: string
   slide?: string
 }
 
@@ -67,7 +65,7 @@ export const COMMENTS_PER_PAGE = 30
 const VOTES_PER_PAGE = 50
 
 export const FullArticle = (props: Props) => {
-  const [searchParams, changeSearchParams] = useSearchParams<ArticlePageSearchParams>()
+  const [searchParams] = useSearchParams<ArticlePageSearchParams>()
   const { showModal } = useUI()
   const { loadReactionsBy } = useReactions()
   const [selectedImage, setSelectedImage] = createSignal('')
@@ -83,18 +81,20 @@ export const FullArticle = (props: Props) => {
   createEffect(
     on(
       pages,
-      async (p: Record<string, number>) => {
-        await loadReactionsBy({
+      (p: Record<string, number>) => {
+        console.debug('content paginated')
+        loadReactionsBy({
           by: { shout: props.article.slug, comment: true },
           limit: COMMENTS_PER_PAGE,
           offset: COMMENTS_PER_PAGE * p.comments || 0
         })
-        await loadReactionsBy({
+        loadReactionsBy({
           by: { shout: props.article.slug, rating: true },
           limit: VOTES_PER_PAGE,
           offset: VOTES_PER_PAGE * p.rating || 0
         })
         setIsReactionsLoaded(true)
+        console.debug('reactions paginated')
       },
       { defer: true }
     )
@@ -165,15 +165,16 @@ export const FullArticle = (props: Props) => {
   const media = createMemo<MediaItem[]>(() => JSON.parse(props.article.media || '[]'))
 
   let commentsRef: HTMLDivElement | undefined
-
   createEffect(() => {
     if (searchParams?.commentId && isReactionsLoaded()) {
-      const commentElement = document.querySelector<HTMLElement>(
-        `[id='comment_${searchParams?.commentId}']`
-      )
+      console.debug('comment id is in link, scroll to')
+      const scrollToElement =
+        document.querySelector<HTMLElement>(`[id='comment_${searchParams?.commentId}']`) ||
+        commentsRef ||
+        document.body
 
-      if (commentElement) {
-        requestAnimationFrame(() => scrollTo(commentElement))
+      if (scrollToElement) {
+        requestAnimationFrame(() => scrollTo(scrollToElement))
       }
     }
   })
@@ -314,14 +315,6 @@ export const FullArticle = (props: Props) => {
     updateIframeSizes()
     window?.addEventListener('resize', updateIframeSizes)
     onCleanup(() => window.removeEventListener('resize', updateIframeSizes))
-  })
-
-  createEffect(() => props.scrollToComments && commentsRef && scrollTo(commentsRef))
-  createEffect(() => {
-    if (searchParams?.scrollTo === 'comments' && commentsRef) {
-      requestAnimationFrame(() => commentsRef && scrollTo(commentsRef))
-      changeSearchParams({ scrollTo: undefined })
-    }
   })
 
   const shareUrl = createMemo(() => getShareUrl({ pathname: `/${props.article.slug || ''}` }))

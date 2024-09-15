@@ -17,7 +17,7 @@ export const RandomTopics = () => {
   const [randomTopics, setRandomTopics] = createSignal<Topic[]>([])
   createEffect(
     on(sortedTopics, (ttt: Topic[]) => {
-      if (ttt?.length) {
+      if (ttt?.length > 0) {
         setRandomTopics(getRandomItemsFromArray(ttt))
       }
     })

@@ -11,40 +11,16 @@ import { ReactionsProvider } from '~/context/reactions'
 import { useTopics } from '~/context/topics'
 import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
+import { FromPeriod, getFromDate } from '~/lib/fromPeriod'
 import { SHOUTS_PER_PAGE } from '../(main)'
 
-const paramPattern = /^(hot|likes)$/
-
-export type FeedPeriod = 'week' | 'month' | 'year'
-
 export type PeriodItem = {
-  value: FeedPeriod
+  value: FromPeriod
   title: string
 }
 
 export type FeedSearchParams = {
-  period: FeedPeriod
-}
-
-const getFromDate = (period: FeedPeriod): number => {
-  const now = new Date()
-  let d: Date = now
-  switch (period) {
-    case 'week': {
-      d = new Date(now.setDate(now.getDate() - 7))
-      break
-    }
-    case 'year': {
-      d = new Date(now.setFullYear(now.getFullYear() - 1))
-      break
-    }
-    // case 'month': {
-    default: {
-      d = new Date(now.setMonth(now.getMonth() - 1))
-      break
-    }
-  }
-  return Math.floor(d.getTime() / 1000)
+  period: FromPeriod
 }
 
 const feedLoader = async (options: Partial<LoadShoutsOptions>, _client?: Client) => {
@@ -59,6 +35,8 @@ export const route = {
     return result
   }
 }
+
+const paramPattern = /^(hot|likes)$/
 
 export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) => {
   const [searchParams] = useSearchParams<FeedSearchParams>() // ?period=month
@@ -90,7 +68,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     // ?period=month - time period filter
     if (searchParams?.period) {
       const period = searchParams?.period || 'month'
-      options.filters = { after: getFromDate(period as FeedPeriod) }
+      options.filters = { after: getFromDate(period as FromPeriod) }
     }
 
     const loaded = await feedLoader(options)

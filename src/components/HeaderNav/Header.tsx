@@ -23,7 +23,6 @@ type Props = {
   isHeaderFixed?: boolean
   desc?: string
   cover?: string
-  scrollToComments?: (value: boolean) => void
 }
 
 type HeaderSearchParams = {
@@ -38,7 +37,7 @@ export const Header = (props: Props) => {
   const { t, lang } = useLocalize()
   const { modal } = useUI()
   const { requireAuthentication } = useSession()
-  const [searchParams] = useSearchParams<HeaderSearchParams>()
+  const [searchParams, changeSearchParams] = useSearchParams<HeaderSearchParams>()
   const [getIsScrollingBottom, setIsScrollingBottom] = createSignal(false)
   const [getIsScrolled, setIsScrolled] = createSignal(false)
   const [fixed, setFixed] = createSignal(false)
@@ -84,14 +83,6 @@ export const Header = (props: Props) => {
       window.removeEventListener('scroll', handleScroll)
     })
   })
-
-  const scrollToComments = (
-    event: MouseEvent & { currentTarget: HTMLDivElement; target: Element },
-    value: boolean
-  ) => {
-    event.preventDefault()
-    props.scrollToComments?.(value)
-  }
 
   const handleBookmarkButtonClick = (ev: { preventDefault: () => void }) => {
     requireAuthentication(() => {
@@ -320,7 +311,7 @@ export const Header = (props: Props) => {
                   </>
                 }
               />
-              <div onClick={(event) => scrollToComments(event, true)} class={styles.control}>
+              <div onClick={() => changeSearchParams({ commentId: 0 })} class={styles.control}>
                 <Icon name="comment" class={styles.icon} />
                 <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
               </div>

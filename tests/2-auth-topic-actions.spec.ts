@@ -5,7 +5,6 @@ import { type Page, expect, test } from '@playwright/test'
 /* Global starting test config */
 
 let page: Page
-
 function httpsGet(url: string): Promise<void> {
   return new Promise((resolve, reject) => {
     https

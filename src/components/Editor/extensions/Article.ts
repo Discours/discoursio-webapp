@@ -10,7 +10,7 @@ declare module '@tiptap/core' {
   }
 }
 
-export default Node.create({
+export const ArticleNode = Node.create({
   name: 'article',
   group: 'block',
   content: 'block+',
@@ -65,3 +65,5 @@ export default Node.create({
     }
   }
 })
+
+export default ArticleNode

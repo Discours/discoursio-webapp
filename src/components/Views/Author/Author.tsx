@@ -175,7 +175,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [loadMoreCommentsHidden, setLoadMoreCommentsHidden] = createSignal(
     Boolean(props.author?.stat && props.author?.stat?.comments === 0)
   )
-  const { commentsByAuthor, addReactions } = useReactions()
+  const { commentsByAuthor, addShoutReactions } = useReactions()
   const loadMoreComments = async () => {
     if (!author()) return [] as LoadMoreItems
     saveScrollPosition()
@@ -189,7 +189,7 @@ export const AuthorView = (props: AuthorViewProps) => {
       offset: commentsByAuthor()[aid]?.length || 0
     })
     const result = await authorCommentsFetcher()
-    result && addReactions(result)
+    result && addShoutReactions(result)
     restoreScrollPosition()
     return result as LoadMoreItems
   }

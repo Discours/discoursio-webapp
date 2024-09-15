@@ -1,14 +1,13 @@
+// biome-ignore lint/correctness/noNodejsModules: <explanation>
+import path from 'node:path'
 import { CSSOptions } from 'vite'
-// import { visualizer } from 'rollup-plugin-visualizer'
 import mkcert from 'vite-plugin-mkcert'
 import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
+// import { visualizer } from 'rollup-plugin-visualizer'
 
-const isVercel = Boolean(process?.env.VERCEL)
-const isNetlify = Boolean(process?.env.NETLIFY)
-const isBun = Boolean(process.env.BUN)
-export const runtime = isNetlify ? 'netlify' : isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node'
-console.info(`[app.config] build for ${runtime}!`)
+const isDev = process.env.NODE_ENV !== 'production'
+console.log(`[vite.config] development mode: ${isDev}`)
 
 const polyfillOptions = {
   include: ['path', 'stream', 'util'],
@@ -23,8 +22,13 @@ const polyfillOptions = {
 } as PolyfillOptions
 
 export default {
+  resolve: {
+    alias: {
+      '~': path.resolve(__dirname, './src')
+    }
+  },
   envPrefix: 'PUBLIC_',
-  plugins: [!isVercel && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
+  plugins: [isDev && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
   css: {
     preprocessorOptions: {
       scss: {

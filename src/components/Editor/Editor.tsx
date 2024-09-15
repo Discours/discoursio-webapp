@@ -29,17 +29,16 @@ import { Show, createEffect, createMemo, createSignal, on, onCleanup } from 'sol
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
 import { Doc } from 'yjs'
-
 import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useSnackbar } from '~/context/ui'
+import { Author } from '~/graphql/schema/core.gen'
 import { handleImageUpload } from '~/lib/handleImageUpload'
-
 import { BlockquoteBubbleMenu, FigureBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import Article from './extensions/Article'
+import { ArticleNode } from './extensions/Article'
 import { CustomBlockquote } from './extensions/CustomBlockquote'
 import { Figcaption } from './extensions/Figcaption'
 import { Figure } from './extensions/Figure'
@@ -50,7 +49,7 @@ import { ToggleTextWrap } from './extensions/ToggleTextWrap'
 import { TrailingNode } from './extensions/TrailingNode'
 
 import './Prosemirror.scss'
-import { Author } from '~/graphql/schema/core.gen'
+import { renderUploadedImage } from './renderUploadedImage'
 
 type Props = {
   shoutId: number
@@ -124,26 +123,8 @@ export const EditorComponent = (props: Props) => {
       }
 
       showSnackbar({ body: t('Uploading image') })
-      const result = await handleImageUpload(uplFile, session()?.access_token || '')
-
-      editor()
-        ?.chain()
-        .focus()
-        .insertContent({
-          type: 'figure',
-          attrs: { 'data-type': 'image' },
-          content: [
-            {
-              type: 'image',
-              attrs: { src: result.url }
-            },
-            {
-              type: 'figcaption',
-              content: [{ type: 'text', text: result.originalFilename }]
-            }
-          ]
-        })
-        .run()
+      const image = await handleImageUpload(uplFile, session()?.access_token || '')
+      renderUploadedImage(editor() as Editor, image)
     } catch (error) {
       console.error('[Paste Image Error]:', error)
     }
@@ -293,7 +274,7 @@ export const EditorComponent = (props: Props) => {
               }
             }),
             TrailingNode,
-            Article
+            ArticleNode
           ],
           onTransaction: ({ transaction }) => {
             if (transaction.docChanged) {

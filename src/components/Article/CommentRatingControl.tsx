@@ -22,7 +22,7 @@ export const CommentRatingControl = (props: Props) => {
   const { session } = useSession()
   const uid = createMemo<number>(() => session()?.user?.app_data?.profile?.id || 0)
   const { showSnackbar } = useSnackbar()
-  const { reactionEntities, createReaction, deleteReaction, loadReactionsBy } = useReactions()
+  const { reactionEntities, createShoutReaction, deleteShoutReaction, loadReactionsBy } = useReactions()
 
   const checkReaction = (reactionKind: ReactionKind) =>
     Object.values(reactionEntities).some(
@@ -53,7 +53,7 @@ export const CommentRatingControl = (props: Props) => {
         r.shout.id === props.comment.shout.id &&
         r.reply_to === props.comment.id
     )
-    if (reactionToDelete) return deleteReaction(reactionToDelete.id)
+    if (reactionToDelete) return deleteShoutReaction(reactionToDelete.id)
   }
 
   const handleRatingChange = async (isUpvote: boolean) => {
@@ -63,7 +63,7 @@ export const CommentRatingControl = (props: Props) => {
       } else if (isDownvoted()) {
         await deleteCommentReaction(ReactionKind.Dislike)
       } else {
-        await createReaction({
+        await createShoutReaction({
           reaction: {
             kind: isUpvote ? ReactionKind.Like : ReactionKind.Dislike,
             shout: props.comment.shout.id,

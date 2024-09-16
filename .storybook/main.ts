@@ -8,14 +8,7 @@ const config: StorybookConfig = {
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
     '@storybook/addon-themes',
-    {
-      name: 'storybook-addon-sass-postcss',
-      options: {
-        postcssLoaderOptions: {
-          implementation: require('postcss')
-        }
-      }
-    }
+    'storybook-addon-sass-postcss'
   ],
   framework: {
     name: 'storybook-solidjs-vite',

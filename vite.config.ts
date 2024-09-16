@@ -1,5 +1,6 @@
 // biome-ignore lint/correctness/noNodejsModules: <explanation>
 import path from 'node:path'
+import sass from "sass";
 import { CSSOptions } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
@@ -32,9 +33,10 @@ export default {
   css: {
     preprocessorOptions: {
       scss: {
-        implementation: require('sass'),
-        additionalData: '@import "src/styles/imports";\n',
-        includePaths: ['./public', './src/styles']
+        sourceMaps: false,
+        implementation: sass,
+        additionalData: '@import "~/styles/imports";\n',
+        includePaths: ['./public', './src/styles'],
       }
     } as CSSOptions['preprocessorOptions']
   },

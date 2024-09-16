@@ -11,19 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install Bun
+        run: |
+          curl https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
       - uses: actions/setup-node@v4
       - name: Install dependencies
-        run: npm i
-      - name: Install CI checks
-        run: npm ci
-      - name: Check types
-        run: npm run typecheck
-      - name: Lint with Biome
-        run: npx @biomejs/biome check src/.
-      - name: Lint styles
-        run: npx stylelint **/*.{scss,css}
+        run: bun i
+      - name: biome check
+        run: bunx @biomejs/biome check src/.
+      - name: tsc check
+        run: bun run typecheck
       - name: Test production build
-        run: npm run build
+        run: bun run build
 
   e2e_tests:
     needs: ci

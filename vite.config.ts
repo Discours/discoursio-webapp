@@ -36,7 +36,7 @@ export default {
   css: {
     preprocessorOptions: {
       scss: {
-        sourceMaps: false,
+        silenceDeprecations: ['mixed-decls'],
         additionalData: '@import "~/styles/imports";\n',
         includePaths: ['./public', './src/styles', './node_modules']
       }

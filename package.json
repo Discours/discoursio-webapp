@@ -1,7 +1,7 @@
 {
   "name": "discoursio-webapp",
   "private": true,
-  "version": "0.9.5",
+  "version": "0.9.6",
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
@@ -133,6 +133,10 @@
     "yjs": "13.6.18"
   },
   "overrides": {
+    "sass": "1.77.6",
+    "sass-embedded": {
+      "sass": "1.77.6"
+    },
     "vite": "5.3.5",
     "yjs": "13.6.18",
     "y-prosemirror": "1.2.12"

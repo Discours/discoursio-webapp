@@ -6,7 +6,7 @@ import { EditorContext, EditorContextType, ShoutForm } from '~/context/editor'
 import { LocalizeContext, LocalizeContextType } from '~/context/localize'
 import { SessionContext, SessionContextType } from '~/context/session'
 import { SnackbarContext, SnackbarContextType } from '~/context/ui'
-import { EditorComponent } from './Editor'
+import { EditorComponent, EditorComponentProps } from './Editor'
 
 // Mock any necessary data
 const mockSession = {
@@ -125,8 +125,8 @@ export default meta
 type Story = StoryObj<typeof EditorComponent>
 
 export const Default: Story = {
-  render: (args) => {
-    const [_content, setContent] = createSignal(args.initialContent || '')
+  render: (props: EditorComponentProps) => {
+    const [_content, setContent] = createSignal(props.initialContent || '')
 
     return (
       <SessionContext.Provider value={mockSession as SessionContextType}>
@@ -134,9 +134,9 @@ export const Default: Story = {
           <SnackbarContext.Provider value={mockSnackbarContext as SnackbarContextType}>
             <EditorContext.Provider value={mockEditorContext as EditorContextType}>
               <EditorComponent
-                {...args}
+                {...props}
                 onChange={(text: string) => {
-                  args.onChange(text)
+                  props.onChange(text)
                   setContent(text)
                 }}
               />

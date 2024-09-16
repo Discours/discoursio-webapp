@@ -51,7 +51,7 @@ import { renderUploadedImage } from './renderUploadedImage'
 
 import './Prosemirror.scss'
 
-type Props = {
+export type EditorComponentProps = {
   shoutId: number
   initialContent?: string
   onChange: (text: string) => void
@@ -72,7 +72,7 @@ const allowedImageTypes = new Set([
 const yDocs: Record<string, Doc> = {}
 const providers: Record<string, HocuspocusProvider> = {}
 
-export const EditorComponent = (props: Props) => {
+export const EditorComponent = (props: EditorComponentProps) => {
   const { t } = useLocalize()
   const { session } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)

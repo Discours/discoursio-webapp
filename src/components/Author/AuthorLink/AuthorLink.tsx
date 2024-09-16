@@ -8,7 +8,7 @@ import { translit } from '~/intl/translit'
 import { capitalize } from '~/utils/capitalize'
 import { Userpic } from '../Userpic'
 
-import styles from './AhtorLink.module.scss'
+import styles from './AuthorLink.module.scss'
 
 type Props = {
   author: Author

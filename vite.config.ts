@@ -32,6 +32,7 @@ export default {
   css: {
     preprocessorOptions: {
       scss: {
+        implementation: require('sass'),
         additionalData: '@import "src/styles/imports";\n',
         includePaths: ['./public', './src/styles']
       }

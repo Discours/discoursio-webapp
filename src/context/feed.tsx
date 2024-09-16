@@ -78,7 +78,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
   })
 
   const addSeen = async (slug: string) => {
-    setSeen((prev) => {
+    setSeen((prev: Record<string, number>) => {
       const newSeen = { ...prev, [slug]: Date.now() }
       return newSeen
     })

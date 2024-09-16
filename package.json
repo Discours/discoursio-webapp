@@ -35,7 +35,7 @@
     "@solid-primitives/pagination": "^0.3.0",
     "@solid-primitives/script-loader": "^2.2.0",
     "@solid-primitives/share": "^2.0.6",
-    "@solid-primitives/storage": "^3.8.0",
+    "@solid-primitives/storage": "^4.2.1",
     "@solid-primitives/upload": "^0.0.117",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.14.5",
@@ -106,7 +106,7 @@
     "prosemirror-trailing-node": "^2.0.9",
     "prosemirror-view": "^1.34.2",
     "rollup-plugin-visualizer": "^5.12.0",
-    "sass": "1.76.0",
+    "sass": "1.77.6",
     "solid-js": "^1.8.22",
     "solid-popper": "^0.3.0",
     "solid-tiptap": "0.7.0",
@@ -140,7 +140,12 @@
   "engines": {
     "node": ">= 20"
   },
-  "trustedDependencies": ["@biomejs/biome", "@swc/core", "esbuild", "protobufjs"],
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@swc/core",
+    "esbuild",
+    "protobufjs"
+  ],
   "dependencies": {
     "form-data": "^4.0.0",
     "idb": "^8.0.0",

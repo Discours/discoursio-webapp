@@ -1,3 +1,7 @@
+.feed {
+  padding-top: 7.2rem;
+}
+
 .feedFilter {
   @include media-breakpoint-down(md) {
     margin-right: 1rem !important;

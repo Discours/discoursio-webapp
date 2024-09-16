@@ -107,7 +107,7 @@ export const FeedView = (props: FeedProps) => {
   const currentPeriod = createMemo(() => asOption(searchParams?.period || ''))
 
   return (
-    <div class="feed">
+    <div class={clsx('wide-container', styles.feed)}>
       <div class="row">
         <div class={clsx('col-md-5 col-xl-4', styles.feedNavigation)}>
           <Sidebar />

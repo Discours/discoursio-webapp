@@ -78,7 +78,7 @@ export const PageLayout = (props: PageLayoutProps) => {
         })}
         classList={{ 'main-content--no-padding': !isHeaderFixed }}
       >
-        <div class={clsx([props.class, 'wide-container'])}>{props.children}</div>
+        {props.children}
       </main>
       <Show when={props.hideFooter !== true}>
         <FooterView />

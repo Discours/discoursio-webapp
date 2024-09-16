@@ -1,0 +1,16 @@
+diff --git a/node_modules/sass-embedded/dist/bin/sass.js b/node_modules/sass-embedded/dist/bin/sass.js
+old mode 100755
+new mode 100644
+diff --git a/node_modules/sass-embedded/dist/lib/src/legacy/importer.js b/node_modules/sass-embedded/dist/lib/src/legacy/importer.js
+index 51fd501..2246d7f 100644
+--- a/node_modules/sass-embedded/dist/lib/src/legacy/importer.js
++++ b/node_modules/sass-embedded/dist/lib/src/legacy/importer.js
+@@ -92,6 +92,8 @@ class LegacyImporterWrapper {
+                         // Windows. In that case, we treat it as though the file doesn't
+                         // exist so that the user's custom importer can still handle the
+                         // URL.
++                        console.warn(`Invalid URL detected: ${url}. Skipping import.`);
++                        return null;
+                     }
+                     else {
+                         throw error;

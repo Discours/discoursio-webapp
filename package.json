@@ -138,8 +138,7 @@
   },
   "overrides": {
     "yjs": "13.6.19",
-    "y-prosemirror": "1.2.12",
-    "prosemirror-view": "1.34.2"
+    "y-prosemirror": "1.2.12"
   },
   "engines": {
     "node": ">= 20"

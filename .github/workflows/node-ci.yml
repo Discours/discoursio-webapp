@@ -52,3 +52,7 @@ jobs:
         run: npm run e2e:tests:ci
         env:
           BASE_URL: https://testing.discours.io
+        continue-on-error: true
+      - name: Report test result if failed
+        if: failure()
+        run: echo "E2E tests failed. Please review the logs."

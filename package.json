@@ -126,7 +126,7 @@
     "typescript": "^5.5.4",
     "typograf": "^7.4.1",
     "uniqolor": "^1.1.1",
-    "vinxi": "^0.4.2",
+    "vinxi": "0.4.2",
     "vite-plugin-mkcert": "^1.17.6",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-sass-dts": "^1.3.25",
@@ -134,6 +134,7 @@
     "yjs": "13.6.18"
   },
   "overrides": {
+    "vite": "5.3.5",
     "yjs": "13.6.18",
     "y-prosemirror": "1.2.12"
   },

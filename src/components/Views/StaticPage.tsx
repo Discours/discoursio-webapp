@@ -18,7 +18,7 @@ export const StaticPage = (props: Props) => {
     <PageLayout title={props.title} desc={props.desc} key={props.title.toLowerCase()}>
       <article class="wide-container container--static-page" id="articleBody" ref={(el) => (bodyEl = el)}>
         <div class="row">
-          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first mt-5">
+          <div class="col-md-12 col-xl-14 offset-md-5 order-md-first">
             <h1>{props.title}</h1>
             {props.children}
           </div>

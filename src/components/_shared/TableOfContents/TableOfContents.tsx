@@ -85,7 +85,7 @@ export const TableOfContents = (props: Props) => {
           [styles.TableOfContentsFixedWrapperLefted]: props.variant === 'editor'
         })}
       >
-        <div class={styles.TableOfContentsContainer}>
+        <div class={styles.TableOfContentsContainer} data-custom-scroll="on">
           <Show when={isVisible()}>
             <div class={styles.TableOfContentsContainerInner}>
               <div class={styles.TableOfContentsHeader}>

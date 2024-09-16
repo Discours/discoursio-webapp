@@ -11,12 +11,14 @@ import {
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
+import { LayoutType } from '~/types/common'
 import { graphqlClientCreate } from '../graphql/client'
 import { byStat } from '../utils/sort'
 import { useSession } from './session'
 
 export const PRERENDERED_ARTICLES_COUNT = 5
 export const SHOUTS_PER_PAGE = 20
+export const EXPO_LAYOUTS = ['audio', 'literature', 'video', 'image'] as LayoutType[]
 
 type FeedContextType = {
   sortedFeed: Accessor<Shout[]>

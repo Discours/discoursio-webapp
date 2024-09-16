@@ -5,14 +5,13 @@ import { Feed } from '~/components/Views/Feed'
 import { FeedProps } from '~/components/Views/Feed/Feed'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
-import { useFeed } from '~/context/feed'
+import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { useTopics } from '~/context/topics'
 import { loadShouts } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { FromPeriod, getFromDate } from '~/lib/fromPeriod'
-import { SHOUTS_PER_PAGE } from '../(main)'
 
 export type PeriodItem = {
   value: FromPeriod

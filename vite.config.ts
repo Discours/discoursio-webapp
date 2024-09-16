@@ -1,6 +1,5 @@
 // biome-ignore lint/correctness/noNodejsModules: <explanation>
 import path from 'node:path'
-import sass from "sass";
 import { CSSOptions } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
@@ -25,7 +24,11 @@ const polyfillOptions = {
 export default {
   resolve: {
     alias: {
-      '~': path.resolve('./src')
+      '~': path.resolve('./src'),
+      '@': path.resolve('./public'),
+      '/icons': path.resolve('./public/icons'),
+      '/fonts': path.resolve('./public/fonts'),
+      'bootstrap': path.resolve('./node_modules/bootstrap')
     }
   },
   envPrefix: 'PUBLIC_',
@@ -34,9 +37,8 @@ export default {
     preprocessorOptions: {
       scss: {
         sourceMaps: false,
-        implementation: sass,
         additionalData: '@import "~/styles/imports";\n',
-        includePaths: ['./public', './src/styles'],
+        includePaths: ['./public', './src/styles', './node_modules']
       }
     } as CSSOptions['preprocessorOptions']
   },

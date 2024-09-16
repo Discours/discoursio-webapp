@@ -5,13 +5,13 @@ import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { TopicFeedSortBy, TopicView } from '~/components/Views/Topic'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
+import { SHOUTS_PER_PAGE } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { Author, LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { getImageUrl } from '~/lib/getThumbUrl'
 import { descFromBody } from '~/utils/meta'
-import { SHOUTS_PER_PAGE } from '../../(main)'
 
 const fetchTopicShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { topic: slug }, limit: SHOUTS_PER_PAGE, offset }

@@ -6,17 +6,17 @@ import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWra
 import { Loading } from '~/components/_shared/Loading'
 import { ArticleCardSwiper } from '~/components/_shared/SolidSwiper/ArticleCardSwiper'
 import { coreApiUrl } from '~/config'
-import { useFeed } from '~/context/feed'
+import { EXPO_LAYOUTS, SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { loadShouts } from '~/graphql/api/public'
 import { graphqlClientCreate } from '~/graphql/client'
 import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-top'
 import { LoadShoutsFilters, LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
-import { SHOUTS_PER_PAGE } from '~/routes/(main)'
 import { LayoutType } from '~/types/common'
 import { getUnixtime } from '~/utils/date'
 import { ArticleCard } from '../../Feed/ArticleCard'
+
 import styles from './Expo.module.scss'
 
 type Props = {
@@ -38,9 +38,7 @@ export const Expo = (props: Props) => {
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
   const [expoShouts, setExpoShouts] = createSignal<Shout[]>([])
   const { feedByLayout, expoFeed, setExpoFeed } = useFeed()
-  const layouts = createMemo<LayoutType[]>(() =>
-    props.layout ? [props.layout] : ['audio', 'video', 'image', 'literature']
-  )
+  const layouts = createMemo<LayoutType[]>(() => (props.layout ? [props.layout] : EXPO_LAYOUTS))
 
   const loadMoreFiltered = async () => {
     const limit = SHOUTS_PER_PAGE

@@ -137,11 +137,12 @@
     "yjs": "13.6.19"
   },
   "overrides": {
+    "sass-embedded": "1.70.0",
     "yjs": "13.6.19",
     "y-prosemirror": "1.2.12"
   },
   "engines": {
-    "node": ">= 20"
+    "node": ">= 18"
   },
   "trustedDependencies": ["@biomejs/biome", "esbuild", "protobufjs"],
   "dependencies": {

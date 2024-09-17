@@ -11,7 +11,9 @@ const meta: Meta<typeof Button> = {
   component: Button,
 
   argTypes: {
-    value: { control: 'text' },
+    value: {
+      control: { type: 'text' }
+    },
     variant: {
       options: ['primary', 'secondary', 'bordered', 'inline', 'light', 'outline', 'danger'],
       control: { type: 'select' }
@@ -27,11 +29,11 @@ const meta: Meta<typeof Button> = {
   }
 }
 
-export default meta
+export default meta;
 
 type Story = StoryObj<typeof Button>
 
-export const Default: Story = {
+export const Primary: Story = {
   args: {
     value: 'Button',
     variant: 'primary',
@@ -39,5 +41,53 @@ export const Default: Story = {
     loading: false,
     disabled: false,
     isSubscribeButton: false
+  }
+}
+
+export const Secondary: Story = {
+  args: {
+    value: 'Button',
+    variant: 'secondary',
+    size: 'M'
+  }
+}
+
+export const Bordered: Story = {
+  args: {
+    value: 'Button',
+    variant: 'bordered',
+    size: 'M'
+  }
+}
+
+export const Inline: Story = {
+  args: {
+    value: 'Button',
+    variant: 'inline',
+    size: 'M'
+  }
+}
+
+export const Light: Story = {
+  args: {
+    value: 'Button',
+    variant: 'light',
+    size: 'M'
+  }
+}
+
+export const Outline: Story = {
+  args: {
+    value: 'Button',
+    variant: 'outline',
+    size: 'M'
+  }
+}
+
+export const Danger: Story = {
+  args: {
+    value: 'Button',
+    variant: 'danger',
+    size: 'M'
   }
 }

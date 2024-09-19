@@ -29,7 +29,8 @@ const config: StorybookConfig = {
     if (config.css) {
       config.css.preprocessorOptions = {
         scss: {
-          additionalData: '@import "~/styles/app.scss";',
+          silenceDeprecations: ['mixed-decls'],
+          additionalData: '@import "~/styles/imports";\n',
           includePaths: ['./public', './src/styles', './node_modules']
         }
       }

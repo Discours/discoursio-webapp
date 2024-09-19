@@ -50,6 +50,7 @@
     "@storybook/addon-viewport": "^8.3.2",
     "@storybook/builder-vite": "^8.3.2",
     "@storybook/docs-tools": "^8.3.2",
+    "@storybook/test": "^8.3.2",
     "@storybook/test-runner": "^0.19.1",
     "@tiptap/core": "^2.7.2",
     "@tiptap/extension-blockquote": "^2.7.2",

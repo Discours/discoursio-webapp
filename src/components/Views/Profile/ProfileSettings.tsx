@@ -344,7 +344,7 @@ export const ProfileSettings = () => {
                       resetToInitial={true}
                       noLimits={true}
                       variant="bordered"
-                      onlyBubbleControls={true}
+                      hideToolbar={true}
                       smallHeight={true}
                       label={t('About')}
                       initialContent={about() || ''}

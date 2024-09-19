@@ -11,12 +11,11 @@ import {
   useEditorIsFocused
 } from 'solid-tiptap'
 import { Toolbar } from 'terracotta'
-
 import { Icon } from '~/components/_shared/Icon/Icon'
 import { Popover } from '~/components/_shared/Popover/Popover'
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { base, custom } from '~/lib/editorOptions'
+import { base } from '~/lib/editorOptions'
 import { InsertLinkForm } from '../InsertLinkForm/InsertLinkForm'
 
 import styles from '../SimplifiedEditor.module.scss'
@@ -72,7 +71,6 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     element: editorElement()!,
     extensions: [
       ...base,
-      ...custom,
       Placeholder.configure({ emptyNodeClass: styles.emptyNode, placeholder: props.placeholder }),
       CharacterCount.configure({ limit: props.limit })
     ],

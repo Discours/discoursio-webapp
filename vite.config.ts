@@ -1,4 +1,4 @@
-// biome-ignore lint/correctness/noNodejsModules: <explanation>
+// biome-ignore lint/correctness/noNodejsModules: used during build
 import path from 'node:path'
 import { CSSOptions } from 'vite'
 import mkcert from 'vite-plugin-mkcert'

@@ -1,8 +1,9 @@
 import { useMatch, useNavigate } from '@solidjs/router'
-import { Editor } from '@tiptap/core'
+import { Editor, EditorOptions } from '@tiptap/core'
 import type { JSX } from 'solid-js'
 import { Accessor, createContext, createMemo, createSignal, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
+import { createTiptapEditor } from 'solid-tiptap'
 import { coreApiUrl } from '~/config'
 import { useSnackbar } from '~/context/ui'
 import deleteShoutQuery from '~/graphql/mutation/core/article-delete'
@@ -51,7 +52,7 @@ export type EditorContextType = {
   setForm: SetStoreFunction<ShoutForm>
   setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
   editor: Accessor<Editor | undefined>
-  setEditor: (e: Editor) => void
+  createEditor: (opts?: Partial<EditorOptions>) => void
 }
 
 export const EditorContext = createContext<EditorContextType>({} as EditorContextType)
@@ -270,6 +271,18 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
+  const createEditor = (opts?: Partial<EditorOptions>) => {
+    if (!opts) return
+    const old = editor() as Editor
+    const fresh = createTiptapEditor(() => ({
+      ...old.options,
+      ...opts,
+      element: opts.element as HTMLElement
+    }))
+    old?.destroy()
+    setEditor(fresh())
+  }
+
   const actions = {
     saveShout,
     saveDraft,
@@ -283,7 +296,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     setForm,
     setFormErrors,
     editor,
-    setEditor
+    createEditor
   }
 
   const value: EditorContextType = {

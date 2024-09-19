@@ -1,40 +1,27 @@
-import { Editor } from '@tiptap/core'
-import { Blockquote } from '@tiptap/extension-blockquote'
+import { Editor, FocusPosition } from '@tiptap/core'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { CharacterCount } from '@tiptap/extension-character-count'
-import { Image } from '@tiptap/extension-image'
-import { Link } from '@tiptap/extension-link'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { clsx } from 'clsx'
-import { Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js'
+import { Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { Portal } from 'solid-js/web'
-import {
-  createEditorTransaction,
-  createTiptapEditor,
-  useEditorHTML,
-  useEditorIsEmpty,
-  useEditorIsFocused
-} from 'solid-tiptap'
-import { useLocalize } from '~/context/localize'
+import { createEditorTransaction, useEditorHTML, useEditorIsEmpty, useEditorIsFocused } from 'solid-tiptap'
+import { useEditorContext } from '~/context/editor'
 import { useUI } from '~/context/ui'
-import { base } from '~/lib/editorOptions'
+import { base, custom } from '~/lib/editorOptions'
+import { useEscKeyDownHandler } from '~/lib/useEscKeyDownHandler'
 import { UploadedFile } from '~/types/upload'
-import { Button } from '../_shared/Button'
-import { Icon } from '../_shared/Icon'
-import { Loading } from '../_shared/Loading'
 import { Modal } from '../_shared/Modal/Modal'
-import { Popover } from '../_shared/Popover'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
+import { ToolbarControls } from './EditorToolbar'
 import { LinkBubbleMenuModule } from './LinkBubbleMenu'
 import { TextBubbleMenu } from './TextBubbleMenu'
 import { UploadModalContent } from './UploadModalContent'
-import { Figcaption } from './extensions/Figcaption'
-import { Figure } from './extensions/Figure'
 import { renderUploadedImage } from './renderUploadedImage'
 
 import styles from './SimplifiedEditor.module.scss'
 
-type Props = {
+export type SimplifiedEditorProps = {
   placeholder: string
   initialContent?: string
   label?: string
@@ -52,7 +39,7 @@ type Props = {
   resetToInitial?: boolean
   smallHeight?: boolean
   submitByCtrlEnter?: boolean
-  onlyBubbleControls?: boolean
+  hideToolbar?: boolean
   controlsAlwaysVisible?: boolean
   autoFocus?: boolean
   isCancelButtonVisible?: boolean
@@ -60,100 +47,75 @@ type Props = {
 }
 
 const DEFAULT_MAX_LENGTH = 400
-const ImageFigure = Figure.extend({ name: 'capturedImage', content: 'figcaption image' })
 
-const SimplifiedEditor = (props: Props) => {
-  const { t } = useLocalize()
-  const { showModal, hideModal } = useUI()
+const SimplifiedEditor = (props: SimplifiedEditorProps) => {
+  // local signals
   const [counter, setCounter] = createSignal<number>(0)
   const [shouldShowLinkBubbleMenu, setShouldShowLinkBubbleMenu] = createSignal(false)
-  const isCancelButtonVisible = createMemo(() => props.isCancelButtonVisible !== false)
-  const [editorElement, setEditorElement] = createSignal<HTMLDivElement>()
-  const editor = createTiptapEditor(() => ({
-    element: editorElement()!,
-    extensions: [
-      ...base,
-      Placeholder.configure({ emptyNodeClass: styles.emptyNode, placeholder: props.placeholder }),
-      CharacterCount.configure({ limit: props.noLimits ? undefined : props.maxLength }),
-      Link.extend({ inclusive: false }).configure({ autolink: true, openOnClick: false }),
-      Blockquote.configure({ HTMLAttributes: { class: styles.blockQuote } }),
-      BubbleMenu.configure({
-        pluginKey: 'textBubbleMenu',
-        element: textBubbleMenuRef(),
-        shouldShow: ({ view, state }) =>
-          Boolean(props.onlyBubbleControls && view.hasFocus() && !state.selection.empty)
-      }),
-      BubbleMenu.configure({
-        pluginKey: 'linkBubbleMenu',
-        element: linkBubbleMenuRef(),
-        shouldShow: ({ state }) => !state.selection.empty && shouldShowLinkBubbleMenu(),
-        tippyOptions: { placement: 'bottom' }
-      }),
-      ImageFigure,
-      Image,
-      Figcaption
-    ],
-    editorProps: {
-      attributes: {
-        class: styles.simplifiedEditorField
-      }
-    },
-    content: props.initialContent || ''
-  }))
-
+  const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
+  const [editorElement, setEditorElement] = createSignal<HTMLDivElement | undefined>()
   const [textBubbleMenuRef, setTextBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
   const [linkBubbleMenuRef, setLinkBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
+
+  // contexts
+  const { hideModal } = useUI()
+  const { editor, createEditor } = useEditorContext()
+
+  const initEditor = (element?: HTMLElement) => {
+    if (element instanceof HTMLElement && editor()?.options.element !== element) {
+      const opts = {
+        element,
+        extensions: [
+          // common extensions
+          ...base,
+          ...custom,
+
+          // setup from component props
+          Placeholder.configure({ emptyNodeClass: styles.emptyNode, placeholder: props.placeholder }),
+          CharacterCount.configure({ limit: props.noLimits ? undefined : props.maxLength }),
+
+          // bubble menu 1
+          BubbleMenu.configure({
+            pluginKey: 'bubble-menu',
+            element: textBubbleMenuRef(),
+            shouldShow: ({ view }) => view.hasFocus() && shouldShowTextBubbleMenu()
+          }),
+
+          // bubble menu 2
+          BubbleMenu.configure({
+            pluginKey: 'bubble-link-input',
+            element: linkBubbleMenuRef(),
+            shouldShow: ({ state }) => !state.selection.empty && shouldShowLinkBubbleMenu(),
+            tippyOptions: { placement: 'bottom' }
+          })
+        ],
+        editorProps: {
+          attributes: { class: styles.simplifiedEditorField }
+        },
+        content: props.initialContent || '',
+        onCreate: () => console.info('[SimplifiedEditor] created'),
+        onContentError: console.error,
+        autofocus: (props.autoFocus && 'end') as FocusPosition | undefined,
+        editable: true,
+        enableCoreExtensions: true,
+        enableContentCheck: true,
+        injectNonce: undefined, // TODO: can be useful copyright/copyleft mark
+        parseOptions: undefined // see: https://prosemirror.net/docs/ref/#model.ParseOptions
+      }
+
+      createEditor(opts)
+    }
+  }
+
+  // editor observers
   const isEmpty = useEditorIsEmpty(editor)
   const isFocused = useEditorIsFocused(editor)
-  const isActive = (name: string) => createEditorTransaction(editor, (ed) => ed?.isActive(name))
+  const selection = createEditorTransaction(editor, (ed) => ed?.state.selection)
   const html = useEditorHTML(editor)
-  const isBold = isActive('bold')
-  const isItalic = isActive('italic')
-  const isLink = isActive('link')
-  const isBlockquote = isActive('blockquote')
 
-  const renderImage = (image: UploadedFile) => {
-    renderUploadedImage(editor() as Editor, image)
-    hideModal()
-  }
+  /// EFFECTS ///
 
-  const handleClear = () => {
-    props.onCancel?.()
-    editor()?.commands.clearContent(true)
-  }
-
-  createEffect(() => {
-    if (props.setClear) {
-      editor()?.commands.clearContent(true)
-    }
-    if (props.resetToInitial) {
-      editor()?.commands.clearContent(true)
-      if (props.initialContent) editor()?.commands.setContent(props.initialContent)
-    }
-  })
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (isEmpty() || !isFocused()) {
-      return
-    }
-
-    if (event.code === 'Escape' && editor()) {
-      handleHideLinkBubble()
-    }
-
-    if (event.code === 'Enter' && props.submitByCtrlEnter && (event.metaKey || event.ctrlKey)) {
-      event.preventDefault()
-      props.onSubmit?.(html() || '')
-      handleClear()
-    }
-
-    // if (event.code === 'KeyK' && (event.metaKey || event.ctrlKey) && !editor().state.selection.empty) {
-    //   event.preventDefault()
-    //   handleShowLinkBubble()
-    //
-    // }
-  }
-
+  // Mount event listeners for handling key events and clean up on component unmount
   onMount(() => {
     window.addEventListener('keydown', handleKeyDown)
     onCleanup(() => {
@@ -162,32 +124,52 @@ const SimplifiedEditor = (props: Props) => {
     })
   })
 
-  if (props.onChange) {
-    createEffect(() => {
-      props.onChange?.(html() || '')
-    })
+  // watch changes
+  createEffect(on(editorElement, initEditor, { defer: true })) // element -> editorOptions -> set editor
+  createEffect(
+    on(selection, (s?: Editor['state']['selection']) => s && setShouldShowTextBubbleMenu(!s?.empty))
+  )
+  createEffect(
+    on(
+      () => props.setClear,
+      (x?: boolean) => x && editor()?.commands.clearContent(true)
+    )
+  )
+  createEffect(
+    on(
+      () => props.resetToInitial,
+      (x?: boolean) => x && editor()?.commands.setContent(props.initialContent || '')
+    )
+  )
+  createEffect(on([html, () => props.onChange], ([c, handler]) => c && handler && handler(c))) // onChange
+  createEffect(on(html, (c?: string) => c && setCounter(editor()?.storage.characterCount.characters()))) //counter
+
+  /// HANDLERS ///
+
+  const handleImageRender = (image?: UploadedFile) => {
+    image && renderUploadedImage(editor() as Editor, image)
+    hideModal()
   }
 
-  createEffect(() => {
-    if (html()) {
-      setCounter(editor()?.storage.characterCount.characters())
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (
+      isFocused() &&
+      !isEmpty() &&
+      event.code === 'Enter' &&
+      props.submitByCtrlEnter &&
+      (event.metaKey || event.ctrlKey)
+    ) {
+      event.preventDefault()
+      props.onSubmit?.(html() || '')
     }
-  })
-
-  const maxHeightStyle = {
-    overflow: 'auto',
-    'max-height': `${props.maxHeight}px`
-  }
-
-  const handleShowLinkBubble = () => {
-    editor()?.chain().focus().run()
-    setShouldShowLinkBubbleMenu(true)
   }
 
   const handleHideLinkBubble = () => {
     editor()?.commands.focus()
     setShouldShowLinkBubbleMenu(false)
   }
+
+  useEscKeyDownHandler(handleHideLinkBubble)
 
   return (
     <ShowOnlyOnClient>
@@ -200,125 +182,63 @@ const SimplifiedEditor = (props: Props) => {
           [styles.labelVisible]: props.label && counter() > 0
         })}
       >
-        <Show when={props.maxLength && editor()}>
-          <div class={styles.limit}>{(props.maxLength || DEFAULT_MAX_LENGTH) - counter()}</div>
-        </Show>
+        {/* Display label when applicable */}
         <Show when={props.label && counter() > 0}>
           <div class={styles.label}>{props.label}</div>
         </Show>
-        <div style={props.maxHeight ? maxHeightStyle : undefined} ref={setEditorElement} />
-        <Show when={!props.onlyBubbleControls}>
-          <div class={clsx(styles.controls, { [styles.alwaysVisible]: props.controlsAlwaysVisible })}>
-            <div class={styles.actions}>
-              <Popover content={t('Bold')}>
-                {(triggerRef: (el: HTMLElement) => void) => (
-                  <button
-                    ref={triggerRef}
-                    type="button"
-                    class={clsx(styles.actionButton, { [styles.active]: isBold() })}
-                    onClick={() => editor()?.chain().focus().toggleBold().run()}
-                  >
-                    <Icon name="editor-bold" />
-                  </button>
-                )}
-              </Popover>
-              <Popover content={t('Italic')}>
-                {(triggerRef) => (
-                  <button
-                    ref={triggerRef}
-                    type="button"
-                    class={clsx(styles.actionButton, { [styles.active]: isItalic() })}
-                    onClick={() => editor()?.chain().focus().toggleItalic().run()}
-                  >
-                    <Icon name="editor-italic" />
-                  </button>
-                )}
-              </Popover>
-              <Popover content={t('Add url')}>
-                {(triggerRef) => (
-                  <button
-                    ref={triggerRef}
-                    type="button"
-                    onClick={handleShowLinkBubble}
-                    class={clsx(styles.actionButton, { [styles.active]: isLink() })}
-                  >
-                    <Icon name="editor-link" />
-                  </button>
-                )}
-              </Popover>
-              <Show when={props.quoteEnabled}>
-                <Popover content={t('Add blockquote')}>
-                  {(triggerRef) => (
-                    <button
-                      ref={triggerRef}
-                      type="button"
-                      onClick={() => editor()?.chain().focus().toggleBlockquote().run()}
-                      class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
-                    >
-                      <Icon name="editor-quote" />
-                    </button>
-                  )}
-                </Popover>
-              </Show>
-              <Show when={props.imageEnabled}>
-                <Popover content={t('Add image')}>
-                  {(triggerRef) => (
-                    <button
-                      ref={triggerRef}
-                      type="button"
-                      onClick={() => showModal('simplifiedEditorUploadImage')}
-                      class={clsx(styles.actionButton, { [styles.active]: isBlockquote() })}
-                    >
-                      <Icon name="editor-image-dd-full" />
-                    </button>
-                  )}
-                </Popover>
-              </Show>
-            </div>
-            <Show when={!props.onChange}>
-              <div class={styles.buttons}>
-                <Show when={isCancelButtonVisible()}>
-                  <Button value={t('Cancel')} variant="secondary" onClick={handleClear} />
-                </Show>
-                <Show when={!props.isPosting} fallback={<Loading />}>
-                  <Button
-                    value={props.submitButtonText ?? t('Send')}
-                    variant="primary"
-                    disabled={isEmpty()}
-                    onClick={() => props.onSubmit?.(html() || '')}
-                  />
-                </Show>
-              </div>
-            </Show>
-          </div>
+
+        <Show
+          when={props.hideToolbar}
+          fallback={
+            <ToolbarControls {...props} setShouldShowLinkBubbleMenu={setShouldShowLinkBubbleMenu} />
+          }
+        >
+          <TextBubbleMenu
+            editor={editor() as Editor}
+            ref={setTextBubbleMenuRef}
+            shouldShow={shouldShowTextBubbleMenu()}
+            isCommonMarkup={true}
+          />
+
+          {/* Link bubble menu */}
+          <Show when={shouldShowLinkBubbleMenu()}>
+            <LinkBubbleMenuModule
+              editor={editor() as Editor}
+              ref={setLinkBubbleMenuRef}
+              onClose={handleHideLinkBubble}
+            />
+          </Show>
         </Show>
+
+        {/* editor element */}
+        <div
+          style={
+            props.maxHeight
+              ? {
+                  overflow: 'auto',
+                  'max-height': `${props.maxHeight}px`
+                }
+              : undefined
+          }
+          ref={setEditorElement}
+        />
+
+        {/* Display character limit if maxLength is provided */}
+        <Show when={props.maxLength && editor()}>
+          <div class={styles.limit}>{(props.maxLength || DEFAULT_MAX_LENGTH) - counter()}</div>
+        </Show>
+
+        {/* Image upload modal (show/hide) */}
         <Show when={props.imageEnabled}>
           <Portal>
             <Modal variant="narrow" name="simplifiedEditorUploadImage">
-              <UploadModalContent
-                onClose={(value) => {
-                  renderImage(value as UploadedFile)
-                }}
-              />
+              <UploadModalContent onClose={handleImageRender} />
             </Modal>
           </Portal>
         </Show>
-        <Show when={props.onlyBubbleControls}>
-          <TextBubbleMenu
-            shouldShow={true}
-            isCommonMarkup={true}
-            editor={editor() as Editor}
-            ref={setTextBubbleMenuRef}
-          />
-        </Show>
-        <LinkBubbleMenuModule
-          editor={editor() as Editor}
-          ref={setLinkBubbleMenuRef}
-          onClose={handleHideLinkBubble}
-        />
       </div>
     </ShowOnlyOnClient>
   )
 }
 
-export default SimplifiedEditor // "export default" need to use for asynchronous (lazy) imports in the comments tree
+export default SimplifiedEditor // Export component for lazy loading

@@ -13,12 +13,6 @@ import { Span } from '~/components/Editor/extensions/Span'
 import { ToggleTextWrap } from '~/components/Editor/extensions/ToggleTextWrap'
 import { TrailingNode } from '~/components/Editor/extensions/TrailingNode'
 
-// Extend the Figure extension to include Figcaption
-const ImageFigure = Figure.extend({
-  name: 'capturedImage',
-  content: 'figcaption image'
-})
-
 export const base: EditorOptions['extensions'] = [
   StarterKit.configure({
     heading: {
@@ -32,10 +26,7 @@ export const base: EditorOptions['extensions'] = [
     blockquote: undefined
   }),
   Underline, // не входит в StarterKit
-  Link.configure({
-    autolink: true,
-    openOnClick: false
-  }),
+  Link.configure({ autolink: true, openOnClick: false }),
   Image,
   Highlight.configure({
     multicolor: true,
@@ -45,20 +36,28 @@ export const base: EditorOptions['extensions'] = [
   })
 ]
 
+// Extend the Figure extension to include Figcaption
+export const ImageFigure = Figure.extend({
+  name: 'capturedImage',
+  content: 'figcaption image'
+})
+
 export const custom: EditorOptions['extensions'] = [
   ImageFigure,
   Figure,
   Figcaption,
-  Footnote,
-  CustomBlockquote,
   Iframe,
-  Span,
   ToggleTextWrap,
+  Span,
   TrailingNode
-  // Добавьте другие кастомные расширения здесь
 ]
 
-export const collab: EditorOptions['extensions'] = []
+export const extended: EditorOptions['extensions'] = [
+  Footnote,
+  CustomBlockquote
+  // TODO: Добавьте другие кастомные расширения здесь
+]
+
 /*
   content: '',
   autofocus: false,

@@ -226,7 +226,7 @@ export const PublishSettings = (props: Props) => {
               />
               <SimplifiedEditor
                 variant="bordered"
-                onlyBubbleControls={true}
+                hideToolbar={true}
                 smallHeight={true}
                 placeholder={t('Write a short introduction')}
                 label={t('Description')}

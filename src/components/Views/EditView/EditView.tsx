@@ -371,7 +371,7 @@ export const EditView = (props: Props) => {
                           <Show when={isLeadVisible()}>
                             <SimplifiedEditor
                               variant="minimal"
-                              onlyBubbleControls={true}
+                              hideToolbar={true}
                               smallHeight={true}
                               placeholder={t('A short introduction to keep the reader interested')}
                               initialContent={form.lead}

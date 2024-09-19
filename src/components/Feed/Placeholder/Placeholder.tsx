@@ -99,17 +99,17 @@ export const Placeholder = (props: PlaceholderProps) => {
   // dufok (^-^') mem for placeholder data without a fallback, it will be `undefined` if not found
 
   const placeholderData = createMemo(() => {
-    const dataForType = data[props.type];
+    const dataForType = data[props.type]
     if (!dataForType) {
-      console.warn(`No placeholder data found for type: ${props.type}`);
+      console.warn(`No placeholder data found for type: ${props.type}`)
     }
-    return dataForType;
-  // (^-^') No fallback to ensure it is empty when data is missing
-  });
+    return dataForType
+    // (^-^') No fallback to ensure it is empty when data is missing
+  })
 
   // (^-^') Return null if no placeholder data is found
   if (!placeholderData()) {
-    return null;
+    return null
   }
 
   return (

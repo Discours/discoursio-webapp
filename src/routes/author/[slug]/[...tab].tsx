@@ -133,10 +133,12 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   )
 
   return (
-    <ErrorBoundary fallback={(_err) => {
-      console.error('ErrorBoundary caught an error', _err)
-      return <FourOuFourView />
-    }}>
+    <ErrorBoundary
+      fallback={(_err) => {
+        console.error('ErrorBoundary caught an error', _err)
+        return <FourOuFourView />
+      }}
+    >
       <Suspense fallback={<Loading />}>
         <PageLayout
           title={title()}

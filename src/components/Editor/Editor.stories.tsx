@@ -1,4 +1,4 @@
-import { Editor } from '@tiptap/core'
+import { Editor, EditorOptions } from '@tiptap/core'
 import { createSignal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Meta, StoryObj } from 'storybook-solidjs'
@@ -8,7 +8,7 @@ import { SessionContext, SessionContextType } from '~/context/session'
 import { SnackbarContext, SnackbarContextType } from '~/context/ui'
 import { EditorComponent, EditorComponentProps } from './Editor'
 
-// Mock any necessary data
+// Mock data
 const mockSession = {
   session: () => ({
     user: {
@@ -37,54 +37,38 @@ const [_form, setForm] = createStore<ShoutForm>({
 })
 const [_formErrors, setFormErrors] = createStore({} as Record<keyof ShoutForm, string>)
 const [editor, setEditor] = createSignal<Editor | undefined>()
+
 const mockEditorContext: EditorContextType = {
   countWords: () => 0,
-  isEditorPanelVisible: (): boolean => {
-    throw new Error('Function not implemented.')
+  isEditorPanelVisible: () => false,
+  wordCounter: () => ({ characters: 0, words: 0 }),
+  form: _form,
+  formErrors: _formErrors,
+  createEditor: (opts?: Partial<EditorOptions>) => {
+    const newEditor = new Editor(opts)
+    setEditor(newEditor)
+    return newEditor
   },
-  wordCounter: (): { characters: number; words: number } => {
-    throw new Error('Function not implemented.')
-  },
-  form: {
-    layout: undefined,
-    shoutId: 0,
-    slug: '',
-    title: '',
-    subtitle: undefined,
-    lead: undefined,
-    description: undefined,
-    selectedTopics: [],
-    mainTopic: undefined,
-    body: '',
-    coverImageUrl: undefined,
-    media: undefined
-  },
-  formErrors: {} as Record<keyof ShoutForm, string>,
-  setEditor,
   editor,
-  saveShout: (_form: ShoutForm): Promise<void> => {
-    throw new Error('Function not implemented.')
+  saveShout: async (_form: ShoutForm) => {
+    // Simulate save
   },
-  saveDraft: (_form: ShoutForm): Promise<void> => {
-    throw new Error('Function not implemented.')
+  saveDraft: async (_form: ShoutForm) => {
+    // Simulate save draft
   },
-  saveDraftToLocalStorage: (_form: ShoutForm): void => {
-    throw new Error('Function not implemented.')
+  saveDraftToLocalStorage: (_form: ShoutForm) => {
+    // Simulate save to local storage
   },
-  getDraftFromLocalStorage: (_shoutId: number): ShoutForm => {
-    throw new Error('Function not implemented.')
+  getDraftFromLocalStorage: (_shoutId: number): ShoutForm => _form,
+  publishShout: async (_form: ShoutForm) => {
+    // Simulate publish
   },
-  publishShout: (_form: ShoutForm): Promise<void> => {
-    throw new Error('Function not implemented.')
+  publishShoutById: async (_shoutId: number) => {
+    // Simulate publish by ID
   },
-  publishShoutById: (_shoutId: number): Promise<void> => {
-    throw new Error('Function not implemented.')
-  },
-  deleteShout: (_shoutId: number): Promise<boolean> => {
-    throw new Error('Function not implemented.')
-  },
-  toggleEditorPanel: (): void => {
-    throw new Error('Function not implemented.')
+  deleteShout: async (_shoutId: number): Promise<boolean> => true,
+  toggleEditorPanel: () => {
+    // Simulate toggle
   },
   setForm,
   setFormErrors

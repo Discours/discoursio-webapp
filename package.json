@@ -134,9 +134,6 @@
   },
   "overrides": {
     "sass": "1.77.6",
-    "sass-embedded": {
-      "sass": "1.77.6"
-    },
     "vite": "5.3.5",
     "yjs": "13.6.18",
     "y-prosemirror": "1.2.12"

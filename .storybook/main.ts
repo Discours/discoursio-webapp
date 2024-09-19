@@ -26,6 +26,14 @@ const config: StorybookConfig = {
       config.build.sourcemap = true
       config.build.minify = process.env.NODE_ENV === 'production'
     }
+    if (config.css) {
+      config.css.preprocessorOptions = {
+        scss: {
+          additionalData: '@import "~/styles/app.scss";',
+          includePaths: ['./public', './src/styles', './node_modules']
+        }
+      }
+    }
     return config
   },
   previewHead: (head) => `

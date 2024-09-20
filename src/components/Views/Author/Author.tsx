@@ -76,6 +76,7 @@ export const AuthorView = (props: AuthorViewProps) => {
           setFollowers(myFollowers() || [])
           setFollowersLoaded(true)
           changeFollowing([...(myFollows?.topics || []), ...(myFollows?.authors || [])])
+          setFollowingsLoaded(true)
         } else if (slug && !author()) {
           await loadAuthor({ slug })
           const foundAuthor = authorsEntities()[slug]

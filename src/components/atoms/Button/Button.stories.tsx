@@ -15,16 +15,13 @@ const meta: Meta<typeof Button> = {
       control: { type: 'text' }
     },
     variant: {
-      options: ['primary', 'secondary', 'bordered', 'inline', 'light', 'outline', 'danger'],
+      options: ['primary', 'secondary', 'bordered', 'outline'],
       control: { type: 'select' }
     },
     size: {
       options: ['S', 'M', 'L'],
       control: { type: 'radio' }
     },
-    loading: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    isSubscribeButton: { control: 'boolean' },
     onClick: { action: 'clicked' }
   }
 }
@@ -37,10 +34,7 @@ export const Primary: Story = {
   args: {
     value: 'Button',
     variant: 'primary',
-    size: 'M',
-    loading: false,
-    disabled: false,
-    isSubscribeButton: false
+    size: 'M'
   }
 }
 
@@ -52,42 +46,19 @@ export const Secondary: Story = {
   }
 }
 
-export const Bordered: Story = {
+export const PrimarySwitchFromStateAToStateB: Story = {
   args: {
-    value: 'Button',
+    value: 'State A',
     variant: 'bordered',
     size: 'M'
   }
 }
 
-export const Inline: Story = {
+export const PrimarySwitchFromStateBToStateA: Story = {
   args: {
-    value: 'Button',
-    variant: 'inline',
-    size: 'M'
-  }
-}
-
-export const Light: Story = {
-  args: {
-    value: 'Button',
-    variant: 'light',
-    size: 'M'
-  }
-}
-
-export const Outline: Story = {
-  args: {
-    value: 'Button',
+    value: 'State B',
     variant: 'outline',
     size: 'M'
   }
 }
 
-export const Danger: Story = {
-  args: {
-    value: 'Button',
-    variant: 'danger',
-    size: 'M'
-  }
-}

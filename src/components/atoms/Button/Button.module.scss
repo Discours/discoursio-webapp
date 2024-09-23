@@ -1,5 +1,5 @@
 .button {
-  border-radius: 2px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -12,22 +12,29 @@
     color: var(--default-color-invert);
 
     &:hover {
-      color: #ccc;
+      background: #404040;
+      color: #fff;
     }
 
     &:active {
-      color: #9fa1a7;
+      background: #000;
+      color: rgb(255, 255, 255, 0.4);
     }
   }
 
   &.secondary {
-    border: 1px solid #f7f7f7;
-    background: #f7f7f7;
-    color: #141414;
+    border: 1px solid #f7f7f8;
+    background: #f7f7f8;
+    color: #000;
 
     &:hover {
-      background: #000;
-      color: #fff;
+      background: #e9e9ee;
+      color: #000;
+    }
+
+    &:active {
+      background: #f7f7f8;
+      color: rgb(105, 105, 105, 0.4);
     }
   }
 
@@ -60,43 +67,78 @@
     padding: 0;
   }
 
-  &.outline,
+  //&.outline,
+  //&.bordered {
+  //  border: 3px solid #f2f2f2;
+  //  border-radius: 1.2em;
+  //  cursor: pointer;
+  //  font-weight: bold;
+  //  margin-right: 0.8em;
+  //  min-width: auto !important;
+  //  padding: 0;
+  //  transition:
+  //    border-color 0.3s,
+  //    background-color 0.3s,
+  //    color 0.3s;
+  //
+  //  &:hover,
+  //  &:active {
+  //    background: var(--link-color);
+  //    border-color: var(--link-color);
+  //    color: var(--link-hover-color);
+  //
+  //    :global(.icon) {
+  //      filter: var(--icon-filter-hover);
+  //    }
+  //  }
+  //
+  //  :global(.icon) {
+  //    margin: 0 -0.5em;
+  //    filter: var(--icon-filter);
+  //    transition: filter 0.3s;
+  //  }
+  //}
+
   &.bordered {
-    border: 3px solid #f2f2f2;
-    border-radius: 1.2em;
-    cursor: pointer;
-    font-weight: bold;
-    margin-right: 0.8em;
     min-width: auto !important;
+    background: var(--link-color);
+    color: var(--link-hover-color);
+    cursor: pointer;
+    margin-right: 0.8em;
     padding: 0;
     transition:
       border-color 0.3s,
       background-color 0.3s,
       color 0.3s;
 
-    &:hover,
-    &:active {
-      background: var(--link-color);
-      border-color: var(--link-color);
-      color: var(--link-hover-color);
-
-      :global(.icon) {
-        filter: var(--icon-filter-hover);
-      }
+    &:hover {
+      background: inherit;
+      border: 2px solid #000;
+      color: #000;
     }
 
-    :global(.icon) {
-      margin: 0 -0.5em;
-      filter: var(--icon-filter);
-      transition: filter 0.3s;
+    &:active {
+      border: 2px solid #696969;
+      color: #696969;
     }
   }
 
-  &.bordered {
-    border-radius: 2px;
+  &.outline {
+    min-width: auto !important;
     border: 2px solid #000;
-    font-size: 16px;
-    font-weight: 500;
+    transition:
+      border-color 0.3s,
+      background-color 0.3s,
+      color 0.3s;
+
+    &:hover {
+      background: var(--link-color);
+      color: var(--link-hover-color)
+    }
+
+    &:active {
+      color: rgb(255, 255, 255, 0.4)
+    }
   }
 
   &:disabled,
@@ -112,24 +154,26 @@
   }
 
   &.L {
-    height: 56px;
-    min-width: 80px;
-    font-size: 20px;
-    padding: 16px 20px;
+    height: 50px;
+    min-width: 112px;
+    border-radius: 14px;
+    font-size: 16px;
+    padding: 0 30px;
   }
 
   &.M {
     height: 40px;
-    min-width: 64px;
-    font-size: 17px;
-    padding: 8px 16px;
+    min-width: 89px;
+    border-radius: 12px;
+    font-size: 15px;
+    padding: 0 20px;
   }
 
   &.S {
     height: 32px;
-    min-width: 53px;
-    font-size: 15px;
-    padding: 1rem 1.2rem;
+    min-width: 82px;
+    font-size: 14px;
+    padding: 0 18px;
   }
 
   &.subscribeButton {

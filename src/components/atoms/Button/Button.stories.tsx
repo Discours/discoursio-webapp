@@ -61,4 +61,3 @@ export const PrimarySwitchFromStateBToStateA: Story = {
     size: 'M'
   }
 }
-

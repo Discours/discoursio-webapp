@@ -18,7 +18,7 @@
 
     &:active {
       background: #000;
-      color: rgb(255, 255, 255, 0.4);
+      color: rgb(255 255 255 / 40%);
     }
   }
 
@@ -34,7 +34,7 @@
 
     &:active {
       background: #f7f7f8;
-      color: rgb(105, 105, 105, 0.4);
+      color: rgb(105 105 105 / 40%);
     }
   }
 
@@ -137,7 +137,7 @@
     }
 
     &:active {
-      color: rgb(255, 255, 255, 0.4)
+      color: rgb(255 255 255 / 40%)
     }
   }
 

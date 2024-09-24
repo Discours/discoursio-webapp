@@ -1,7 +1,6 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
 import {
-  Accessor,
   Show,
   createEffect,
   createMemo,
@@ -65,10 +64,7 @@ const handleScrollTopButtonClick = (ev: MouseEvent | TouchEvent) => {
 
 export const EditView = (props: Props) => {
   const { t } = useLocalize()
-  const [isScrolled, setIsScrolled] = createSignal(false)
   const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
-
   const {
     form,
     formErrors,
@@ -78,14 +74,20 @@ export const EditView = (props: Props) => {
     saveDraftToLocalStorage,
     getDraftFromLocalStorage
   } = useEditorContext()
-  const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
-  const [draft, setDraft] = createSignal()
-  let subtitleInput: HTMLTextAreaElement | null
+
+  const [subtitleInput, setSubtitleInput] = createSignal<HTMLTextAreaElement | undefined>()
   const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))
   const [saving, setSaving] = createSignal(false)
   const [isSubtitleVisible, setIsSubtitleVisible] = createSignal(Boolean(form.subtitle))
   const [isLeadVisible, setIsLeadVisible] = createSignal(Boolean(form.lead))
-  const mediaItems: Accessor<MediaItem[]> = createMemo(() => JSON.parse(form.media || '[]'))
+  const [isScrolled, setIsScrolled] = createSignal(false)
+  const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
+  const [draft, setDraft] = createSignal<Shout>()
+  const [mediaItems, setMediaItems] = createSignal<MediaItem[]>([])
+
+  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+
+  createEffect(() => setMediaItems(JSON.parse(form.media || '[]')))
 
   createEffect(
     on(
@@ -97,7 +99,7 @@ export const EditView = (props: Props) => {
           const stored = getDraftFromLocalStorage(shout.id)
           if (stored) {
             // console.info(`[EditView] got stored shout: ${stored}`)
-            setDraft(stored)
+            setDraft((old) => ({...old, ...stored} as Shout))
           } else {
             if (!shout.slug) {
               console.warn(`[EditView] shout has no slug! ${shout}`)
@@ -131,7 +133,7 @@ export const EditView = (props: Props) => {
       (d) => {
         if (d) {
           const draftForm = Object.keys(d) ? d : { shoutId: props.shout.id }
-          setForm(draftForm)
+          setForm(draftForm as ShoutForm)
           console.debug('draft from localstorage: ', draftForm)
         }
       },
@@ -267,7 +269,7 @@ export const EditView = (props: Props) => {
 
   const showSubtitleInput = () => {
     setIsSubtitleVisible(true)
-    subtitleInput?.focus()
+    subtitleInput()?.focus()
   }
 
   const showLeadInput = () => {
@@ -359,7 +361,7 @@ export const EditView = (props: Props) => {
                         <Show when={props.shout.layout !== 'audio'}>
                           <Show when={isSubtitleVisible()}>
                             <GrowingTextarea
-                              textAreaRef={(el) => (subtitleInput = el)}
+                              textAreaRef={setSubtitleInput}
                               allowEnterKey={false}
                               value={(value) => handleInputChange('subtitle', value || '')}
                               class={styles.subtitleInput}
@@ -455,7 +457,7 @@ export const EditView = (props: Props) => {
                 </Show>
               </div>
             </div>
-            <Show when={form?.shoutId} fallback={<Loading />}>
+            <Show when={draft()?.id} fallback={<Loading />}>
               <EditorComponent
                 shoutId={form.shoutId}
                 initialContent={form.body}

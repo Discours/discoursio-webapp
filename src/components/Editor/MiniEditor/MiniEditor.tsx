@@ -15,7 +15,7 @@ import { Icon } from '~/components/_shared/Icon/Icon'
 import { Popover } from '~/components/_shared/Popover/Popover'
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { base } from '~/lib/editorOptions'
+import { base } from '~/lib/editorExtensions'
 import { InsertLinkForm } from '../InsertLinkForm/InsertLinkForm'
 
 import styles from '../SimplifiedEditor.module.scss'

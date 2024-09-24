@@ -4,14 +4,7 @@ import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { CharacterCount } from '@tiptap/extension-character-count'
 import { Collaboration } from '@tiptap/extension-collaboration'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
-import { Dropcursor } from '@tiptap/extension-dropcursor'
 import { FloatingMenu } from '@tiptap/extension-floating-menu'
-import Focus from '@tiptap/extension-focus'
-import { Gapcursor } from '@tiptap/extension-gapcursor'
-import { HardBreak } from '@tiptap/extension-hard-break'
-import { Highlight } from '@tiptap/extension-highlight'
-import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
-import { Image } from '@tiptap/extension-image'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Show, createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js'
 import uniqolor from 'uniqolor'
@@ -21,23 +14,14 @@ import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useSnackbar } from '~/context/ui'
 import { Author } from '~/graphql/schema/core.gen'
+import { base, custom, extended } from '~/lib/editorExtensions'
 import { handleImageUpload } from '~/lib/handleImageUpload'
 import { BlockquoteBubbleMenu, FigureBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import { ArticleNode } from './extensions/Article'
-import { CustomBlockquote } from './extensions/CustomBlockquote'
-import { Figcaption } from './extensions/Figcaption'
-import { Figure } from './extensions/Figure'
-import { Footnote } from './extensions/Footnote'
-import { Iframe } from './extensions/Iframe'
-import { Span } from './extensions/Span'
-import { ToggleTextWrap } from './extensions/ToggleTextWrap'
-import { TrailingNode } from './extensions/TrailingNode'
 import { renderUploadedImage } from './renderUploadedImage'
 
 import './Prosemirror.scss'
-import { base } from '~/lib/editorOptions'
 
 export type EditorComponentProps = {
   shoutId: number
@@ -118,26 +102,11 @@ export const EditorComponent = (props: EditorComponentProps) => {
           },
           extensions: [
             ...base,
+            ...custom,
+            ...extended,
 
-            HorizontalRule.configure({ HTMLAttributes: { class: 'horizontalRule' } }),
-            Dropcursor,
-            CustomBlockquote,
-            Span,
-            ToggleTextWrap,
             Placeholder.configure({ placeholder: t('Add a link or click plus to embed media') }),
-            Focus,
-            Gapcursor,
-            HardBreak,
-            Highlight.configure({ multicolor: true, HTMLAttributes: { class: 'highlight' } }),
-            Image,
-            Iframe,
-            Figure,
-            Figcaption,
-            Footnote,
-            ToggleTextWrap,
             CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
-            TrailingNode,
-            ArticleNode,
 
             // menus
 

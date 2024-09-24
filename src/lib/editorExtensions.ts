@@ -1,9 +1,15 @@
 import { EditorOptions } from '@tiptap/core'
+import Dropcursor from '@tiptap/extension-dropcursor'
+import Focus from '@tiptap/extension-focus'
+import Gapcursor from '@tiptap/extension-gapcursor'
+import HardBreak from '@tiptap/extension-hard-break'
 import Highlight from '@tiptap/extension-highlight'
+import HorizontalRule from '@tiptap/extension-horizontal-rule'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
+import ArticleNode from '~/components/Editor/extensions/Article'
 import { CustomBlockquote } from '~/components/Editor/extensions/CustomBlockquote'
 import { Figcaption } from '~/components/Editor/extensions/Figcaption'
 import { Figure } from '~/components/Editor/extensions/Figure'
@@ -53,9 +59,17 @@ export const custom: EditorOptions['extensions'] = [
 ]
 
 export const extended: EditorOptions['extensions'] = [
+  HorizontalRule.configure({ HTMLAttributes: { class: 'horizontalRule' } }),
+  Highlight.configure({ multicolor: true, HTMLAttributes: { class: 'highlight' } }),
+  Dropcursor,
+  CustomBlockquote,
+  Span,
+  ToggleTextWrap,
   Footnote,
-  CustomBlockquote
-  // TODO: Добавьте другие кастомные расширения здесь
+  Focus,
+  Gapcursor,
+  HardBreak,
+  ArticleNode
 ]
 
 /*

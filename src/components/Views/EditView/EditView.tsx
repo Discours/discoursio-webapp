@@ -1,15 +1,6 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import {
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-  lazy,
-  on,
-  onCleanup,
-  onMount
-} from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, lazy, on, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { debounce } from 'throttle-debounce'
 import { DropArea } from '~/components/_shared/DropArea'
@@ -99,7 +90,7 @@ export const EditView = (props: Props) => {
           const stored = getDraftFromLocalStorage(shout.id)
           if (stored) {
             // console.info(`[EditView] got stored shout: ${stored}`)
-            setDraft((old) => ({...old, ...stored} as Shout))
+            setDraft((old) => ({ ...old, ...stored }) as Shout)
           } else {
             if (!shout.slug) {
               console.warn(`[EditView] shout has no slug! ${shout}`)

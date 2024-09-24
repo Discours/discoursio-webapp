@@ -1,12 +1,16 @@
 import { SolidStartInlineConfig, defineConfig } from '@solidjs/start/config'
+import dotenv from 'dotenv'
 import viteConfig from './vite.config'
 
-const isVercel = Boolean(process?.env.VERCEL)
-const isNetlify = Boolean(process?.env.NETLIFY)
+// Load environment variables from .env file
+dotenv.config()
+
+const isVercel = Boolean(process.env.VERCEL)
+const isNetlify = Boolean(process.env.NETLIFY)
 const isBun = Boolean(process.env.BUN)
 
 export const runtime = isNetlify ? 'netlify' : isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node'
-console.info(`[app.config] solid-start build for ${runtime}!`)
+console.info(`[app.config] solid-start build for {> ${runtime} <}`)
 
 export default defineConfig({
   nitro: {

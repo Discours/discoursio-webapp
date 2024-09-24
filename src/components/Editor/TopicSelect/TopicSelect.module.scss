@@ -31,3 +31,43 @@
 .TopicSelect .solid-select-option[data-disabled='true'] {
   display: none;
 }
+
+.selectedTopics {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.selectedTopic {
+  background-color: #f0f0f0;
+  margin: 4px;
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.selectWrapper {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.options {
+  margin-top: 10px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.option {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.disabled {
+  color: gray;
+  pointer-events: none;
+}

@@ -215,7 +215,7 @@ export const FeedView = (props: FeedProps) => {
                       <div class={styles.comment}>
                         <div class={clsx('text-truncate', styles.commentBody)}>
                           <A
-                            href={`article/${comment.shout.slug}?commentId=${comment.id}`}
+                            href={`/${comment.shout.slug}?commentId=${comment.id}`}
                             innerHTML={comment.body || ''}
                           />
                         </div>

@@ -73,7 +73,7 @@ export const EditView = (props: Props) => {
   const [isLeadVisible, setIsLeadVisible] = createSignal(Boolean(form.lead))
   const [isScrolled, setIsScrolled] = createSignal(false)
   const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
-  const [draft, setDraft] = createSignal<Shout>()
+  const [draft, setDraft] = createSignal<Shout>(props.shout)
   const [mediaItems, setMediaItems] = createSignal<MediaItem[]>([])
 
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))

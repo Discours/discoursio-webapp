@@ -6,6 +6,7 @@ import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { coreApiUrl } from '~/config'
+import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useSnackbar } from '~/context/ui'
@@ -17,6 +18,7 @@ import { LayoutType } from '~/types/common'
 export default () => {
   const { t } = useLocalize()
   const { session } = useSession()
+  const { saveDraftToLocalStorage } = useEditorContext()
   const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   const { showSnackbar } = useSnackbar()
@@ -29,12 +31,23 @@ export default () => {
     if (result) {
       console.debug(result)
       const { shout, error } = result.data.create_shout
-      if (error)
+      if (error) {
         showSnackbar({
           body: `${t('Error')}: ${t(error)}`,
           type: 'error'
         })
-      if (shout?.id) navigate(`/edit/${shout.id}`)
+        return
+      }
+      if (shout?.id) {
+        saveDraftToLocalStorage({
+          shoutId: shout.id,
+          selectedTopics: shout.topics,
+          slug: shout.slug,
+          title: '',
+          body: ''
+        })
+        navigate(`/edit/${shout.id}`)
+      }
     }
   }
   return (

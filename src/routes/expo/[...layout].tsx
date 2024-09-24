@@ -1,5 +1,5 @@
 import { Params, RouteSectionProps, createAsync } from '@solidjs/router'
-import { Show, createEffect, createMemo, on } from 'solid-js'
+import { Show, onMount } from 'solid-js'
 import { TopicsNav } from '~/components/TopicsNav'
 import { Expo } from '~/components/Views/Expo'
 import { PageLayout } from '~/components/_shared/PageLayout'
@@ -32,9 +32,9 @@ export default (props: RouteSectionProps<Shout[]>) => {
     async () =>
       props.data || (await fetchExpoShouts(props.params.layout ? [props.params.layout] : EXPO_LAYOUTS))
   )
-  const layout = createMemo(() => props.params.layout)
-  const title = createMemo(() => {
-    switch (layout()) {
+
+  const getTitle = (l: string) => {
+    switch (l) {
       case 'audio': {
         return t('Audio')
       }
@@ -51,15 +51,21 @@ export default (props: RouteSectionProps<Shout[]>) => {
         return t('Art')
       }
     }
+  }
+
+  onMount(() => {
+    document.title = getTitle(props.params.layout || '')
   })
 
-  createEffect(on(title, (ttl) => (document.title = ttl), { defer: true }))
-
   return (
-    <PageLayout withPadding={true} zeroBottomPadding={true} title={`${t('Discours')} :: ${title()}`}>
+    <PageLayout
+      withPadding={true}
+      zeroBottomPadding={true}
+      title={`${t('Discours')} :: ${getTitle(props.params.layout || '')}`}
+    >
       <TopicsNav />
       <Show when={shouts()} keyed>
-        {(sss) => <Expo shouts={sss} layout={layout() as LayoutType} />}
+        {(sss) => <Expo shouts={sss} layout={props.params.layout as LayoutType} />}
       </Show>
     </PageLayout>
   )

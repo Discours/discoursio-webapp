@@ -1,6 +1,7 @@
 import { A } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+
 import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { Loading } from '~/components/_shared/Loading'
@@ -13,6 +14,8 @@ import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-t
 import { LoadShoutsFilters, LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { LayoutType } from '~/types/common'
 import { getUnixtime } from '~/utils/date'
+import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
+import { byCreated } from '~/utils/sort'
 import { ArticleCard } from '../../Feed/ArticleCard'
 
 import styles from './Expo.module.scss'
@@ -33,20 +36,8 @@ export const Expo = (props: Props) => {
 
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])
-  const [expoShouts, setExpoShouts] = createSignal<Shout[]>([])
   const { feedByLayout, expoFeed, setExpoFeed } = useFeed()
   const layouts = createMemo<LayoutType[]>(() => (props.layout ? [props.layout] : EXPO_LAYOUTS))
-
-  const loadMoreFiltered = async () => {
-    const limit = SHOUTS_PER_PAGE
-    const offset = (props.layout ? feedByLayout()[props.layout] : expoFeed())?.length
-    const filters: LoadShoutsFilters = { layouts: layouts(), featured: true }
-    const options: LoadShoutsOptions = { filters, limit, offset }
-    const shoutsFetcher = loadShouts(options)
-    const result = await shoutsFetcher()
-    result && setExpoFeed(result)
-    return result as LoadMoreItems
-  }
 
   const loadRandomTopArticles = async () => {
     const options: LoadShoutsOptions = {
@@ -76,20 +67,15 @@ export const Expo = (props: Props) => {
   })
 
   createEffect(
-    on(
-      () => props.layout,
-      () => {
-        setExpoShouts([])
-        setFavoriteTopArticles([])
-        setReactedTopMonthArticles([])
-        loadRandomTopArticles()
-        loadRandomTopMonthArticles()
-      }
-    )
+    on(layouts, (lll) => {
+      console.debug('layouts changed', lll)
+      loadRandomTopArticles()
+      loadRandomTopMonthArticles()
+    })
   )
 
   onCleanup(() => {
-    setExpoShouts([])
+    setExpoFeed([])
   })
   const ExpoTabs = () => (
     <div class="wide-container">
@@ -134,10 +120,10 @@ export const Expo = (props: Props) => {
       </ul>
     </div>
   )
-  const ExpoGrid = () => (
+  const ExpoGrid = (props: Props) => (
     <div class="wide-container">
       <div class="row">
-        <For each={props.shouts.slice(0, LOAD_MORE_PAGE_SIZE)}>
+        <For each={expoFeed()?.slice(0, LOAD_MORE_PAGE_SIZE) || []}>
           {(shout) => (
             <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
               <ArticleCard
@@ -167,7 +153,7 @@ export const Expo = (props: Props) => {
         <Show when={favoriteTopArticles()?.length > 0} keyed={true}>
           <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
         </Show>
-        <For each={props.topRatedShouts?.slice(LOAD_MORE_PAGE_SIZE * 2, expoShouts().length)}>
+        <For each={props.topRatedShouts?.slice(LOAD_MORE_PAGE_SIZE * 2, expoFeed()?.length || 0)}>
           {(shout) => (
             <div class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
               <ArticleCard
@@ -183,13 +169,32 @@ export const Expo = (props: Props) => {
     </div>
   )
 
+  const [loadMoreVisible, setLoadMoreVisible] = createSignal(false)
+
+  // дозагрузка
+  const loadMore = async () => {
+    saveScrollPosition()
+    const limit = SHOUTS_PER_PAGE
+    const offset = (props.layout ? feedByLayout()[props.layout] : expoFeed())?.length
+    const filters: LoadShoutsFilters = { layouts: layouts(), featured: true }
+    const options: LoadShoutsOptions = { filters, limit, offset }
+    const shoutsFetcher = loadShouts(options)
+    const result = await shoutsFetcher()
+    setLoadMoreVisible(Boolean(result?.length))
+    const expoFeedUpdater = (layout?: LayoutType) => (prev: Shout[]) =>
+      Array.from(new Set((layout ? prev || [] : expoFeed())?.concat(result || [])))?.sort(byCreated)
+    result && setExpoFeed(expoFeedUpdater(props.layout))
+    restoreScrollPosition()
+    return result as LoadMoreItems
+  }
+
   return (
     <div class={styles.Expo}>
       <ExpoTabs />
 
-      <Show when={expoShouts().length > 0} fallback={<Loading />}>
-        <LoadMoreWrapper loadFunction={loadMoreFiltered} pageSize={LOAD_MORE_PAGE_SIZE}>
-          <ExpoGrid />
+      <Show when={expoFeed()} fallback={<Loading />}>
+        <LoadMoreWrapper loadFunction={loadMore} pageSize={LOAD_MORE_PAGE_SIZE} hidden={!loadMoreVisible()}>
+          <ExpoGrid {...props} />
         </LoadMoreWrapper>
       </Show>
     </div>

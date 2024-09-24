@@ -54,7 +54,7 @@ export default () => {
     <PageLayout
       title={`${t('Discours')} :: ${t('Choose a post type')}`}
       key="home"
-      desc="Participate in the Discours: share information, join the editorial team"
+      desc={t('Participate in the Discours: share information, join the editorial team')}
     >
       <AuthGuard>
         <article class={clsx('wide-container', 'container--static-page', styles.Create)}>

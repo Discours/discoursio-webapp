@@ -1,12 +1,9 @@
 import { makePersisted } from '@solid-primitives/storage'
 import type { Accessor, JSX } from 'solid-js'
-
 import { createContext, createMemo, createSignal, onMount, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Portal } from 'solid-js/web'
 
-import { coreApiUrl } from '~/config'
-import { graphqlClientCreate } from '~/graphql/client'
 import markSeenMutation from '~/graphql/mutation/notifier/mark-seen'
 import markSeenAfterMutation from '~/graphql/mutation/notifier/mark-seen-after'
 import markSeenThreadMutation from '~/graphql/mutation/notifier/mark-seen-thread'
@@ -47,13 +44,11 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   const [unreadNotificationsCount, setUnreadNotificationsCount] = createSignal(0)
   const [totalNotificationsCount, setTotalNotificationsCount] = createSignal(0)
   const [notificationEntities, setNotificationEntities] = createStore<Record<string, NotificationGroup>>({})
-  const { session } = useSession()
-  const authorized = createMemo<boolean>(() => Boolean(session()?.access_token))
+  const { session, client } = useSession()
   const { addHandler } = useConnect()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   const loadNotificationsGrouped = async (options: QueryLoad_NotificationsArgs) => {
-    if (authorized()) {
+    if (session()?.access_token) {
       const resp = await client()?.query(getNotifications, options).toPromise()
       const result = resp?.data?.get_notifications
       const groups = result?.notifications || []
@@ -87,7 +82,7 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
 
   onMount(() => {
     addHandler((data: SSEMessage) => {
-      if (data.entity === 'reaction' && authorized()) {
+      if (data.entity === 'reaction' && session()?.access_token) {
         console.info('[context.notifications] event', data)
         loadNotificationsGrouped({
           after: after() || now,
@@ -107,14 +102,14 @@ export const NotificationsProvider = (props: { children: JSX.Element }) => {
   }
 
   const markSeenAll = async () => {
-    if (authorized()) {
+    if (session()?.access_token) {
       const _resp = await client()?.mutation(markSeenAfterMutation, { after: after() }).toPromise()
       await loadNotificationsGrouped({ after: after() || now, limit: loadedNotificationsCount() })
     }
   }
 
   const markSeen = async (notification_id: number) => {
-    if (authorized()) {
+    if (session()?.access_token) {
       await client()?.mutation(markSeenMutation, { notification_id }).toPromise()
       await loadNotificationsGrouped({ after: after() || now, limit: loadedNotificationsCount() })
     }

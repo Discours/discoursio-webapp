@@ -1,7 +1,5 @@
 import type { Accessor, JSX } from 'solid-js'
-import { createContext, createMemo, createSignal, useContext } from 'solid-js'
-import { chatApiUrl } from '~/config'
-import { graphqlClientCreate } from '~/graphql/client'
+import { createContext, createSignal, useContext } from 'solid-js'
 import createChatMutation from '~/graphql/mutation/chat/chat-create'
 import createMessageMutation from '~/graphql/mutation/chat/chat-message-create'
 import loadChatMessagesQuery from '~/graphql/query/chat/chat-messages-load-by'
@@ -38,8 +36,7 @@ export const InboxProvider = (props: { children: JSX.Element }) => {
   const [chats, setChats] = createSignal<Chat[]>([])
   const [messages, setMessages] = createSignal<Message[]>([])
   const { authorsSorted } = useAuthors()
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(chatApiUrl, session()?.access_token))
+  const { client } = useSession()
 
   const handleMessage = (sseMessage: SSEMessage) => {
     // handling all action types: create update delete join left seen

@@ -1,21 +1,10 @@
-import {
-  Accessor,
-  JSX,
-  createContext,
-  createEffect,
-  createMemo,
-  createSignal,
-  on,
-  useContext
-} from 'solid-js'
+import { Accessor, JSX, createContext, createEffect, createSignal, on, useContext } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-import { coreApiUrl } from '~/config'
 import followMutation from '~/graphql/mutation/core/follow'
 import unfollowMutation from '~/graphql/mutation/core/unfollow'
 import loadAuthorFollowers from '~/graphql/query/core/author-followers'
 import { Author, Community, FollowingEntity, Topic } from '~/graphql/schema/core.gen'
-import { graphqlClientCreate } from '../graphql/client'
 import { useSession } from './session'
 
 export type FollowsFilter = 'all' | 'authors' | 'topics' | 'communities'
@@ -70,9 +59,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [loading, setLoading] = createSignal<boolean>(false)
   const [followers, setFollowers] = createSignal<Author[]>([] as Author[])
   const [follows, setFollows] = createStore<AuthorFollowsResult>(EMPTY_SUBSCRIPTIONS)
-  const { session } = useSession()
-  const authorized = createMemo<boolean>(() => Boolean(session()?.access_token))
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { session, client } = useSession()
 
   const fetchData = async () => {
     setLoading(true)
@@ -96,7 +83,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   const [following, setFollowing] = createSignal<FollowingData>(defaultFollowing)
 
   const follow = async (what: FollowingEntity, slug: string) => {
-    if (!authorized()) return
+    if (!session()?.access_token) return
     setFollowing({ slug, type: 'follow' })
     try {
       const resp = await client()?.mutation(followMutation, { what, slug }).toPromise()
@@ -115,7 +102,7 @@ export const FollowingProvider = (props: { children: JSX.Element }) => {
   }
 
   const unfollow = async (what: FollowingEntity, slug: string) => {
-    if (!authorized()) return
+    if (!session()?.access_token) return
     setFollowing({ slug: slug, type: 'unfollow' })
     try {
       const resp = await client()?.mutation(unfollowMutation, { what, slug }).toPromise()

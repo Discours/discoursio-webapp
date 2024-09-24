@@ -1,7 +1,6 @@
 import { createLazyMemo } from '@solid-primitives/memo'
 import { makePersisted } from '@solid-primitives/storage'
-import { Accessor, JSX, Setter, createContext, createMemo, createSignal, useContext } from 'solid-js'
-import { coreApiUrl } from '~/config'
+import { Accessor, JSX, Setter, createContext, createSignal, useContext } from 'solid-js'
 import { loadFollowedShouts } from '~/graphql/api/private'
 import { loadShoutsSearch as fetchShoutsSearch, getShout, loadShouts } from '~/graphql/api/public'
 import {
@@ -12,7 +11,6 @@ import {
   Topic
 } from '~/graphql/schema/core.gen'
 import { LayoutType } from '~/types/common'
-import { graphqlClientCreate } from '../graphql/client'
 import { byStat } from '../utils/sort'
 import { useSession } from './session'
 
@@ -176,8 +174,7 @@ export const FeedProvider = (props: { children: JSX.Element }) => {
     addFeed(result)
     return { hasMore, newShouts: result }
   }
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client } = useSession()
 
   // Load the user's feed based on the provided options and update the articleEntities and sortedFeed state
   const loadMyFeed = async (

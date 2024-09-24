@@ -1,10 +1,8 @@
 import type { Author } from '~/graphql/schema/core.gen'
 
 import { clsx } from 'clsx'
-import { Show, createMemo, createSignal } from 'solid-js'
-import { coreApiUrl } from '~/config'
+import { Show, createSignal } from 'solid-js'
 import { useSession } from '~/context/session'
-import { graphqlClientCreate } from '~/graphql/client'
 import rateAuthorMutation from '~/graphql/mutation/core/author-rate'
 import styles from './AuthorRatingControl.module.scss'
 
@@ -17,8 +15,7 @@ export const AuthorRatingControl = (props: AuthorRatingControlProps) => {
   const isUpvoted = false
   const isDownvoted = false
 
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client } = useSession()
 
   // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleRatingChange = async (isUpvote: boolean) => {

@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Show, createEffect, createMemo, createSignal, lazy, on, onCleanup, onMount } from 'solid-js'
+import { Show, createEffect, createSignal, lazy, on, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { debounce } from 'throttle-debounce'
 import { DropArea } from '~/components/_shared/DropArea'
@@ -9,11 +9,9 @@ import { InviteMembers } from '~/components/_shared/InviteMembers'
 import { Loading } from '~/components/_shared/Loading'
 import { Popover } from '~/components/_shared/Popover'
 import { EditorSwiper } from '~/components/_shared/SolidSwiper'
-import { coreApiUrl } from '~/config'
 import { ShoutForm, useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
-import { graphqlClientCreate } from '~/graphql/client'
 import getMyShoutQuery from '~/graphql/query/core/article-my'
 import type { Shout, Topic } from '~/graphql/schema/core.gen'
 import { slugify } from '~/intl/translit'
@@ -55,7 +53,7 @@ const handleScrollTopButtonClick = (ev: MouseEvent | TouchEvent) => {
 
 export const EditView = (props: Props) => {
   const { t } = useLocalize()
-  const { session } = useSession()
+  const { client } = useSession()
   const {
     form,
     formErrors,
@@ -75,8 +73,6 @@ export const EditView = (props: Props) => {
   const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
   const [draft, setDraft] = createSignal<Shout>(props.shout)
   const [mediaItems, setMediaItems] = createSignal<MediaItem[]>([])
-
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
 
   createEffect(() => setMediaItems(JSON.parse(form.media || '[]')))
 

@@ -5,12 +5,10 @@ import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { Loading } from '~/components/_shared/Loading'
 import { ArticleCardSwiper } from '~/components/_shared/SolidSwiper/ArticleCardSwiper'
-import { coreApiUrl } from '~/config'
 import { EXPO_LAYOUTS, SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { loadShouts } from '~/graphql/api/public'
-import { graphqlClientCreate } from '~/graphql/client'
 import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-top'
 import { LoadShoutsFilters, LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { LayoutType } from '~/types/common'
@@ -31,8 +29,7 @@ const LOAD_MORE_PAGE_SIZE = 12
 
 export const Expo = (props: Props) => {
   const { t } = useLocalize()
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client } = useSession()
 
   const [favoriteTopArticles, setFavoriteTopArticles] = createSignal<Shout[]>([])
   const [reactedTopMonthArticles, setReactedTopMonthArticles] = createSignal<Shout[]>([])

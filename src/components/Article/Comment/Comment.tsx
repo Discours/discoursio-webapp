@@ -3,12 +3,10 @@ import { clsx } from 'clsx'
 import { For, Show, Suspense, createMemo, createSignal, lazy } from 'solid-js'
 import { Icon } from '~/components/_shared/Icon'
 import { ShowIfAuthenticated } from '~/components/_shared/ShowIfAuthenticated'
-import { coreApiUrl } from '~/config'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { useSnackbar, useUI } from '~/context/ui'
-import { graphqlClientCreate } from '~/graphql/client'
 import deleteReactionMutation from '~/graphql/mutation/core/reaction-destroy'
 import {
   Author,
@@ -45,12 +43,11 @@ export const Comment = (props: Props) => {
   const [editMode, setEditMode] = createSignal(false)
   const [clearEditor, setClearEditor] = createSignal(false)
   const [editedBody, setEditedBody] = createSignal<string>()
-  const { session } = useSession()
+  const { session, client } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { createShoutReaction, updateShoutReaction } = useReactions()
   const { showConfirm } = useUI()
   const { showSnackbar } = useSnackbar()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&

@@ -14,19 +14,14 @@
  * ## Components
  * 
  * - **SlugPage**: The main component that determines which page to render based on the `slug`.
- * - **ArticlePageComponent**: Fetches and displays the detailed view of an article.
+ * - **InnerArticlePage**: Fetches and displays the detailed view of an article.
  * - **AuthorPage**: Displays author-specific information (imported from `../author/[slug]/[...tab]`).
  * - **TopicPage**: Displays topic-specific information (imported from `../topic/[slug]/[...tab]`).
- * 
- * ## Data Fetching
- * 
- * - **fetchShout**: Asynchronously fetches article data based on the `slug` using the `getShout` GraphQL query.
- * - **createResource**: Utilized in `ArticlePageComponent` to fetch and manage article data reactively.**/
+ **/
 
-
-import { RouteDefinition, RouteSectionProps, useLocation, useParams } from '@solidjs/router'
+import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { ErrorBoundary, Show, Suspense, createEffect, on, onMount, createResource } from 'solid-js'
+import { ErrorBoundary, Show, Suspense, createEffect, on, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -42,7 +37,7 @@ import AuthorPage, { AuthorPageProps } from '../author/[slug]/[...tab]'
 import TopicPage, { TopicPageProps } from '../topic/[slug]/[...tab]'
 
 const fetchShout = async (slug: string): Promise<Shout | undefined> => {
-  if (slug.startsWith('@') || slug.startsWith('!')) return
+  if (slug.startsWith('@')) return
   const shoutLoader = getShout({ slug })
   const result = await shoutLoader()
   return result
@@ -69,82 +64,70 @@ export type SlugPageProps = {
   topics: Topic[]
 }
 
-export default function SlugPage(props: RouteSectionProps<SlugPageProps>) {
-  const { t } = useLocalize()
-  const loc = useLocation()
-
-  const params = useParams()
-  const slug = createMemo(() => params.slug)
-
-  if (slug.startsWith('@')) {
+export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
+  if (props.params.slug.startsWith('@')) {
     console.debug('[routes] [slug]/[...tab] starts with @, render as author page')
     const patchedProps = {
       ...props,
       params: {
         ...props.params,
-        slug: slug.slice(1)
+        slug: props.params.slug.slice(1, props.params.slug.length)
       }
     } as RouteSectionProps<AuthorPageProps>
     return <AuthorPage {...patchedProps} />
   }
 
-  if (slug.startsWith('!')) {
+  if (props.params.slug.startsWith('!')) {
     console.debug('[routes] [slug]/[...tab] starts with !, render as topic page')
     const patchedProps = {
       ...props,
       params: {
         ...props.params,
-        slug: slug.slice(1)
+        slug: props.params.slug.slice(1, props.params.slug.length)
       }
     } as RouteSectionProps<TopicPageProps>
     return <TopicPage {...patchedProps} />
   }
 
-  // Pass slug as a prop to ArticlePageComponent
-  return <ArticlePageComponent slug={slug()} {...props} />
+  return <InnerArticlePage {...props} />
 }
 
-function ArticlePageComponent(props: RouteSectionProps<SlugPageProps> & { slug: string }) {
+function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
   const loc = useLocation()
   const { t } = useLocalize()
-  const { slug } = props
+  const data = createAsync(async () => props.data?.article || (await fetchShout(props.params.slug)))
 
-  // Define the fetcher function
-  const fetchArticle = async (slug: string): Promise<Shout | undefined> => {
-    return await fetchShout(slug)
-  }
+  onMount(async () => {
+    if (gaIdentity && data()?.id) {
+      try {
+        await loadGAScript(gaIdentity)
+        initGA(gaIdentity)
+      } catch (error) {
+        console.warn('[routes] [slug]/[...tab] Failed to connect Google Analytics:', error)
+      }
+    }
+  })
 
-  // Create a resource that fetches the article based on slug
-  const [article, { refetch, mutate }] = createResource(slug, fetchArticle)
-
-  // Handle Google Analytics
-  createEffect(() => {
-    const currentArticle = article()
-    if (gaIdentity && currentArticle?.id) {
-      loadGAScript(gaIdentity)
-        .then(() => initGA(gaIdentity))
-        .catch((error) => {
-          console.warn('[routes] [slug]/[...tab] Failed to connect Google Analytics:', error)
+  createEffect(
+    on(
+      data,
+      (a?: Shout) => {
+        if (!a?.id) return
+        window?.gtag?.('event', 'page_view', {
+          page_title: a.title,
+          page_location: window?.location.href || '',
+          page_path: loc.pathname
         })
-    }
-  })
-
-  createEffect(() => {
-    const currentArticle = article()
-    if (currentArticle?.id) {
-      window?.gtag?.('event', 'page_view', {
-        page_title: currentArticle.title,
-        page_location: window?.location.href || '',
-        page_path: loc.pathname
-      })
-    }
-  })
+      },
+      { defer: true }
+    )
+  )
 
   return (
     <ErrorBoundary fallback={() => <HttpStatusCode code={500} />}>
       <Suspense fallback={<Loading />}>
         <Show
-          when={article()}
+          when={data()?.id}
           fallback={
             <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
               <FourOuFourView />
@@ -153,15 +136,15 @@ function ArticlePageComponent(props: RouteSectionProps<SlugPageProps> & { slug: 
           }
         >
           <PageLayout
-            title={`${t('Discours')}${article()?.title ? ' :: ' : ''}${article()?.title || ''}`}
-            desc={descFromBody(article()?.body || '')}
-            keywords={keywordsFromTopics(article()?.topics as { title: string }[])}
-            headerTitle={article()?.title || ''}
-            slug={article()?.slug}
-            cover={article()?.cover || ''}
+            title={`${t('Discours')}${data()?.title ? ' :: ' : ''}${data()?.title || ''}`}
+            desc={descFromBody(data()?.body || '')}
+            keywords={keywordsFromTopics(data()?.topics as { title: string }[])}
+            headerTitle={data()?.title || ''}
+            slug={data()?.slug}
+            cover={data()?.cover || ''}
           >
             <ReactionsProvider>
-              <FullArticle article={article() as Shout} />
+              <FullArticle article={data() as Shout} />
             </ReactionsProvider>
           </PageLayout>
         </Show>

@@ -1,6 +1,6 @@
 import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { ErrorBoundary, Show, Suspense, createEffect, on, onMount } from 'solid-js'
+import { ErrorBoundary, Show, Suspense, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -29,6 +29,9 @@ export const route: RouteDefinition = {
     console.debug('route.load called with params:', params)
     const article = await fetchShout(params.slug)
     console.debug('route.load fetched article:', article)
+    if (!article) {
+      console.warn('No article fetched for the given slug:', params.slug);
+    }
     return { article }
   }
 }
@@ -95,22 +98,6 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
         }
       }
     })
-
-    createEffect(
-      on(
-        data,
-        (a?: Shout) => {
-          console.debug('createEffect triggered with data:', a)
-          if (!a?.id) return
-          window?.gtag?.('event', 'page_view', {
-            page_title: a.title,
-            page_location: window?.location.href || '',
-            page_path: loc.pathname
-          })
-        },
-        { defer: true }
-      )
-    )
 
     return (
       <ErrorBoundary fallback={() => {

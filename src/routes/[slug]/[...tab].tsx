@@ -19,9 +19,9 @@
  * - **TopicPage**: Displays topic-specific information (imported from `../topic/[slug]/[...tab]`).
  **/
 
-import { RouteDefinition, RouteSectionProps, createAsync, useLocation, useParams } from '@solidjs/router'
+import { RouteDefinition, RouteSectionProps, useLocation, useParams } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { ErrorBoundary, Show, Suspense, createEffect, on, onMount } from 'solid-js'
+import { ErrorBoundary, Show, Suspense, createEffect, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -65,98 +65,46 @@ export type SlugPageProps = {
 }
 
 export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
-  const params = useParams();
+  const loc = useLocation()
+  const { t } = useLocalize()
+  const params = useParams()
 
-  if (params.slug.startsWith('@')) {
-    console.debug('[routes] [slug]/[...tab] starts with @, render as author page')
-    const patchedProps = {
-      ...props,
-      params: {
-        ...props.params,
-        slug: params.slug.slice(1, params.slug.length)
-      }
-    } as RouteSectionProps<AuthorPageProps>
-    return <AuthorPage {...patchedProps} />
+  console.debug('Initial slug from useParams:', params.slug)
+
+  const [data, setData] = createSignal<Shout | undefined>(undefined)
+
+  const fetchData = async (slug: string) => {
+    console.debug('Fetching article with slug (useParams):', slug)
+    const result = await fetchShout(slug)
+    console.debug('Fetched article data (useParams):', result)
+    setData(result)
   }
 
-  if (params.slug.startsWith('!')) {
-    console.debug('[routes] [slug]/[...tab] starts with !, render as topic page')
-    const patchedProps = {
-      ...props,
-      params: {
-        ...props.params,
-        slug: params.slug.slice(1, params.slug.length)
-      }
-    } as RouteSectionProps<TopicPageProps>
-    return <TopicPage {...patchedProps} />
-  }
+  onMount(() => {
+    console.debug('onMount triggered')
+    fetchData(params.slug)
+  })
 
-  return <InnerArticlePage {...props} />
-}
+  createEffect(() => {
+    console.debug('Slug changed (useParams):', params.slug)
+    fetchData(params.slug)
+  })
 
-function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
-  const loc = useLocation();
-  const { t } = useLocalize();
-  const params = useParams();
-
-  console.debug('Initial slug from useParams:', params.slug);
-
-  const data = createAsync(async () => {
-    console.debug('Fetching article with slug (createAsync):', params.slug);
-    const result = props.data?.article || (await fetchShout(params.slug));
-    console.debug('Fetched article data (createAsync):', result);
-    return result;
-  });
-
-  onMount(async () => {
-    console.debug('onMount triggered');
-    if (gaIdentity && data()?.id) {
-      try {
-        console.debug('Loading GA script');
-        await loadGAScript(gaIdentity);
-        initGA(gaIdentity);
-      } catch (error) {
-        console.warn('[routes] [slug]/[...tab] Failed to connect Google Analytics:', error);
-      }
-    }
-  });
-
-  createEffect(
-    on(
-      () => params.slug,
-      async (newSlug) => {
-        console.debug('Slug changed (useParams):', newSlug);
-        const result = await fetchShout(newSlug);
-        console.debug('Fetched article data (useParams):', result);
-        data(result);
-      }
-    )
-  );
-
-  createEffect(
-    on(
-      data,
-      (a?: Shout) => {
-        if (!a?.id) return;
-        console.debug('Page view event for article:', a);
-        window?.gtag?.('event', 'page_view', {
-          page_title: a.title,
-          page_location: window?.location.href || '',
-          page_path: loc.pathname
-        });
-      },
-      { defer: true }
-    )
-  );
-
-  createEffect(async () => {
-    console.debug('Data from createAsync effect:', data());
-  });
+  createEffect(() => {
+    const article = data()
+    if (!article?.id) return
+    console.debug('Page view event for article:', article)
+    window?.gtag?.('event', 'page_view', {
+      page_title: article.title,
+      page_location: window?.location.href || '',
+      page_path: loc.pathname
+    })
+  })
 
   return (
     <ErrorBoundary fallback={() => {
-      console.error('Rendering 500 error page');
-      return <HttpStatusCode code={500} />;
+      console.error('Rendering 500 error page')
+      return <HttpStatusCode code={500} />
     }}>
       <Suspense fallback={<Loading />}>
         <Show
@@ -185,5 +133,5 @@ function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
         </Show>
       </Suspense>
     </ErrorBoundary>
-  );
+  )
 }

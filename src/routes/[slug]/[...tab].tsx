@@ -95,55 +95,59 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
 }
 
 function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
-  const loc = useLocation()
-  const { t } = useLocalize()
+  const loc = useLocation();
+  const { t } = useLocalize();
   const params = useParams();
-  
+
+  console.debug('Initial slug from useParams:', params.slug);
+
   const data = createAsync(async () => {
-    console.debug('Fetching article with slug (createAsync):', params.slug)
-    const result = props.data?.article || (await fetchShout(params.slug))
-    console.debug('Fetched article data (createAsync):', result)
-    return result
-  })
+    console.debug('Fetching article with slug (createAsync):', params.slug);
+    const result = props.data?.article || (await fetchShout(params.slug));
+    console.debug('Fetched article data (createAsync):', result);
+    return result;
+  });
 
   onMount(async () => {
+    console.debug('onMount triggered');
     if (gaIdentity && data()?.id) {
       try {
-        await loadGAScript(gaIdentity)
-        initGA(gaIdentity)
+        console.debug('Loading GA script');
+        await loadGAScript(gaIdentity);
+        initGA(gaIdentity);
       } catch (error) {
-        console.warn('[routes] [slug]/[...tab] Failed to connect Google Analytics:', error)
+        console.warn('[routes] [slug]/[...tab] Failed to connect Google Analytics:', error);
       }
     }
-  })
+  });
 
   createEffect(
     on(
       () => params.slug,
       async (newSlug) => {
-        console.debug('Slug changed (useParams):', newSlug)
+        console.debug('Slug changed (useParams):', newSlug);
         const result = await fetchShout(newSlug);
-        console.debug('Fetched article data (useParams):', result)
+        console.debug('Fetched article data (useParams):', result);
         data(result);
       }
     )
-  )
+  );
 
   createEffect(
     on(
       data,
       (a?: Shout) => {
-        if (!a?.id) return
-        console.debug('Page view event for article:', a)
+        if (!a?.id) return;
+        console.debug('Page view event for article:', a);
         window?.gtag?.('event', 'page_view', {
           page_title: a.title,
           page_location: window?.location.href || '',
           page_path: loc.pathname
-        })
+        });
       },
       { defer: true }
     )
-  )
+  );
 
   createEffect(async () => {
     console.debug('Data from createAsync effect:', data());
@@ -151,8 +155,8 @@ function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
 
   return (
     <ErrorBoundary fallback={() => {
-      console.error('Rendering 500 error page')
-      return <HttpStatusCode code={500} />
+      console.error('Rendering 500 error page');
+      return <HttpStatusCode code={500} />;
     }}>
       <Suspense fallback={<Loading />}>
         <Show
@@ -181,5 +185,5 @@ function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
         </Show>
       </Suspense>
     </ErrorBoundary>
-  )
+  );
 }

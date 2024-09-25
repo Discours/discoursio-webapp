@@ -1,6 +1,6 @@
-import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
+import { RouteDefinition, RouteSectionProps, useLocation } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { ErrorBoundary, Show, Suspense, createEffect, onMount } from 'solid-js'
+import { ErrorBoundary, Show, Suspense, createEffect, on, createSignal, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -15,23 +15,19 @@ import { ReactionsProvider } from '../../context/reactions'
 import AuthorPage, { AuthorPageProps } from '../author/[slug]/[...tab]'
 import TopicPage, { TopicPageProps } from '../topic/[slug]/[...tab]'
 
+// Simplified fetch function for the shout
 const fetchShout = async (slug: string): Promise<Shout | undefined> => {
   console.debug('fetchShout called with slug:', slug)
-  if (slug.startsWith('@')) return
-  const shoutLoader = getShout({ slug })
-  const result = await shoutLoader()
+  if (slug.startsWith('@')) return // Skip fetching article for slugs starting with @ (author pages)
+  const result = await getShout({ slug })
   console.debug('fetchShout result:', result)
   return result
 }
 
 export const route: RouteDefinition = {
   load: async ({ params }) => {
-    console.debug('route.load called with params:', params)
     const article = await fetchShout(params.slug)
     console.debug('route.load fetched article:', article)
-    if (!article) {
-      console.warn('No article fetched for the given slug:', params.slug);
-    }
     return { article }
   }
 }
@@ -52,6 +48,7 @@ export type SlugPageProps = {
 }
 
 export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
+  // If the slug starts with '@', render as author page
   if (props.params.slug.startsWith('@')) {
     console.debug('[routes] [slug]/[...tab] starts with @, render as author page')
     const patchedProps = {
@@ -64,6 +61,7 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
     return <AuthorPage {...patchedProps} />
   }
 
+  // If the slug starts with '!', render as topic page
   if (props.params.slug.startsWith('!')) {
     console.debug('[routes] [slug]/[...tab] starts with !, render as topic page')
     const patchedProps = {
@@ -76,22 +74,38 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
     return <TopicPage {...patchedProps} />
   }
 
+  // Handle regular article slugs
   function ArticlePage(props: RouteSectionProps<ArticlePageProps>) {
     const loc = useLocation()
     const { t } = useLocalize()
 
-    // Refactored createAsync to ensure data fetch on route changes
-    const data = createAsync(async () => {
-      console.debug('createAsync fetching data with slug:', props.params.slug)
-      const result = props.data?.article || (await fetchShout(props.params.slug))
-      console.debug('createAsync fetched result:', result)
-      return result
+    // Set up a signal for article data and loading state
+    const [article, setArticle] = createSignal<Shout | undefined>(props.data?.article)
+    const [isLoading, setIsLoading] = createSignal(false)
+
+    // Fetch article data manually based on slug changes
+    createEffect(() => {
+      const slug = props.params.slug
+      if (!slug) return
+
+      setIsLoading(true)
+      fetchShout(slug)
+        .then((result) => {
+          setArticle(result)
+          if (!result) {
+            console.warn('No article data found for slug:', slug)
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching shout:', error)
+        })
+        .finally(() => setIsLoading(false))
     })
 
-    // onMount to load GA and other scripts if needed
+    // onMount to load GA script
     onMount(async () => {
       console.debug('onMount triggered')
-      if (gaIdentity && data()?.id) {
+      if (gaIdentity && article()?.id) {
         try {
           console.debug('Loading GA script')
           await loadGAScript(gaIdentity)
@@ -102,26 +116,27 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
       }
     })
 
-    // Re-trigger Google Analytics when data changes
-    createEffect(() => {
-      console.debug('createEffect triggered with data:', data())
-      if (data()?.id) {
-        window?.gtag?.('event', 'page_view', {
-          page_title: data()?.title,
-          page_location: window?.location.href || '',
-          page_path: loc.pathname
-        })
-      }
-    })
+    // Google Analytics effect
+    createEffect(
+      on(
+        article,
+        (a?: Shout) => {
+          if (!a?.id) return
+          window?.gtag?.('event', 'page_view', {
+            page_title: a.title,
+            page_location: window?.location.href || '',
+            page_path: loc.pathname
+          })
+        },
+        { defer: true }
+      )
+    )
 
     return (
-      <ErrorBoundary fallback={() => {
-        console.error('Rendering 500 error page')
-        return <HttpStatusCode code={500} />
-      }}>
+      <ErrorBoundary fallback={() => <HttpStatusCode code={500} />}>
         <Suspense fallback={<Loading />}>
           <Show
-            when={data()?.id}
+            when={!isLoading() && article()?.id}
             fallback={
               <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
                 {console.warn('Rendering 404 error page - no article data found')}
@@ -130,17 +145,16 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
               </PageLayout>
             }
           >
-            {console.debug('Rendering article page with data:', data())}
             <PageLayout
-              title={`${t('Discours')}${data()?.title ? ' :: ' : ''}${data()?.title || ''}`}
-              desc={descFromBody(data()?.body || '')}
-              keywords={keywordsFromTopics(data()?.topics as { title: string }[])}
-              headerTitle={data()?.title || ''}
-              slug={data()?.slug}
-              cover={data()?.cover || ''}
+              title={`${t('Discours')}${article()?.title ? ' :: ' : ''}${article()?.title || ''}`}
+              desc={descFromBody(article()?.body || '')}
+              keywords={keywordsFromTopics(article()?.topics as { title: string }[])}
+              headerTitle={article()?.title || ''}
+              slug={article()?.slug}
+              cover={article()?.cover || ''}
             >
               <ReactionsProvider>
-                <FullArticle article={data() as Shout} />
+                <FullArticle article={article() as Shout} />
               </ReactionsProvider>
             </PageLayout>
           </Show>
@@ -149,6 +163,5 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
     )
   }
 
-  // Return the ArticlePage component to ensure the route handles properly
   return <ArticlePage {...props} />
 }

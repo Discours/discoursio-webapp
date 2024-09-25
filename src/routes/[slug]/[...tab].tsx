@@ -19,7 +19,7 @@
  * - **TopicPage**: Displays topic-specific information (imported from `../topic/[slug]/[...tab]`).
  **/
 
-import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
+import { RouteDefinition, RouteSectionProps, createAsync, useLocation, useParams } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
 import { ErrorBoundary, Show, Suspense, createEffect, on, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
@@ -65,25 +65,27 @@ export type SlugPageProps = {
 }
 
 export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
-  if (props.params.slug.startsWith('@')) {
+  const params = useParams();
+
+  if (params.slug.startsWith('@')) {
     console.debug('[routes] [slug]/[...tab] starts with @, render as author page')
     const patchedProps = {
       ...props,
       params: {
         ...props.params,
-        slug: props.params.slug.slice(1, props.params.slug.length)
+        slug: params.slug.slice(1, params.slug.length)
       }
     } as RouteSectionProps<AuthorPageProps>
     return <AuthorPage {...patchedProps} />
   }
 
-  if (props.params.slug.startsWith('!')) {
+  if (params.slug.startsWith('!')) {
     console.debug('[routes] [slug]/[...tab] starts with !, render as topic page')
     const patchedProps = {
       ...props,
       params: {
         ...props.params,
-        slug: props.params.slug.slice(1, props.params.slug.length)
+        slug: params.slug.slice(1, params.slug.length)
       }
     } as RouteSectionProps<TopicPageProps>
     return <TopicPage {...patchedProps} />
@@ -95,7 +97,14 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
 function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
   const loc = useLocation()
   const { t } = useLocalize()
-  const data = createAsync(async () => props.data?.article || (await fetchShout(props.params.slug)))
+  const params = useParams();
+  
+  const data = createAsync(async () => {
+    console.debug('Fetching article with slug (createAsync):', params.slug)
+    const result = props.data?.article || (await fetchShout(params.slug))
+    console.debug('Fetched article data (createAsync):', result)
+    return result
+  })
 
   onMount(async () => {
     if (gaIdentity && data()?.id) {
@@ -110,9 +119,22 @@ function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
 
   createEffect(
     on(
+      () => params.slug,
+      async (newSlug) => {
+        console.debug('Slug changed (useParams):', newSlug)
+        const result = await fetchShout(newSlug);
+        console.debug('Fetched article data (useParams):', result)
+        data(result);
+      }
+    )
+  )
+
+  createEffect(
+    on(
       data,
       (a?: Shout) => {
         if (!a?.id) return
+        console.debug('Page view event for article:', a)
         window?.gtag?.('event', 'page_view', {
           page_title: a.title,
           page_location: window?.location.href || '',
@@ -123,18 +145,27 @@ function InnerArticlePage(props: RouteSectionProps<ArticlePageProps>) {
     )
   )
 
+  createEffect(async () => {
+    console.debug('Data from createAsync effect:', data());
+  });
+
   return (
-    <ErrorBoundary fallback={() => <HttpStatusCode code={500} />}>
+    <ErrorBoundary fallback={() => {
+      console.error('Rendering 500 error page')
+      return <HttpStatusCode code={500} />
+    }}>
       <Suspense fallback={<Loading />}>
         <Show
           when={data()?.id}
           fallback={
             <PageLayout isHeaderFixed={false} hideFooter={true} title={t('Nothing is here')}>
+              {console.warn('Rendering 404 error page - no article data found')}
               <FourOuFourView />
               <HttpStatusCode code={404} />
             </PageLayout>
           }
         >
+          {console.debug('Rendering article page with data:', data())}
           <PageLayout
             title={`${t('Discours')}${data()?.title ? ' :: ' : ''}${data()?.title || ''}`}
             desc={descFromBody(data()?.body || '')}

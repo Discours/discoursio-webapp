@@ -1,6 +1,6 @@
 import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { ErrorBoundary, Show, Suspense, onMount } from 'solid-js'
+import { ErrorBoundary, Show, Suspense, createEffect, onMount } from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -79,6 +79,8 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
   function ArticlePage(props: RouteSectionProps<ArticlePageProps>) {
     const loc = useLocation()
     const { t } = useLocalize()
+
+    // Refactored createAsync to ensure data fetch on route changes
     const data = createAsync(async () => {
       console.debug('createAsync fetching data with slug:', props.params.slug)
       const result = props.data?.article || (await fetchShout(props.params.slug))
@@ -86,6 +88,7 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
       return result
     })
 
+    // onMount to load GA and other scripts if needed
     onMount(async () => {
       console.debug('onMount triggered')
       if (gaIdentity && data()?.id) {
@@ -96,6 +99,18 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
         } catch (error) {
           console.warn('[routes] [slug]/[...tab] Failed to connect Google Analytics:', error)
         }
+      }
+    })
+
+    // Re-trigger Google Analytics when data changes
+    createEffect(() => {
+      console.debug('createEffect triggered with data:', data())
+      if (data()?.id) {
+        window?.gtag?.('event', 'page_view', {
+          page_title: data()?.title,
+          page_location: window?.location.href || '',
+          page_path: loc.pathname
+        })
       }
     })
 
@@ -133,5 +148,7 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
       </ErrorBoundary>
     )
   }
+
+  // Return the ArticlePage component to ensure the route handles properly
   return <ArticlePage {...props} />
 }

@@ -1,24 +1,3 @@
-/**
- * [slug].tsx
- * 
- * # Dynamic Slug Route Handler
- * 
- * ## Overview
- * 
- * This file handles dynamic routing based on the `slug` parameter in the URL. Depending on the prefix of the slug, it renders different pages:
- * 
- * - **Author Page**: If the `slug` starts with `@`, it renders the `AuthorPage` component for the specified author.
- * - **Topic Page**: If the `slug` starts with `!`, it renders the `TopicPage` component for the specified topic.
- * - **Article Page**: For all other slugs, it renders the `ArticlePageComponent`, displaying the full article details.
- * 
- * ## Components
- * 
- * - **SlugPage**: The main component that determines which page to render based on the `slug`.
- * - **InnerArticlePage**: Fetches and displays the detailed view of an article.
- * - **AuthorPage**: Displays author-specific information (imported from `../author/[slug]/[...tab]`).
- * - **TopicPage**: Displays topic-specific information (imported from `../topic/[slug]/[...tab]`).
- **/
-
 import { RouteDefinition, RouteSectionProps, useLocation, useParams } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
 import { ErrorBoundary, Show, Suspense, createEffect, onMount } from 'solid-js'
@@ -64,7 +43,37 @@ export type SlugPageProps = {
   topics: Topic[]
 }
 
-export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
+export default function SlugPage(props: RouteSectionProps<SlugPageProps>) {
+  const params = useParams()
+
+  if (params.slug.startsWith('@')) {
+    console.debug('[routes] [slug]/[...tab] starts with @, render as author page')
+    const patchedProps = {
+      ...props,
+      params: {
+        ...props.params,
+        slug: params.slug.slice(1)
+      }
+    } as RouteSectionProps<AuthorPageProps>
+    return <AuthorPage {...patchedProps} />
+  }
+
+  if (params.slug.startsWith('!')) {
+    console.debug('[routes] [slug]/[...tab] starts with !, render as topic page')
+    const patchedProps = {
+      ...props,
+      params: {
+        ...props.params,
+        slug: params.slug.slice(1)
+      }
+    } as RouteSectionProps<TopicPageProps>
+    return <TopicPage {...patchedProps} />
+  }
+
+  return <ArticlePage {...props} />
+}
+
+function ArticlePage(props: RouteSectionProps<ArticlePageProps>) {
   const loc = useLocation()
   const { t } = useLocalize()
   const params = useParams()

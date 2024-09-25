@@ -6,7 +6,6 @@ import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
 import { useLocalize } from '~/context/localize'
 import { getShout } from '~/graphql/api/public'
-import { useTopics } from '~/context/topics'  // Import Topics context
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
 import { initGA, loadGAScript } from '~/utils/ga'
 import { descFromBody, keywordsFromTopics } from '~/utils/meta'
@@ -45,76 +44,30 @@ export type SlugPageProps = {
 }
 
 export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
-  const { topicEntities, loadTopics } = useTopics() // Get topics context
-  const slug = props.params.slug
-
-  // Handle author page if slug starts with '@'
-  if (slug.startsWith('@')) {
+  if (props.params.slug.startsWith('@')) {
     console.debug('[routes] [slug]/[...tab] starts with @, render as author page')
     const patchedProps = {
       ...props,
       params: {
         ...props.params,
-        slug: slug.slice(1)
+        slug: props.params.slug.slice(1, props.params.slug.length)
       }
     } as RouteSectionProps<AuthorPageProps>
     return <AuthorPage {...patchedProps} />
   }
 
-  // Handle topic page if slug starts with '!'
-  if (slug.startsWith('!')) {
+  if (props.params.slug.startsWith('!')) {
     console.debug('[routes] [slug]/[...tab] starts with !, render as topic page')
-
-    const topicSlug = slug.slice(1) // Remove '!' from slug
-    const topic = topicEntities()[topicSlug] // Check if the topic is already loaded
-
-    // If the topic is not loaded, fetch topics
-    if (!topic) {
-      onMount(async () => {
-        console.debug('Loading topics for the first time...')
-        await loadTopics() // Load topics if not already available
-      })
-
-      return <Loading /> // Show a loading state while fetching the topics
-    }
-
     const patchedProps = {
       ...props,
       params: {
         ...props.params,
-        slug: topicSlug
+        slug: props.params.slug.slice(1, props.params.slug.length)
       }
     } as RouteSectionProps<TopicPageProps>
     return <TopicPage {...patchedProps} />
   }
 
-  // Handle topic pages without '!' or '@'
-  if (!slug.startsWith('@') && !slug.startsWith('!')) {
-    console.debug('[routes] [slug]/[...tab] regular topic page')
-
-    const topic = topicEntities()[slug] // Check if the topic is already loaded
-
-    // If the topic is not loaded, trigger topic loading
-    if (!topic) {
-      onMount(async () => {
-        console.debug('Topic not found, loading topics...')
-        await loadTopics()
-      })
-
-      return <Loading /> // Show a loading state while fetching the topics
-    }
-
-    const patchedProps = {
-      ...props,
-      params: {
-        ...props.params,
-        slug
-      }
-    } as RouteSectionProps<TopicPageProps>
-    return <TopicPage {...patchedProps} />
-  }
-
-  // ArticlePage logic for rendering articles if neither `@` nor `!` is in the slug
   function ArticlePage(props: RouteSectionProps<ArticlePageProps>) {
     const loc = useLocation()
     const { t } = useLocalize()
@@ -175,6 +128,4 @@ export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
       </ErrorBoundary>
     )
   }
-
   return <ArticlePage {...props} />
-}

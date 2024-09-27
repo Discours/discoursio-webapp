@@ -18,7 +18,7 @@ import { Modal } from '../../_shared/Modal'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import styles from './PublishSettings.module.scss'
 
-const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 const DESCRIPTION_MAX_LENGTH = 400
 
@@ -224,16 +224,10 @@ export const PublishSettings = (props: Props) => {
                 allowEnterKey={false}
                 maxLength={100}
               />
-              <SimplifiedEditor
-                variant="bordered"
-                hideToolbar={true}
-                smallHeight={true}
+              <MicroEditor
                 placeholder={t('Write a short introduction')}
-                label={t('Description')}
-                initialContent={composeDescription()}
-                // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-                onChange={(value: any) => setForm('description', value)}
-                maxLength={DESCRIPTION_MAX_LENGTH}
+                content={composeDescription()}
+                onChange={(value?: string) => value && setForm('description', value)}
               />
             </div>
 

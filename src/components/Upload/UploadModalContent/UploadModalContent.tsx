@@ -10,7 +10,7 @@ import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
 import { handleImageUpload } from '~/lib/handleImageUpload'
 import { UploadedFile } from '~/types/upload'
-import { InlineForm } from '../InlineForm'
+import { InlineForm } from '../../_shared/InlineForm'
 
 import styles from './UploadModalContent.module.scss'
 

@@ -4,13 +4,13 @@ import { createEditorTransaction, useEditorHTML, useEditorIsEmpty } from 'solid-
 import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
-import { Button } from '../_shared/Button'
-import { Icon } from '../_shared/Icon'
-import { Loading } from '../_shared/Loading'
-import { Popover } from '../_shared/Popover'
-import { SimplifiedEditorProps } from './SimplifiedEditor'
+import { Button } from '../../_shared/Button'
+import { Icon } from '../../_shared/Icon'
+import { Loading } from '../../_shared/Loading'
+import { Popover } from '../../_shared/Popover'
+import { SimplifiedEditorProps } from '../SimplifiedEditor'
 
-import styles from './SimplifiedEditor.module.scss'
+import styles from '../SimplifiedEditor.module.scss'
 
 export const ToolbarControls = (
   props: SimplifiedEditorProps & { setShouldShowLinkBubbleMenu: (x: boolean) => void }

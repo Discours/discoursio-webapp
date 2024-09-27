@@ -16,10 +16,10 @@ import { useSnackbar } from '~/context/ui'
 import { Author } from '~/graphql/schema/core.gen'
 import { base, custom, extended } from '~/lib/editorExtensions'
 import { handleImageUpload } from '~/lib/handleImageUpload'
+import { renderUploadedImage } from '../Upload/renderUploadedImage'
 import { BlockquoteBubbleMenu, FigureBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import { renderUploadedImage } from './renderUploadedImage'
 
 import './Prosemirror.scss'
 

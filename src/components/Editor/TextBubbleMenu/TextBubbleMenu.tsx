@@ -11,7 +11,7 @@ import { InsertLinkForm } from '../InsertLinkForm'
 
 import styles from './TextBubbleMenu.module.scss'
 
-const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const MiniEditor = lazy(() => import('../../Editor/MiniEditor/MiniEditor'))
 
 type BubbleMenuProps = {
   editor: Editor
@@ -146,18 +146,13 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
           <InsertLinkForm editor={props.editor} onClose={handleCloseLinkForm} />
         </Match>
         <Match when={footnoteEditorOpen()}>
-          <SimplifiedEditor
-            maxHeight={180}
-            controlsAlwaysVisible={true}
-            imageEnabled={true}
+          <MiniEditor
             placeholder={t('Enter footnote text')}
-            onSubmit={(value) => handleAddFootnote(value)}
-            variant={'bordered'}
-            initialContent={footNote()}
+            onSubmit={(value: string) => handleAddFootnote(value)}
+            content={footNote()}
             onCancel={() => {
               setFootnoteEditorOpen(false)
             }}
-            submitButtonText={t('Send')}
           />
         </Match>
         <Match when={!(linkEditorOpen() && footnoteEditorOpen())}>

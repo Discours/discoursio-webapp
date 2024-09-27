@@ -21,14 +21,14 @@ import { LayoutType } from '~/types/common'
 import { MediaItem } from '~/types/mediaitem'
 import { clone } from '~/utils/clone'
 import { Editor as EditorComponent, Panel } from '../../Editor'
-import { AudioUploader } from '../../Editor/AudioUploader'
 import { AutoSaveNotice } from '../../Editor/AutoSaveNotice'
-import { VideoUploader } from '../../Editor/VideoUploader'
+import { AudioUploader } from '../../Upload/AudioUploader'
+import { VideoUploader } from '../../Upload/VideoUploader'
 import { Modal } from '../../_shared/Modal'
 import { TableOfContents } from '../../_shared/TableOfContents'
 import styles from './EditView.module.scss'
 
-const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
@@ -358,13 +358,10 @@ export const EditView = (props: Props) => {
                             />
                           </Show>
                           <Show when={isLeadVisible()}>
-                            <SimplifiedEditor
-                              variant="minimal"
-                              hideToolbar={true}
-                              smallHeight={true}
+                            <MicroEditor
                               placeholder={t('A short introduction to keep the reader interested')}
-                              initialContent={form.lead}
-                              onChange={(value) => handleInputChange('lead', value)}
+                              content={form.lead}
+                              onChange={(value: string) => handleInputChange('lead', value)}
                             />
                           </Show>
                         </Show>

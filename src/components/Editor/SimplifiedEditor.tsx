@@ -11,15 +11,15 @@ import { useUI } from '~/context/ui'
 import { base, custom } from '~/lib/editorExtensions'
 import { useEscKeyDownHandler } from '~/lib/useEscKeyDownHandler'
 import { UploadedFile } from '~/types/upload'
+import { UploadModalContent } from '../Upload/UploadModalContent'
+import { renderUploadedImage } from '../Upload/renderUploadedImage'
 import { Modal } from '../_shared/Modal/Modal'
 import { ShowOnlyOnClient } from '../_shared/ShowOnlyOnClient'
-import { ToolbarControls } from './EditorToolbar'
+import { ToolbarControls } from './EditorToolbar/SimplifiedToolbar'
 import { LinkBubbleMenuModule } from './LinkBubbleMenu'
 import { TextBubbleMenu } from './TextBubbleMenu'
-import { UploadModalContent } from './UploadModalContent'
-import { renderUploadedImage } from './renderUploadedImage'
 
-import styles from './SimplifiedEditor.module.scss'
+import styles from './Editor.module.scss'
 
 export type SimplifiedEditorProps = {
   placeholder: string

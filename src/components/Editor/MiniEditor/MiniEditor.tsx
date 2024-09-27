@@ -3,10 +3,7 @@ import CharacterCount from '@tiptap/extension-character-count'
 import Placeholder from '@tiptap/extension-placeholder'
 import clsx from 'clsx'
 import { type JSX, Show, createEffect, createSignal, on, onCleanup } from 'solid-js'
-import {
-  createTiptapEditor,
-  useEditorHTML,
-} from 'solid-tiptap'
+import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { Toolbar } from 'terracotta'
 import { Icon } from '~/components/_shared/Icon/Icon'
 import { Popover } from '~/components/_shared/Popover/Popover'
@@ -104,13 +101,15 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     toolbarElement()?.removeEventListener('mousedown', handleMouseDownOnToolbar)
   })
   return (
-    <div
-      class={clsx(styles.SimplifiedEditor, styles.bordered, styles.isFocused)}
-    >
+    <div class={clsx(styles.SimplifiedEditor, styles.bordered, styles.isFocused)}>
       <div>
         <div id="mini-editor" ref={setEditorElement} />
 
-        <Toolbar style={{ 'background-color': 'white', display: 'inline-flex' }} ref={setToolbarElement} horizontal>
+        <Toolbar
+          style={{ 'background-color': 'white', display: 'inline-flex' }}
+          ref={setToolbarElement}
+          horizontal
+        >
           <Show when={editor()} keyed>
             {(instance) => (
               <div class={styles.controls}>
@@ -172,7 +171,6 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
             {counter()} / {props.limit || '∞'}
           </small>
         </Show>
-
       </div>
     </div>
   )

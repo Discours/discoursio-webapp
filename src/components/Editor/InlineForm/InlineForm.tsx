@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { createSignal, onMount } from 'solid-js'
+import { createEffect, createSignal, onMount } from 'solid-js'
 
 import { Icon } from '~/components/_shared/Icon'
 import { Popover } from '~/components/_shared/Popover'
@@ -15,19 +15,23 @@ type Props = {
   initialValue?: string
   showInput?: boolean
   placeholder: string
+  onFocus?: (event: FocusEvent) => void
 }
 
 export const InlineForm = (props: Props) => {
   const { t } = useLocalize()
   const [formValue, setFormValue] = createSignal(props.initialValue || '')
   const [formValueError, setFormValueError] = createSignal<string | undefined>()
-
-  let inputRef: HTMLInputElement | undefined
+  const [inputRef, setInputRef] = createSignal<HTMLInputElement | undefined>()
   const handleFormInput = (e: { currentTarget: HTMLInputElement; target: HTMLInputElement }) => {
     const value = (e.currentTarget || e.target).value
     setFormValueError()
     setFormValue(value)
   }
+
+  createEffect(() => {
+    setFormValue(props.initialValue || '')
+  })
 
   const handleSaveButtonClick = async () => {
     if (props.validate) {
@@ -56,23 +60,23 @@ export const InlineForm = (props: Props) => {
   }
 
   const handleClear = () => {
-    props.initialValue ? props.onClear?.() : props.onClose()
+    props.initialValue && props.onClear?.()
+    props.onClose()
   }
 
-  onMount(() => {
-    inputRef?.focus()
-  })
+  onMount(() => inputRef()?.focus())
 
   return (
     <div class={styles.InlineForm}>
       <div class={styles.form}>
         <input
-          ref={(el) => (inputRef = el)}
+          ref={setInputRef}
           type="text"
-          value={props.initialValue ?? ''}
+          value={formValue()}
           placeholder={props.placeholder}
           onKeyDown={handleKeyDown}
           onInput={handleFormInput}
+          onFocus={props.onFocus}
         />
         <Popover content={t('Add link')}>
           {(triggerRef: (el: HTMLElement) => void) => (

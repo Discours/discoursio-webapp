@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/core'
-import { createEditorTransaction } from 'solid-tiptap'
+import { createEffect, createSignal, onCleanup } from 'solid-js'
 
 import { useLocalize } from '~/context/localize'
 import { validateUrl } from '~/utils/validate'
@@ -8,6 +8,7 @@ import { InlineForm } from '../InlineForm'
 type Props = {
   editor: Editor
   onClose: () => void
+  onFocus: (event: FocusEvent) => void
 }
 
 export const checkUrl = (url: string) => {
@@ -21,12 +22,22 @@ export const checkUrl = (url: string) => {
 
 export const InsertLinkForm = (props: Props) => {
   const { t } = useLocalize()
-  const currentUrl = createEditorTransaction(
-    () => props.editor,
-    (ed) => {
-      return ed?.getAttributes('link').href || ''
+  const [currentUrl, setCurrentUrl] = createSignal('')
+
+  createEffect(() => {
+    const url = props.editor.getAttributes('link').href
+    setCurrentUrl(url || '')
+  })
+
+  createEffect(() => {
+    const updateListener = () => {
+      const url = props.editor.getAttributes('link').href
+      setCurrentUrl(url || '')
     }
-  )
+    props.editor.on('update', updateListener)
+    onCleanup(() => props.editor.off('update', updateListener))
+  })
+
   const handleClearLinkForm = () => {
     if (currentUrl()) {
       props.editor?.chain().focus().unsetLink().run()
@@ -39,7 +50,9 @@ export const InsertLinkForm = (props: Props) => {
       .focus()
       .setLink({ href: checkUrl(value) })
       .run()
+    props.onClose()
   }
+
   return (
     <div>
       <InlineForm
@@ -49,6 +62,7 @@ export const InsertLinkForm = (props: Props) => {
         validate={(value) => (validateUrl(value) ? '' : t('Invalid url format'))}
         onSubmit={handleLinkFormSubmit}
         onClose={props.onClose}
+        onFocus={props.onFocus}
       />
     </div>
   )

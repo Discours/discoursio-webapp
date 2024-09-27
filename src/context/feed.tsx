@@ -18,10 +18,10 @@ export const PRERENDERED_ARTICLES_COUNT = 5
 export const SHOUTS_PER_PAGE = 20
 export const EXPO_LAYOUTS = ['audio', 'literature', 'video', 'image'] as ExpoLayoutType[]
 export const EXPO_TITLES: Record<ExpoLayoutType | '', string> = {
-  'audio': 'Audio',
-  'video': 'Video',
-  'image': 'Artworks',
-  'literature': 'Literature',
+  audio: 'Audio',
+  video: 'Video',
+  image: 'Artworks',
+  literature: 'Literature',
   '': 'All'
 }
 

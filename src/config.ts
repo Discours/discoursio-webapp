@@ -11,7 +11,4 @@ export const authorizerRedirectUrl =
   import.meta.env.PUBLIC_AUTHORIZER_REDIRECT_URL || 'https://testing.discours.io'
 
 // devmode only
-export const isDev = import.meta.env.MODE === 'development'
-export const reportDsn = isDev
-  ? import.meta.env.PUBLIC_GLITCHTIP_DSN || import.meta.env.PUBLIC_SENTRY_DSN || ''
-  : ''
+export const reportDsn = import.meta.env.PUBLIC_GLITCHTIP_DSN

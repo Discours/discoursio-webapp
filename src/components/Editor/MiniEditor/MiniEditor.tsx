@@ -2,13 +2,10 @@ import type { Editor } from '@tiptap/core'
 import CharacterCount from '@tiptap/extension-character-count'
 import Placeholder from '@tiptap/extension-placeholder'
 import clsx from 'clsx'
-import { type JSX, Show, createEffect, createSignal, onCleanup } from 'solid-js'
+import { type JSX, Show, createEffect, createSignal, on, onCleanup } from 'solid-js'
 import {
-  createEditorTransaction,
   createTiptapEditor,
   useEditorHTML,
-  useEditorIsEmpty,
-  useEditorIsFocused
 } from 'solid-tiptap'
 import { Toolbar } from 'terracotta'
 import { Icon } from '~/components/_shared/Icon/Icon'
@@ -63,7 +60,6 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
   const [editorElement, setEditorElement] = createSignal<HTMLDivElement>()
   const [counter, setCounter] = createSignal(0)
   const [showLinkInput, setShowLinkInput] = createSignal(false)
-  const [showSimpleMenu, setShowSimpleMenu] = createSignal(false)
   const { t } = useLocalize()
   const { showModal } = useUI()
 
@@ -82,12 +78,9 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     content: props.content || ''
   }))
 
-  const isEmpty = useEditorIsEmpty(editor)
-  const isFocused = useEditorIsFocused(editor)
-  const isTextSelection = createEditorTransaction(editor, (instance) => !instance?.state.selection.empty)
   const html = useEditorHTML(editor)
-
-  createEffect(() => setShowSimpleMenu(isTextSelection()))
+  createEffect(on(html, (c?: string) => c && props.onChange?.(c)))
+  createEffect(on(showLinkInput, (x?: boolean) => x && editor()?.chain().focus().run()))
 
   createEffect(() => {
     const textLength = editor()?.getText().length || 0
@@ -112,77 +105,74 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
   })
   return (
     <div
-      class={clsx(styles.SimplifiedEditor, styles.bordered, {
-        [styles.isFocused]: isEmpty() || isFocused()
-      })}
+      class={clsx(styles.SimplifiedEditor, styles.bordered, styles.isFocused)}
     >
       <div>
-        <Show when={showSimpleMenu() || showLinkInput()}>
-          <Toolbar style={{ 'background-color': 'white' }} ref={setToolbarElement} horizontal>
-            <Show when={editor()} keyed>
-              {(instance) => (
-                <div class={styles.controls}>
-                  <Show
-                    when={!showLinkInput()}
-                    fallback={<InsertLinkForm editor={instance} onClose={() => setShowLinkInput(false)} />}
-                  >
-                    <div class={styles.actions}>
-                      <Control
-                        key="bold"
-                        editor={instance}
-                        onChange={() => instance.chain().focus().toggleBold().run()}
-                        title={t('Bold')}
-                      >
-                        <Icon name="editor-bold" />
-                      </Control>
-                      <Control
-                        key="italic"
-                        editor={instance}
-                        onChange={() => instance.chain().focus().toggleItalic().run()}
-                        title={t('Italic')}
-                      >
-                        <Icon name="editor-italic" />
-                      </Control>
-                      <Control
-                        key="link"
-                        editor={instance}
-                        onChange={handleLinkClick}
-                        title={t('Add url')}
-                        isActive={showLinkInput}
-                      >
-                        <Icon name="editor-link" />
-                      </Control>
-                      <Control
-                        key="blockquote"
-                        editor={instance}
-                        onChange={() => instance.chain().focus().toggleBlockquote().run()}
-                        title={t('Add blockquote')}
-                      >
-                        <Icon name="editor-quote" />
-                      </Control>
-                      <Control
-                        key="image"
-                        editor={instance}
-                        onChange={() => showModal('simplifiedEditorUploadImage')}
-                        title={t('Add image')}
-                      >
-                        <Icon name="editor-image-dd-full" />
-                      </Control>
-                    </div>
-                  </Show>
-                </div>
-              )}
-            </Show>
-          </Toolbar>
-        </Show>
-
         <div id="mini-editor" ref={setEditorElement} />
+
+        <Toolbar style={{ 'background-color': 'white', display: 'inline-flex' }} ref={setToolbarElement} horizontal>
+          <Show when={editor()} keyed>
+            {(instance) => (
+              <div class={styles.controls}>
+                <Show
+                  when={!showLinkInput()}
+                  fallback={<InsertLinkForm editor={instance} onClose={() => setShowLinkInput(false)} />}
+                >
+                  <div class={styles.actions}>
+                    <Control
+                      key="bold"
+                      editor={instance}
+                      onChange={() => instance.chain().focus().toggleBold().run()}
+                      title={t('Bold')}
+                    >
+                      <Icon name="editor-bold" />
+                    </Control>
+                    <Control
+                      key="italic"
+                      editor={instance}
+                      onChange={() => instance.chain().focus().toggleItalic().run()}
+                      title={t('Italic')}
+                    >
+                      <Icon name="editor-italic" />
+                    </Control>
+                    <Control
+                      key="link"
+                      editor={instance}
+                      onChange={handleLinkClick}
+                      title={t('Add url')}
+                      isActive={showLinkInput}
+                    >
+                      <Icon name="editor-link" />
+                    </Control>
+                    <Control
+                      key="blockquote"
+                      editor={instance}
+                      onChange={() => instance.chain().focus().toggleBlockquote().run()}
+                      title={t('Add blockquote')}
+                    >
+                      <Icon name="editor-quote" />
+                    </Control>
+                    <Control
+                      key="image"
+                      editor={instance}
+                      onChange={() => showModal('simplifiedEditorUploadImage')}
+                      title={t('Add image')}
+                    >
+                      <Icon name="editor-image-dd-full" />
+                    </Control>
+                  </div>
+                </Show>
+              </div>
+            )}
+          </Show>
+        </Toolbar>
 
         <Show when={counter() > 0}>
           <small class={styles.limit}>
             {counter()} / {props.limit || '∞'}
           </small>
         </Show>
+
       </div>
     </div>
   )

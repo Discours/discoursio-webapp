@@ -8,7 +8,6 @@ import { InlineForm } from '../InlineForm'
 type Props = {
   editor: Editor
   onClose: () => void
-  onFocus: (event: FocusEvent) => void
 }
 
 export const checkUrl = (url: string) => {
@@ -62,7 +61,6 @@ export const InsertLinkForm = (props: Props) => {
         validate={(value) => (validateUrl(value) ? '' : t('Invalid url format'))}
         onSubmit={handleLinkFormSubmit}
         onClose={props.onClose}
-        onFocus={props.onFocus}
       />
     </div>
   )

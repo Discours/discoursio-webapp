@@ -63,15 +63,6 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
   const [showLinkInput, setShowLinkInput] = createSignal(false)
   const [showSimpleMenu, setShowSimpleMenu] = createSignal(false)
   const [toolbarElement, setToolbarElement] = createSignal<HTMLElement>()
-  const [selectionRange, setSelectionRange] = createSignal<Range | null>(null)
-
-  const handleLinkInputFocus = (event: FocusEvent) => {
-    event.preventDefault()
-    const selection = window.getSelection()
-    if (selection?.rangeCount) {
-      setSelectionRange(selection.getRangeAt(0))
-    }
-  }
 
   const editor = createTiptapEditor(() => ({
     element: editorElement()!,
@@ -87,12 +78,32 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
     content: props.content || ''
   }))
 
+  const selection = createEditorTransaction(editor, (instance) => instance?.state.selection)
+  const [storedSelection, setStoredSelection] = createSignal<Editor['state']['selection']>()
+  const recoverSelection = () => {
+    if (!storedSelection()?.empty) {
+      // TODO set selection range from stored
+      createEditorTransaction(editor, (instance?: Editor) => {
+        const r = selection()
+        if (instance && r) {
+          instance.state.selection.from === r.from
+          instance.state.selection.to === r.to
+        }
+      })
+    }
+  }
+  const storeSelection = (event: Event) => {
+    event.preventDefault()
+    const selection = editor()?.state.selection
+    if (!selection?.empty) {
+      setStoredSelection(selection)
+    }
+  }
+
   const isEmpty = useEditorIsEmpty(editor)
   const isFocused = useEditorIsFocused(editor)
-  const isTextSelection = createEditorTransaction(editor, (instance) => !instance?.state.selection.empty)
   const html = useEditorHTML(editor)
-
-  createEffect(on([isTextSelection, showLinkInput],([selected, linkEditing]) => !linkEditing && setShowSimpleMenu(selected)))
+  createEffect(on([selection, showLinkInput], ([s, l]) => !l && setShowSimpleMenu(!s?.empty)))
   createEffect(on(html, (c?: string) => c && props.onChange?.(c)))
   createEffect(on(showLinkInput, (x?: boolean) => x && editor()?.chain().focus().run()))
   createReaction(on(toolbarElement, (t?: HTMLElement) => t?.addEventListener('mousedown', prevent)))
@@ -117,46 +128,41 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
                 ref={setToolbarElement}
               >
                 <div class={styles.controls}>
-                  <Show
-                    when={!showLinkInput()}
-                    fallback={<InsertLinkForm editor={instance}
-                    onClose={() => {
-                      setShowLinkInput(false)
-                      if (selectionRange()) {
-                        const selection = window.getSelection()
-                        selection?.removeAllRanges()
-                        selection?.addRange(selectionRange()!)
-                      }
-                    }}
-                    onFocus={handleLinkInputFocus} />}
-                  >
-                    <div class={styles.actions}>
-                      <Control
-                        key="bold"
-                        editor={instance}
-                        onChange={() => instance.chain().focus().toggleBold().run()}
-                        title={t('Bold')}
-                      >
-                        <Icon name="editor-bold" />
-                      </Control>
-                      <Control
-                        key="italic"
-                        editor={instance}
-                        onChange={() => instance.chain().focus().toggleItalic().run()}
-                        title={t('Italic')}
-                      >
-                        <Icon name="editor-italic" />
-                      </Control>
-                      <Control
-                        key="link"
-                        editor={instance}
-                        onChange={() => setShowLinkInput(!showLinkInput())}
-                        title={t('Add url')}
-                        isActive={showLinkInput}
-                      >
-                        <Icon name="editor-link" />
-                      </Control>
-                    </div>
+                  <div class={styles.actions}>
+                    <Control
+                      key="bold"
+                      editor={instance}
+                      onChange={() => instance.chain().focus().toggleBold().run()}
+                      title={t('Bold')}
+                    >
+                      <Icon name="editor-bold" />
+                    </Control>
+                    <Control
+                      key="italic"
+                      editor={instance}
+                      onChange={() => instance.chain().focus().toggleItalic().run()}
+                      title={t('Italic')}
+                    >
+                      <Icon name="editor-italic" />
+                    </Control>
+                    <Control
+                      key="link"
+                      editor={instance}
+                      onChange={() => setShowLinkInput(!showLinkInput())}
+                      title={t('Add url')}
+                      isActive={showLinkInput}
+                    >
+                      <Icon name="editor-link" />
+                    </Control>
+                  </div>
+                  <Show when={showLinkInput()}>
+                    <InsertLinkForm
+                      editor={instance}
+                      onClose={() => {
+                        setShowLinkInput(false)
+                        recoverSelection()
+                      }}
+                    />
                   </Show>
                 </div>
               </div>
@@ -164,7 +170,7 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
           )}
         </Show>
 
-        <div id="micro-editor" ref={setEditorElement} style={styles.minimal} />
+        <div id="micro-editor" ref={setEditorElement} style={styles.minimal} onFocusOut={storeSelection} />
       </div>
     </div>
   )

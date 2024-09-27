@@ -154,10 +154,7 @@ export const CommentsTree = (props: Props) => {
           </div>
         }
       >
-        <MiniEditor
-          placeholder={t('Write a comment...')}
-          onSubmit={handleSubmitComment}
-        />
+        <MiniEditor placeholder={t('Write a comment...')} onSubmit={handleSubmitComment} />
         <Show when={posting()}>
           <Loading />
         </Show>

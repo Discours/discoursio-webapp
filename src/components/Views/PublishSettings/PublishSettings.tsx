@@ -12,9 +12,10 @@ import { useTopics } from '~/context/topics'
 import { useSnackbar, useUI } from '~/context/ui'
 import { Topic } from '~/graphql/schema/core.gen'
 import { UploadedFile } from '~/types/upload'
-import { TopicSelect, UploadModalContent } from '../../Editor'
 import { Modal } from '../../_shared/Modal'
 
+import { TopicSelect } from '~/components/TopicSelect/TopicSelect'
+import { UploadModalContent } from '~/components/Upload/UploadModalContent/UploadModalContent'
 import stylesBeside from '../../Feed/Beside.module.scss'
 import styles from './PublishSettings.module.scss'
 

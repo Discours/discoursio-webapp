@@ -18,10 +18,10 @@ import { base, custom, extended } from '~/lib/editorExtensions'
 import { handleImageUpload } from '~/lib/handleImageUpload'
 import { renderUploadedImage } from '../Upload/renderUploadedImage'
 import { BlockquoteBubbleMenu, FigureBubbleMenu, IncutBubbleMenu } from './BubbleMenu'
+import { TextBubbleMenu } from './BubbleMenu/TextBubbleMenu'
 import { EditorFloatingMenu } from './EditorFloatingMenu'
-import { TextBubbleMenu } from './TextBubbleMenu'
 
-import './Prosemirror.scss'
+import './Editor.module.scss'
 
 export type EditorComponentProps = {
   shoutId: number

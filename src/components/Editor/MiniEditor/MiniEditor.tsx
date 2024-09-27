@@ -3,12 +3,12 @@ import Placeholder from '@tiptap/extension-placeholder'
 import clsx from 'clsx'
 import { type JSX, Show, createEffect, createSignal, on } from 'solid-js'
 import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
+import { Button } from '~/components/_shared/Button'
+import { useLocalize } from '~/context/localize'
 import { base } from '~/lib/editorExtensions'
 import { EditorToolbar } from '../EditorToolbar/EditorToolbar'
 
-import { Button } from '~/components/_shared/Button'
-import { useLocalize } from '~/context/localize'
-import styles from '../SimplifiedEditor.module.scss'
+import styles from './MiniEditor.module.scss'
 
 interface MiniEditorProps {
   content?: string
@@ -58,7 +58,7 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
   }
 
   return (
-    <div class={clsx(styles.SimplifiedEditor, styles.bordered, { [styles.isFocused]: isFocused() })}>
+    <div class={clsx(styles.MiniEditor, styles.bordered, { [styles.isFocused]: isFocused() })}>
       <div>
         <div id="mini-editor" ref={setEditorElement} />
 

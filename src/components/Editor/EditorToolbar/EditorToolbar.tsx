@@ -12,7 +12,7 @@ import { UploadedFile } from '~/types/upload'
 import { InsertLinkForm } from './InsertLinkForm'
 import { ToolbarControl as Control } from './ToolbarControl'
 
-import styles from '../SimplifiedEditor.module.scss'
+import styles from '../MiniEditor/MiniEditor.module.scss'
 
 interface EditorToolbarProps {
   editor: Accessor<Editor | undefined>

@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import { JSX } from 'solid-js'
 import { Popover } from '~/components/_shared/Popover'
 
-import styles from '../SimplifiedEditor.module.scss'
+import styles from '../MiniEditor/MiniEditor.module.scss'
 
 interface ControlProps {
   editor: Editor

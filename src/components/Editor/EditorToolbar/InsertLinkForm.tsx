@@ -1,6 +1,5 @@
 import { Editor } from '@tiptap/core'
 import { createEffect, createSignal, onCleanup } from 'solid-js'
-
 import { useLocalize } from '~/context/localize'
 import { validateUrl } from '~/utils/validate'
 import { InlineForm } from '../../_shared/InlineForm'

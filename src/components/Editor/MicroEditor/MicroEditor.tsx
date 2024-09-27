@@ -5,7 +5,7 @@ import { createTiptapEditor, useEditorHTML, useEditorIsFocused } from 'solid-tip
 import { minimal } from '~/lib/editorExtensions'
 import { EditorToolbar } from '../EditorToolbar/EditorToolbar'
 
-import styles from '../SimplifiedEditor.module.scss'
+import styles from '../MiniEditor/MiniEditor.module.scss'
 
 interface MicroEditorProps {
   content?: string
@@ -36,7 +36,7 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
   createEffect(on(html, (c?: string) => c && props.onChange?.(c)))
 
   return (
-    <div class={clsx(styles.SimplifiedEditor, styles.bordered, { [styles.isFocused]: isFocused() })}>
+    <div class={clsx(styles.MiniEditor, styles.bordered, { [styles.isFocused]: isFocused() })}>
       <div>
         <EditorToolbar editor={editor} mode={'micro'} />
         <div id="micro-editor" ref={setEditorElement} style={styles.minimal} />

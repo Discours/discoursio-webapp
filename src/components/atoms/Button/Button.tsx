@@ -4,11 +4,11 @@ import { clsx } from 'clsx'
 
 import styles from './Button.module.scss'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'bordered' | 'inline' | 'light' | 'outline' | 'danger'
+export type ButtonVariant = 'primary' | 'secondary' | 'bordered' | 'outline' | 'primary-square' | 'secondary-square'
 type Props = {
   title?: string
   value: string | JSX.Element
-  size?: 'S' | 'M' | 'L'
+  size?: 'S' | 'M' | 'L' | 'XS-square' | 'S-square' | 'M-square'
   variant?: ButtonVariant
   type?: 'submit' | 'button'
   loading?: boolean
@@ -38,8 +38,8 @@ export const Button = (props: Props) => {
         styles[props.size ?? 'M'],
         styles[props.variant ?? 'primary'],
         {
-          [styles.loading]: props.loading,
-          [styles.subscribeButton]: props.isSubscribeButton
+          // [styles.loading]: props.loading,
+          // [styles.subscribeButton]: props.isSubscribeButton
         },
         props.class
       )}

@@ -1,13 +1,14 @@
 .button {
-  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
 
   &.primary {
+    border-radius: 8px;
     background: var(--background-color-invert);
     color: var(--default-color-invert);
 
@@ -18,11 +19,12 @@
 
     &:active {
       background: #000;
-      color: rgb(255, 255, 255, 0.4);
+      color: rgb(255, 255, 255, 40%);
     }
   }
 
   &.secondary {
+    border-radius: 8px;
     border: 1px solid #f7f7f8;
     background: #f7f7f8;
     color: #000;
@@ -34,87 +36,25 @@
 
     &:active {
       background: #f7f7f8;
-      color: rgb(105, 105, 105, 0.4);
+      color: rgb(105, 105, 105, 40%);
     }
   }
-
-  &.danger {
-    border: 3px solid var(--danger-color);
-    background: var(--background-color);
-    color: var(--danger-color);
-
-    &:hover {
-      background: var(--danger-color);
-      color: #fff;
-    }
-  }
-
-  &.inline {
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 21px;
-    color: #696969;
-
-    &:hover,
-    &:active {
-      text-decoration: underline;
-      color: #141414;
-    }
-  }
-
-  &.light {
-    font-weight: inherit;
-    padding: 0;
-  }
-
-  //&.outline,
-  //&.bordered {
-  //  border: 3px solid #f2f2f2;
-  //  border-radius: 1.2em;
-  //  cursor: pointer;
-  //  font-weight: bold;
-  //  margin-right: 0.8em;
-  //  min-width: auto !important;
-  //  padding: 0;
-  //  transition:
-  //    border-color 0.3s,
-  //    background-color 0.3s,
-  //    color 0.3s;
-  //
-  //  &:hover,
-  //  &:active {
-  //    background: var(--link-color);
-  //    border-color: var(--link-color);
-  //    color: var(--link-hover-color);
-  //
-  //    :global(.icon) {
-  //      filter: var(--icon-filter-hover);
-  //    }
-  //  }
-  //
-  //  :global(.icon) {
-  //    margin: 0 -0.5em;
-  //    filter: var(--icon-filter);
-  //    transition: filter 0.3s;
-  //  }
-  //}
 
   &.bordered {
     min-width: auto !important;
     background: var(--link-color);
     color: var(--link-hover-color);
-    cursor: pointer;
-    margin-right: 0.8em;
-    padding: 0;
-    transition:
-      border-color 0.3s,
-      background-color 0.3s,
-      color 0.3s;
+    border-radius: 8px;
+    border: 2px solid #000;
 
     &:hover {
-      background: inherit;
-      border: 2px solid #000;
+      background: none;
       color: #000;
+      transition: all 100ms ease-in;
+    }
+
+    &:not(:hover) {
+      transition: all 80ms ease-out;
     }
 
     &:active {
@@ -126,31 +66,49 @@
   &.outline {
     min-width: auto !important;
     border: 2px solid #000;
-    transition:
-      border-color 0.3s,
-      background-color 0.3s,
-      color 0.3s;
+    border-radius: 8px;
 
     &:hover {
       background: var(--link-color);
-      color: var(--link-hover-color)
+      color: var(--link-hover-color);
+      transition: all 100ms ease-in;
+    }
+
+    &:not(:hover) {
+      transition: all 80ms ease-out;
     }
 
     &:active {
-      color: rgb(255, 255, 255, 0.4)
+      color: rgb(255, 255, 255, 40%)
     }
   }
 
-  &:disabled,
-  &:disabled:hover {
-    cursor: default;
-    color: #9fa1a7;
-    background: #f6f6f6;
+  &.primary-square {
+    border-radius: 2px;
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
+
+    &:hover {
+      color: #ccc;
+    }
+
+    &:active {
+      color: #9fa1a7;
+    }
   }
 
-  &.loading,
-  &.loading:hover {
-    background: #f6f6f6;
+  &.secondary-square {
+    border-radius: 2px;
+    background: #f7f7f7;
+    color: #141414;
+
+    &:hover {
+      background: #e9e9ee;
+    }
+
+    &:active {
+      background: #ccc;
+    }
   }
 
   &.L {
@@ -176,64 +134,25 @@
     padding: 0 18px;
   }
 
-  &.subscribeButton {
-    aspect-ratio: auto;
-    background-color: #000;
-    border: 2px solid #000;
-    border-radius: 0.8rem;
-    color: #fff;
-    float: none;
-    padding-bottom: 0.6rem;
-    padding-top: 0.6rem;
-    width: 9em;
-
-    .icon {
-      img {
-        filter: invert(1);
-      }
-    }
-
-    &:hover {
-      background: #fff;
-      color: #000;
-
-      .icon img {
-        filter: invert(0) !important;
-      }
-
-      .buttonSubscribeLabel {
-        display: none;
-      }
-
-      .buttonSubscribeLabelHovered {
-        display: block;
-      }
-    }
-
-    .buttonSubscribeLabelHovered {
-      display: none;
-    }
-
-    img {
-      vertical-align: text-top;
-    }
+  &.M-square {
+    min-width: 80px;
+    height: 56px;
+    font-size: 20px;
+    padding: 16px 20px;
   }
 
-  &.followed {
-    background: #fff;
-    color: #000;
-
-    .icon img {
-      filter: invert(0);
-    }
-
-    &:hover {
-      background: #000;
-      color: #fff;
-
-      .icon img {
-        filter: invert(1) !important;
-      }
-    }
+  &.S-square {
+    min-width: 63px;
+    height: 37px;
+    font-size: 16px;
+    padding: 8px 16px;
   }
+
+  &.XS-square {
+    min-width: 51px;
+    height: 30px;
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
 }

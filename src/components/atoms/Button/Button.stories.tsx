@@ -15,11 +15,11 @@ const meta: Meta<typeof Button> = {
       control: { type: 'text' }
     },
     variant: {
-      options: ['primary', 'secondary', 'bordered', 'outline'],
+      options: ['primary', 'secondary', 'bordered', 'outline', 'primary-square', 'secondary-square'],
       control: { type: 'select' }
     },
     size: {
-      options: ['S', 'M', 'L'],
+      options: ['S', 'M', 'L', 'XS-square', 'S-square', 'M-square'],
       control: { type: 'radio' }
     },
     onClick: { action: 'clicked' }
@@ -61,4 +61,21 @@ export const PrimarySwitchFromStateBToStateA: Story = {
     size: 'M'
   }
 }
+
+export const PrimarySquare: Story = {
+  args: {
+    value: 'Button',
+    variant: 'primary-square',
+    size: 'S-square'
+  }
+}
+
+export const SecondarySquare: Story = {
+  args: {
+    value: 'Button',
+    variant: 'secondary-square',
+    size: 'S-square'
+  }
+}
+
 

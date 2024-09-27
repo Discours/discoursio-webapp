@@ -4,8 +4,10 @@ import clsx from 'clsx'
 import { type JSX, Show, createEffect, createSignal, on } from 'solid-js'
 import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { base } from '~/lib/editorExtensions'
+import { EditorToolbar } from '../EditorToolbar/EditorToolbar'
 
-import { MiniToolbar } from '../EditorToolbar/MiniToolbar'
+import { Button } from '~/components/_shared/Button'
+import { useLocalize } from '~/context/localize'
 import styles from '../SimplifiedEditor.module.scss'
 
 interface MiniEditorProps {
@@ -18,6 +20,7 @@ interface MiniEditorProps {
 }
 
 export default function MiniEditor(props: MiniEditorProps): JSX.Element {
+  const { t } = useLocalize()
   const [editorElement, setEditorElement] = createSignal<HTMLDivElement>()
   const [counter, setCounter] = createSignal(0)
 
@@ -36,7 +39,10 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     content: props.content || ''
   }))
 
+  const isFocused = createEditorTransaction(editor, (instance) => instance?.isFocused)
+  const isEmpty = createEditorTransaction(editor, (instance) => instance?.isEmpty)
   const html = useEditorHTML(editor)
+
   createEffect(on(html, (c?: string) => c && props.onChange?.(c)))
 
   createEffect(() => {
@@ -46,14 +52,27 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     content && props.onChange?.(content)
   })
 
-  const isFocused = createEditorTransaction(editor, (instance) => instance?.isFocused)
+  const handleSubmit = () => {
+    html() && props.onSubmit?.(html() || '')
+    editor()?.commands.clearContent(true)
+  }
 
   return (
     <div class={clsx(styles.SimplifiedEditor, styles.bordered, { [styles.isFocused]: isFocused() })}>
       <div>
         <div id="mini-editor" ref={setEditorElement} />
 
-        <MiniToolbar editor={editor} />
+        <EditorToolbar editor={editor} mode={'mini'} />
+
+        <div class={styles.buttons}>
+          <Button
+            value={t('Cancel')}
+            disabled={isEmpty()}
+            variant="secondary"
+            onClick={() => editor()?.commands.clearContent()}
+          />
+          <Button value={t('Send')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
+        </div>
 
         <Show when={counter() > 0}>
           <small class={styles.limit}>

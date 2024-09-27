@@ -1,19 +1,25 @@
 import { Editor } from '@tiptap/core'
 import { Accessor, Show, createEffect, createSignal, on } from 'solid-js'
+import { Portal } from 'solid-js/web'
 import { createEditorTransaction } from 'solid-tiptap'
+import { UploadModalContent } from '~/components/Upload/UploadModalContent/UploadModalContent'
+import { renderUploadedImage } from '~/components/Upload/renderUploadedImage'
 import { Icon } from '~/components/_shared/Icon/Icon'
+import { Modal } from '~/components/_shared/Modal/Modal'
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
+import { UploadedFile } from '~/types/upload'
 import { InsertLinkForm } from '../InsertLinkForm/InsertLinkForm'
 import { ToolbarControl as Control } from './ToolbarControl'
 
 import styles from '../SimplifiedEditor.module.scss'
 
-interface MiniToolbarProps {
+interface EditorToolbarProps {
   editor: Accessor<Editor | undefined>
+  mode?: 'micro' | 'mini'
 }
 
-export const MiniToolbar = (props: MiniToolbarProps) => {
+export const EditorToolbar = (props: EditorToolbarProps) => {
   const { t } = useLocalize()
   const { showModal } = useUI()
 
@@ -23,23 +29,24 @@ export const MiniToolbar = (props: MiniToolbarProps) => {
   // focus on link input when it shows up
   createEffect(on(showLinkInput, (x?: boolean) => x && props.editor()?.chain().focus().run()))
 
-  const selection = createEditorTransaction(
-    props.editor,
-    (instance) => instance?.state.selection
+  const selection = createEditorTransaction(props.editor, (instance) => instance?.state.selection)
+
+  // change visibility on selection if not in link input mode
+  const [showSimpleMenu, setShowSimpleMenu] = createSignal(false)
+  createEffect(
+    on([selection, showLinkInput], ([s, l]) => props.mode === 'micro' && !l && setShowSimpleMenu(!s?.empty))
   )
+
   const [storedSelection, setStoredSelection] = createSignal<Editor['state']['selection']>()
   const recoverSelection = () => {
     if (!storedSelection()?.empty) {
-      createEditorTransaction(
-        props.editor,
-        (instance?: Editor) => {
-          const r = selection()
-          if (instance && r) {
-            instance.state.selection.from === r.from
-            instance.state.selection.to === r.to
-          }
+      createEditorTransaction(props.editor, (instance?: Editor) => {
+        const r = selection()
+        if (instance && r) {
+          instance.state.selection.from === r.from
+          instance.state.selection.to === r.to
         }
-      )
+      })
     }
   }
   const storeSelection = () => {
@@ -60,7 +67,10 @@ export const MiniToolbar = (props: MiniToolbarProps) => {
 
   return (
     <div style={{ 'background-color': 'white', display: 'inline-flex' }}>
-      <Show when={props.editor()} keyed>
+      <Show
+        when={((props.mode === 'micro' && showSimpleMenu()) || props.mode !== 'micro') && props.editor()}
+        keyed
+      >
         {(instance) => (
           <div class={styles.controls}>
             <div class={styles.actions}>
@@ -89,26 +99,37 @@ export const MiniToolbar = (props: MiniToolbarProps) => {
               >
                 <Icon name="editor-link" />
               </Control>
-              <Control
-                key="blockquote"
-                editor={instance}
-                onChange={() => instance.chain().focus().toggleBlockquote().run()}
-                title={t('Add blockquote')}
-              >
-                <Icon name="editor-quote" />
-              </Control>
-              <Control
-                key="image"
-                editor={instance}
-                onChange={() => showModal('simplifiedEditorUploadImage')}
-                title={t('Add image')}
-              >
-                <Icon name="editor-image-dd-full" />
-              </Control>
+              <Show when={props.mode !== 'micro'}>
+                <Control
+                  key="blockquote"
+                  editor={instance}
+                  onChange={() => instance.chain().focus().toggleBlockquote().run()}
+                  title={t('Add blockquote')}
+                >
+                  <Icon name="editor-quote" />
+                </Control>
+                <Control
+                  key="image"
+                  editor={instance}
+                  onChange={() => showModal('simplifiedEditorUploadImage')}
+                  title={t('Add image')}
+                >
+                  <Icon name="editor-image-dd-full" />
+                </Control>
+              </Show>
             </div>
+
             <Show when={showLinkInput()}>
               <InsertLinkForm editor={instance} onClose={toggleShowLink} />
             </Show>
+
+            <Portal>
+              <Modal variant="narrow" name="simplifiedEditorUploadImage">
+                <UploadModalContent
+                  onClose={(image) => renderUploadedImage(instance as Editor, image as UploadedFile)}
+                />
+              </Modal>
+            </Portal>
           </div>
         )}
       </Show>

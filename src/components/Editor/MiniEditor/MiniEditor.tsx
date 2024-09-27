@@ -53,7 +53,7 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
       <div>
         <div id="mini-editor" ref={setEditorElement} />
 
-        <MiniToolbar />
+        <MiniToolbar editor={editor} />
 
         <Show when={counter() > 0}>
           <small class={styles.limit}>

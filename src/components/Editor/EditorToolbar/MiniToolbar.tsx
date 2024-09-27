@@ -1,16 +1,16 @@
 import { Editor } from '@tiptap/core'
-import { Show, createEffect, createSignal, on } from 'solid-js'
+import { Accessor, Show, createEffect, createSignal, on } from 'solid-js'
+import { createEditorTransaction } from 'solid-tiptap'
 import { Icon } from '~/components/_shared/Icon/Icon'
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
 import { InsertLinkForm } from '../InsertLinkForm/InsertLinkForm'
 import { ToolbarControl as Control } from './ToolbarControl'
 
-import { createEditorTransaction } from 'solid-tiptap'
 import styles from '../SimplifiedEditor.module.scss'
 
 interface MiniToolbarProps {
-  editor?: Editor
+  editor: Accessor<Editor | undefined>
 }
 
 export const MiniToolbar = (props: MiniToolbarProps) => {
@@ -21,17 +21,17 @@ export const MiniToolbar = (props: MiniToolbarProps) => {
   const [showLinkInput, setShowLinkInput] = createSignal(false)
 
   // focus on link input when it shows up
-  createEffect(on(showLinkInput, (x?: boolean) => x && props.editor?.chain().focus().run()))
+  createEffect(on(showLinkInput, (x?: boolean) => x && props.editor()?.chain().focus().run()))
 
   const selection = createEditorTransaction(
-    () => props.editor,
+    props.editor,
     (instance) => instance?.state.selection
   )
   const [storedSelection, setStoredSelection] = createSignal<Editor['state']['selection']>()
   const recoverSelection = () => {
     if (!storedSelection()?.empty) {
       createEditorTransaction(
-        () => props.editor,
+        props.editor,
         (instance?: Editor) => {
           const r = selection()
           if (instance && r) {
@@ -43,14 +43,14 @@ export const MiniToolbar = (props: MiniToolbarProps) => {
     }
   }
   const storeSelection = () => {
-    const selection = props.editor?.state.selection
+    const selection = props.editor()?.state.selection
     if (!selection?.empty) {
       setStoredSelection(selection)
     }
   }
   const toggleShowLink = () => {
     if (showLinkInput()) {
-      props.editor?.chain().focus().run()
+      props.editor()?.chain().focus().run()
       recoverSelection()
     } else {
       storeSelection()
@@ -60,7 +60,7 @@ export const MiniToolbar = (props: MiniToolbarProps) => {
 
   return (
     <div style={{ 'background-color': 'white', display: 'inline-flex' }}>
-      <Show when={props.editor} keyed>
+      <Show when={props.editor()} keyed>
         {(instance) => (
           <div class={styles.controls}>
             <div class={styles.actions}>

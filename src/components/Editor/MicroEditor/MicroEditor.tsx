@@ -43,7 +43,7 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
       })}
     >
       <div>
-        <MicroToolbar />
+        <MicroToolbar editor={editor} />
 
         <div id="micro-editor" ref={setEditorElement} style={styles.minimal} />
       </div>

@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/core'
-import { Show, createEffect, createSignal, on } from 'solid-js'
+import { Accessor, Show, createEffect, createSignal, on } from 'solid-js'
 import { createEditorTransaction } from 'solid-tiptap'
 import { Icon } from '~/components/_shared/Icon/Icon'
 import { useLocalize } from '~/context/localize'
@@ -10,7 +10,7 @@ import styles from '../SimplifiedEditor.module.scss'
 
 export interface MicroToolbarProps {
   showing?: boolean
-  editor?: Editor
+  editor: Accessor<Editor|undefined>
 }
 
 export const MicroToolbar = (props: MicroToolbarProps) => {
@@ -19,7 +19,7 @@ export const MicroToolbar = (props: MicroToolbarProps) => {
   // show / hide for menu
   const [showSimpleMenu, setShowSimpleMenu] = createSignal(!props.showing)
   const selection = createEditorTransaction(
-    () => props.editor,
+    props.editor,
     (instance) => instance?.state.selection
   )
 
@@ -30,13 +30,13 @@ export const MicroToolbar = (props: MicroToolbarProps) => {
   createEffect(on([selection, showLinkInput], ([s, l]) => !l && setShowSimpleMenu(!s?.empty)))
 
   // focus on link input when it shows up
-  createEffect(on(showLinkInput, (x?: boolean) => x && props.editor?.chain().focus().run()))
+  createEffect(on(showLinkInput, (x?: boolean) => x && props.editor()?.chain().focus().run()))
 
   const [storedSelection, setStoredSelection] = createSignal<Editor['state']['selection']>()
   const recoverSelection = () => {
     if (!storedSelection()?.empty) {
       createEditorTransaction(
-        () => props.editor,
+        props.editor,
         (instance?: Editor) => {
           const r = selection()
           if (instance && r) {
@@ -48,14 +48,14 @@ export const MicroToolbar = (props: MicroToolbarProps) => {
     }
   }
   const storeSelection = () => {
-    const selection = props.editor?.state.selection
+    const selection = props.editor()?.state.selection
     if (!selection?.empty) {
       setStoredSelection(selection)
     }
   }
   const toggleShowLink = () => {
     if (showLinkInput()) {
-      props.editor?.chain().focus().run()
+      props.editor()?.chain().focus().run()
       recoverSelection()
     } else {
       storeSelection()
@@ -63,7 +63,7 @@ export const MicroToolbar = (props: MicroToolbarProps) => {
     setShowLinkInput(!showLinkInput())
   }
   return (
-    <Show when={props.editor} keyed>
+    <Show when={props.editor()} keyed>
       {(instance) => (
         <Show when={!showSimpleMenu()}>
           <div

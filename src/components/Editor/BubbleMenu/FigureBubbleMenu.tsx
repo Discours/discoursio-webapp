@@ -19,8 +19,8 @@ export const FigureBubbleMenu = (props: Props) => {
   const { t } = useLocalize()
   const { hideModal } = useUI()
 
-  const handleUpload = (image: UploadedFile) => {
-    renderUploadedImage(props.editor, image)
+  const handleUpload = (image?: UploadedFile) => {
+    image && renderUploadedImage(props.editor, image)
     hideModal()
   }
 
@@ -80,11 +80,7 @@ export const FigureBubbleMenu = (props: Props) => {
       </Popover>
 
       <Modal variant="narrow" name="uploadImage">
-        <UploadModalContent
-          onClose={(value) => {
-            handleUpload(value as UploadedFile)
-          }}
-        />
+        <UploadModalContent onClose={handleUpload} />
       </Modal>
     </div>
   )

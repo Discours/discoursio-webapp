@@ -7,7 +7,7 @@ import { Popover } from '~/components/_shared/Popover'
 import { useLocalize } from '~/context/localize'
 import { InsertLinkForm } from '../EditorToolbar/InsertLinkForm'
 
-import styles from '../TextBubbleMenu/TextBubbleMenu.module.scss'
+import styles from './TextBubbleMenu.module.scss'
 
 const MiniEditor = lazy(() => import('../MiniEditor/MiniEditor'))
 

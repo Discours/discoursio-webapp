@@ -1,23 +1,23 @@
 import { useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, createMemo } from 'solid-js'
+import { For } from 'solid-js'
 import { AuthGuard } from '~/components/AuthGuard'
 import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
 import { PageLayout } from '~/components/_shared/PageLayout'
-import { coreApiUrl } from '~/config'
+import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useSnackbar } from '~/context/ui'
-import { graphqlClientCreate } from '~/graphql/client'
 import createShoutMutation from '~/graphql/mutation/core/article-create'
-import styles from '~/styles/Create.module.scss'
 import { LayoutType } from '~/types/common'
+
+import styles from '~/styles/Create.module.scss'
 
 export default () => {
   const { t } = useLocalize()
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client } = useSession()
+  const { saveDraftToLocalStorage } = useEditorContext()
 
   const { showSnackbar } = useSnackbar()
   const navigate = useNavigate()
@@ -29,19 +29,30 @@ export default () => {
     if (result) {
       console.debug(result)
       const { shout, error } = result.data.create_shout
-      if (error)
+      if (error) {
         showSnackbar({
           body: `${t('Error')}: ${t(error)}`,
           type: 'error'
         })
-      if (shout?.id) navigate(`/edit/${shout.id}`)
+        return
+      }
+      if (shout?.id) {
+        saveDraftToLocalStorage({
+          shoutId: shout.id,
+          selectedTopics: shout.topics,
+          slug: shout.slug,
+          title: '',
+          body: ''
+        })
+        navigate(`/edit/${shout.id}`)
+      }
     }
   }
   return (
     <PageLayout
       title={`${t('Discours')} :: ${t('Choose a post type')}`}
       key="home"
-      desc="Participate in the Discours: share information, join the editorial team"
+      desc={t('Participate in the Discours: share information, join the editorial team')}
     >
       <AuthGuard>
         <article class={clsx('wide-container', 'container--static-page', styles.Create)}>

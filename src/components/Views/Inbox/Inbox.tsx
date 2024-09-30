@@ -1,6 +1,6 @@
 import { useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
 import QuotedMessage from '~/components/Inbox/QuotedMessage'
 import { Icon } from '~/components/_shared/Icon'
 import { InviteMembers } from '~/components/_shared/InviteMembers'
@@ -17,7 +17,6 @@ import type {
 } from '~/graphql/schema/chat.gen'
 import type { Author } from '~/graphql/schema/core.gen'
 import { getShortDate } from '~/utils/date'
-import SimplifiedEditor from '../../Editor/SimplifiedEditor'
 import DialogCard from '../../Inbox/DialogCard'
 import DialogHeader from '../../Inbox/DialogHeader'
 import { Message } from '../../Inbox/Message'
@@ -25,6 +24,8 @@ import MessagesFallback from '../../Inbox/MessagesFallback'
 import Search from '../../Inbox/Search'
 import { Modal } from '../../_shared/Modal'
 import styles from './Inbox.module.scss'
+
+const MiniEditor = lazy(() => import('../../Editor/MiniEditor/MiniEditor'))
 
 const userSearch = (array: Author[], keyword: string) => {
   return array.filter((value) => new RegExp(keyword.trim(), 'gi').test(value.name || ''))
@@ -38,7 +39,6 @@ export const InboxView = (props: { authors: Author[]; chat?: Chat }) => {
   const [sortByPerToPer, setSortByPerToPer] = createSignal(false)
   const [currentDialog, setCurrentDialog] = createSignal<Chat>()
   const [messageToReply, setMessageToReply] = createSignal<MessageType | null>(null)
-  const [isClear, setClear] = createSignal(false)
   const [isScrollToNewVisible, setIsScrollToNewVisible] = createSignal(false)
   const { session } = useSession()
   const authorId = createMemo<number>(() => session()?.user?.app_data?.profile?.id || 0)
@@ -77,11 +77,9 @@ export const InboxView = (props: { authors: Author[]; chat?: Chat }) => {
       reply_to: messageToReply()?.id,
       chat_id: currentDialog()?.id || ''
     } as MutationCreate_MessageArgs)
-    setClear(true)
     setMessageToReply(null)
     if (messagesContainerRef)
       (messagesContainerRef as HTMLDivElement).scrollTop = messagesContainerRef?.scrollHeight || 0
-    setClear(false)
   }
 
   createEffect(
@@ -291,15 +289,7 @@ export const InboxView = (props: { authors: Author[]; chat?: Chat }) => {
                 />
               </Show>
               <div class={styles.wrapper}>
-                <SimplifiedEditor
-                  smallHeight={true}
-                  imageEnabled={true}
-                  isCancelButtonVisible={false}
-                  placeholder={t('New message')}
-                  setClear={isClear()}
-                  onSubmit={(message) => handleSubmit(message)}
-                  submitByCtrlEnter={true}
-                />
+                <MiniEditor placeholder={t('New message')} onSubmit={handleSubmit} />
               </div>
             </div>
           </Show>

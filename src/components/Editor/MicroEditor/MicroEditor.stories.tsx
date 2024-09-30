@@ -1,19 +1,14 @@
 import { Meta, StoryObj } from 'storybook-solidjs'
-import { EditorComponent } from './Editor'
+import { MicroEditor } from './MicroEditor'
 
-const meta: Meta<typeof EditorComponent> = {
-  title: 'Components/Editor',
-  component: EditorComponent,
+const meta: Meta<typeof MicroEditor> = {
+  title: 'Components/MicroEditor',
+  component: MicroEditor,
   argTypes: {
     content: {
       control: 'text',
       description: 'Initial content for the editor',
       defaultValue: ''
-    },
-    limit: {
-      control: 'number',
-      description: 'Character limit for the editor',
-      defaultValue: 500
     },
     placeholder: {
       control: 'text',
@@ -29,36 +24,28 @@ const meta: Meta<typeof EditorComponent> = {
 
 export default meta
 
-type Story = StoryObj<typeof EditorComponent>
+type Story = StoryObj<typeof MicroEditor>
 
 export const Default: Story = {
   args: {
     content: '',
-    limit: 500,
-    placeholder: 'Start typing here...'
+    placeholder: 'Start typing here...',
+    onChange: (content: string) => console.log('Content changed:', content)
   }
 }
 
 export const WithInitialContent: Story = {
   args: {
-    content: 'This is some initial content',
-    limit: 500,
-    placeholder: 'Start typing here...'
-  }
-}
-
-export const WithCharacterLimit: Story = {
-  args: {
-    content: '',
-    limit: 50,
-    placeholder: 'You have a 50 character limit...'
+    content: 'This is some initial content.',
+    placeholder: 'Start typing here...',
+    onChange: (content: string) => console.log('Content changed:', content)
   }
 }
 
 export const WithCustomPlaceholder: Story = {
   args: {
     content: '',
-    limit: 500,
-    placeholder: 'Custom placeholder here...'
+    placeholder: 'Type your text here...',
+    onChange: (content: string) => console.log('Content changed:', content)
   }
 }

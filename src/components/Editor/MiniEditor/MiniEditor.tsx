@@ -1,71 +1,28 @@
-import type { Editor } from '@tiptap/core'
 import CharacterCount from '@tiptap/extension-character-count'
 import Placeholder from '@tiptap/extension-placeholder'
 import clsx from 'clsx'
-import { type JSX, Show, createEffect, createSignal, onCleanup } from 'solid-js'
-import {
-  createEditorTransaction,
-  createTiptapEditor,
-  useEditorHTML,
-  useEditorIsEmpty,
-  useEditorIsFocused
-} from 'solid-tiptap'
-import { Toolbar } from 'terracotta'
-import { Icon } from '~/components/_shared/Icon/Icon'
-import { Popover } from '~/components/_shared/Popover/Popover'
+import { type JSX, Show, createEffect, createSignal, on } from 'solid-js'
+import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
+import { Button } from '~/components/_shared/Button'
 import { useLocalize } from '~/context/localize'
-import { useUI } from '~/context/ui'
-import { base } from '~/lib/editorOptions'
-import { InsertLinkForm } from '../InsertLinkForm/InsertLinkForm'
+import { base } from '~/lib/editorExtensions'
+import { EditorToolbar } from '../EditorToolbar/EditorToolbar'
 
-import styles from '../SimplifiedEditor.module.scss'
-
-interface ControlProps {
-  editor: Editor
-  title: string
-  key: string
-  onChange: () => void
-  isActive?: (editor: Editor) => boolean
-  children: JSX.Element
-}
-
-function Control(props: ControlProps): JSX.Element {
-  const handleClick = (ev?: MouseEvent) => {
-    ev?.preventDefault()
-    ev?.stopPropagation()
-    props.onChange?.()
-  }
-
-  return (
-    <Popover content={props.title}>
-      {(triggerRef: (el: HTMLElement) => void) => (
-        <button
-          ref={triggerRef}
-          type="button"
-          class={clsx(styles.actionButton, { [styles.active]: props.editor.isActive(props.key) })}
-          onClick={handleClick}
-        >
-          {props.children}
-        </button>
-      )}
-    </Popover>
-  )
-}
+import styles from './MiniEditor.module.scss'
 
 interface MiniEditorProps {
   content?: string
   onChange?: (content: string) => void
+  onSubmit?: (content: string) => void
+  onCancel?: () => void
   limit?: number
   placeholder?: string
 }
 
 export default function MiniEditor(props: MiniEditorProps): JSX.Element {
+  const { t } = useLocalize()
   const [editorElement, setEditorElement] = createSignal<HTMLDivElement>()
   const [counter, setCounter] = createSignal(0)
-  const [showLinkInput, setShowLinkInput] = createSignal(false)
-  const [showSimpleMenu, setShowSimpleMenu] = createSignal(false)
-  const { t } = useLocalize()
-  const { showModal } = useUI()
 
   const editor = createTiptapEditor(() => ({
     element: editorElement()!,
@@ -82,12 +39,11 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     content: props.content || ''
   }))
 
-  const isEmpty = useEditorIsEmpty(editor)
-  const isFocused = useEditorIsFocused(editor)
-  const isTextSelection = createEditorTransaction(editor, (instance) => !instance?.state.selection.empty)
+  const isFocused = createEditorTransaction(editor, (instance) => instance?.isFocused)
+  const isEmpty = createEditorTransaction(editor, (instance) => instance?.isEmpty)
   const html = useEditorHTML(editor)
 
-  createEffect(() => setShowSimpleMenu(isTextSelection()))
+  createEffect(on(html, (c?: string) => c && props.onChange?.(c)))
 
   createEffect(() => {
     const textLength = editor()?.getText().length || 0
@@ -96,87 +52,27 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     content && props.onChange?.(content)
   })
 
-  const handleLinkClick = () => {
-    setShowLinkInput(!showLinkInput())
-    editor()?.chain().focus().run()
+  const handleSubmit = () => {
+    html() && props.onSubmit?.(html() || '')
+    editor()?.commands.clearContent(true)
   }
 
-  // Prevent focus loss when clicking inside the toolbar
-  const handleMouseDownOnToolbar = (event: MouseEvent) => {
-    event.preventDefault() // Prevent the default focus shift
-  }
-  const [toolbarElement, setToolbarElement] = createSignal<HTMLElement>()
-  // Attach the event handler to the toolbar
-  onCleanup(() => {
-    toolbarElement()?.removeEventListener('mousedown', handleMouseDownOnToolbar)
-  })
   return (
-    <div
-      class={clsx(styles.SimplifiedEditor, styles.bordered, {
-        [styles.isFocused]: isEmpty() || isFocused()
-      })}
-    >
+    <div class={clsx(styles.MiniEditor, styles.bordered, { [styles.isFocused]: isFocused() })}>
       <div>
-        <Show when={showSimpleMenu() || showLinkInput()}>
-          <Toolbar style={{ 'background-color': 'white' }} ref={setToolbarElement} horizontal>
-            <Show when={editor()} keyed>
-              {(instance) => (
-                <div class={styles.controls}>
-                  <Show
-                    when={!showLinkInput()}
-                    fallback={<InsertLinkForm editor={instance} onClose={() => setShowLinkInput(false)} />}
-                  >
-                    <div class={styles.actions}>
-                      <Control
-                        key="bold"
-                        editor={instance}
-                        onChange={() => instance.chain().focus().toggleBold().run()}
-                        title={t('Bold')}
-                      >
-                        <Icon name="editor-bold" />
-                      </Control>
-                      <Control
-                        key="italic"
-                        editor={instance}
-                        onChange={() => instance.chain().focus().toggleItalic().run()}
-                        title={t('Italic')}
-                      >
-                        <Icon name="editor-italic" />
-                      </Control>
-                      <Control
-                        key="link"
-                        editor={instance}
-                        onChange={handleLinkClick}
-                        title={t('Add url')}
-                        isActive={showLinkInput}
-                      >
-                        <Icon name="editor-link" />
-                      </Control>
-                      <Control
-                        key="blockquote"
-                        editor={instance}
-                        onChange={() => instance.chain().focus().toggleBlockquote().run()}
-                        title={t('Add blockquote')}
-                      >
-                        <Icon name="editor-quote" />
-                      </Control>
-                      <Control
-                        key="image"
-                        editor={instance}
-                        onChange={() => showModal('simplifiedEditorUploadImage')}
-                        title={t('Add image')}
-                      >
-                        <Icon name="editor-image-dd-full" />
-                      </Control>
-                    </div>
-                  </Show>
-                </div>
-              )}
-            </Show>
-          </Toolbar>
-        </Show>
-
         <div id="mini-editor" ref={setEditorElement} />
+
+        <EditorToolbar editor={editor} mode={'mini'} />
+
+        <div class={styles.buttons}>
+          <Button
+            value={t('Cancel')}
+            disabled={isEmpty()}
+            variant="secondary"
+            onClick={() => editor()?.commands.clearContent()}
+          />
+          <Button value={t('Send')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
+        </div>
 
         <Show when={counter() > 0}>
           <small class={styles.limit}>

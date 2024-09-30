@@ -3,7 +3,6 @@ import { clsx } from 'clsx'
 import { For, Match, Show, Switch, createEffect, createMemo, createSignal, on } from 'solid-js'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { Loading } from '~/components/_shared/Loading'
-import { coreApiUrl } from '~/config'
 import { useAuthors } from '~/context/authors'
 import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { useFollowing } from '~/context/following'
@@ -11,7 +10,6 @@ import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { loadReactions, loadShouts } from '~/graphql/api/public'
-import { graphqlClientCreate } from '~/graphql/client'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
@@ -45,8 +43,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   const params = useParams()
   const [currentTab, setCurrentTab] = createSignal<string>(params.tab)
 
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { session, client } = useSession()
 
   const { loadAuthor, authorsEntities } = useAuthors()
   const { followers: myFollowers, follows: myFollows } = useFollowing()

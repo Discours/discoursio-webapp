@@ -1,11 +1,11 @@
 import { RouteSectionProps, useSearchParams } from '@solidjs/router'
 import { createEffect, createMemo } from 'solid-js'
+
 import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
 import { Feed } from '~/components/Views/Feed'
 import { FeedProps } from '~/components/Views/Feed/Feed'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
-import { coreApiUrl } from '~/config'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
@@ -17,7 +17,6 @@ import {
   loadFollowedShouts,
   loadUnratedShouts
 } from '~/graphql/api/private'
-import { graphqlClientCreate } from '~/graphql/client'
 import { LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
 import { FromPeriod, getFromDate } from '~/lib/fromPeriod'
 
@@ -38,8 +37,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
   const [searchParams] = useSearchParams<FeedSearchParams>() // ?period=month
   const { t } = useLocalize()
   const { setFeed, feed } = useFeed()
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client } = useSession()
 
   // preload all topics
   const { addTopics, sortedTopics } = useTopics()

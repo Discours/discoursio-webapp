@@ -7,7 +7,6 @@ import { Icon } from '~/components/_shared/Icon'
 import { InviteMembers } from '~/components/_shared/InviteMembers'
 import { Loading } from '~/components/_shared/Loading'
 import { ShareModal } from '~/components/_shared/ShareModal'
-import { coreApiUrl } from '~/config'
 import { useAuthors } from '~/context/authors'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
@@ -15,7 +14,6 @@ import { useSession } from '~/context/session'
 import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
 import { loadUnratedShouts } from '~/graphql/api/private'
-import { graphqlClientCreate } from '~/graphql/client'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
 import { FeedSearchParams } from '~/routes/feed/[...order]'
 import { byCreated } from '~/utils/sort'
@@ -49,11 +47,10 @@ const PERIODS = {
 export const FeedView = (props: FeedProps) => {
   const { t } = useLocalize()
   const loc = useLocation()
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client, session } = useSession()
 
   const unrated = createAsync(async () => {
-    if (client) {
+    if (client()) {
       const shoutsLoader = loadUnratedShouts(client(), { limit: 5 })
       return await shoutsLoader()
     }
@@ -218,7 +215,7 @@ export const FeedView = (props: FeedProps) => {
                       <div class={styles.comment}>
                         <div class={clsx('text-truncate', styles.commentBody)}>
                           <A
-                            href={`article/${comment.shout.slug}?commentId=${comment.id}`}
+                            href={`/${comment.shout.slug}?commentId=${comment.id}`}
                             innerHTML={comment.body || ''}
                           />
                         </div>

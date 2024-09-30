@@ -1,0 +1,48 @@
+import Placeholder from '@tiptap/extension-placeholder'
+import clsx from 'clsx'
+import { type JSX, createEffect, createSignal, on } from 'solid-js'
+import { createTiptapEditor, useEditorHTML, useEditorIsFocused } from 'solid-tiptap'
+import { minimal } from '~/lib/editorExtensions'
+import { EditorToolbar } from '../EditorToolbar/EditorToolbar'
+
+import styles from '../MiniEditor/MiniEditor.module.scss'
+
+interface MicroEditorProps {
+  content?: string
+  onChange?: (content: string) => void
+  onSubmit?: (content: string) => void
+  placeholder?: string
+}
+
+export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
+  const [editorElement, setEditorElement] = createSignal<HTMLDivElement>()
+
+  const editor = createTiptapEditor(() => ({
+    element: editorElement()!,
+    extensions: [
+      ...minimal,
+      Placeholder.configure({ emptyNodeClass: styles.emptyNode, placeholder: props.placeholder })
+    ],
+    editorProps: {
+      attributes: {
+        class: styles.simplifiedEditorField
+      }
+    },
+    content: props.content || ''
+  }))
+
+  const isFocused = useEditorIsFocused(editor)
+  const html = useEditorHTML(editor)
+  createEffect(on(html, (c?: string) => c && props.onChange?.(c)))
+
+  return (
+    <div class={clsx(styles.MiniEditor, styles.bordered, { [styles.isFocused]: isFocused() })}>
+      <div>
+        <EditorToolbar editor={editor} mode={'micro'} />
+        <div id="micro-editor" ref={setEditorElement} style={styles.minimal} />
+      </div>
+    </div>
+  )
+}
+
+export default MicroEditor

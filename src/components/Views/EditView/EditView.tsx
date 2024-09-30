@@ -1,29 +1,19 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import {
-  Accessor,
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-  lazy,
-  on,
-  onCleanup,
-  onMount
-} from 'solid-js'
+import { Show, createEffect, createSignal, lazy, on, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { debounce } from 'throttle-debounce'
+import { EditorComponent } from '~/components/Editor/Editor'
+import { Panel } from '~/components/Editor/Panel/Panel'
 import { DropArea } from '~/components/_shared/DropArea'
 import { Icon } from '~/components/_shared/Icon'
 import { InviteMembers } from '~/components/_shared/InviteMembers'
 import { Loading } from '~/components/_shared/Loading'
 import { Popover } from '~/components/_shared/Popover'
 import { EditorSwiper } from '~/components/_shared/SolidSwiper'
-import { coreApiUrl } from '~/config'
 import { ShoutForm, useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
-import { graphqlClientCreate } from '~/graphql/client'
 import getMyShoutQuery from '~/graphql/query/core/article-my'
 import type { Shout, Topic } from '~/graphql/schema/core.gen'
 import { slugify } from '~/intl/translit'
@@ -32,15 +22,14 @@ import { isDesktop } from '~/lib/mediaQuery'
 import { LayoutType } from '~/types/common'
 import { MediaItem } from '~/types/mediaitem'
 import { clone } from '~/utils/clone'
-import { Editor as EditorComponent, Panel } from '../../Editor'
-import { AudioUploader } from '../../Editor/AudioUploader'
 import { AutoSaveNotice } from '../../Editor/AutoSaveNotice'
-import { VideoUploader } from '../../Editor/VideoUploader'
+import { AudioUploader } from '../../Upload/AudioUploader'
+import { VideoUploader } from '../../Upload/VideoUploader'
 import { Modal } from '../../_shared/Modal'
 import { TableOfContents } from '../../_shared/TableOfContents'
 import styles from './EditView.module.scss'
 
-const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
@@ -65,10 +54,7 @@ const handleScrollTopButtonClick = (ev: MouseEvent | TouchEvent) => {
 
 export const EditView = (props: Props) => {
   const { t } = useLocalize()
-  const [isScrolled, setIsScrolled] = createSignal(false)
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
-
+  const { client } = useSession()
   const {
     form,
     formErrors,
@@ -78,14 +64,18 @@ export const EditView = (props: Props) => {
     saveDraftToLocalStorage,
     getDraftFromLocalStorage
   } = useEditorContext()
-  const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
-  const [draft, setDraft] = createSignal()
-  let subtitleInput: HTMLTextAreaElement | null
+
+  const [subtitleInput, setSubtitleInput] = createSignal<HTMLTextAreaElement | undefined>()
   const [prevForm, setPrevForm] = createStore<ShoutForm>(clone(form))
   const [saving, setSaving] = createSignal(false)
   const [isSubtitleVisible, setIsSubtitleVisible] = createSignal(Boolean(form.subtitle))
   const [isLeadVisible, setIsLeadVisible] = createSignal(Boolean(form.lead))
-  const mediaItems: Accessor<MediaItem[]> = createMemo(() => JSON.parse(form.media || '[]'))
+  const [isScrolled, setIsScrolled] = createSignal(false)
+  const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
+  const [draft, setDraft] = createSignal<Shout>(props.shout)
+  const [mediaItems, setMediaItems] = createSignal<MediaItem[]>([])
+
+  createEffect(() => setMediaItems(JSON.parse(form.media || '[]')))
 
   createEffect(
     on(
@@ -97,7 +87,7 @@ export const EditView = (props: Props) => {
           const stored = getDraftFromLocalStorage(shout.id)
           if (stored) {
             // console.info(`[EditView] got stored shout: ${stored}`)
-            setDraft(stored)
+            setDraft((old) => ({ ...old, ...stored }) as Shout)
           } else {
             if (!shout.slug) {
               console.warn(`[EditView] shout has no slug! ${shout}`)
@@ -131,7 +121,7 @@ export const EditView = (props: Props) => {
       (d) => {
         if (d) {
           const draftForm = Object.keys(d) ? d : { shoutId: props.shout.id }
-          setForm(draftForm)
+          setForm(draftForm as ShoutForm)
           console.debug('draft from localstorage: ', draftForm)
         }
       },
@@ -267,7 +257,7 @@ export const EditView = (props: Props) => {
 
   const showSubtitleInput = () => {
     setIsSubtitleVisible(true)
-    subtitleInput?.focus()
+    subtitleInput()?.focus()
   }
 
   const showLeadInput = () => {
@@ -359,7 +349,7 @@ export const EditView = (props: Props) => {
                         <Show when={props.shout.layout !== 'audio'}>
                           <Show when={isSubtitleVisible()}>
                             <GrowingTextarea
-                              textAreaRef={(el) => (subtitleInput = el)}
+                              textAreaRef={setSubtitleInput}
                               allowEnterKey={false}
                               value={(value) => handleInputChange('subtitle', value || '')}
                               class={styles.subtitleInput}
@@ -369,13 +359,10 @@ export const EditView = (props: Props) => {
                             />
                           </Show>
                           <Show when={isLeadVisible()}>
-                            <SimplifiedEditor
-                              variant="minimal"
-                              hideToolbar={true}
-                              smallHeight={true}
+                            <MicroEditor
                               placeholder={t('A short introduction to keep the reader interested')}
-                              initialContent={form.lead}
-                              onChange={(value) => handleInputChange('lead', value)}
+                              content={form.lead}
+                              onChange={(value: string) => handleInputChange('lead', value)}
                             />
                           </Show>
                         </Show>
@@ -455,7 +442,7 @@ export const EditView = (props: Props) => {
                 </Show>
               </div>
             </div>
-            <Show when={form?.shoutId} fallback={<Loading />}>
+            <Show when={draft()?.id} fallback={<Loading />}>
               <EditorComponent
                 shoutId={form.shoutId}
                 initialContent={form.body}

@@ -12,6 +12,7 @@ import {
   VerifyEmailInput
 } from '@authorizerdev/authorizer-js'
 import { useSearchParams } from '@solidjs/router'
+import { Client } from '@urql/core'
 import type { Accessor, JSX, Resource } from 'solid-js'
 import {
   createContext,
@@ -25,13 +26,14 @@ import {
   useContext
 } from 'solid-js'
 import { type AuthModalSource, useSnackbar, useUI } from '~/context/ui'
-import { authApiUrl } from '../config'
+import { graphqlClientCreate } from '~/graphql/client'
+import { authApiUrl, authorizerClientId, authorizerRedirectUrl, coreApiUrl } from '../config'
 import { useLocalize } from './localize'
 
 const defaultConfig: ConfigType = {
   authorizerURL: authApiUrl.replace('/graphql', ''),
-  redirectURL: 'https://testing.discours.io',
-  clientID: 'b9038a34-ca59-41ae-a105-c7fbea603e24'
+  redirectURL: authorizerRedirectUrl,
+  clientID: authorizerClientId
 }
 
 export type SessionContextType = {
@@ -51,20 +53,22 @@ export type SessionContextType = {
   signOut: () => Promise<boolean>
   oauth: (provider: string) => Promise<void>
   forgotPassword: (params: ForgotPasswordInput) => Promise<string>
-  changePassword: (password: string, token: string) => void
+  changePassword: (password: string, token: string) => Promise<boolean>
   confirmEmail: (input: VerifyEmailInput) => Promise<void>
   setIsSessionLoaded: (loaded: boolean) => void
   authorizer: () => Authorizer
   isRegistered: (email: string) => Promise<string>
   resendVerifyEmail: (params: ResendVerifyEmailInput) => Promise<boolean>
+  client: Accessor<Client | undefined>
 }
 
 const noop = () => null
+
 const metaRes = {
   data: {
     meta: {
       version: 'latest',
-      client_id: 'b9038a34-ca59-41ae-a105-c7fbea603e24',
+      client_id: authorizerClientId,
       is_google_login_enabled: true,
       is_facebook_login_enabled: true,
       is_github_login_enabled: true,
@@ -86,12 +90,21 @@ const metaRes = {
   }
 }
 
+/**
+ * Session context to manage authentication state and provide authentication functions.
+ */
 export const SessionContext = createContext<SessionContextType>({} as SessionContextType)
 
 export function useSession() {
   return useContext(SessionContext)
 }
 
+/**
+ * SessionProvider component that wraps its children with session context.
+ * It handles session management, authentication, and provides related functions.
+ * @param props - The props containing an onStateChangeCallback function and children elements.
+ * @returns A JSX Element wrapping the children with session context.
+ */
 export const SessionProvider = (props: {
   onStateChangeCallback(state: AuthToken): unknown
   children: JSX.Element
@@ -113,45 +126,55 @@ export const SessionProvider = (props: {
   const authorizer = createMemo(() => new Authorizer(config()))
   const [oauthState, setOauthState] = createSignal<string>()
 
-  // load
-  let minuteLater: NodeJS.Timeout | null
+  // Session expiration timer
+  let minuteLater: ReturnType<typeof setTimeout> | null = null
   const [isSessionLoaded, setIsSessionLoaded] = createSignal(false)
   const [authError, setAuthError] = createSignal<string>('')
   const { showModal } = useUI()
 
-  // handle auth state callback from outside
+  // Handle auth state callback from outside
   onMount(() => {
     const params = searchParams
     if (params?.state) {
-      setOauthState((_s) => params?.state)
-      const scope = params?.scope ? params?.scope?.toString().split(' ') : ['openid', 'profile', 'email']
+      setOauthState(params.state)
+      const scope = params.scope ? params.scope.toString().split(' ') : ['openid', 'profile', 'email']
       if (scope) console.info(`[context.session] scope: ${scope}`)
-      const url = params?.redirect_uri || params?.redirectURL || window.location.href
+      const url = params.redirect_uri || params.redirectURL || window.location.href
       setConfig((c: ConfigType) => ({ ...c, redirectURL: url.split('?')[0] }))
       changeSearchParams({ mode: 'confirm-email', m: 'auth' }, { replace: true })
     }
   })
 
-  // handle token confirm
+  // Handle token confirmation
   createEffect(() => {
     const token = searchParams?.token
     const access_token = searchParams?.access_token
-    if (access_token)
-      changeSearchParams({
-        mode: 'confirm-email',
-        m: 'auth',
-        access_token
-      })
-    else if (token) {
-      changeSearchParams({
-        mode: 'change-password',
-        m: 'auth',
-        token
-      })
+    if (access_token) {
+      changeSearchParams(
+        {
+          mode: 'confirm-email',
+          m: 'auth',
+          access_token
+        },
+        { replace: true }
+      )
+    } else if (token) {
+      changeSearchParams(
+        {
+          mode: 'change-password',
+          m: 'auth',
+          token
+        },
+        { replace: true }
+      )
     }
   })
 
-  // Function to load session data
+  /**
+   * Function to load session data by fetching the current session from the authorizer.
+   * It handles session expiration and sets up a timer to refresh the session as needed.
+   * @returns A Promise resolving to the AuthToken containing session information.
+   */
   const sessionData = async () => {
     try {
       const s: ApiResponse<AuthToken> = await authorizer().getSession()
@@ -191,6 +214,10 @@ export const SessionProvider = (props: {
     initialValue: {} as AuthToken
   })
 
+  /**
+   * Checks if the current session has expired and refreshes the session if necessary.
+   * Sets up a timer to check the session expiration every minute.
+   */
   const checkSessionIsExpired = () => {
     const expires_at_data = localStorage?.getItem('expires_at')
 
@@ -209,9 +236,11 @@ export const SessionProvider = (props: {
     }
   }
 
-  onCleanup(() => clearTimeout(minuteLater as NodeJS.Timeout))
+  onCleanup(() => {
+    if (minuteLater) clearTimeout(minuteLater)
+  })
 
-  // initial effect
+  // Initial effect
   onMount(() => {
     setConfig({
       ...defaultConfig,
@@ -221,16 +250,23 @@ export const SessionProvider = (props: {
     loadSession()
   })
 
-  // callback state updater
+  // Callback state updater
   createEffect(
     on([() => props.onStateChangeCallback, session], ([_, ses]) => {
-      ses?.user?.id && props.onStateChangeCallback(ses)
+      if (ses?.user?.id) props.onStateChangeCallback(ses)
     })
   )
 
   const [authCallback, setAuthCallback] = createSignal<() => void>(noop)
+
+  /**
+   * Requires the user to be authenticated before executing a callback function.
+   * If the user is not authenticated, it shows the authentication modal.
+   * @param callback - The function to execute after authentication.
+   * @param modalSource - The source of the authentication modal.
+   */
   const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
-    setAuthCallback((_cb) => callback)
+    setAuthCallback(() => callback)
     if (!session()) {
       loadSession()
       if (!session()) {
@@ -243,23 +279,36 @@ export const SessionProvider = (props: {
     const handler = authCallback()
     if (handler !== noop) {
       handler()
-      setAuthCallback((_cb) => noop)
+      setAuthCallback(() => noop)
     }
   })
 
-  // authorizer api proxy methods
+  /**
+   * General function to authenticate a user using a specified authentication function.
+   * @param authFunction - The authentication function to use (e.g., signup, login).
+   * @param params - The parameters to pass to the authentication function.
+   * @returns An object containing data and errors from the authentication attempt.
+   */
+  type AuthFunctionType = (
+    data: SignupInput | LoginInput | UpdateProfileInput
+  ) => Promise<ApiResponse<AuthToken | GenericResponse>>
   const authenticate = async (
-    authFunction: (data: SignupInput) => Promise<ApiResponse<AuthToken | GenericResponse>>,
-    // biome-ignore lint/suspicious/noExplicitAny: authorizer
-    params: any
+    authFunction: AuthFunctionType,
+    params: SignupInput | LoginInput | UpdateProfileInput
   ) => {
     const resp = await authFunction(params)
     console.debug('[context.session] authenticate:', resp)
     if (resp?.data && resp?.errors.length === 0) setSession(resp.data as AuthToken)
     return { data: resp?.data, errors: resp?.errors }
   }
+
+  /**
+   * Signs up a new user using the provided parameters.
+   * @param params - The signup input parameters.
+   * @returns A Promise resolving to `true` if signup was successful, otherwise `false`.
+   */
   const signUp = async (params: SignupInput): Promise<boolean> => {
-    const resp = await authenticate(authorizer().signup, params as SignupInput)
+    const resp = await authenticate(authorizer().signup as AuthFunctionType, params as SignupInput)
     console.debug('[context.session] signUp:', resp)
     if (resp?.data) {
       setSession(resp.data as AuthToken)
@@ -268,8 +317,13 @@ export const SessionProvider = (props: {
     return false
   }
 
+  /**
+   * Signs in a user using the provided credentials.
+   * @param params - The login input parameters.
+   * @returns A Promise resolving to `true` if sign-in was successful, otherwise `false`.
+   */
   const signIn = async (params: LoginInput): Promise<boolean> => {
-    const resp = await authenticate(authorizer().login, params as LoginInput)
+    const resp = await authenticate(authorizer().login as AuthFunctionType, params)
     console.debug('[context.session] signIn:', resp)
     if (resp?.data) {
       setSession(resp.data as AuthToken)
@@ -280,61 +334,97 @@ export const SessionProvider = (props: {
     return false
   }
 
-  const updateProfile = async (params: UpdateProfileInput) => {
-    const resp = await authenticate(authorizer().updateProfile, params as UpdateProfileInput)
+  /**
+   * Updates the user's profile with the provided parameters.
+   * @param params - The update profile input parameters.
+   * @returns A Promise resolving to `true` if the update was successful, otherwise `false`.
+   */
+  const updateProfile = async (params: UpdateProfileInput): Promise<boolean> => {
+    const resp = await authenticate(authorizer().updateProfile, params)
     console.debug('[context.session] updateProfile response:', resp)
     if (resp?.data) {
-      // console.debug('[context.session] response data ', resp.data)
-      // FIXME: renew updated profile
+      // Optionally refresh session or user data here
       return true
     }
     return false
   }
 
-  const signOut = async () => {
+  /**
+   * Signs out the current user and clears the session.
+   * @returns A Promise resolving to `true` if sign-out was successful.
+   */
+  const signOut = async (): Promise<boolean> => {
     const authResult: ApiResponse<GenericResponse> = await authorizer().logout()
-    // console.debug('[context.session] sign out', authResult)
     if (authResult) {
       setSession({} as AuthToken)
       setIsSessionLoaded(true)
       showSnackbar({ body: t("You've successfully logged out") })
-      // console.debug(session())
       return true
     }
     return false
   }
 
-  const changePassword = async (password: string, token: string) => {
+  /**
+   * Changes the user's password using a token from a password reset email.
+   * @param password - The new password.
+   * @param token - The token from the password reset email.
+   * @returns A Promise resolving to `true` if the password was changed successfully.
+   */
+  const changePassword = async (password: string, token: string): Promise<boolean> => {
     const resp = await authorizer().resetPassword({
       password,
       token,
       confirm_password: password
     })
     console.debug('[context.session] change password response:', resp)
+    if (resp.data) {
+      return true
+    }
+    return false
   }
 
-  const forgotPassword = async (params: ForgotPasswordInput) => {
+  /**
+   * Initiates the forgot password process for the given email.
+   * @param params - The forgot password input parameters.
+   * @returns A Promise resolving to an error message if any, otherwise an empty string.
+   */
+  const forgotPassword = async (params: ForgotPasswordInput): Promise<string> => {
     const resp = await authorizer().forgotPassword(params)
-    console.debug('[context.session] change password response:', resp)
-    return resp?.errors?.pop()?.message || ''
+    console.debug('[context.session] forgot password response:', resp)
+    if (resp.errors.length > 0) {
+      return resp.errors.pop()?.message || ''
+    }
+    return ''
   }
 
+  /**
+   * Resends the verification email to the user.
+   * @param params - The resend verify email input parameters.
+   * @returns A Promise resolving to `true` if the email was sent successfully.
+   */
   const resendVerifyEmail = async (params: ResendVerifyEmailInput): Promise<boolean> => {
-    const resp = await authorizer().resendVerifyEmail(params as ResendVerifyEmailInput)
+    const resp = await authorizer().resendVerifyEmail(params)
     console.debug('[context.session] resend verify email response:', resp)
-    if (resp.errors) {
+    if (resp.errors.length > 0) {
       resp.errors.forEach((error) => {
         showSnackbar({ type: 'error', body: error.message })
       })
+      return false
     }
-    return resp ? resp.data?.message === 'Verification email has been sent. Please check your inbox' : false
+    return resp.data?.message === 'Verification email has been sent. Please check your inbox'
   }
 
+  /**
+   * Checks if an email is already registered.
+   * @param email - The email to check.
+   * @returns A Promise resolving to the message from the server indicating the registration status.
+   */
   const isRegistered = async (email: string): Promise<string> => {
     console.debug('[context.session] calling is_registered for ', email)
     try {
       const response = await authorizer().graphqlQuery({
-        query: `query { is_registered(email: "${email}") { message }}`
+        query: 'query IsRegistered($email: String!) { is_registered(email: $email) { message }}',
+        variables: { email }
       })
       return response?.data?.is_registered?.message
     } catch (error) {
@@ -361,6 +451,16 @@ export const SessionProvider = (props: {
       console.warn(error)
     }
   }
+
+  // authorized graphql client
+  const [client, setClient] = createSignal<Client>()
+  createEffect(
+    on(session, (s?: AuthToken) => {
+      const tkn = s?.access_token
+      setClient((_c?: Client) => graphqlClientCreate(coreApiUrl, tkn))
+    })
+  )
+
   const actions = {
     loadSession,
     requireAuthentication,
@@ -378,6 +478,7 @@ export const SessionProvider = (props: {
     isRegistered
   }
   const value: SessionContextType = {
+    client,
     authError,
     config,
     session,

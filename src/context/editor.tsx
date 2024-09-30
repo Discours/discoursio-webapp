@@ -1,17 +1,15 @@
 import { useMatch, useNavigate } from '@solidjs/router'
 import { Editor, EditorOptions } from '@tiptap/core'
 import type { JSX } from 'solid-js'
-import { Accessor, createContext, createMemo, createSignal, useContext } from 'solid-js'
+import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
 import { createTiptapEditor } from 'solid-tiptap'
-import { coreApiUrl } from '~/config'
 import { useSnackbar } from '~/context/ui'
 import deleteShoutQuery from '~/graphql/mutation/core/article-delete'
 import updateShoutQuery from '~/graphql/mutation/core/article-update'
 import { Topic, TopicInput } from '~/graphql/schema/core.gen'
 import { slugify } from '~/intl/translit'
 import { useFeed } from '../context/feed'
-import { graphqlClientCreate } from '../graphql/client'
 import { useLocalize } from './localize'
 import { useSession } from './session'
 
@@ -85,8 +83,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const navigate = useNavigate()
   const matchEdit = useMatch(() => '/edit')
   const matchEditSettings = useMatch(() => '/editSettings')
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client } = useSession()
   const [editor, setEditor] = createSignal<Editor | undefined>()
   const { addFeed } = useFeed()
   const snackbar = useSnackbar()

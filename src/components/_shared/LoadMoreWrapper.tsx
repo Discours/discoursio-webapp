@@ -33,6 +33,7 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
   )
 
   const loadItems = async () => {
+    // console.debug('LoadMoreWrapper.loadItems offset:', offset())
     setIsLoading(true)
     saveScrollPosition()
     const newItems = await props.loadFunction(offset())
@@ -47,6 +48,7 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
       )
     setIsLoading(false)
     restoreScrollPosition()
+    // console.debug('LoadMoreWrapper.loadItems loaded:', newItems.length)
   }
 
   onMount(loadItems)
@@ -54,16 +56,18 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
   return (
     <>
       {props.children}
-      <Show when={isLoadMoreButtonVisible() && !props.hidden}>
-        <div class="load-more-container">
-          <Button
-            onClick={loadItems}
-            disabled={isLoading()}
-            value={t('Load more')}
-            title={`${items().length} ${t('loaded')}`}
-          />
-        </div>
-      </Show>
+      <div>
+        <Show when={isLoadMoreButtonVisible() && !props.hidden}>
+          <div class="load-more-container">
+            <Button
+              onClick={loadItems}
+              disabled={isLoading()}
+              value={t('Load more')}
+              title={`${items().length} ${t('loaded')}`}
+            />
+          </div>
+        </Show>
+      </div>
     </>
   )
 }

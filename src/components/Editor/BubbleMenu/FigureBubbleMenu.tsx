@@ -1,14 +1,13 @@
 import type { Editor } from '@tiptap/core'
-
-import { renderUploadedImage } from '~/components/Editor/renderUploadedImage'
+import { renderUploadedImage } from '~/components/Upload/renderUploadedImage'
 import { Icon } from '~/components/_shared/Icon'
 import { Popover } from '~/components/_shared/Popover'
 import { useLocalize } from '~/context/localize'
-import { UploadedFile } from '~/types/upload'
-import { Modal } from '../../_shared/Modal'
-import { UploadModalContent } from '../UploadModalContent'
-
 import { useUI } from '~/context/ui'
+import { UploadedFile } from '~/types/upload'
+import { UploadModalContent } from '../../Upload/UploadModalContent'
+import { Modal } from '../../_shared/Modal'
+
 import styles from './BubbleMenu.module.scss'
 
 type Props = {
@@ -20,8 +19,8 @@ export const FigureBubbleMenu = (props: Props) => {
   const { t } = useLocalize()
   const { hideModal } = useUI()
 
-  const handleUpload = (image: UploadedFile) => {
-    renderUploadedImage(props.editor, image)
+  const handleUpload = (image?: UploadedFile) => {
+    image && renderUploadedImage(props.editor, image)
     hideModal()
   }
 
@@ -81,11 +80,7 @@ export const FigureBubbleMenu = (props: Props) => {
       </Popover>
 
       <Modal variant="narrow" name="uploadImage">
-        <UploadModalContent
-          onClose={(value) => {
-            handleUpload(value as UploadedFile)
-          }}
-        />
+        <UploadModalContent onClose={handleUpload} />
       </Modal>
     </div>
   )

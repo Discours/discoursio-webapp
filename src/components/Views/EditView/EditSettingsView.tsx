@@ -1,20 +1,18 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { debounce } from 'throttle-debounce'
+import { Panel } from '~/components/Editor/Panel/Panel'
 import { Icon } from '~/components/_shared/Icon'
 import { InviteMembers } from '~/components/_shared/InviteMembers'
-import { coreApiUrl } from '~/config'
 import { ShoutForm, useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
-import { graphqlClientCreate } from '~/graphql/client'
 import getMyShoutQuery from '~/graphql/query/core/article-my'
 import type { Shout, Topic } from '~/graphql/schema/core.gen'
 import { isDesktop } from '~/lib/mediaQuery'
 import { clone } from '~/utils/clone'
-import { Panel } from '../../Editor'
 import { AutoSaveNotice } from '../../Editor/AutoSaveNotice'
 import { Modal } from '../../_shared/Modal'
 import { TableOfContents } from '../../_shared/TableOfContents'
@@ -44,8 +42,7 @@ const handleScrollTopButtonClick = (ev: MouseEvent | TouchEvent) => {
 export const EditSettingsView = (props: Props) => {
   const { t } = useLocalize()
   const [isScrolled, setIsScrolled] = createSignal(false)
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client } = useSession()
   const { form, setForm, saveDraft, saveDraftToLocalStorage, getDraftFromLocalStorage } = useEditorContext()
   const [shoutTopics, setShoutTopics] = createSignal<Topic[]>([])
   const [draft, setDraft] = createSignal()

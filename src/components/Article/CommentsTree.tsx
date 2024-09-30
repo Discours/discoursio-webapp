@@ -9,11 +9,12 @@ import { Author, Reaction, ReactionKind, ReactionSort } from '~/graphql/schema/c
 import { SortFunction } from '~/types/common'
 import { byCreated, byStat } from '~/utils/sort'
 import { Button } from '../_shared/Button'
+import { Loading } from '../_shared/Loading'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import styles from './Article.module.scss'
 import { Comment } from './Comment'
 
-const SimplifiedEditor = lazy(() => import('../Editor/SimplifiedEditor'))
+const MiniEditor = lazy(() => import('../Editor/MiniEditor/MiniEditor'))
 
 type Props = {
   articleAuthors: Author[]
@@ -27,7 +28,6 @@ export const CommentsTree = (props: Props) => {
   const [commentsOrder, setCommentsOrder] = createSignal<ReactionSort>(ReactionSort.Newest)
   const [onlyNew, setOnlyNew] = createSignal(false)
   const [newReactions, setNewReactions] = createSignal<Reaction[]>([])
-  const [clearEditor, setClearEditor] = createSignal(false)
   const [clickedReplyId, setClickedReplyId] = createSignal<number>()
   const { reactionEntities, createShoutReaction, loadReactionsBy } = useReactions()
 
@@ -70,6 +70,7 @@ export const CommentsTree = (props: Props) => {
       setCookie()
     }
   })
+
   const [posting, setPosting] = createSignal(false)
   const handleSubmitComment = async (value: string) => {
     setPosting(true)
@@ -81,12 +82,10 @@ export const CommentsTree = (props: Props) => {
           shout: props.shoutId
         }
       })
-      setClearEditor(true)
       await loadReactionsBy({ by: { shout: props.shoutSlug } })
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
-    setClearEditor(false)
     setPosting(false)
   }
 
@@ -155,16 +154,10 @@ export const CommentsTree = (props: Props) => {
           </div>
         }
       >
-        <SimplifiedEditor
-          quoteEnabled={true}
-          imageEnabled={true}
-          autoFocus={false}
-          submitByCtrlEnter={true}
-          placeholder={t('Write a comment...')}
-          onSubmit={(value) => handleSubmitComment(value)}
-          setClear={clearEditor()}
-          isPosting={posting()}
-        />
+        <MiniEditor placeholder={t('Write a comment...')} onSubmit={handleSubmitComment} />
+        <Show when={posting()}>
+          <Loading />
+        </Show>
       </ShowIfAuthenticated>
     </>
   )

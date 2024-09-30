@@ -14,7 +14,6 @@ import {
   onMount
 } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import SimplifiedEditor from '~/components/Editor/SimplifiedEditor'
 import { useLocalize } from '~/context/localize'
 import { useProfile } from '~/context/profile'
 import { useSession } from '~/context/session'
@@ -35,7 +34,7 @@ import { SocialNetworkInput } from '../../_shared/SocialNetworkInput'
 import styles from './Settings.module.scss'
 import { profileSocialLinks } from './profileSocialLinks'
 
-// const SimplifiedEditor = lazy(() => import('~/components/Editor/SimplifiedEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 function filterNulls(arr: InputMaybe<string>[]): string[] {
@@ -340,18 +339,7 @@ export const ProfileSettings = () => {
                     />
 
                     <h4>{t('About')}</h4>
-                    <SimplifiedEditor
-                      resetToInitial={true}
-                      noLimits={true}
-                      variant="bordered"
-                      hideToolbar={true}
-                      smallHeight={true}
-                      label={t('About')}
-                      initialContent={about() || ''}
-                      autoFocus={false}
-                      onChange={setAbout}
-                      placeholder={t('About')}
-                    />
+                    <MicroEditor content={about() || ''} onChange={setAbout} placeholder={t('About')} />
                     <div class={clsx(styles.multipleControls, 'pretty-form__item')}>
                       <div class={styles.multipleControlsHeader}>
                         <h4>{t('Social networks')}</h4>

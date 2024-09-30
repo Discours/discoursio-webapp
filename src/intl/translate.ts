@@ -3,10 +3,22 @@ import { capitalize } from '~/utils/capitalize'
 import { cyrillicRegex, findFirstReadableCharIndex, notChar, notLatin, notRus } from './chars'
 import { translit } from './translit'
 
+/**
+ * Checks if a string contains Cyrillic characters.
+ * @param s - The string to check.
+ * @returns `true` if the string contains Cyrillic characters, otherwise `false`.
+ */
 export const isCyrillic = (s: string): boolean => {
   return cyrillicRegex.test(s)
 }
 
+/**
+ * Translates the author's name based on the provided language. For English (`lng === 'en'`), it transliterates
+ * and capitalizes Cyrillic names, handling special cases for characters like 'ё' and 'ь'.
+ * @param author - The author object containing the name to translate.
+ * @param lng - The target language for translation ('en' or 'ru').
+ * @returns The translated author name, or the original if no translation is needed.
+ */
 export const translateAuthor = (author: Author, lng: string) =>
   lng === 'en' && isCyrillic(author?.name || '')
     ? capitalize(
@@ -15,6 +27,15 @@ export const translateAuthor = (author: Author, lng: string) =>
       )
     : author.name
 
+/**
+ * Reduces a list of authors into groups based on the first readable letter of their last name.
+ * The grouping depends on the language ('ru' for Russian and 'en' for English).
+ * Non-Cyrillic or non-Latin characters are grouped under `@`.
+ * @param acc - The accumulator object for grouping authors by the first readable letter.
+ * @param author - The author object containing the name.
+ * @param lng - The language code ('en' or 'ru') used for transliteration and sorting.
+ * @returns The accumulator object with authors grouped by the first readable letter of their last name.
+ */
 export const authorLetterReduce = (acc: { [x: string]: Author[] }, author: Author, lng: string) => {
   let letter = ''
 

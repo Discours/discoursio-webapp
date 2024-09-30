@@ -1,4 +1,4 @@
-export const notChar = /[^\dA-Za-zА-Яа-я]/
+export const notChar = /[^\dA-Za-zА-Яа-я]/g
 export const allChar = /[\dA-Za-zА-Яа-я]/
 export const notLatin = /[^A-Za-z]/
 export const notRus = /[^ËА-Яа-яё]/

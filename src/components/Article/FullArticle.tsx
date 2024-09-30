@@ -1,3 +1,4 @@
+import { AuthToken } from '@authorizerdev/authorizer-js'
 import { createPopper } from '@popperjs/core'
 import { Link } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
@@ -73,7 +74,6 @@ export const FullArticle = (props: Props) => {
   const [isActionPopupActive, setIsActionPopupActive] = createSignal(false)
   const { t, formatDate, lang } = useLocalize()
   const { session, requireAuthentication } = useSession()
-  const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { addSeen } = useFeed()
   const formattedDate = createMemo(() => formatDate(new Date((props.article.published_at || 0) * 1000)))
 
@@ -100,12 +100,19 @@ export const FullArticle = (props: Props) => {
     )
   )
 
-  const canEdit = createMemo(
-    () =>
-      Boolean(author()?.id) &&
-      (props.article.authors?.some((a) => Boolean(a) && a?.id === author().id) ||
-        props.article.created_by?.id === author().id ||
-        session()?.user?.roles?.includes('editor'))
+  const [canEdit, setCanEdit] = createSignal<boolean>(false)
+  createEffect(
+    on(
+      () => session(),
+      (s?: AuthToken) => {
+        const profile = s?.user?.app_data?.profile
+        if (!profile) return
+        const isEditor = s?.user?.roles?.includes('editor')
+        const isCreator = props.article.created_by?.id === profile.id
+        const fit = (a: Maybe<Author>) => a?.id === profile.id || isCreator || isEditor
+        setCanEdit((_: boolean) => Boolean(props.article.authors?.some(fit)))
+      }
+    )
   )
 
   const mainTopic = createMemo(() => {
@@ -534,7 +541,7 @@ export const FullArticle = (props: Props) => {
               />
             </div>
 
-            <Show when={author()?.id && !canEdit()}>
+            <Show when={session()?.access_token && !canEdit()}>
               <div class={styles.help}>
                 <button class="button">{t('Cooperate')}</button>
               </div>

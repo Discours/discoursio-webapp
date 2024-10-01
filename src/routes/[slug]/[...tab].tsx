@@ -1,6 +1,16 @@
 import { RouteDefinition, RouteSectionProps, createAsync, useLocation } from '@solidjs/router'
 import { HttpStatusCode } from '@solidjs/start'
-import { ErrorBoundary, Show, Suspense, createEffect, on, onMount, Switch, Match, createSignal } from 'solid-js'
+import {
+  ErrorBoundary,
+  Match,
+  Show,
+  Suspense,
+  Switch,
+  createEffect,
+  createSignal,
+  on,
+  onMount
+} from 'solid-js'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { gaIdentity } from '~/config'
@@ -52,7 +62,6 @@ function ArticlePageContent(props: RouteSectionProps<ArticlePageProps>) {
   })
 
   onMount(async () => {
-    console.debug('[ArticlePage] onMount')
     if (gaIdentity && data()?.id) {
       try {
         await loadGAScript(gaIdentity)
@@ -109,42 +118,39 @@ function ArticlePageContent(props: RouteSectionProps<ArticlePageProps>) {
 }
 
 export default function ArticlePage(props: RouteSectionProps<SlugPageProps>) {
-  console.debug('[routes] [slug]/[...tab] props:', props)
-
-  const { slug } = props.params
-
-  const [currentSlug, setCurrentSlug] = createSignal(props.params.slug);
+  const [currentSlug, setCurrentSlug] = createSignal(props.params.slug)
   createEffect(() => {
-    if (props.params.slug !== currentSlug()) {
-      setCurrentSlug(props.params.slug);
+    const newSlug = props.params.slug
+    if (newSlug !== currentSlug()) {
+      setCurrentSlug(newSlug)
     }
-  });
+  })
 
   return (
     <Switch fallback={<div>Loading...</div>}>
       <Match when={currentSlug().startsWith('@')}>
         <AuthorPage
-          {...{
+          {...({
             ...props,
             params: {
               ...props.params,
-              slug: slug.slice(1),
-            },
-          } as RouteSectionProps<AuthorPageProps>}
+              slug: currentSlug().slice(1)
+            }
+          } as RouteSectionProps<AuthorPageProps>)}
         />
       </Match>
       <Match when={currentSlug().startsWith('!')}>
         <TopicPage
-          {...{
+          {...({
             ...props,
             params: {
               ...props.params,
-              slug: slug.slice(1),
-            },
-          } as RouteSectionProps<TopicPageProps>}
+              slug: currentSlug().slice(1)
+            }
+          } as RouteSectionProps<TopicPageProps>)}
         />
       </Match>
-      <Match when={!currentSlug().startsWith('@') && !currentSlug().startsWith('!')}>
+      <Match when={!['@', '!'].some((prefix) => currentSlug().startsWith(prefix))}>
         <ArticlePageContent {...props} />
       </Match>
       <Match when={true}>

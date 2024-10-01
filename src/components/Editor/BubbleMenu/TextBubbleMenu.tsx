@@ -5,7 +5,7 @@ import { createEditorTransaction } from 'solid-tiptap'
 import { Icon } from '~/components/_shared/Icon'
 import { Popover } from '~/components/_shared/Popover'
 import { useLocalize } from '~/context/localize'
-import { InsertLinkForm } from '../EditorToolbar/InsertLinkForm'
+import { InsertLinkForm } from '../Toolbar/InsertLinkForm'
 
 import styles from './TextBubbleMenu.module.scss'
 

@@ -9,18 +9,27 @@ import './Button.module.scss'
 const meta: Meta<typeof Button> = {
   title: 'Atom/Button',
   component: Button,
-
   argTypes: {
     value: {
       control: { type: 'text' }
     },
     variant: {
-      options: ['primary', 'secondary', 'bordered', 'outline', 'primary-square', 'secondary-square'],
+      options: ['primary', 'primary-disabled', 'secondary',
+                'secondary-disabled', 'bordered', 'outline',
+                'primary-square', 'secondary-square', 'primary-disabled-square',
+                'secondary-disabled-square'
+      ],
       control: { type: 'select' }
     },
     size: {
-      options: ['S', 'M', 'L', 'XS-square', 'S-square', 'M-square'],
-      control: { type: 'radio' }
+      options: ['S', 'M', 'L', 'M-square', 'S-square', 'XS-square'],
+      control: { type: 'select' }
+    },
+    disabled: {
+      control: 'boolean'
+    },
+    loading: {
+      control: 'boolean'
     },
     onClick: { action: 'clicked' }
   }
@@ -34,6 +43,16 @@ export const Primary: Story = {
   args: {
     value: 'Button',
     variant: 'primary',
+    size: 'M',
+    disabled: false,
+    loading: false
+  }
+}
+
+export const PrimaryDisabled: Story = {
+  args: {
+    value: 'Button',
+    variant: 'primary-disabled',
     size: 'M'
   }
 }
@@ -42,6 +61,15 @@ export const Secondary: Story = {
   args: {
     value: 'Button',
     variant: 'secondary',
+    size: 'M',
+    disabled: false
+  }
+}
+
+export const SecondaryDisabled: Story = {
+  args: {
+    value: 'Button',
+    variant: 'secondary-disabled',
     size: 'M'
   }
 }
@@ -62,10 +90,20 @@ export const PrimarySwitchFromStateBToStateA: Story = {
   }
 }
 
+
 export const PrimarySquare: Story = {
   args: {
     value: 'Button',
     variant: 'primary-square',
+    size: 'S-square',
+    disabled: false
+  }
+}
+
+export const PrimaryDisabledSquare: Story = {
+  args: {
+    value: 'Button',
+    variant: 'primary-disabled-square',
     size: 'S-square'
   }
 }
@@ -74,8 +112,18 @@ export const SecondarySquare: Story = {
   args: {
     value: 'Button',
     variant: 'secondary-square',
+    size: 'S-square',
+    disabled: false
+  }
+}
+
+export const SecondaryDisabledSquare: Story = {
+  args: {
+    value: 'Button',
+    variant: 'secondary-disabled-square',
     size: 'S-square'
   }
 }
+
 
 

@@ -6,9 +6,22 @@
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
+  &:disabled {
+    opacity: 1 !important;
+  }
+
+  &.loading {
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
+    pointer-events: none;
+
+    &:hover {
+      background: var(--background-color-invert);
+      color: var(--default-color-invert);
+    }
+  }
 
   &.primary {
-    border-radius: 8px;
     background: var(--background-color-invert);
     color: var(--default-color-invert);
 
@@ -21,11 +34,20 @@
       background: #000;
       color: rgb(255, 255, 255, 40%);
     }
+
+    &:disabled {
+      background: var(--background-color-invert);
+      color: rgb(255, 255, 255, 40%);
+    }
+  }
+
+  &.primary-disabled {
+    background: var(--background-color-invert);
+    color: rgb(255, 255, 255, 40%);
+    pointer-events: none;
   }
 
   &.secondary {
-    border-radius: 8px;
-    border: 1px solid #f7f7f8;
     background: #f7f7f8;
     color: #000;
 
@@ -38,6 +60,17 @@
       background: #f7f7f8;
       color: rgb(105, 105, 105, 40%);
     }
+
+    &:disabled {
+      border: 2px solid #696969;
+      color: #696969;
+    }
+  }
+
+  &.secondary-disabled {
+    border: 2px solid #696969;
+    color: #696969;
+    pointer-events: none;
   }
 
   &.bordered {
@@ -66,7 +99,6 @@
   &.outline {
     min-width: auto !important;
     border: 2px solid #000;
-    border-radius: 8px;
 
     &:hover {
       background: var(--link-color);
@@ -84,7 +116,6 @@
   }
 
   &.primary-square {
-    border-radius: 2px;
     background: var(--background-color-invert);
     color: var(--default-color-invert);
 
@@ -95,10 +126,22 @@
     &:active {
       color: #9fa1a7;
     }
+
+    &:disabled {
+      border-radius: 2px;
+      background: #f7f7f8;
+      color: #9fa1a7;
+    }
+  }
+
+  &.primary-disabled-square {
+    border-radius: 2px;
+    background: #f7f7f8;
+    color: #9fa1a7;
+    pointer-events: none;
   }
 
   &.secondary-square {
-    border-radius: 2px;
     background: #f7f7f7;
     color: #141414;
 
@@ -109,6 +152,19 @@
     &:active {
       background: #ccc;
     }
+
+    &:disabled {
+      border-radius: 2px;
+      background: #fff;
+      color: #9fa1a7;
+    }
+  }
+
+  &.secondary-disabled-square {
+    border-radius: 2px;
+    background: #fff;
+    color: #9fa1a7;
+    pointer-events: none;
   }
 
   &.L {
@@ -130,6 +186,7 @@
   &.S {
     height: 32px;
     min-width: 82px;
+    border-radius: 8px;
     font-size: 14px;
     padding: 0 18px;
   }
@@ -137,6 +194,7 @@
   &.M-square {
     min-width: 80px;
     height: 56px;
+    border-radius: 2px;
     font-size: 20px;
     padding: 16px 20px;
   }
@@ -144,6 +202,7 @@
   &.S-square {
     min-width: 63px;
     height: 37px;
+    border-radius: 2px;
     font-size: 16px;
     padding: 8px 16px;
   }
@@ -151,8 +210,39 @@
   &.XS-square {
     min-width: 51px;
     height: 30px;
+    border-radius: 2px;
     font-size: 14px;
     padding: 6px 12px;
   }
 
+  .loadingDots {
+    display: inline-flex;
+    align-items: center;
+    font-size: 30px;
+
+    & span {
+      animation: blink 2s infinite;
+      &:nth-child(1) {
+        animation-delay: 0s;
+      }
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes blink {
+        0%, 50%, 100% {
+          opacity: 0;
+        }
+        10%, 30% {
+          opacity: 1;
+        }
+      }
+    }
+  }
 }
+
+
+

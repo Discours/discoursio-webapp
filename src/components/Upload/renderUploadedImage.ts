@@ -20,3 +20,14 @@ export const renderUploadedImage = (editor: Editor, image: { url: string; origin
     })
     .run()
 }
+
+export const allowedImageTypes = new Set([
+  'image/bmp',
+  'image/gif',
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/tiff',
+  'image/webp',
+  'image/x-icon'
+])

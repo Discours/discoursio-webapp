@@ -16,7 +16,7 @@ import { useSnackbar } from '~/context/ui'
 import { Author } from '~/graphql/schema/core.gen'
 import { base, custom, extended } from '~/lib/editorExtensions'
 import { handleImageUpload } from '~/lib/handleImageUpload'
-import { renderUploadedImage } from '../Upload/renderUploadedImage'
+import { allowedImageTypes, renderUploadedImage } from '../Upload/renderUploadedImage'
 import { BlockquoteBubbleMenu } from './Toolbar/BlockquoteBubbleMenu'
 import { EditorFloatingMenu } from './Toolbar/EditorFloatingMenu'
 import { FigureBubbleMenu } from './Toolbar/FigureBubbleMenu'
@@ -31,17 +31,6 @@ export type EditorComponentProps = {
   onChange: (text: string) => void
   disableCollaboration?: boolean
 }
-
-const allowedImageTypes = new Set([
-  'image/bmp',
-  'image/gif',
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/tiff',
-  'image/webp',
-  'image/x-icon'
-])
 
 const yDocs: Record<string, Doc> = {}
 const providers: Record<string, HocuspocusProvider> = {}

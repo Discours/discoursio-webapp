@@ -43,7 +43,7 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     ],
     editorProps: {
       attributes: {
-        class: styles.simplifiedEditorField
+        class: styles.compactEditor
       }
     },
     content: props.content || '',

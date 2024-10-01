@@ -32,7 +32,7 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
     ],
     editorProps: {
       attributes: {
-        class: styles.simplifiedEditorField
+        class: styles.compactEditor
       }
     },
     content: props.content || '',

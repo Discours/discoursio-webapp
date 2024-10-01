@@ -7,7 +7,7 @@
   padding: 16px 16px 8px;
   position: relative;
 
-  .simplifiedEditorField {
+  .compactEditor {
     @include font-size(1.4rem);
 
     min-height: 100px;
@@ -25,7 +25,7 @@
     }
   }
 
-  &.smallHeight .simplifiedEditorField {
+  &.smallHeight .compactEditor {
     min-height: 34px;
   }
 

@@ -5,8 +5,11 @@ import { validateUrl } from '~/utils/validate'
 import { InlineForm } from '../../_shared/InlineForm'
 
 type Props = {
+  class?: string
   editor: Editor
   onClose: () => void
+  onSubmit?: (value: string) => void
+  onRemove?: () => void
 }
 
 export const checkUrl = (url: string) => {
@@ -38,7 +41,7 @@ export const InsertLinkForm = (props: Props) => {
 
   const handleClearLinkForm = () => {
     if (currentUrl()) {
-      props.editor?.chain().focus().unsetLink().run()
+      props.onRemove?.()
     }
   }
 
@@ -48,11 +51,12 @@ export const InsertLinkForm = (props: Props) => {
       .focus()
       .setLink({ href: checkUrl(value) })
       .run()
+    props.onSubmit?.(value)
     props.onClose()
   }
 
   return (
-    <div>
+    <div class={props.class}>
       <InlineForm
         placeholder={t('Enter URL address')}
         initialValue={currentUrl() ?? ''}

@@ -44,6 +44,14 @@
       margin: 0;
     }
   }
+  
+  .bubbleMenu {
+    display: flex;
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0px 10px 20px rgba(0, 0, 0, 0.1);
+  }
 
   .controls {
     margin-top: auto;
@@ -87,6 +95,15 @@
 
       &.active,
       &:hover {
+        opacity: 1;
+      }
+
+    }
+
+    .linkInput {
+      opacity: 0;
+      transition: opacity ease-in-out 0.3s;
+      &.linkInputactive {
         opacity: 1;
       }
     }

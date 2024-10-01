@@ -2,13 +2,22 @@ import CharacterCount from '@tiptap/extension-character-count'
 import Placeholder from '@tiptap/extension-placeholder'
 import clsx from 'clsx'
 import { type JSX, Show, createEffect, createSignal, on } from 'solid-js'
-import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
+import { createEditorTransaction, createTiptapEditor, useEditorHTML, useEditorIsEmpty } from 'solid-tiptap'
 import { Button } from '~/components/_shared/Button'
 import { useLocalize } from '~/context/localize'
 import { base } from '~/lib/editorExtensions'
-import { EditorToolbar } from '../EditorToolbar/EditorToolbar'
+import { ToolbarControl as Control } from '../EditorToolbar/ToolbarControl'
 
 import styles from './MiniEditor.module.scss'
+import { Editor } from '@tiptap/core'
+import { InsertLinkForm } from '../EditorToolbar/InsertLinkForm'
+import { Icon } from '~/components/_shared/Icon/Icon'
+import { useUI } from '~/context/ui'
+import { Modal } from '~/components/_shared/Modal'
+import { UploadModalContent } from '~/components/Upload/UploadModalContent'
+import { Portal } from 'solid-js/web'
+import { renderUploadedImage } from '~/components/Upload/renderUploadedImage'
+import { UploadedFile } from '~/types/upload'
 
 interface MiniEditorProps {
   content?: string
@@ -21,9 +30,10 @@ interface MiniEditorProps {
 
 export default function MiniEditor(props: MiniEditorProps): JSX.Element {
   const { t } = useLocalize()
+  const { showModal } = useUI()
   const [editorElement, setEditorElement] = createSignal<HTMLDivElement>()
   const [counter, setCounter] = createSignal(0)
-
+  const [showLinkForm, setShowLinkForm] = createSignal(false)
   const editor = createTiptapEditor(() => ({
     element: editorElement()!,
     extensions: [
@@ -36,12 +46,39 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
         class: styles.simplifiedEditorField
       }
     },
-    content: props.content || ''
+    content: props.content || '',
+    autofocus: 'end'
   }))
 
-  const isFocused = createEditorTransaction(editor, (instance) => instance?.isFocused)
-  const isEmpty = createEditorTransaction(editor, (instance) => instance?.isEmpty)
   const html = useEditorHTML(editor)
+  const isEmpty = useEditorIsEmpty(editor)
+
+  const toggleLinkForm = () => {
+    setShowLinkForm(!showLinkForm())
+    // Если форма закрывается, возвращаем фокус редактору
+    !showLinkForm() && editor()?.commands.focus()
+  }
+
+  const setLink = (url: string) => {
+    url && editor()?.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+    !url && editor()?.chain().focus().extendMarkRange('link').unsetLink().run()
+    setShowLinkForm(false)
+  }
+
+  const removeLink = () => {
+    editor()?.chain().focus().unsetLink().run()
+    setShowLinkForm(false)
+  }
+
+  const handleLinkButtonClick = () => {
+    if (editor()?.isActive('link')) {
+      const previousUrl = editor()?.getAttributes('link').href
+      const url = window.prompt('URL', previousUrl)
+      url && setLink(url)
+    } else {
+      toggleLinkForm()
+    }
+  }
 
   createEffect(on(html, (c?: string) => c && props.onChange?.(c)))
 
@@ -58,28 +95,85 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
   }
 
   return (
-    <div class={clsx(styles.MiniEditor, styles.bordered, { [styles.isFocused]: isFocused() })}>
-      <div>
-        <div id="mini-editor" ref={setEditorElement} />
-
-        <EditorToolbar editor={editor} mode={'mini'} />
-
-        <div class={styles.buttons}>
-          <Button
-            value={t('Cancel')}
-            disabled={isEmpty()}
-            variant="secondary"
-            onClick={() => editor()?.commands.clearContent()}
+    <div class={clsx(styles.MiniEditor, styles.isFocused)}>
+      <div class={clsx(styles.controls, styles.isFocused)}>
+        <div class={clsx(styles.actions, styles.active)}>
+          <Control
+            key="bold"
+            editor={editor()}
+            onChange={() => editor()?.chain().focus().toggleBold().run()}
+            title={t('Bold')}
+          >
+            <Icon name="editor-bold" />
+          </Control>
+          <Control
+            key="italic"
+            editor={editor()}
+            onChange={() => editor()?.chain().focus().toggleItalic().run()}
+            title={t('Italic')}
+          >
+            <Icon name="editor-italic" />
+          </Control>
+          <Control
+            key="link"
+            editor={editor()}
+            onChange={handleLinkButtonClick}
+            title={t('Add url')}
+            isActive={(e: Editor) => Boolean(e?.isActive('link'))}
+          >
+            <Icon name="editor-link" />
+          </Control>
+          <Control
+            key="blockquote"
+            editor={editor()}
+            onChange={() => editor()?.chain().focus().toggleBlockquote().run()}
+            title={t('Add blockquote')}
+          >
+            <Icon name="editor-quote" />
+          </Control>
+          <Control
+            key="image"
+            editor={editor()}
+            onChange={() => showModal('simplifiedEditorUploadImage')}
+            title={t('Add image')}
+          >
+            <Icon name="editor-image-dd-full" />
+          </Control>
+          <InsertLinkForm
+            class={clsx([styles.linkInput, { [styles.linkInputactive]: showLinkForm() }])}
+            editor={editor() as Editor}
+            onClose={toggleLinkForm}
+            onSubmit={setLink}
+            onRemove={removeLink}
           />
-          <Button value={t('Send')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
         </div>
-
-        <Show when={counter() > 0}>
-          <small class={styles.limit}>
-            {counter()} / {props.limit || '∞'}
-          </small>
-        </Show>
       </div>
+
+      <Portal>
+        <Modal variant="narrow" name="simplifiedEditorUploadImage">
+          <UploadModalContent
+            onClose={(image) => renderUploadedImage(editor() as Editor, image as UploadedFile)}
+          />
+        </Modal>
+      </Portal>
+
+      <div id="mini-editor" ref={setEditorElement} style={styles.minimal} />
+
+      <div class={styles.buttons}>
+        <Button
+          value={t('Cancel')}
+          disabled={isEmpty()}
+          variant="secondary"
+          onClick={() => editor()?.commands.clearContent()}
+        />
+        <Button value={t('Send')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
+      </div>
+
+      <Show when={counter() > 0}>
+        <small class={styles.limit}>
+          {counter()} / {props.limit || '∞'}
+        </small>
+      </Show>
     </div>
   )
 }

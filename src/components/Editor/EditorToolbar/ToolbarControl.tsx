@@ -6,7 +6,7 @@ import { Popover } from '~/components/_shared/Popover'
 import styles from '../MiniEditor/MiniEditor.module.scss'
 
 interface ControlProps {
-  editor: Editor
+  editor: Editor | undefined
   title: string
   key: string
   onChange: () => void
@@ -27,7 +27,7 @@ export const ToolbarControl = (props: ControlProps): JSX.Element => {
         <button
           ref={triggerRef}
           type="button"
-          class={clsx(styles.actionButton, { [styles.active]: props.editor.isActive(props.key) })}
+          class={clsx(styles.actionButton, { [styles.active]: props.editor?.isActive?.(props.key) })}
           onClick={handleClick}
         >
           {props.children}

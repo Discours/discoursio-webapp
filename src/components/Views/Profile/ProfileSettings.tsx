@@ -339,7 +339,7 @@ export const ProfileSettings = () => {
                     />
 
                     <h4>{t('About')}</h4>
-                    <MicroEditor content={about() || ''} onChange={setAbout} placeholder={t('About')} />
+                    <MicroEditor content={about() || ''} onChange={setAbout} placeholder={t('About')} bordered={true} />
                     <div class={clsx(styles.multipleControls, 'pretty-form__item')}>
                       <div class={styles.multipleControlsHeader}>
                         <h4>{t('Social networks')}</h4>

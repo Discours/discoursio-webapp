@@ -4,9 +4,9 @@ import clsx from 'clsx'
 import { type JSX, createEffect, createSignal, on } from 'solid-js'
 import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { minimal } from '~/lib/editorExtensions'
-import { MicroBubbleMenu } from './MicroBubbleMenu'
+import { MicroBubbleMenu } from './Toolbar/MicroBubbleMenu'
 
-import styles from '../MiniEditor/MiniEditor.module.scss'
+import styles from './MiniEditor.module.scss'
 
 interface MicroEditorProps {
   content?: string

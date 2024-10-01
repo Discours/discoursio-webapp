@@ -6,7 +6,7 @@ import { createTiptapEditor, useEditorHTML, useEditorIsEmpty } from 'solid-tipta
 import { Button } from '~/components/_shared/Button'
 import { useLocalize } from '~/context/localize'
 import { base } from '~/lib/editorExtensions'
-import { ToolbarControl as Control } from '../Toolbar/ToolbarControl'
+import { ToolbarControl as Control } from './Toolbar/ToolbarControl'
 
 import { Editor } from '@tiptap/core'
 import { Portal } from 'solid-js/web'
@@ -16,8 +16,8 @@ import { Icon } from '~/components/_shared/Icon/Icon'
 import { Modal } from '~/components/_shared/Modal'
 import { useUI } from '~/context/ui'
 import { UploadedFile } from '~/types/upload'
-import { InsertLinkForm } from '../Toolbar/InsertLinkForm'
 import styles from './MiniEditor.module.scss'
+import { InsertLinkForm } from './Toolbar/InsertLinkForm'
 
 interface MiniEditorProps {
   content?: string

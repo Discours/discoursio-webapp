@@ -21,7 +21,7 @@ import { CommentDate } from '../CommentDate'
 import { CommentRatingControl } from '../CommentRatingControl'
 import styles from './Comment.module.scss'
 
-const MiniEditor = lazy(() => import('../../Editor/MiniEditor/MiniEditor'))
+const MiniEditor = lazy(() => import('../../Editor/MiniEditor'))
 
 type Props = {
   comment: Reaction

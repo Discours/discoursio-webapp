@@ -34,7 +34,7 @@ import { SocialNetworkInput } from '../../_shared/SocialNetworkInput'
 import styles from './Settings.module.scss'
 import { profileSocialLinks } from './profileSocialLinks'
 
-const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 function filterNulls(arr: InputMaybe<string>[]): string[] {

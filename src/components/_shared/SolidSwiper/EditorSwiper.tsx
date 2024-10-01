@@ -22,7 +22,7 @@ import { MediaItem } from '~/types/mediaitem'
 import { UploadedFile } from '~/types/upload'
 import styles from './Swiper.module.scss'
 
-const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
 
 type Props = {
   images: MediaItem[]

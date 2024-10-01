@@ -19,7 +19,7 @@ import { UploadModalContent } from '~/components/Upload/UploadModalContent/Uploa
 import stylesBeside from '../../Feed/Beside.module.scss'
 import styles from './PublishSettings.module.scss'
 
-const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 const DESCRIPTION_MAX_LENGTH = 400
 

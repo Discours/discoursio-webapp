@@ -29,7 +29,7 @@ import { Modal } from '../../_shared/Modal'
 import { TableOfContents } from '../../_shared/TableOfContents'
 import styles from './EditView.module.scss'
 
-const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {

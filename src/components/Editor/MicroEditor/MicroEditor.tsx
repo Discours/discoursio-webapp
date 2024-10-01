@@ -1,17 +1,16 @@
-import Placeholder from '@tiptap/extension-placeholder'
-import BubbleMenu from '@tiptap/extension-bubble-menu'
-import clsx from 'clsx'
-import { type JSX, Show, createEffect, createSignal, on } from 'solid-js'
-import { createEditorTransaction, createTiptapEditor, useEditorHTML, useEditorIsFocused } from 'solid-tiptap'
-import { minimal } from '~/lib/editorExtensions'
 import { Editor } from '@tiptap/core'
+import Placeholder from '@tiptap/extension-placeholder'
+import clsx from 'clsx'
+import { type JSX, createEffect, createSignal, on } from 'solid-js'
+import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
+import { minimal } from '~/lib/editorExtensions'
 
 import { Icon } from '~/components/_shared/Icon/Icon'
-import { ToolbarControl as Control } from '../EditorToolbar/ToolbarControl'
 import { InsertLinkForm } from '../EditorToolbar/InsertLinkForm'
+import { ToolbarControl as Control } from '../EditorToolbar/ToolbarControl'
 
-import styles from '../MiniEditor/MiniEditor.module.scss'
 import { useLocalize } from '~/context/localize'
+import styles from '../MiniEditor/MiniEditor.module.scss'
 
 interface MicroEditorProps {
   content?: string
@@ -87,11 +86,12 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
   })
 
   return (
-    <div class={clsx(
-      styles.MiniEditor, {
-      [styles.bordered]: props.bordered,
-      [styles.isFocused]: isActive() && selection() && Boolean(!selection()?.empty)
-    })}>
+    <div
+      class={clsx(styles.MiniEditor, {
+        [styles.bordered]: props.bordered,
+        [styles.isFocused]: isActive() && selection() && Boolean(!selection()?.empty)
+      })}
+    >
       <div class={styles.controls}>
         <div class={styles.actions}>
           <Control

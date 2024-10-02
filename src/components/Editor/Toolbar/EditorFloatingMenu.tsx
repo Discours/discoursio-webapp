@@ -12,7 +12,7 @@ import { Modal } from '../../_shared/Modal'
 import { Menu } from './Menu'
 import type { MenuItem } from './Menu/Menu'
 
-import styles from '../EditorFloatingMenu/EditorFloatingMenu.module.scss'
+import styles from './EditorFloatingMenu.module.scss'
 
 type FloatingMenuProps = {
   editor: Editor

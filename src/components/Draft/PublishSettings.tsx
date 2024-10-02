@@ -16,7 +16,7 @@ import { UploadedFile } from '~/types/upload'
 import { Modal } from '../_shared/Modal'
 import { TopicSelect } from '../_shared/TopicSelect'
 
-import styles from '~/styles/views/PublishSettings.module.scss'
+import styles from './PublishSettings.module.scss'
 import stylesBeside from '../Feed/Beside.module.scss' // TODO: should not be here, implement more components
 
 const MicroEditor = lazy(() => import('../Editor/MicroEditor'))

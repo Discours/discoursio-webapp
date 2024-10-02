@@ -1,25 +1,21 @@
-import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Show, createMemo, onMount } from 'solid-js'
 import { useAuthors } from '~/context/authors'
 import { SHOUTS_PER_PAGE } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
-import { loadShouts } from '~/graphql/api/public'
 import { Author, Shout, Topic } from '~/graphql/schema/core.gen'
-import { capitalize } from '~/utils/capitalize'
 import { paginate } from '~/utils/paginate'
 import Banner from '../Discours/Banner'
 import Hero from '../Discours/Hero'
 import { Beside } from '../Feed/Beside'
-import Group from '../Feed/Group'
+import { RandomTopicSwiper } from '../Feed/RandomTopicSwiper'
 import { Row1 } from '../Feed/Row1'
 import { Row2 } from '../Feed/Row2'
 import { Row3 } from '../Feed/Row3'
 import { Row5 } from '../Feed/Row5'
 import RowShort from '../Feed/RowShort'
-import { TopicsNav } from '../TopicsNav'
-import { Icon } from '../_shared/Icon'
+import { TopicsNav } from '../HeaderNav/TopicsNav'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
-import styles from './Home.module.scss'
 
 export const RANDOM_TOPICS_COUNT = 12
 export const RANDOM_TOPIC_SHOUTS_COUNT = 7
@@ -38,28 +34,11 @@ export interface HomeViewProps {
 export const HomeView = (props: HomeViewProps) => {
   const { t } = useLocalize()
   const { topAuthors, addAuthors } = useAuthors()
-  const { topTopics, randomTopic } = useTopics()
-  const [randomTopicArticles, setRandomTopicArticles] = createSignal<Shout[]>([])
-  createEffect(
-    on(
-      () => randomTopic(),
-      async (topic?: Topic) => {
-        if (topic) {
-          const shoutsByTopicLoader = loadShouts({
-            filters: { topic: topic.slug, featured: true },
-            limit: 5,
-            offset: 0
-          })
-          const shouts = await shoutsByTopicLoader()
-          setRandomTopicArticles(shouts || [])
-          shouts?.forEach((s: Shout) => addAuthors((s?.authors || []) as Author[]))
-          props.featuredShouts?.forEach((s: Shout) => addAuthors((s?.authors || []) as Author[]))
-          props.topRatedShouts?.forEach((s: Shout) => addAuthors((s?.authors || []) as Author[]))
-        }
-      },
-      { defer: true }
-    )
-  )
+  const { topTopics } = useTopics()
+  onMount(() => {
+    props.featuredShouts?.forEach((s: Shout) => addAuthors((s?.authors || []) as Author[]))
+    props.topRatedShouts?.forEach((s: Shout) => addAuthors((s?.authors || []) as Author[]))
+  })
 
   const pages = createMemo<Shout[][]>(() =>
     paginate(props.featuredShouts || [], SHOUTS_PER_PAGE + CLIENT_LOAD_ARTICLES_COUNT, LOAD_MORE_PAGE_SIZE)
@@ -99,21 +78,8 @@ export const HomeView = (props: HomeViewProps) => {
             header={<h2>{t('Top commented')}</h2>}
             nodate={true}
           />
-          <Show when={Boolean(randomTopic())}>
-            <Group
-              articles={randomTopicArticles() || []}
-              header={
-                <div class={styles.randomTopicHeaderContainer}>
-                  <div class={styles.randomTopicHeader}>{capitalize(randomTopic()?.title || '', true)}</div>
-                  <div>
-                    <a class={styles.randomTopicHeaderLink} href={`/topic/${randomTopic()?.slug || ''}`}>
-                      {t('All articles')} <Icon class={styles.icon} name="arrow-right" />
-                    </a>
-                  </div>
-                </div>
-              }
-            />
-          </Show>
+
+          <RandomTopicSwiper />
 
           <ArticleCardSwiper title={t('Favorite')} slides={props.topRatedShouts} />
 

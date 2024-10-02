@@ -25,7 +25,7 @@ import {
   onMount,
   useContext
 } from 'solid-js'
-import { type AuthModalSource, useSnackbar, useUI } from '~/context/ui'
+import { type ModalSource, useSnackbar, useUI } from '~/context/ui'
 import { graphqlClientCreate } from '~/graphql/client'
 import { authApiUrl, authorizerClientId, authorizerRedirectUrl, coreApiUrl } from '../config'
 import { useLocalize } from './localize'
@@ -45,7 +45,7 @@ export type SessionContextType = {
   setSession: (token: AuthToken) => void
   requireAuthentication: (
     callback: (() => Promise<void>) | (() => void),
-    modalSource: AuthModalSource
+    modalSource: ModalSource
   ) => void
   signUp: (params: SignupInput) => Promise<boolean>
   signIn: (params: LoginInput) => Promise<boolean>
@@ -265,7 +265,7 @@ export const SessionProvider = (props: {
    * @param callback - The function to execute after authentication.
    * @param modalSource - The source of the authentication modal.
    */
-  const requireAuthentication = (callback: () => void, modalSource: AuthModalSource) => {
+  const requireAuthentication = (callback: () => void, modalSource: ModalSource) => {
     setAuthCallback(() => callback)
     if (!session()) {
       loadSession()

@@ -1,6 +1,6 @@
 import { Params, RouteSectionProps, createAsync } from '@solidjs/router'
 import { Show, createEffect, createSignal, on } from 'solid-js'
-import { TopicsNav } from '~/components/TopicsNav'
+import { TopicsNav } from '~/components/HeaderNav/TopicsNav'
 import { Expo } from '~/components/Views/Expo'
 import ExpoNav from '~/components/Views/Expo/ExpoNav'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'

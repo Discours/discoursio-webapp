@@ -7,6 +7,7 @@ import { useTopics } from '~/context/topics'
 import type { Topic } from '~/graphql/schema/core.gen'
 import { notLatin } from '~/intl/chars'
 import { getRandomItemsFromArray } from '~/utils/random'
+
 import styles from './TopicsNav.module.scss'
 
 export const RandomTopics = () => {

@@ -1,16 +1,26 @@
 import { useNavigate } from '@solidjs/router'
-import { clsx } from 'clsx'
-import { For, Show, createSignal } from 'solid-js'
+import { Client } from '@urql/core'
+import { For, Show, createEffect, createSignal, on, onMount } from 'solid-js'
 import { Draft } from '~/components/Draft'
 import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
+import getDraftsQuery from '~/graphql/query/core/articles-load-drafts'
 import { Shout } from '~/graphql/schema/core.gen'
-import styles from './DraftsView.module.scss'
 
-export const DraftsView = (props: { drafts: Shout[] }) => {
-  const [drafts, setDrafts] = createSignal<Shout[]>(props.drafts || [])
+const fetchDrafts = async (client: Client) => {
+  const resp = await client?.query(getDraftsQuery, {}).toPromise()
+  const result = resp?.data?.get_shouts_drafts || []
+  if (resp.error || result.error) console.error(resp.error || result.error)
+  return result.shouts as Shout[]
+}
+
+export const DraftsView = (props: { drafts?: Shout[] }) => {
+  const { client, requireAuthentication} = useSession()
   const navigate = useNavigate()
   const { publishShoutById, deleteShout } = useEditorContext()
+  const [drafts, setDrafts] = createSignal<Shout[]>(props.drafts || [])
+
   const handleDraftDelete = async (shout: Shout) => {
     const success = await deleteShout(shout.id)
     if (success) {
@@ -23,10 +33,20 @@ export const DraftsView = (props: { drafts: Shout[] }) => {
     setTimeout(() => navigate('/feed'), 2000)
   }
 
+  onMount(() => {
+    requireAuthentication(async () => {
+      const result = await fetchDrafts(client() as Client)
+      console.debug('fetchDrafts result: ', result)
+      if (result) {
+        setDrafts(result as Shout[])
+      }
+    }, 'edit')
+  })
+
   const { t } = useLocalize()
 
   return (
-    <div class={clsx(styles.DraftsView)}>
+    <div>
       <div class="wide-container">
         <div class="row offset-md-5">
           <h2>{t('Drafts')}</h2>
@@ -37,12 +57,7 @@ export const DraftsView = (props: { drafts: Shout[] }) => {
               <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
                 <For each={ddd()}>
                   {(draft) => (
-                    <Draft
-                      class={styles.draft}
-                      shout={draft}
-                      onDelete={handleDraftDelete}
-                      onPublish={handleDraftPublish}
-                    />
+                    <Draft shout={draft} onDelete={handleDraftDelete} onPublish={handleDraftPublish} />
                   )}
                 </For>
               </div>

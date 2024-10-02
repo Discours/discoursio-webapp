@@ -9,7 +9,6 @@ import { Author, AuthorsBy, LoadShoutsOptions, Shout, Topic } from '~/graphql/sc
 import { getUnixtime } from '~/utils/date'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { byPublished, byStat } from '~/utils/sort'
-import styles from '../../styles/Topic.module.scss'
 import { Beside } from '../Feed/Beside'
 import { Row1 } from '../Feed/Row1'
 import { Row2 } from '../Feed/Row2'
@@ -18,6 +17,8 @@ import { FullTopic } from '../Topic/Full'
 import { LoadMoreItems, LoadMoreWrapper } from '../_shared/LoadMoreWrapper'
 import { Loading } from '../_shared/Loading'
 import { ArticleCardSwiper } from '../_shared/SolidSwiper/ArticleCardSwiper'
+
+import styles from '~/styles/views/Topic.module.scss'
 
 export type TopicFeedSortBy = 'comments' | '' | 'recent' | 'viewed' | 'rating' | 'last_comment'
 

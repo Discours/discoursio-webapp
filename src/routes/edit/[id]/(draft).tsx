@@ -9,7 +9,7 @@ import getShoutDraft from '~/graphql/query/core/article-my'
 import { Shout } from '~/graphql/schema/core.gen'
 import { LayoutType } from '~/types/common'
 
-const EditView = lazy(() => import('~/components/Views/EditView/EditView'))
+const EditView = lazy(() => import('~/components/Views/EditView'))
 
 export default (props: RouteSectionProps) => {
   const { t } = useLocalize()

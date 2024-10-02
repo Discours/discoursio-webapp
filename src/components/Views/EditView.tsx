@@ -22,14 +22,15 @@ import { isDesktop } from '~/lib/mediaQuery'
 import { LayoutType } from '~/types/common'
 import { MediaItem } from '~/types/mediaitem'
 import { clone } from '~/utils/clone'
-import { AutoSaveNotice } from '../../Editor/AutoSaveNotice'
-import { AudioUploader } from '../../Upload/AudioUploader'
-import { VideoUploader } from '../../Upload/VideoUploader'
-import { Modal } from '../../_shared/Modal'
-import { TableOfContents } from '../../_shared/TableOfContents'
-import styles from './EditView.module.scss'
+import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
+import { AudioUploader } from '../Upload/AudioUploader'
+import { VideoUploader } from '../Upload/VideoUploader'
+import { Modal } from '../_shared/Modal'
+import { TableOfContents } from '../_shared/TableOfContents'
 
-const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
+import styles from '~/styles/views/EditView.module.scss'
+
+const MicroEditor = lazy(() => import('../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {

@@ -11,7 +11,8 @@ import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { DEFAULT_HEADER_OFFSET, useSnackbar, useUI } from '~/context/ui'
 import { validateEmail } from '~/utils/validate'
-import styles from './Settings.module.scss'
+
+import styles from '~/styles/views/ProfileSettings.module.scss'
 
 type FormField = 'oldPassword' | 'newPassword' | 'newPasswordConfirm' | 'email'
 type FormData = Record<FormField, string | undefined>

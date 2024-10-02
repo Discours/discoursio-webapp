@@ -13,11 +13,12 @@ import getMyShoutQuery from '~/graphql/query/core/article-my'
 import type { Shout, Topic } from '~/graphql/schema/core.gen'
 import { isDesktop } from '~/lib/mediaQuery'
 import { clone } from '~/utils/clone'
-import { AutoSaveNotice } from '../../Editor/AutoSaveNotice'
-import { Modal } from '../../_shared/Modal'
-import { TableOfContents } from '../../_shared/TableOfContents'
-import { PublishSettings } from '../PublishSettings'
-import styles from './EditView.module.scss'
+import { PublishSettings } from '../Draft/PublishSettings'
+import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
+import { Modal } from '../_shared/Modal'
+import { TableOfContents } from '../_shared/TableOfContents'
+
+import styles from '~/styles/views/EditView.module.scss'
 
 type Props = {
   shout: Shout

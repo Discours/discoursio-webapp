@@ -7,9 +7,10 @@ import { useLocalize } from '~/context/localize'
 import type { Shout } from '~/graphql/schema/core.gen'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { byScore } from '~/utils/sort'
-import { FEED_PAGE_SIZE } from '../Views/Feed/Feed'
-import styles from './SearchModal.module.scss'
+import { FEED_PAGE_SIZE } from '../Views/FeedView'
 import { SearchResultItem } from './SearchResultItem'
+
+import styles from './SearchModal.module.scss'
 
 // @@TODO handle empty article options after backend support (subtitle, cover, etc.)
 // @@TODO implement load more

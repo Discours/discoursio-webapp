@@ -10,8 +10,9 @@ import { findFirstReadableCharIndex, notLatin, notRus } from '~/intl/chars'
 import { dummyFilter } from '~/intl/dummyFilter'
 import { capitalize } from '~/utils/capitalize'
 import { scrollHandler } from '~/utils/scroll'
-import { TopicBadge } from '../../Topic/TopicBadge'
-import styles from './AllTopics.module.scss'
+import { TopicBadge } from '../Topic/TopicBadge'
+
+import styles from '~/styles/views/AllTopics.module.scss'
 
 type Props = {
   topics: Topic[]
@@ -23,7 +24,7 @@ export const ABC = {
   en: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#'
 }
 
-export const AllTopics = (props: Props) => {
+export const AllTopicsView = (props: Props) => {
   const { t, lang } = useLocalize()
   const alphabet = createMemo(() => ABC[lang()])
   const { setTopicsSort, sortedTopics } = useTopics()

@@ -16,16 +16,16 @@ import type {
   MutationCreate_MessageArgs
 } from '~/graphql/schema/chat.gen'
 import type { Author } from '~/graphql/schema/core.gen'
+import styles from '~/styles/views/Inbox.module.scss'
 import { getShortDate } from '~/utils/date'
-import DialogCard from '../../Inbox/DialogCard'
-import DialogHeader from '../../Inbox/DialogHeader'
-import { Message } from '../../Inbox/Message'
-import MessagesFallback from '../../Inbox/MessagesFallback'
-import Search from '../../Inbox/Search'
-import { Modal } from '../../_shared/Modal'
-import styles from './Inbox.module.scss'
+import DialogCard from '../Inbox/DialogCard'
+import DialogHeader from '../Inbox/DialogHeader'
+import { Message } from '../Inbox/Message'
+import MessagesFallback from '../Inbox/MessagesFallback'
+import Search from '../Inbox/Search'
+import { Modal } from '../_shared/Modal'
 
-const MiniEditor = lazy(() => import('../../Editor/MiniEditor'))
+const MiniEditor = lazy(() => import('../Editor/MiniEditor'))
 
 const userSearch = (array: Author[], keyword: string) => {
   return array.filter((value) => new RegExp(keyword.trim(), 'gi').test(value.name || ''))

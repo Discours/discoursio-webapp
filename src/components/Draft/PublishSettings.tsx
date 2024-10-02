@@ -13,13 +13,13 @@ import { useTopics } from '~/context/topics'
 import { useSnackbar, useUI } from '~/context/ui'
 import { Topic } from '~/graphql/schema/core.gen'
 import { UploadedFile } from '~/types/upload'
-import { Modal } from '../../_shared/Modal'
-import { TopicSelect } from './TopicSelect'
+import { Modal } from '../_shared/Modal'
+import { TopicSelect } from '../_shared/TopicSelect'
 
-import stylesBeside from '../../Feed/Beside.module.scss'
-import styles from './PublishSettings.module.scss'
+import styles from '~/styles/views/PublishSettings.module.scss'
+import stylesBeside from '../Feed/Beside.module.scss' // TODO: should not be here, implement more components
 
-const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
+const MicroEditor = lazy(() => import('../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 const DESCRIPTION_MAX_LENGTH = 400
 

@@ -7,7 +7,7 @@ import type { SearchResult } from '~/graphql/schema/core.gen'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { ArticleCard } from '../Feed/ArticleCard'
 
-import '../../styles/Search.scss'
+import '~/styles/views/Search.module.scss'
 
 type Props = {
   query: string

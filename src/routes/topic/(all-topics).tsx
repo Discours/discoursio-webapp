@@ -1,6 +1,6 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
 import { Suspense, createEffect, on } from 'solid-js'
-import { AllTopics } from '~/components/Views/AllTopics'
+import { AllTopicsView } from '~/components/Views/AllTopicsView'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
@@ -35,7 +35,7 @@ export default (props: RouteSectionProps<{ topics: Topic[] }>) => {
       desc="Thematic table of contents of the magazine. Here you can find all the topics that the community authors wrote about"
     >
       <Suspense fallback={<Loading />}>
-        <AllTopics topics={topics() as Topic[]} />
+        <AllTopicsView topics={topics() as Topic[]} />
       </Suspense>
     </PageLayout>
   )

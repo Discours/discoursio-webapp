@@ -12,8 +12,8 @@ import type { Author } from '~/graphql/schema/core.gen'
 import { dummyFilter } from '~/intl/dummyFilter'
 import { authorLetterReduce, translateAuthor } from '~/intl/translate'
 import { scrollHandler } from '~/utils/scroll'
-import styles from './AllAuthors.module.scss'
-import stylesAuthorList from './AuthorsList.module.scss'
+
+import styles from '~/styles/views/AllAuthors.module.scss'
 
 type Props = {
   authors: Author[]
@@ -30,7 +30,7 @@ export const ABC = {
 
 // useAuthors sorted from context, set filter/sort
 
-export const AllAuthors = (props: Props) => {
+export const AllAuthorsView = (props: Props) => {
   const { t, lang } = useLocalize()
   const alphabet = createMemo(() => ABC[lang()] || ABC['ru'])
   const [searchParams] = useSearchParams<{ by?: string }>()
@@ -195,7 +195,7 @@ export const AllAuthors = (props: Props) => {
   )
 
   const AuthorsSortedList = () => (
-    <div class={clsx(stylesAuthorList.AuthorsList)}>
+    <div class={clsx(styles.AuthorsList)}>
       <For each={authorsSorted?.()}>
         {(author) => (
           <div class="row">
@@ -207,7 +207,7 @@ export const AllAuthors = (props: Props) => {
       </For>
       <div class="row">
         <div class="col-lg-20 col-xl-18">
-          <div class={stylesAuthorList.action}>
+          <div class={styles.action}>
             <Show
               when={
                 searchParams.by !== 'name' &&

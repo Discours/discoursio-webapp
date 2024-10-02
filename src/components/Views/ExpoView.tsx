@@ -1,17 +1,44 @@
+import { A } from '@solidjs/router'
+import clsx from 'clsx'
 import { For, Show, createEffect, createSignal, on } from 'solid-js'
-
+import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
 import { Loading } from '~/components/_shared/Loading'
 import { ArticleCardSwiper } from '~/components/_shared/SolidSwiper/ArticleCardSwiper'
 import { EXPO_LAYOUTS, SHOUTS_PER_PAGE } from '~/context/feed'
+import { EXPO_TITLES } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import getRandomTopShoutsQuery from '~/graphql/query/core/articles-load-random-top'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
 import { ExpoLayoutType } from '~/types/common'
 import { getUnixtime } from '~/utils/date'
-import { ArticleCard } from '../../Feed/ArticleCard'
+import { ArticleCard } from '../Feed/ArticleCard'
 
-import styles from './Expo.module.scss'
+import styles from '~/styles/views/Expo.module.scss'
+
+export const ExpoNav = (props: { layout: ExpoLayoutType | '' }) => {
+  const { t } = useLocalize()
+  return (
+    <div class="wide-container">
+      <ul class={clsx('view-switcher')}>
+        <For each={[...EXPO_LAYOUTS, '']}>
+          {(layoutKey) => (
+            <li class={clsx({ 'view-switcher__item--selected': props.layout === layoutKey })}>
+              <ConditionalWrapper
+                condition={props.layout !== layoutKey}
+                wrapper={(children) => <A href={`/expo/${layoutKey}`}>{children}</A>}
+              >
+                <span class="linkReplacement">
+                  {layoutKey in EXPO_TITLES ? t(EXPO_TITLES[layoutKey as ExpoLayoutType]) : t('All')}
+                </span>
+              </ConditionalWrapper>
+            </li>
+          )}
+        </For>
+      </ul>
+    </div>
+  )
+}
 
 type Props = {
   shouts: Shout[]

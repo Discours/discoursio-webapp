@@ -21,20 +21,21 @@ import { useSnackbar, useUI } from '~/context/ui'
 import { InputMaybe, ProfileInput } from '~/graphql/schema/core.gen'
 import { getImageUrl } from '~/lib/getThumbUrl'
 import { handleImageUpload } from '~/lib/handleImageUpload'
+import { profileSocialLinks } from '~/lib/profileSocialLinks'
 import { clone } from '~/utils/clone'
 import { validateUrl } from '~/utils/validate'
-import { ProfileSettingsNavigation } from '../../ProfileNav'
-import { Button } from '../../_shared/Button'
-import { Icon } from '../../_shared/Icon'
-import { ImageCropper } from '../../_shared/ImageCropper'
-import { Loading } from '../../_shared/Loading'
-import { Modal } from '../../_shared/Modal'
-import { Popover } from '../../_shared/Popover'
-import { SocialNetworkInput } from '../../_shared/SocialNetworkInput'
-import styles from './Settings.module.scss'
-import { profileSocialLinks } from './profileSocialLinks'
+import { ProfileSettingsNavigation } from '../ProfileNav'
+import { Button } from '../_shared/Button'
+import { Icon } from '../_shared/Icon'
+import { ImageCropper } from '../_shared/ImageCropper'
+import { Loading } from '../_shared/Loading'
+import { Modal } from '../_shared/Modal'
+import { Popover } from '../_shared/Popover'
+import { SocialNetworkInput } from '../_shared/SocialNetworkInput'
 
-const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
+import styles from '~/styles/views/ProfileSettings.module.scss'
+
+const MicroEditor = lazy(() => import('../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 function filterNulls(arr: InputMaybe<string>[]): string[] {

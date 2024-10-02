@@ -43,10 +43,7 @@ export type SessionContextType = {
   isSessionLoaded: Accessor<boolean>
   loadSession: () => AuthToken | Promise<AuthToken> | undefined | null
   setSession: (token: AuthToken) => void
-  requireAuthentication: (
-    callback: (() => Promise<void>) | (() => void),
-    modalSource: ModalSource
-  ) => void
+  requireAuthentication: (callback: (() => Promise<void>) | (() => void), modalSource: ModalSource) => void
   signUp: (params: SignupInput) => Promise<boolean>
   signIn: (params: LoginInput) => Promise<boolean>
   updateProfile: (params: UpdateProfileInput) => Promise<boolean>

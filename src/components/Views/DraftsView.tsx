@@ -1,6 +1,6 @@
 import { useNavigate } from '@solidjs/router'
 import { Client } from '@urql/core'
-import { For, Show, createEffect, createSignal, on, onMount } from 'solid-js'
+import { For, Show, createSignal, onMount } from 'solid-js'
 import { Draft } from '~/components/Draft'
 import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
@@ -16,7 +16,7 @@ const fetchDrafts = async (client: Client) => {
 }
 
 export const DraftsView = (props: { drafts?: Shout[] }) => {
-  const { client, requireAuthentication} = useSession()
+  const { client, requireAuthentication } = useSession()
   const navigate = useNavigate()
   const { publishShoutById, deleteShout } = useEditorContext()
   const [drafts, setDrafts] = createSignal<Shout[]>(props.drafts || [])

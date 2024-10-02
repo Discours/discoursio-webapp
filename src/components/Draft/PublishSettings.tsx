@@ -16,8 +16,8 @@ import { UploadedFile } from '~/types/upload'
 import { Modal } from '../_shared/Modal'
 import { TopicSelect } from '../_shared/TopicSelect'
 
-import styles from './PublishSettings.module.scss'
 import stylesBeside from '../Feed/Beside.module.scss' // TODO: should not be here, implement more components
+import styles from './PublishSettings.module.scss'
 
 const MicroEditor = lazy(() => import('../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))

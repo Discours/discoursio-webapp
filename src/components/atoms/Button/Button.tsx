@@ -1,12 +1,13 @@
-import {createSignal, JSX} from 'solid-js'
+import { createSignal, JSX } from 'solid-js'
 
 import { clsx } from 'clsx'
 
 import styles from './Button.module.scss'
 
-export type ButtonVariant = 'primary' | 'primary-disabled' | 'secondary' | 'secondary-disabled' | 'bordered' |
+export type ButtonVariant = 'primary' | 'primary-disabled' | 'secondary' |
+                            'secondary-disabled' | 'bordered' |
                             'outline' | 'primary-square' |
-                            'secondary-square' | 'primary-disabled-square' | 'secondary-disabled-square'
+                            'secondary-square' | 'disabled'| 'loading'
 type Props = {
   title?: string
   value: string | JSX.Element
@@ -22,14 +23,15 @@ type Props = {
 }
 
 export const Button = (props: Props) => {
-  const [loading, setLoading] = createSignal(props.loading || false);
+  const [loading, setLoading] = createSignal(props.loading || false)
+
   const handleClick = (event: MouseEvent) => {
-    if (loading() || props.loading) return;
-    setLoading(true);
+    if(loading() || props.loading) return;
+    setLoading(true)
 
-    props.onClick?.(event);
+    props.onClick?.(event)
 
-    setLoading(false);
+    setLoading(false)
   }
 
   const LoadingDots = () => {
@@ -41,6 +43,8 @@ export const Button = (props: Props) => {
       </div>
     )
   }
+
+  const isLoading = loading()
 
   return (
     <button
@@ -54,23 +58,21 @@ export const Button = (props: Props) => {
       title={props.title || (typeof props.value === 'string' ? props.value : '')}
       onClick={handleClick}
       type={props.type ?? 'button'}
-      disabled={props.disabled}
+      disabled={isLoading || props.disabled}
       class={clsx(
         styles.button,
         styles[props.size ?? 'M'],
         styles[props.variant ?? 'primary'],
         {
-          [styles['primary-disabled']]: props.disabled && props.variant === 'primary',
-          [styles['secondary-disabled']]: props.disabled && props.variant === 'secondary',
-          [styles['primary-disabled-square']]: props.disabled && props.variant === 'primary-disabled-square',
-          [styles['secondary-disabled-square']]: props.disabled && props.variant === 'secondary-disabled-square'
+          [styles.disabled]: props.disabled,
+          [styles['loadingDots']]: isLoading
 
           // [styles.subscribeButton]: props.isSubscribeButton
         },
         props.class
       )}
     >
-      {loading() ? <LoadingDots /> : props.value}
+      {isLoading ? <LoadingDots /> : props.value}
       {/*{props.value}*/}
     </button>
   )

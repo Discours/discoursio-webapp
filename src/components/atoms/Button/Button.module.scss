@@ -10,17 +10,6 @@
     opacity: 1 !important;
   }
 
-  &.loading {
-    background: var(--background-color-invert);
-    color: var(--default-color-invert);
-    pointer-events: none;
-
-    &:hover {
-      background: var(--background-color-invert);
-      color: var(--default-color-invert);
-    }
-  }
-
   &.primary {
     background: var(--background-color-invert);
     color: var(--default-color-invert);
@@ -134,13 +123,6 @@
     }
   }
 
-  &.primary-disabled-square {
-    border-radius: 2px;
-    background: #f7f7f8;
-    color: #9fa1a7;
-    pointer-events: none;
-  }
-
   &.secondary-square {
     background: #f7f7f7;
     color: #141414;
@@ -155,14 +137,14 @@
 
     &:disabled {
       border-radius: 2px;
-      background: #fff;
+      background: #f7f7f8;
       color: #9fa1a7;
     }
   }
 
-  &.secondary-disabled-square {
+  &.disabled {
     border-radius: 2px;
-    background: #fff;
+    background: #f7f7f8;
     color: #9fa1a7;
     pointer-events: none;
   }
@@ -215,7 +197,7 @@
     padding: 6px 12px;
   }
 
-  .loadingDots {
+  &.loadingDots {
     display: inline-flex;
     align-items: center;
     font-size: 30px;

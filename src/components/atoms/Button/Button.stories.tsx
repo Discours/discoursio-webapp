@@ -16,8 +16,7 @@ const meta: Meta<typeof Button> = {
     variant: {
       options: ['primary', 'primary-disabled', 'secondary',
                 'secondary-disabled', 'bordered', 'outline',
-                'primary-square', 'secondary-square', 'primary-disabled-square',
-                'secondary-disabled-square'
+                'primary-square', 'secondary-square', 'disabled'
       ],
       control: { type: 'select' }
     },
@@ -62,7 +61,8 @@ export const Secondary: Story = {
     value: 'Button',
     variant: 'secondary',
     size: 'M',
-    disabled: false
+    disabled: false,
+    loading: false
   }
 }
 
@@ -96,34 +96,30 @@ export const PrimarySquare: Story = {
     value: 'Button',
     variant: 'primary-square',
     size: 'S-square',
-    disabled: false
+    disabled: false,
+    loading: false
   }
 }
 
-export const PrimaryDisabledSquare: Story = {
-  args: {
-    value: 'Button',
-    variant: 'primary-disabled-square',
-    size: 'S-square'
-  }
-}
 
 export const SecondarySquare: Story = {
   args: {
     value: 'Button',
     variant: 'secondary-square',
     size: 'S-square',
-    disabled: false
+    disabled: false,
+    loading: false
   }
 }
 
-export const SecondaryDisabledSquare: Story = {
+export const Disabled: Story = {
   args: {
     value: 'Button',
-    variant: 'secondary-disabled-square',
+    variant: 'disabled',
     size: 'S-square'
   }
 }
+
 
 
 

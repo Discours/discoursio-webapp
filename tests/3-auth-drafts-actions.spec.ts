@@ -85,22 +85,26 @@ test('Create article', async ({ page }) => {
 })
 
 test('Drafts - create literature', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р' }).click();
-  await page.getByRole('link', { name: 'Черновики' }).click();
-  await page.getByRole('link', { name: 'Создать публикацию' }).click();
+  await page.getByRole('button', { name: 'Т.Р' }).click()
+  await page.getByRole('link', { name: 'Черновики' }).click()
+  await page.getByRole('link', { name: 'Создать публикацию' }).click()
   // biome-ignore lint/performance/useTopLevelRegex: <explanation>
-  await page.locator('li').filter({ hasText: /^литература$/ }).locator('img').click();
-});
+  await page
+    .locator('li')
+    .filter({ hasText: /^литература$/ })
+    .locator('img')
+    .click()
+})
 
 test('Drafts - create images', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р' }).click();
-  await page.getByRole('link', { name: 'Черновики' }).click();
-  await page.getByRole('link', { name: 'Создать публикацию' }).click();
-  await page.locator('li').filter({ hasText: 'изображения' }).locator('img').click();
+  await page.getByRole('button', { name: 'Т.Р' }).click()
+  await page.getByRole('link', { name: 'Черновики' }).click()
+  await page.getByRole('link', { name: 'Создать публикацию' }).click()
+  await page.locator('li').filter({ hasText: 'изображения' }).locator('img').click()
   // Fill the form
   // Save
   // Check is it created
-}); 
+})
 
 test('Drafts - create music', async ({ page }) => {
   await page.getByRole('button', { name: 'Т.Р.' }).click()
@@ -113,18 +117,18 @@ test('Drafts - create music', async ({ page }) => {
 })
 
 test('Drafts - create video', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р' }).click();
-  await page.getByRole('link', { name: 'Черновики' }).click();
-  await page.getByRole('link', { name: 'Создать публикацию' }).click();
-  await page.locator('li').filter({ hasText: 'видео' }).locator('img').click();
+  await page.getByRole('button', { name: 'Т.Р' }).click()
+  await page.getByRole('link', { name: 'Черновики' }).click()
+  await page.getByRole('link', { name: 'Создать публикацию' }).click()
+  await page.locator('li').filter({ hasText: 'видео' }).locator('img').click()
   // Fill the form
   // Save
   // Check is it created
-});
+})
 
 test('Post topic', async ({ page }) => {
   await page.getByRole('button', { name: 'Т.Р.' }).click()
   await page.getByRole('link', { name: 'Черновики' }).click()
   await page.getByRole('link', { name: 'Создать публикацию' }).click()
   // Post
-});
+})

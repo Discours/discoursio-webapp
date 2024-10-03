@@ -27,8 +27,8 @@ export default {
       '~': path.resolve('./src'),
       '@': path.resolve('./public'),
       '/icons': path.resolve('./public/icons'),
-      '/fonts': path.resolve('./public/fonts'),
-      bootstrap: path.resolve('./node_modules/bootstrap')
+      '/fonts': path.resolve('./public/fonts')
+      // bootstrap: path.resolve('./node_modules/bootstrap')
     }
   },
   envPrefix: 'PUBLIC_',
@@ -37,7 +37,7 @@ export default {
     preprocessorOptions: {
       scss: {
         silenceDeprecations: ['mixed-decls'],
-        additionalData: '@import "~/styles/imports";\n',
+        additionalData: '@import "~/styles/inject";\n',
         includePaths: ['./public', './src/styles', './node_modules']
       }
     } as CSSOptions['preprocessorOptions']

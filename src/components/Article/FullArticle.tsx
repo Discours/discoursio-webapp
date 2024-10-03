@@ -1,5 +1,4 @@
 import { AuthToken } from '@authorizerdev/authorizer-js'
-import { createPopper } from '@popperjs/core'
 import { Link } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
@@ -13,6 +12,7 @@ import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
 import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
 import { processPrepositions } from '~/intl/prepositions'
 import { isCyrillic } from '~/intl/translate'
+import { createTooltip } from '~/lib/createTooltip'
 import { getImageUrl } from '~/lib/getThumbUrl'
 import { MediaItem } from '~/types/mediaitem'
 import { capitalize } from '~/utils/capitalize'
@@ -215,7 +215,7 @@ export const FullArticle = (props: Props) => {
         element.setAttribute('href', 'javascript: void(0)')
       }
 
-      const popperInstance = createPopper(element, tooltip, {
+      const popperInstance = createTooltip(element, tooltip, {
         placement: 'top',
         modifiers: [
           {

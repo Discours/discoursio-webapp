@@ -1,12 +1,4 @@
 @import 'fonts';
-@import 'bootstrap/scss/mixins/lists';
-@import 'bootstrap/scss/mixins/container';
-@import 'bootstrap/scss/mixins/utilities';
-@import 'bootstrap/scss/containers';
-@import 'bootstrap/scss/grid';
-@import 'bootstrap/scss/bootstrap-utilities';
-@import 'bootstrap/scss/forms';
-@import 'bootstrap/scss/buttons';
 
 :root {
   --background-color: #fff;
@@ -148,35 +140,31 @@ h2 {
 }
 
 h1 {
-  @include font-size(4.8rem);
-
+  font-size:4.8rem;
   line-height: 1.1;
 }
 
 h2 {
-  @include font-size(4rem);
-
+  font-size:4rem;
   line-height: 1.1;
   margin-bottom: 0.5em;
   margin-top: 1.5em;
 }
 
 h3 {
-  @include font-size(3.2rem);
-
+  font-size:3.2rem;
   line-height: 1.1;
   margin-bottom: 0.5em;
 }
 
 h4 {
-  @include font-size(2.6rem);
-
+  font-size:2.6rem;
   line-height: 1.2;
   margin-bottom: 0.5em;
 }
 
 h5 {
-  @include font-size(2.2rem);
+  font-size:2.2rem;
 }
 
 main {
@@ -293,8 +281,7 @@ button {
 }
 
 .button--light {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   background-color: #f6f6f6;
   border-radius: 0.8rem;
   color: #000;
@@ -393,8 +380,7 @@ button {
 
 .button--submit,
 .button--outline {
-  @include font-size(2rem);
-
+  font-size:2rem;
   padding: 1.6rem 2rem;
 }
 
@@ -479,8 +465,7 @@ form {
     &:-webkit-autofill,
     &:not(:placeholder-shown) {
       & ~ label {
-        @include font-size(1.2rem);
-
+        font-size:1.2rem;
         color: var(--black-400);
         transform: translateY(-1.8em) !important;
       }
@@ -495,7 +480,7 @@ form {
   }
 
   .form-message {
-    @include font-size(1.2rem);
+    font-size:1.2rem;
   }
 
   .pretty-form__item {
@@ -595,20 +580,18 @@ figure {
 .ta-video-container,
 figure {
   figcaption {
-    @include font-size(1.2rem);
-
+    font-size:1.2rem;
     color: rgb(0 0 0 / 60%);
     line-height: 1.5;
   }
 }
 
 .view-switcher {
-  @include font-size(1.4rem);
-
   @include media-breakpoint-up(md) {
     flex-wrap: wrap;
   }
 
+  font-size:1.4rem;
   display: flex;
   font-weight: 500;
   list-style: none;
@@ -782,8 +765,7 @@ figure {
   }
 
   h2 {
-    @include font-size(4.4rem);
-
+    font-size:4.4rem;
     text-align: center;
   }
 
@@ -871,8 +853,6 @@ figure {
 }
 
 .container--static-page {
-  @include font-size(1.7rem);
-
   @include media-breakpoint-up(md) {
     padding-top: 1.5em;
 
@@ -883,6 +863,7 @@ figure {
     }
   }
 
+  font-size:1.7rem;
   color: #404040;
   position: relative;
 
@@ -916,11 +897,11 @@ figure {
 }
 
 .mode-switcher {
-  @include font-size(1.5rem);
-
   @include media-breakpoint-up(md) {
     text-align: right;
   }
+
+  font-size:1.5rem;
 }
 
 .mode-switcher__control {
@@ -930,13 +911,12 @@ figure {
 }
 
 .content-index {
-  @include font-size(1.4rem);
-
   @include media-breakpoint-up(md) {
     position: sticky;
     top: 14rem;
   }
 
+  font-size:1.4rem;
   line-height: 1.4;
   margin: 0 3.6rem 2em 0;
 
@@ -953,7 +933,7 @@ figure {
   }
 
   h4 {
-    @include font-size(1.6rem);
+    font-size:1.6rem;
   }
 }
 
@@ -1011,14 +991,13 @@ details {
   display: -webkit-box !important;
   overflow: hidden;
   position: relative;
-  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   white-space: normal;
 }
 
 .description {
-  @include font-size(1.4rem);
-
+  font-size:1.4rem;
   color: rgba(0 0 0 / 40%);
 
   .pretty-form__item + & {
@@ -1061,8 +1040,7 @@ iframe {
 }
 
 .lead {
-  @include font-size(2rem);
-
+  font-size:2rem;
   font-weight: bold;
   line-height: 1.5;
 }

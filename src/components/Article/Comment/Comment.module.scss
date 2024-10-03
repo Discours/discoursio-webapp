@@ -46,8 +46,7 @@
   }
 
   .shout-body {
-    @include font-size(1.5rem);
-
+    font-size:1.5rem;
     margin-bottom: 1em;
 
     *:last-child {
@@ -155,8 +154,7 @@
 }
 
 .commentBody {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   line-height: 1.47;
 
   blockquote {
@@ -176,7 +174,7 @@
 
 .commentAuthor,
 .commentRating {
-  @include font-size(1.2rem);
+  font-size:1.2rem;
 }
 
 .commentAuthor {
@@ -184,15 +182,12 @@
 }
 
 .articleAuthor {
-  @include font-size(1.2rem);
-
+  font-size:1.2rem;
   color: var(--blue-500);
   margin: 0.3rem 1rem 0;
 }
 
 .articleLink {
-  @include font-size(1.2rem);
-
   @include media-breakpoint-down(md) {
     margin: 0.3em 0 0.5em;
   }
@@ -206,6 +201,7 @@
     white-space: nowrap;
   }
 
+  font-size:1.2rem;
   flex: 0 0 50%;
   margin-right: 2em;
 }
@@ -222,8 +218,6 @@
 }
 
 .commentDates {
-  @include font-size(1.2rem);
-
   flex: 1;
   display: flex;
   gap: 1rem;

@@ -3,8 +3,7 @@
 }
 
 .created {
-  @include font-size(1.2rem);
-
+  font-size:1.2rem;
   line-height: 1.5rem;
   margin-bottom: 20px;
 
@@ -16,8 +15,7 @@
 }
 
 .titleContainer {
-  @include font-size(2.6rem);
-
+  font-size:2.6rem;
   line-height: 3.2rem;
   margin-bottom: 28px;
 }
@@ -27,8 +25,7 @@
 }
 
 .actions {
-  @include font-size(1.2rem);
-
+  font-size:1.2rem;
   display: flex;
   gap: 12px;
 

@@ -9,8 +9,7 @@
 }
 
 .feedNavigation {
-  @include font-size(1.4rem);
-
+  font-size:1.4rem;
   font-weight: 500;
 
   h4 {
@@ -46,8 +45,7 @@
   margin-top: -1.1em;
 
   h4 {
-    @include font-size(2.2rem);
-
+    font-size:2.2rem;
     font-weight: bold;
     margin-bottom: 2rem;
   }
@@ -60,8 +58,7 @@
 }
 
 .topic {
-  @include font-size(1.2rem);
-
+  font-size:1.2rem;
   background: transparentize(#2638d9, 0.95);
   display: inline-block;
   font-weight: bold;
@@ -97,8 +94,7 @@
   }
 
   ul {
-    @include font-size(1.4rem);
-
+    font-size:1.4rem;
     font-weight: bold;
     margin: 1rem 0 0;
     line-height: 1.3;
@@ -136,8 +132,7 @@
 }
 
 .comment {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   line-height: 1.4;
   margin-bottom: 2.4rem;
 
@@ -158,8 +153,7 @@
 }
 
 .commentBody {
-  @include font-size(1.4rem);
-
+  font-size:1.4rem;
   margin-bottom: 1.2rem;
   line-clamp: 3;
   -webkit-line-clamp: 3;
@@ -190,8 +184,7 @@
 
 .commentArticleTitle,
 .commentAuthor {
-  @include font-size(1.2rem);
-
+  font-size:1.2rem;
   font-weight: 500;
 }
 

@@ -10,8 +10,7 @@
   position: relative;
 
   .headingActions {
-    @include font-size(1.2rem);
-
+    font-size:1.2rem;
     margin-bottom: 0.5rem;
     display: flex;
     flex-direction: row;
@@ -48,8 +47,7 @@
     margin-top: auto;
 
     .additionalInput {
-      @include font-size(1.4rem);
-
+      font-size:1.4rem;
       appearance: textfield;
       font-weight: 600;
       padding: 0;
@@ -170,8 +168,7 @@
 }
 
 .scrollTopButtonLabel {
-  @include font-size(1.4rem);
-
+  font-size:1.4rem;
   display: none;
   font-weight: bold;
   left: 100%;

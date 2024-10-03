@@ -106,8 +106,7 @@
   }
 
   a:link {
-    @include font-size(1.4rem);
-
+    font-size:1.4rem;
     border: none;
     font-weight: bold;
     padding-right: 0.3em;
@@ -125,8 +124,7 @@
   }
 
   h4 {
-    @include font-size(2.6rem);
-
+    font-size:2.6rem;
     font-weight: bold;
     padding-right: 1em;
   }

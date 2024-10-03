@@ -1,9 +1,7 @@
 import 'cropperjs/dist/cropper.css'
-
 import { UploadFile } from '@solid-primitives/upload'
 import Cropper from 'cropperjs'
 import { Show, createSignal, onMount } from 'solid-js'
-
 import { useLocalize } from '~/context/localize'
 import { Button } from '../Button'
 

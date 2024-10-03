@@ -8,13 +8,11 @@
   position: relative;
 
   .compactEditor {
-    @include font-size(1.4rem);
-
+    font-size:1.4rem;
     min-height: 100px;
 
     .emptyNode:first-child::before {
-      @include font-size(1.4rem);
-
+      font-size:1.4rem;
       position: absolute;
       top: 4px;
       height: 0;
@@ -154,8 +152,7 @@
   }
 
   .label {
-    @include font-size(1.2rem);
-
+    font-size:1.2rem;
     position: absolute;
     top: 6px;
     left: 12px;

@@ -8,7 +8,6 @@ import { SharePopup, getShareUrl } from '../Article/SharePopup'
 import { AuthModal } from '../AuthModal'
 import { SearchModal } from '../SearchModal/SearchModal'
 import { Snackbar } from '../Snackbar/Snackbar'
-import { RandomTopics } from '../TopicsNav/TopicsNav'
 import { ConfirmModal } from '../_shared/ConfirmModal'
 import { Icon } from '../_shared/Icon'
 import { Modal } from '../_shared/Modal'
@@ -16,6 +15,7 @@ import { Newsletter } from '../_shared/Newsletter'
 import styles from './Header.module.scss'
 import { HeaderAuth } from './HeaderAuth'
 import { Link } from './HeaderLink'
+import { RandomTopics } from './TopicsNav'
 
 type Props = {
   title?: string

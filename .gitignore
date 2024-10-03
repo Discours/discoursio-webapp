@@ -25,9 +25,9 @@ bun.lockb
 /plawright-report/
 target
 .github/dependabot.yml
-
 .output
 .vinxi
 *.pem
 edge.*
 .vscode/settings.json
+storybook-static

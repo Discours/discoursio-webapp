@@ -1,5 +1,5 @@
 import { Donate } from '~/components/Discours/Donate'
-import { StaticPage } from '~/components/Views/StaticPage'
+import { StaticPage } from '~/components/Views/StaticPageView'
 
 export default () => (
   <StaticPage

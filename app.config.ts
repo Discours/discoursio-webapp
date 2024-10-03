@@ -1,12 +1,12 @@
 import { SolidStartInlineConfig, defineConfig } from '@solidjs/start/config'
-import viteConfig from './vite.config'
+import viteConfig, { isDev } from './vite.config'
 
-const isVercel = Boolean(process?.env.VERCEL)
-const isNetlify = Boolean(process?.env.NETLIFY)
+const isVercel = Boolean(process.env.VERCEL)
+const isNetlify = Boolean(process.env.NETLIFY)
 const isBun = Boolean(process.env.BUN)
 
-export const runtime = isNetlify ? 'netlify' : isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node'
-console.info(`[app.config] solid-start build for ${runtime}!`)
+const preset = isNetlify ? 'netlify' : isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node'
+console.info(`[app.config] solid-start preset {> ${preset} <}`)
 
 export default defineConfig({
   nitro: {
@@ -14,10 +14,10 @@ export default defineConfig({
   },
   ssr: true,
   server: {
-    preset: runtime,
+    preset,
     port: 3000,
     https: true
   },
-  devOverlay: true,
+  devOverlay: isDev,
   vite: viteConfig
 } as SolidStartInlineConfig)

@@ -1,5 +1,5 @@
 import { AuthGuard } from '~/components/AuthGuard'
-import { ProfileSettings } from '~/components/Views/Profile/ProfileSettings'
+import { ProfileSettings } from '~/components/Views/ProfileSettings'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'
 import { ProfileProvider } from '~/context/profile'

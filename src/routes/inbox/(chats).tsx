@@ -1,5 +1,5 @@
 import { RouteDefinition, RouteSectionProps, createAsync } from '@solidjs/router'
-import { InboxView } from '~/components/Views/Inbox/Inbox'
+import { InboxView } from '~/components/Views/InboxView'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { ShowOnlyOnClient } from '~/components/_shared/ShowOnlyOnClient'
 import { useAuthors } from '~/context/authors'

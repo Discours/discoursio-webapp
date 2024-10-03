@@ -3,7 +3,7 @@ import { Component, Show, createEffect, createMemo } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 import { useLocalize } from '~/context/localize'
-import { AuthModalSource, useUI } from '~/context/ui'
+import { ModalSource, useUI } from '~/context/ui'
 import { isMobile } from '~/lib/mediaQuery'
 import { ChangePasswordForm } from './ChangePasswordForm'
 import { EmailConfirm } from './EmailConfirm'
@@ -25,7 +25,7 @@ export type AuthModalMode =
 
 export type AuthModalSearchParams = {
   mode: AuthModalMode
-  source?: AuthModalSource
+  source?: ModalSource
   token?: string
 }
 

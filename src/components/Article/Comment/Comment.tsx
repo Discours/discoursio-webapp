@@ -3,12 +3,10 @@ import { clsx } from 'clsx'
 import { For, Show, Suspense, createMemo, createSignal, lazy } from 'solid-js'
 import { Icon } from '~/components/_shared/Icon'
 import { ShowIfAuthenticated } from '~/components/_shared/ShowIfAuthenticated'
-import { coreApiUrl } from '~/config'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { useSnackbar, useUI } from '~/context/ui'
-import { graphqlClientCreate } from '~/graphql/client'
 import deleteReactionMutation from '~/graphql/mutation/core/reaction-destroy'
 import {
   Author,
@@ -23,7 +21,7 @@ import { CommentDate } from '../CommentDate'
 import { CommentRatingControl } from '../CommentRatingControl'
 import styles from './Comment.module.scss'
 
-const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const MiniEditor = lazy(() => import('../../Editor/MiniEditor'))
 
 type Props = {
   comment: Reaction
@@ -43,14 +41,12 @@ export const Comment = (props: Props) => {
   const [isReplyVisible, setIsReplyVisible] = createSignal(false)
   const [loading, setLoading] = createSignal(false)
   const [editMode, setEditMode] = createSignal(false)
-  const [clearEditor, setClearEditor] = createSignal(false)
   const [editedBody, setEditedBody] = createSignal<string>()
-  const { session } = useSession()
+  const { session, client } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const { createShoutReaction, updateShoutReaction } = useReactions()
   const { showConfirm } = useUI()
   const { showSnackbar } = useSnackbar()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
   const canEdit = createMemo(
     () =>
       Boolean(author()?.id) &&
@@ -107,13 +103,11 @@ export const Comment = (props: Props) => {
           shout: props.comment.shout.id
         }
       } as MutationCreate_ReactionArgs)
-      setClearEditor(true)
       setIsReplyVisible(false)
       setLoading(false)
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }
-    setClearEditor(false)
   }
 
   const toggleEditMode = () => {
@@ -192,16 +186,11 @@ export const Comment = (props: Props) => {
           <div class={styles.commentBody}>
             <Show when={editMode()} fallback={<div innerHTML={body()} />}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
-                <SimplifiedEditor
-                  initialContent={editedBody() || props.comment.body || ''}
-                  submitButtonText={t('Save')}
-                  quoteEnabled={true}
-                  imageEnabled={true}
+                <MiniEditor
+                  content={editedBody() || props.comment.body || ''}
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleUpdate(value)}
-                  submitByCtrlEnter={true}
                   onCancel={() => setEditMode(false)}
-                  setClear={clearEditor()}
                 />
               </Suspense>
             </Show>
@@ -261,12 +250,9 @@ export const Comment = (props: Props) => {
 
             <Show when={isReplyVisible() && props.clickedReplyId === props.comment.id}>
               <Suspense fallback={<p>{t('Loading')}</p>}>
-                <SimplifiedEditor
-                  quoteEnabled={true}
-                  imageEnabled={true}
+                <MiniEditor
                   placeholder={t('Write a comment...')}
                   onSubmit={(value) => handleCreate(value)}
-                  submitByCtrlEnter={true}
                 />
               </Suspense>
             </Show>

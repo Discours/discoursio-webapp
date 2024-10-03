@@ -9,3 +9,5 @@ mount(() => <StartClient />, document.getElementById('app') || document.body)
 //     navigator.serviceWorker.register(`/sw.js`);
 //   });
 // }
+
+export default {}

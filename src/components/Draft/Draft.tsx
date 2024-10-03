@@ -1,15 +1,13 @@
+import { A } from '@solidjs/router'
 import { clsx } from 'clsx'
-
 import { useLocalize } from '~/context/localize'
 import { useSnackbar, useUI } from '~/context/ui'
 import type { Shout } from '~/graphql/schema/core.gen'
 import { Icon } from '../_shared/Icon'
 
-import { A } from '@solidjs/router'
 import styles from './Draft.module.scss'
 
 type Props = {
-  class?: string
   shout: Shout
   onPublish: (shout: Shout) => void
   onDelete: (shout: Shout) => void
@@ -46,7 +44,7 @@ export const Draft = (props: Props) => {
   }
 
   return (
-    <div class={clsx(props.class)}>
+    <div class={styles.draft}>
       <div class={styles.created}>
         <Icon name="pencil-outline" class={styles.icon} />{' '}
         {formatDate(new Date(props.shout.created_at * 1000), { hour: '2-digit', minute: '2-digit' })}

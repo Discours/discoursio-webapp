@@ -3,7 +3,6 @@ import { clsx } from 'clsx'
 import { For, Show, createEffect, createSignal, lazy, on, onMount } from 'solid-js'
 import SwiperCore from 'swiper'
 import { Manipulation, Navigation, Pagination } from 'swiper/modules'
-
 import { useLocalize } from '~/context/localize'
 import { useSnackbar } from '~/context/ui'
 import { composeMediaItems } from '~/lib/composeMediaItems'
@@ -23,7 +22,7 @@ import { MediaItem } from '~/types/mediaitem'
 import { UploadedFile } from '~/types/upload'
 import styles from './Swiper.module.scss'
 
-const SimplifiedEditor = lazy(() => import('../../Editor/SimplifiedEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
 
 type Props = {
   images: MediaItem[]
@@ -316,9 +315,8 @@ export const EditorSwiper = (props: Props) => {
             value={props.images[slideIndex()]?.source}
             onChange={(event) => handleSlideDescriptionChange(slideIndex(), 'source', event.target.value)}
           />
-          <SimplifiedEditor
-            initialContent={props.images[slideIndex()]?.body}
-            smallHeight={true}
+          <MicroEditor
+            content={props.images[slideIndex()]?.body}
             placeholder={t('Enter image description')}
             onChange={(value) => setSlideBody(value)}
           />

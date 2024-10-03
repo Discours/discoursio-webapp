@@ -1,7 +1,6 @@
 import { action, useSearchParams } from '@solidjs/router'
 import { Show, createEffect, createSignal, onCleanup } from 'solid-js'
-
-import { SearchView } from '~/components/Views/Search'
+import { SearchView } from '~/components/Views/SearchView'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useLocalize } from '~/context/localize'

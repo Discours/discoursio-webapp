@@ -1,9 +1,9 @@
 import { type RouteDefinition, type RouteSectionProps, createAsync } from '@solidjs/router'
+import { HomeView, HomeViewProps } from '~/components/Views/HomeView'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { LoadShoutsOptions, Shout } from '~/graphql/schema/core.gen'
-import { HomeView, HomeViewProps } from '../components/Views/Home'
 import { PageLayout } from '../components/_shared/PageLayout'
 import { useLocalize } from '../context/localize'
 

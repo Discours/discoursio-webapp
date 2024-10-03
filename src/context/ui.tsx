@@ -70,7 +70,7 @@ export const SnackbarProvider = (props: { children: JSX.Element }) => {
   return <SnackbarContext.Provider value={value}>{props.children}</SnackbarContext.Provider>
 }
 
-export type AuthModalSource =
+export type ModalSource =
   | 'discussions'
   | 'vote'
   | 'subscribe'
@@ -78,6 +78,7 @@ export type AuthModalSource =
   | 'follow'
   | 'create'
   | 'authguard'
+  | 'edit'
 
 export type ModalType =
   | 'auth'
@@ -128,7 +129,7 @@ type ConfirmMessage = {
 
 type UIContextType = {
   modal: Accessor<ModalType | null>
-  showModal: (m: ModalType, source?: AuthModalSource) => void
+  showModal: (m: ModalType, source?: ModalSource) => void
   hideModal: () => void
   confirmMessage: Accessor<ConfirmMessage>
   showConfirm: (message?: ConfirmMessage) => Promise<boolean>
@@ -163,7 +164,7 @@ export const UIProvider = (props: { children: JSX.Element }) => {
     hideModal()
   }
 
-  const showModal = (modalType: ModalType, modalSource?: AuthModalSource) => {
+  const showModal = (modalType: ModalType, modalSource?: ModalSource) => {
     // console.log('[context.ui] showModal()', modalType)
     if (modalSource) {
       setSearchParams({ source: modalSource })

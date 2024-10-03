@@ -1,6 +1,5 @@
 import type { Accessor, JSX } from 'solid-js'
-import { createContext, createMemo, createSignal, onCleanup, useContext } from 'solid-js'
-import { coreApiUrl } from '~/config'
+import { createContext, createSignal, onCleanup, useContext } from 'solid-js'
 import { loadReactions } from '~/graphql/api/public'
 import createReactionMutation from '~/graphql/mutation/core/reaction-create'
 import destroyReactionMutation from '~/graphql/mutation/core/reaction-destroy'
@@ -12,7 +11,6 @@ import {
   Reaction,
   ReactionKind
 } from '~/graphql/schema/core.gen'
-import { graphqlClientCreate } from '../graphql/client'
 import { useLocalize } from './localize'
 import { useSession } from './session'
 import { useSnackbar } from './ui'
@@ -41,8 +39,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   const [commentsByAuthor, setCommentsByAuthor] = createSignal<Record<number, Reaction[]>>({})
   const { t } = useLocalize()
   const { showSnackbar } = useSnackbar()
-  const { session } = useSession()
-  const client = createMemo(() => graphqlClientCreate(coreApiUrl, session()?.access_token))
+  const { client } = useSession()
 
   const addShoutReactions = (rrr: Reaction[]) => {
     const newReactionEntities = { ...reactionEntities() }

@@ -1,7 +1,6 @@
 import { RouteDefinition, RouteLoadFuncArgs, type RouteSectionProps, createAsync } from '@solidjs/router'
 import { Suspense, createEffect, on } from 'solid-js'
-import { AllAuthors } from '~/components/Views/AllAuthors'
-import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
+import { AUTHORS_PER_PAGE, AllAuthorsView } from '~/components/Views/AllAuthorsView'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useAuthors } from '~/context/authors'
@@ -70,7 +69,7 @@ export default function AllAuthorsPage(props: RouteSectionProps<AllAuthorsData>)
       desc="List of authors of the open editorial community"
     >
       <Suspense fallback={<Loading />}>
-        <AllAuthors
+        <AllAuthorsView
           isLoaded={Boolean(data()?.authors)}
           authors={data()?.authors || []}
           authorsByFollowers={data()?.authorsByFollowers}

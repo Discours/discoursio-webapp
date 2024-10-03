@@ -21,7 +21,7 @@ export const MicroBubbleMenu = (props: MicroBubbleMenuProps) => {
   const isActive = (name: string, attributes?: Record<string, string | number>) =>
     createEditorTransaction(
       // biome-ignore lint/suspicious/noExplicitAny: tiptap 2.8.0 typing
-            () => props.editor as any,
+      () => props.editor as any,
       (editor) => editor?.isActive(name, attributes)
     )
 

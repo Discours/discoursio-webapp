@@ -4,6 +4,7 @@ import { useInbox } from '~/context/inbox'
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
 import type { Author } from '~/graphql/schema/core.gen'
+import { Button } from '../_shared/Button/Button' // Импорт вашего компонента Button
 import InviteUser from './InviteUser'
 
 import styles from './CreateModalContent.module.scss'
@@ -43,7 +44,7 @@ const CreateModalContent = (props: Props) => {
     })
   })
 
-  const handleSetTheme = () => {
+  const handleSetTitle = () => {
     setChatTitle((_) => (textInput.value.length > 0 && textInput.value) || '')
   }
 
@@ -72,10 +73,12 @@ const CreateModalContent = (props: Props) => {
       {usersId().length > 1 && (
         <input
           ref={(el) => (textInput = el)}
-          onInput={handleSetTheme}
+          onInput={handleSetTitle}
           type="text"
           required={true}
-          class="form-control form-control-lg fs-3"
+          class={styles.chatTitleInput}
+          // TODO: Удалите эти классы, если они не нужны
+          // class="form-control form-control-lg fs-3" 
           placeholder={t('Chat Title')}
         />
       )}
@@ -89,17 +92,21 @@ const CreateModalContent = (props: Props) => {
       </div>
 
       <div class={styles.footer}>
-        <button type="button" class="btn btn-lg fs-3 btn-outline-danger" onClick={reset}>
-          {t('Cancel')}
-        </button>
-        <button
+        <Button
           type="button"
-          class="btn btn-lg fs-3 btn-outline-primary"
+          value={t('Cancel')}
+          variant="danger"
+          size="L"
+          onClick={reset}
+        />
+        <Button
+          type="button"
+          value={usersId().length > 1 ? t('New group') : t('Create Chat')}
+          variant="primary"
+          size="L"
           onClick={handleCreate}
           disabled={usersId().length === 0}
-        >
-          {usersId().length > 1 ? t('New group') : t('Create Chat')}
-        </button>
+        />
       </div>
     </div>
   )

@@ -1,8 +1,7 @@
-// biome-ignore lint/correctness/noNodejsModules: used during build
+// biome-ignore lint/correctness/noNodejsModules: build
 import path from 'node:path'
-// import { visualizer } from 'rollup-plugin-visualizer'
 import dotenv from 'dotenv'
-import { CSSOptions } from 'vite'
+import { CSSOptions, defineConfig } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
@@ -21,7 +20,7 @@ const polyfillOptions = {
   protocolImports: true
 } as PolyfillOptions
 
-export default {
+export default defineConfig({
   resolve: {
     alias: {
       '~': path.resolve('./src'),
@@ -62,6 +61,13 @@ export default {
           connect: ['./src/context/connect.tsx']
         }
       }
+    },
+    commonjsOptions: {
+      ignore: ['punycode']
     }
+  },
+  optimizeDeps: {
+    include: ['solid-tiptap'],
+    exclude: ['punycode']
   }
-}
+})

@@ -43,16 +43,14 @@
   }
 
   .description {
-    @include font-size(1.2rem);
-
+    font-size: 1.2rem;
     margin-top: 1.6rem;
     text-align: center;
     color: var(--secondary-color);
   }
 
   .error {
-    @include font-size(1.4rem);
-
+    font-size: 1.4rem;
     color: var(--danger-color);
     margin-top: 1.6rem;
     text-align: center;
@@ -61,8 +59,7 @@
 
   &.square {
     .field {
-      @include font-size(1.4rem);
-
+      font-size:1.4rem;
       flex-direction: column;
       padding: 0;
       width: 228px;

@@ -68,8 +68,7 @@
   }
 
   .isCopied {
-    @include font-size(1.6rem);
-
+    font-size:1.6rem;
     position: absolute;
     top: 100%;
     left: 1.2rem;

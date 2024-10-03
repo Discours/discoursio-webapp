@@ -78,7 +78,7 @@ const CreateModalContent = (props: Props) => {
           required={true}
           class={styles.chatTitleInput}
           // TODO: Удалите эти классы, если они не нужны
-          // class="form-control form-control-lg fs-3" 
+          // class="form-control form-control-lg fs-3"
           placeholder={t('Chat Title')}
         />
       )}
@@ -92,13 +92,7 @@ const CreateModalContent = (props: Props) => {
       </div>
 
       <div class={styles.footer}>
-        <Button
-          type="button"
-          value={t('Cancel')}
-          variant="danger"
-          size="L"
-          onClick={reset}
-        />
+        <Button type="button" value={t('Cancel')} variant="danger" size="L" onClick={reset} />
         <Button
           type="button"
           value={usersId().length > 1 ? t('New group') : t('Create Chat')}

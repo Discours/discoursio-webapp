@@ -122,12 +122,11 @@
 }
 
 .mainNavigationWrapper {
-  @include font-size(1.7rem);
-
   @include media-breakpoint-down(lg) {
     display: none;
   }
 
+  font-size:1.7rem;
   position: relative;
 
   .fixed & {
@@ -380,12 +379,11 @@
 }
 
 .articleHeader {
-  @include font-size(1.4rem);
-
   @include media-breakpoint-down(md) {
     display: none;
   }
 
+  font-size:1.4rem;
   left: $container-padding-x;
   margin: 0.2em 0;
   overflow: hidden;

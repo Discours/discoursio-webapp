@@ -114,8 +114,7 @@ mark.highlight {
   }
 
   &[data-type='quote'] {
-    @include font-size(1.4rem);
-
+    font-size:1.4rem;
     border: solid #000;
     border-width: 0 0 0 2px;
     margin: 1.6rem 0;
@@ -137,8 +136,6 @@ mark.highlight {
   }
 
   &[data-type='punchline'] {
-    @include font-size(3.2rem);
-
     @include media-breakpoint-up(sm) {
       &[data-float='left'] {
         margin-right: 1.5em;
@@ -151,6 +148,7 @@ mark.highlight {
       }
     }
 
+    font-size:3.2rem;
     border: solid #000;
     border-width: 2px 0;
     font-weight: 700;
@@ -160,16 +158,13 @@ mark.highlight {
 
     &[data-float='left'],
     &[data-float='right'] {
-      @include font-size(2.2rem);
-
+      font-size:2.2rem;
       line-height: 1.4;
     }
   }
 }
 
 .ProseMirror article[data-type='incut'] {
-  @include font-size(1.4rem);
-
   @include media-breakpoint-up(sm) {
     margin-left: -2rem;
     margin-right: -2rem;
@@ -186,6 +181,7 @@ mark.highlight {
     margin-right: -3em;
   }
 
+  font-size:1.4rem;
   background: #f1f2f3;
   margin: 1em -1rem;
   padding: 2em 2rem;

@@ -1011,7 +1011,7 @@ details {
   display: -webkit-box !important;
   overflow: hidden;
   position: relative;
-  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   white-space: normal;
 }

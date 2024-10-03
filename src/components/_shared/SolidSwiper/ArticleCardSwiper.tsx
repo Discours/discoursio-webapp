@@ -41,7 +41,13 @@ export const ArticleCardSwiper = (props: Props) => {
         })}
       >
         <Show when={props.title}>
-          <h2 class={styles.sliderTitle}>{props.title}</h2>
+          <div class="wide-container">
+            <div class="row">
+              <div class="col-md-12">
+                <h2 class={styles.sliderTitle}>{props.title}</h2>
+              </div>
+            </div>
+          </div>
         </Show>
         <div class={styles.container}>
           <Show when={props.slides?.length > 0}>

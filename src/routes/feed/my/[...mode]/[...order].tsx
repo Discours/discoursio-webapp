@@ -1,9 +1,8 @@
 import { RouteSectionProps, useSearchParams } from '@solidjs/router'
 import { createEffect, createMemo } from 'solid-js'
 
-import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthors/AllAuthors'
-import { Feed } from '~/components/Views/Feed'
-import { FeedProps } from '~/components/Views/Feed/Feed'
+import { AUTHORS_PER_PAGE } from '~/components/Views/AllAuthorsView'
+import { FeedProps, FeedView } from '~/components/Views/FeedView'
 import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { useFeed } from '~/context/feed'
@@ -92,7 +91,7 @@ export default (props: RouteSectionProps<{ shouts: Shout[]; topics: Topic[] }>) 
     >
       <LoadMoreWrapper loadFunction={loadMoreMyFeed} pageSize={AUTHORS_PER_PAGE}>
         <ReactionsProvider>
-          <Feed
+          <FeedView
             shouts={feed() || []}
             mode={(mode() || 'all') as FeedProps['mode']}
             order={order() as FeedProps['order']}

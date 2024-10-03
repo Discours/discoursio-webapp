@@ -9,7 +9,7 @@ import { SharePopup, getShareUrl } from '../SharePopup'
 
 import styles from './AudioPlayer.module.scss'
 
-const MicroEditor = lazy(() => import('../../Editor/MicroEditor/MicroEditor'))
+const MicroEditor = lazy(() => import('../../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
 
 type Props = {
@@ -174,7 +174,7 @@ export const PlayerPlaylist = (props: Props) => {
                   <MicroEditor
                     content={mi.body}
                     placeholder={`${t('Description')}...`}
-                    onChange={(value) => handleMediaItemFieldChange('body', value)}
+                    onChange={(value: string) => handleMediaItemFieldChange('body', value)}
                   />
                   <GrowingTextarea
                     allowEnterKey={true}

@@ -1,6 +1,6 @@
 import { useLocalize } from '~/context/localize'
 
-import styles from '../../styles/FeedSettings.module.scss'
+import styles from '~/styles/views/FeedSettings.module.scss'
 
 // type FeedSettingsSearchParams = {
 //   by: '' | 'topics' | 'authors' | 'shouts'

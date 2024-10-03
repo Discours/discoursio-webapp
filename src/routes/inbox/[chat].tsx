@@ -1,6 +1,6 @@
 import { RouteDefinition, RouteSectionProps, createAsync, useParams } from '@solidjs/router'
 import { createSignal, onMount } from 'solid-js'
-import { InboxView } from '~/components/Views/Inbox/Inbox'
+import { InboxView } from '~/components/Views/InboxView'
 import { PageLayout } from '~/components/_shared/PageLayout'
 import { ShowOnlyOnClient } from '~/components/_shared/ShowOnlyOnClient'
 import { useInbox } from '~/context/inbox'

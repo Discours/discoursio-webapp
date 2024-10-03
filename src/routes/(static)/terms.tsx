@@ -1,4 +1,4 @@
-import { StaticPage } from '~/components/Views/StaticPage'
+import { StaticPage } from '~/components/Views/StaticPageView'
 
 export default () => (
   <StaticPage title={'Terms of use'} desc={'Rules of the journal Discours'}>

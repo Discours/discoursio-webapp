@@ -14,7 +14,7 @@ import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import styles from './Article.module.scss'
 import { Comment } from './Comment'
 
-const MiniEditor = lazy(() => import('../Editor/MiniEditor/MiniEditor'))
+const MiniEditor = lazy(() => import('../Editor/MiniEditor'))
 
 type Props = {
   articleAuthors: Author[]

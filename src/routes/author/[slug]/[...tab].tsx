@@ -1,7 +1,7 @@
 import { RouteSectionProps, createAsync } from '@solidjs/router'
 import { ErrorBoundary, Suspense, createEffect, createSignal, on } from 'solid-js'
 import { COMMENTS_PER_PAGE } from '~/components/Article/FullArticle'
-import { AuthorView } from '~/components/Views/Author'
+import { AuthorView } from '~/components/Views/AuthorView'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
 import { Loading } from '~/components/_shared/Loading'
 import { PageLayout } from '~/components/_shared/PageLayout'

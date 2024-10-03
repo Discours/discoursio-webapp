@@ -27,7 +27,6 @@ export default defineConfig({
       '@': path.resolve('./public'),
       '/icons': path.resolve('./public/icons'),
       '/fonts': path.resolve('./public/fonts')
-      // bootstrap: path.resolve('./node_modules/bootstrap')
     }
   },
   envPrefix: 'PUBLIC_',

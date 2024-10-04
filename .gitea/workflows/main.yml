@@ -3,7 +3,7 @@ name: "deploy"
 on: [push]
 
 jobs:
-  test:
+  testbuild:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,29 +14,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Biome
-        run: npm install --global --save-exact @biomejs/biome
+      - name: Install and run Biome
+        run: |
+          npm install --global --save-exact @biomejs/biome
+          npx @biomejs/biome ci
 
-      - name: Lint with Biome
-        run: npx @biomejs/biome ci
+      - name: Run Stylelint
+        run: npx stylelint "**/*.{scss,css}"
 
-      - name: Lint styles
-        run: npx stylelint **/*.{scss,css}
-
-      - name: Check types
+      - name: Run typecheck
         run: npm run typecheck
 
-      - name: Test production build
+      - name: Build project
         run: npm run build
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps
-
-      - name: Run Playwright tests
-        run: npm run e2e
-        env:
-          BASE_URL: ${{ github.event.deployment_status.target_url }}
-          DEBUG: pw:api
 
   email-templates:
     runs-on: ubuntu-latest

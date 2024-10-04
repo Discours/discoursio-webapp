@@ -88,9 +88,9 @@ test('Drafts - create literature', async ({ page }) => {
   await page.getByRole('button', { name: 'Т.Р' }).click()
   await page.getByRole('link', { name: 'Черновики' }).click()
   await page.getByRole('link', { name: 'Создать публикацию' }).click()
-  // biome-ignore lint/performance/useTopLevelRegex: <explanation>
   await page
     .locator('li')
+    // biome-ignore lint/performance/useTopLevelRegex: test
     .filter({ hasText: /^литература$/ })
     .locator('img')
     .click()

@@ -15,7 +15,7 @@
     "function-no-unknown": [
       true,
       {
-        "ignoreFunctions": ["divide", "transparentize"]
+        "ignoreFunctions": ["divide", "transparentize", "map-get", "percentage"]
       }
     ],
     "function-url-quotes": null,
@@ -55,6 +55,6 @@
       }
     ],
     "scss/at-if-no-null": true,
-    "media-query-no-invalid": true
+    "media-query-no-invalid": null
   }
 }

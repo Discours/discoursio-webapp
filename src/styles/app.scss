@@ -715,6 +715,24 @@ figure {
   }
 }
 
+.row {
+  @include media-breakpoint-down(md) {
+    > * {
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    margin-left: divide(-$container-padding-x, 2);
+    margin-right: divide(-$container-padding-x, 2);
+
+    > * {
+      padding-left: divide($container-padding-x, 2);
+      padding-right: divide($container-padding-x, 2);
+    }
+  }
+}
+
 #app {
   display: flex;
   flex-direction: column;
@@ -735,6 +753,15 @@ figure {
 .main-content--no-padding {
   padding-bottom: 0;
   padding-top: 0;
+}
+
+.container {
+  @include media-breakpoint-down(sm) {
+    // padding: 0 $container-padding-x * 0.5;
+  }
+
+  max-width: 1500px;
+  width: auto;
 }
 
 .container--static-page {
@@ -805,6 +832,14 @@ figure {
 
   h4 {
     font-size:1.6rem;
+  }
+}
+
+.load-more-container {
+  text-align: center;
+
+  button {
+    padding: 0.6em 1.5em;
   }
 }
 

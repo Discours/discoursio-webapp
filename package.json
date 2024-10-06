@@ -136,7 +136,7 @@
     "y-prosemirror": "1.2.12"
   },
   "engines": {
-    "node": ">= 20"
+    "node": "20.x"
   },
   "trustedDependencies": ["@biomejs/biome", "@swc/core", "esbuild", "protobufjs"],
   "dependencies": {

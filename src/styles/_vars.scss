@@ -12,11 +12,7 @@ $grid-breakpoints: (
   xl: 1200px,
   xxl: 1400px,
 ) !default;
-$default-color: #141414;
-$link-color: #2638d9;
 $container-padding-x: $grid-gutter-width * 0.5 !default;
-
-// Additional variables needed
 $container-max-widths: $grid-breakpoints;
 $gutters: (
   0: 0,
@@ -28,3 +24,18 @@ $gutters: (
 ) !default;
 $grid-row-columns: 6 !default;
 $prefix: '' !default;
+
+// Шрифты
+$font-family: muller, arial, helvetica, sans-serif;
+$font-size-base: 2rem;
+$line-height-base: 1.6;
+
+// Базовые цвета (не зависящие от темы)
+$color-primary: #2638d9;
+$color-danger: #d00820;
+$default-color: #141414;
+
+// Другие переменные
+$border-radius: 2px;
+$transition-base: all 0.2s ease-in-out;
+$container-padding-x: $grid-gutter-width * 0.5;

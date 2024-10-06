@@ -86,7 +86,7 @@
     vertical-align: middle;
     width: 100px;
 
-    [data-editor-dark-mode='true'] & {
+    [data-theme='dark'] & {
       filter: invert(1);
     }
   }

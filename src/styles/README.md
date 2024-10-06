@@ -23,33 +23,18 @@ This grid system is a lightweight alternative to Bootstrap's grid, providing ess
 
 ## Mixins
 
-### `media-breakpoint-up($breakpoint)`
+- `media-breakpoint-{up|down}($breakpoint)` - Applies styles at a minimum or maximum width of the specified breakpoint
+- `media-breakpoint-between($lower, $upper)` - Applies styles between two breakpoints.
 
-Applies styles at a minimum width of the specified breakpoint.
+### Justify Content
+- `.justify-content-{breakpoint}-{start|end|center|between|around|evenly}`
 
-### `media-breakpoint-down($breakpoint)`
+### Display
+- `.d-{breakpoint}-{none|inline|inline-block|block|table|table-row|table-cell|flex|inline-flex}`
+- `.d-print-{none|inline|inline-block|block|table|table-row|table-cell|flex|inline-flex}`
 
-Applies styles at a maximum width of the specified breakpoint.
+`{breakpoint}` can be `xs`, `sm`, `md`, `lg`, `xl` or `xxl`.
 
-### `media-breakpoint-between($lower, $upper)`
-
-Applies styles between two breakpoints.
-
-### `make-container($max-widths, $gutter)`
-
-Creates a container with specified maximum widths and gutter.
-
-### `make-row($gutter)`
-
-Creates a flexbox row with specified gutter.
-
-### `make-col($size, $columns)`
-
-Defines a column with a specific size and total number of columns.
-
-### `make-col-offset($size, $columns)`
-
-Offsets a column by a specific size.
 
 ### `row-cols($count)`
 
@@ -63,3 +48,5 @@ You can customize the grid system by modifying the variables in `_globals.scss`:
 - **`$grid-gutter-width`**: Width of the gutter between columns.
 - **`$grid-breakpoints`**: Map of breakpoints for responsive design.
 - **`$container-max-widths`**: Maximum widths for containers at each breakpoint.
+- **`$container-padding-x`**: Padding for containers.
+- **`$prefix`**: Prefix for classes.

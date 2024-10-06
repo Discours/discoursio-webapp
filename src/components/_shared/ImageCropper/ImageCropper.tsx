@@ -5,6 +5,7 @@ import { Show, createSignal, onMount } from 'solid-js'
 import { useLocalize } from '~/context/localize'
 import { Button } from '../Button'
 
+import './cropper.css'
 import styles from './ImageCropper.module.scss'
 
 interface CropperProps {

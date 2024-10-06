@@ -123,7 +123,7 @@ $displays: none, inline, inline-block, block, table, table-row, table-cell, flex
     @include media-breakpoint-up($breakpoint, $breakpoints) {
       // Добавляем класс col-auto
       .#{$prefix}col#{$infix}-auto {
-        @include make-col-auto();
+        @include make-col-auto;
       }
 
       @for $i from 1 through $columns {
@@ -139,16 +139,11 @@ $displays: none, inline, inline-block, block, table, table-row, table-cell, flex
   }
 }
 
-// Добавляем функцию breakpoint-infix
-@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
-  @return if(map-get($breakpoints, $name) == null, "", "-#{$name}");
-}
-
 // Обновляем миксин make-justify-content
 @mixin make-justify-content($breakpoints: $grid-breakpoints) {
   @each $breakpoint in map-keys($breakpoints) {
     @include media-breakpoint-up($breakpoint, $breakpoints) {
-      $infix: breakpoint-infix($breakpoint, $breakpoints);
+      $infix: if($breakpoint == 'xs', "", "-#{$breakpoint}");
 
       .#{$prefix}justify-content#{$infix}-start   { justify-content: flex-start !important; }
       .#{$prefix}justify-content#{$infix}-end     { justify-content: flex-end !important; }
@@ -164,7 +159,7 @@ $displays: none, inline, inline-block, block, table, table-row, table-cell, flex
 @mixin make-display-classes($breakpoints: $grid-breakpoints) {
   @each $breakpoint in map-keys($breakpoints) {
     @include media-breakpoint-up($breakpoint, $breakpoints) {
-      $infix: breakpoint-infix($breakpoint, $breakpoints);
+      $infix: if($breakpoint == 'xs', "", "-#{$breakpoint}");
 
       @each $value in $displays {
         .#{$prefix}d#{$infix}-#{$value} { display: $value !important; }
@@ -197,6 +192,6 @@ $displays: none, inline, inline-block, block, table, table-row, table-cell, flex
 }
 
 @include make-grid-columns($grid-columns, $grid-breakpoints);
-@include make-display-classes();
-@include make-print-display-classes();
-@include make-justify-content();
+@include make-display-classes;
+@include make-print-display-classes;
+@include make-justify-content;

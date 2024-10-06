@@ -1,5 +1,8 @@
 @import 'vars';
 
+// Определяем $displays в начале файла
+$displays: none, inline, inline-block, block, table, table-row, table-cell, flex, inline-flex;
+
 // Миксин для media-breakpoint-up
 @mixin media-breakpoint-up($breakpoint, $breakpoints: $grid-breakpoints) {
   $min-width: map-get($breakpoints, $breakpoint);
@@ -43,14 +46,16 @@
 // Миксин make-container
 @mixin make-container($max-widths: $container-max-widths, $gutter: $grid-gutter-width) {
   width: 100%;
-  padding-right: $gutter;
-  padding-left: $gutter;
+  padding-right: $container-padding-x;
+  padding-left: $container-padding-x;
   margin-right: auto;
   margin-left: auto;
 
   @each $breakpoint, $max-width in $max-widths {
     @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
-      max-width: #{$max-width};
+      @if $max-width {
+        max-width: $max-width;
+      }
     }
   }
 }
@@ -112,19 +117,67 @@
 
 // Миксин make-grid-columns
 @mixin make-grid-columns($columns: $grid-columns, $breakpoints: $grid-breakpoints) {
-  @each $breakpoint, $value in $breakpoints {
+  @each $breakpoint in map-keys($breakpoints) {
     $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
 
     @include media-breakpoint-up($breakpoint, $breakpoints) {
+      // Добавляем класс col-auto
+      .#{$prefix}col#{$infix}-auto {
+        @include make-col-auto();
+      }
+
       @for $i from 1 through $columns {
-        .col#{$infix}-#{$i} {
+        .#{$prefix}col#{$infix}-#{$i} {
           @include make-col($i, $columns);
         }
 
-        .offset#{$infix}-#{$i} {
+        .#{$prefix}offset#{$infix}-#{$i} {
           @include make-col-offset($i, $columns);
         }
       }
+    }
+  }
+}
+
+// Добавляем функцию breakpoint-infix
+@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
+  @return if(map-get($breakpoints, $name) == null, "", "-#{$name}");
+}
+
+// Обновляем миксин make-justify-content
+@mixin make-justify-content($breakpoints: $grid-breakpoints) {
+  @each $breakpoint in map-keys($breakpoints) {
+    @include media-breakpoint-up($breakpoint, $breakpoints) {
+      $infix: breakpoint-infix($breakpoint, $breakpoints);
+
+      .#{$prefix}justify-content#{$infix}-start   { justify-content: flex-start !important; }
+      .#{$prefix}justify-content#{$infix}-end     { justify-content: flex-end !important; }
+      .#{$prefix}justify-content#{$infix}-center  { justify-content: center !important; }
+      .#{$prefix}justify-content#{$infix}-between { justify-content: space-between !important; }
+      .#{$prefix}justify-content#{$infix}-around  { justify-content: space-around !important; }
+      .#{$prefix}justify-content#{$infix}-evenly  { justify-content: space-evenly !important; }
+    }
+  }
+}
+
+// Обновляем миксин make-display-classes
+@mixin make-display-classes($breakpoints: $grid-breakpoints) {
+  @each $breakpoint in map-keys($breakpoints) {
+    @include media-breakpoint-up($breakpoint, $breakpoints) {
+      $infix: breakpoint-infix($breakpoint, $breakpoints);
+
+      @each $value in $displays {
+        .#{$prefix}d#{$infix}-#{$value} { display: $value !important; }
+      }
+    }
+  }
+}
+
+// Дополнительный миксин для классов d-print-*
+@mixin make-print-display-classes() {
+  @media print {
+    @each $value in $displays {
+      .#{$prefix}d-print-#{$value} { display: $value !important; }
     }
   }
 }
@@ -143,5 +196,7 @@
   }
 }
 
-// Генерация классов столбцов и смещений
 @include make-grid-columns($grid-columns, $grid-breakpoints);
+@include make-display-classes();
+@include make-print-display-classes();
+@include make-justify-content();

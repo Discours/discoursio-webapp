@@ -1,52 +1,51 @@
-# _grid.scss - a Minimalistic Bootstrap-Compatible Grid System
+# Discours.io Grid System and Styles
 
-This grid system is a lightweight alternative to Bootstrap's grid, providing essential features for responsive design. It includes a set of SCSS mixins and classes to create flexible layouts.
+This document outlines the grid system and styles used in the Discours.io project. It's a lightweight, customizable system inspired by Bootstrap, providing essential features for responsive design.
 
-## Supported Classes in _grid.scss
+## Grid System (_grid.scss)
 
-### Container
+### Container Classes
+- `.container`: Fixed-width, centered container
+- `.container-fluid`: Full-width container
 
-- **`.container`**: Creates a fixed-width container and centers it on the page.
-- **`.container-fluid`**: Creates a full-width container that spans the entire width of the viewport.
+### Row Class
+- `.row`: Flexbox container for columns with negative margins
 
-### Row
+### Column Classes
+- `.col-{breakpoint}`: Flexible column
+- `.col-{breakpoint}-auto`: Auto-width column
+- `.col-{breakpoint}-{1-24}`: Fixed-width column (1 to 24 based on $grid-columns)
 
-- **`.row`**: Creates a flexbox container for columns, with negative margins to offset column padding.
+### Display Classes
+- `.d-flex`: Display flex
+- `.d-none`: Display none
 
-### Columns
+### Justify Content Class
+- `.justify-content-between`: Justify content space-between
 
-- **`.col-xx-#`**: Defines the width of a column for a specific breakpoint (`xx` can be `xs`, `sm`, `md`, `lg`, `xl`, `xxl`). Replace `#` with a number from 1 to 24 (based on `$grid-columns`).
-
-### Offsets
-
-- **`.offset-xx-#`**: Adds left margin to a column, effectively moving it to the right by the specified number of columns. Replace `xx` with the breakpoint and `#` with the number of columns to offset.
+### Gutter Classes
+- `.g-{breakpoint}-{0-5}`: Sets both horizontal and vertical gutters
+- `.gx-{breakpoint}-{0-5}`: Sets horizontal gutters
+- `.gy-{breakpoint}-{0-5}`: Sets vertical gutters
 
 ## Mixins
 
-- `media-breakpoint-{up|down}($breakpoint)` - Applies styles at a minimum or maximum width of the specified breakpoint
-- `media-breakpoint-between($lower, $upper)` - Applies styles between two breakpoints.
+### Media Queries
+- `media-breakpoint-up($breakpoint)`
+- `media-breakpoint-down($breakpoint)`
+- `media-breakpoint-between($lower, $upper)`
 
-### Justify Content
-- `.justify-content-{breakpoint}-{start|end|center|between|around|evenly}`
+### Grid Mixins
+- `make-container($max-widths, $gutter)`
+- `make-row($gutter)`
+- `make-col-ready()`
+- `make-col($size, $columns)`
 
-### Display
-- `.d-{breakpoint}-{none|inline|inline-block|block|table|table-row|table-cell|flex|inline-flex}`
-- `.d-print-{none|inline|inline-block|block|table|table-row|table-cell|flex|inline-flex}`
+## Variables (_global.scss)
 
-`{breakpoint}` can be `xs`, `sm`, `md`, `lg`, `xl` or `xxl`.
-
-
-### `row-cols($count)`
-
-Sets the number of columns in a row, each taking an equal width.
-
-## Customization
-
-You can customize the grid system by modifying the variables in `_globals.scss`:
-
-- **`$grid-columns`**: Total number of columns in the grid.
-- **`$grid-gutter-width`**: Width of the gutter between columns.
-- **`$grid-breakpoints`**: Map of breakpoints for responsive design.
-- **`$container-max-widths`**: Maximum widths for containers at each breakpoint.
-- **`$container-padding-x`**: Padding for containers.
-- **`$prefix`**: Prefix for classes.
+- `$grid-columns`: 24
+- `$grid-gutter-width`: 4rem
+- `$grid-breakpoints`: xs, sm, md, lg, xl, xxl
+- `$container-max-widths`: Same as $grid-breakpoints
+- `$container-padding-x`: Half of $grid-gutter-width
+- `$gutters`: 0, 1, 2, 3, 4, 5 with corresponding rem values

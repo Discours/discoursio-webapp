@@ -246,3 +246,30 @@ $displays: none, inline, inline-block, block, table, table-row, table-cell, flex
     @include make-col-ready;
   }
 }
+
+.container {
+  @include media-breakpoint-down(sm) {
+    // padding: 0 $container-padding-x * 0.5;
+  }
+
+  max-width: 1500px;
+  width: auto;
+}
+
+.row {
+  @include media-breakpoint-down(md) {
+    > * {
+      margin-bottom: 2.4rem;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    margin-left: divide(-$container-padding-x, 2);
+    margin-right: divide(-$container-padding-x, 2);
+
+    > * {
+      padding-left: divide($container-padding-x, 2);
+      padding-right: divide($container-padding-x, 2);
+    }
+  }
+}

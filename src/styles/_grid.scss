@@ -1,3 +1,5 @@
+@import 'vars';
+
 // Миксин для media-breakpoint-up
 @mixin media-breakpoint-up($breakpoint, $breakpoints: $grid-breakpoints) {
   $min-width: map-get($breakpoints, $breakpoint);

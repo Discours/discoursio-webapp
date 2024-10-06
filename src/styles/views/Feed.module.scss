@@ -224,3 +224,25 @@
   font-weight: 700;
   line-height: 18px;
 }
+
+.short-cards {
+  @include media-breakpoint-up(md) {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  margin: 0 -5px;
+}
+
+.short-card {
+  @include media-breakpoint-up(md) {
+    flex: 1 0 50%;
+  }
+
+  @include media-breakpoint-up(lg) {
+    flex: 1 0 25%;
+  }
+
+  margin-bottom: 10px;
+  padding: 0 5px;
+}

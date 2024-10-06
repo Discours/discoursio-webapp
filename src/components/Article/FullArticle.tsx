@@ -4,6 +4,7 @@ import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
+
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
@@ -19,7 +20,6 @@ import { capitalize } from '~/utils/capitalize'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
-import stylesHeader from '../HeaderNav/Header.module.scss'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
 import { InviteMembers } from '../_shared/InviteMembers'
@@ -30,12 +30,14 @@ import { ShareModal } from '../_shared/ShareModal'
 import { ImageSwiper } from '../_shared/SolidSwiper'
 import { TableOfContents } from '../_shared/TableOfContents'
 import { VideoPlayer } from '../_shared/VideoPlayer'
-import styles from './Article.module.scss'
 import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
 import { CommentsTree } from './CommentsTree'
 import { SharePopup, getShareUrl } from './SharePopup'
 import { ShoutRatingControl } from './ShoutRatingControl'
+
+import stylesHeader from '../HeaderNav/Header.module.scss'
+import styles from './Article.module.scss'
 
 type Props = {
   article: Shout
@@ -366,7 +368,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <figure class="img-align-column">
+                  <figure class={styles.figureAlignColumn}>
                     <Image
                       width={800}
                       alt={props.article.cover_caption || ''}

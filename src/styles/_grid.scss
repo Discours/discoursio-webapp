@@ -1,182 +1,3 @@
-@import 'vars';
-
-// Определяем $displays в начале файла
-$displays: none, inline, inline-block, block, table, table-row, table-cell, flex, inline-flex;
-
-// Миксин для media-breakpoint-up
-@mixin media-breakpoint-up($breakpoint, $breakpoints: $grid-breakpoints) {
-  $min-width: map-get($breakpoints, $breakpoint);
-
-  @if $min-width {
-    @media (min-width: #{$min-width}) {
-      @content;
-    }
-  } @else {
-    @warn "Нет валидного брейкпоинта для '#{$breakpoint}'.";
-  }
-}
-
-// Миксин для media-breakpoint-down
-@mixin media-breakpoint-down($breakpoint, $breakpoints: $grid-breakpoints) {
-  $max-width: map-get($breakpoints, $breakpoint) - 0.02px;
-
-  @if $max-width {
-    @media (max-width: #{$max-width}) {
-      @content;
-    }
-  } @else {
-    @warn "Нет валидного брейкпоинта для '#{$breakpoint}'.";
-  }
-}
-
-// Миксин для media-breakpoint-between
-@mixin media-breakpoint-between($lower, $upper, $breakpoints: $grid-breakpoints) {
-  $min-width: map-get($breakpoints, $lower);
-  $max-width: map-get($breakpoints, $upper) - 0.02px;
-
-  @if $min-width and $max-width {
-    @media (min-width: #{$min-width}) and (max-width: #{$max-width}) {
-      @content;
-    }
-  } @else {
-    @warn "Нет валидных брейкпоинтов для '#{$lower}' или '#{$upper}'.";
-  }
-}
-
-// Миксин make-container
-@mixin make-container($max-widths: $container-max-widths, $gutter: $grid-gutter-width) {
-  width: 100%;
-  padding-right: $container-padding-x;
-  padding-left: $container-padding-x;
-  margin-right: auto;
-  margin-left: auto;
-
-  @each $breakpoint, $max-width in $max-widths {
-    @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
-      @if $max-width {
-        max-width: $max-width;
-      }
-    }
-  }
-}
-
-// Миксин make-row
-@mixin make-row($gutter: $grid-gutter-width) {
-  --gutter-x: #{$gutter};
-  --gutter-y: 0;
-
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: calc(-1 * var(--gutter-y));
-  margin-right: calc(-0.5 * var(--gutter-x));
-  margin-left: calc(-0.5 * var(--gutter-x));
-}
-
-// Миксин make-col-ready
-@mixin make-col-ready() {
-  box-sizing: border-box;
-  flex-shrink: 0;
-  width: 100%;
-  max-width: 100%;
-  padding-right: calc(var(--gutter-x) * 0.5);
-  padding-left: calc(var(--gutter-x) * 0.5);
-  margin-top: var(--gutter-y);
-}
-
-// Миксин make-col
-@mixin make-col($size: false, $columns: $grid-columns) {
-  @if $size {
-    flex: 0 0 auto;
-    width: calc(100% * #{calc($size / $columns)});
-  } @else {
-    flex: 1 1 0;
-    max-width: 100%;
-  }
-}
-
-// Миксин make-col-auto
-@mixin make-col-auto() {
-  flex: 0 0 auto;
-  width: auto;
-}
-
-// Миксин make-col-offset
-@mixin make-col-offset($size, $columns: $grid-columns) {
-  $num: calc($size / $columns);
-
-  margin-left: if($num == 0, 0, calc(100% * #{$num}));
-}
-
-// Миксин row-cols
-@mixin row-cols($count) {
-  > * {
-    flex: 0 0 auto;
-    width: 100% / $count;
-  }
-}
-
-// Миксин make-grid-columns
-@mixin make-grid-columns($columns: $grid-columns, $breakpoints: $grid-breakpoints) {
-  @each $breakpoint in map-keys($breakpoints) {
-    $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
-
-    @include media-breakpoint-up($breakpoint, $breakpoints) {
-      // Добавляем класс col-auto
-      .#{$prefix}col#{$infix}-auto {
-        @include make-col-auto;
-      }
-
-      @for $i from 1 through $columns {
-        .#{$prefix}col#{$infix}-#{$i} {
-          @include make-col($i, $columns);
-        }
-
-        .#{$prefix}offset#{$infix}-#{$i} {
-          @include make-col-offset($i, $columns);
-        }
-      }
-    }
-  }
-}
-
-// Обновляем миксин make-justify-content
-@mixin make-justify-content($breakpoints: $grid-breakpoints) {
-  @each $breakpoint in map-keys($breakpoints) {
-    @include media-breakpoint-up($breakpoint, $breakpoints) {
-      $infix: if($breakpoint == 'xs', "", "-#{$breakpoint}");
-
-      .#{$prefix}justify-content#{$infix}-start   { justify-content: flex-start !important; }
-      .#{$prefix}justify-content#{$infix}-end     { justify-content: flex-end !important; }
-      .#{$prefix}justify-content#{$infix}-center  { justify-content: center !important; }
-      .#{$prefix}justify-content#{$infix}-between { justify-content: space-between !important; }
-      .#{$prefix}justify-content#{$infix}-around  { justify-content: space-around !important; }
-      .#{$prefix}justify-content#{$infix}-evenly  { justify-content: space-evenly !important; }
-    }
-  }
-}
-
-// Обновляем миксин make-display-classes
-@mixin make-display-classes($breakpoints: $grid-breakpoints) {
-  @each $breakpoint in map-keys($breakpoints) {
-    @include media-breakpoint-up($breakpoint, $breakpoints) {
-      $infix: if($breakpoint == 'xs', "", "-#{$breakpoint}");
-
-      @each $value in $displays {
-        .#{$prefix}d#{$infix}-#{$value} { display: $value !important; }
-      }
-    }
-  }
-}
-
-// Дополнительный миксин для классов d-print-*
-@mixin make-print-display-classes() {
-  @media print {
-    @each $value in $displays {
-      .#{$prefix}d-print-#{$value} { display: $value !important; }
-    }
-  }
-}
-
 // Генерация классов контейнера и ряда
 .container,
 .container-fluid {
@@ -191,7 +12,49 @@ $displays: none, inline, inline-block, block, table, table-row, table-cell, flex
   }
 }
 
-@include make-grid-columns($grid-columns, $grid-breakpoints);
-@include make-display-classes;
-@include make-print-display-classes;
-@include make-justify-content;
+// Генерация только используемых классов колонок
+@each $breakpoint in map-keys($grid-breakpoints) {
+  $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+    .col#{$infix} {
+      flex: 1 0 0%;
+    }
+    
+    .col#{$infix}-auto {
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+    @for $i from 1 through $grid-columns {
+      .col#{$infix}-#{$i} {
+        @include make-col($i, $grid-columns);
+      }
+    }
+  }
+}
+
+// Добавляем только используемые классы display
+.d-flex { display: flex !important; }
+.d-none { display: none !important; }
+
+// Добавляем только используемый класс justify-content
+.justify-content-between { justify-content: space-between !important; }
+
+// Добавляем классы для отступов (gutters)
+@each $breakpoint in map-keys($grid-breakpoints) {
+  $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint) {
+    @each $key, $gutter in $gutters {
+      .g#{$infix}-#{$key},
+      .gx#{$infix}-#{$key} {
+        --gutter-x: #{$gutter};
+      }
+      .g#{$infix}-#{$key},
+      .gy#{$infix}-#{$key} {
+        --gutter-y: #{$gutter};
+      }
+    }
+  }
+}

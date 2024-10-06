@@ -1,5 +1,6 @@
 import type { Editor } from '@tiptap/core'
 import { Show, createEffect, createSignal } from 'solid-js'
+import { isServer } from 'solid-js/web'
 import { renderUploadedImage } from '~/components/Upload/renderUploadedImage'
 import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'
@@ -23,6 +24,7 @@ const embedData = (data: string) => {
   const element = document.createRange().createContextualFragment(data)
   const { attributes } = element.firstChild as HTMLIFrameElement
   const result: { src: string; width?: string; height?: string } = { src: '' }
+  if (isServer) return result
 
   for (let i = 0; i < attributes.length; i++) {
     const attribute = attributes.item(i)

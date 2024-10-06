@@ -70,11 +70,3 @@ export function createTooltip(referenceElement?: Element, tooltipElement?: HTMLE
     }
   }
 }
-
-// Usage example
-const referenceElement = document.querySelector('#reference')
-const tooltipElement = document.querySelector('#tooltip')
-createTooltip(referenceElement as HTMLElement, tooltipElement as HTMLElement, {
-  placement: 'top',
-  offset: [0, 8]
-})

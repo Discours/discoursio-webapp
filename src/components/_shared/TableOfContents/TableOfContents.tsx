@@ -31,11 +31,12 @@ const scrollToHeader = (element: HTMLElement) => {
 
 export const TableOfContents = (props: Props) => {
   const { t } = useLocalize()
-
   const [headings, setHeadings] = createSignal<HTMLElement[]>([])
   const [areHeadingsLoaded, setAreHeadingsLoaded] = createSignal<boolean>(false)
   const [activeHeaderIndex, setActiveHeaderIndex] = createSignal<number>(-1)
   const [isVisible, setIsVisible] = createSignal<boolean>(props.variant === 'article')
+  const [isDocumentReady, setIsDocumentReady] = createSignal<boolean>(false)
+
   const toggleIsVisible = () => {
     setIsVisible((visible) => !visible)
   }
@@ -43,6 +44,7 @@ export const TableOfContents = (props: Props) => {
   setIsVisible(isDesktop())
 
   const updateHeadings = () => {
+    if (!isDocumentReady()) return
     const parent = document?.querySelector(props.parentSelector)
     if (parent) {
       setHeadings(
@@ -56,6 +58,7 @@ export const TableOfContents = (props: Props) => {
   const debouncedUpdateHeadings = debounce(500, updateHeadings)
 
   const updateActiveHeader = throttle(50, () => {
+    if (!isDocumentReady()) return
     const newActiveIndex = headings().findLastIndex((heading) => isInViewport(heading))
     setActiveHeaderIndex(newActiveIndex)
   })
@@ -63,11 +66,17 @@ export const TableOfContents = (props: Props) => {
   createEffect(
     on(
       () => props.body,
-      (_) => debouncedUpdateHeadings()
+      (_) => {
+        if (isDocumentReady()) {
+          debouncedUpdateHeadings()
+        }
+      }
     )
   )
 
   onMount(() => {
+    setIsDocumentReady(true)
+    debouncedUpdateHeadings()
     window.addEventListener('scroll', updateActiveHeader)
     onCleanup(() => window.removeEventListener('scroll', updateActiveHeader))
   })

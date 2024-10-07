@@ -43,11 +43,13 @@
     color: #000;
 
     &:hover {
+      border: 2px solid #e9e9ee;
       background: #e9e9ee;
       color: #000;
     }
 
     &:active {
+      border: 2px solid #f7f7f8;
       background: #f7f7f8;
       color: rgb(105 105 105 / 40%);
     }
@@ -64,51 +66,10 @@
     pointer-events: none;
   }
 
-  &.bordered {
-    min-width: auto !important;
-    background: var(--link-color);
-    color: var(--link-hover-color);
-    border-radius: 8px;
-    border: 2px solid #000;
-
-    &:hover {
-      background: none;
-      color: #000;
-      transition: all 100ms ease-in;
-    }
-
-    &:not(:hover) {
-      transition: all 80ms ease-out;
-    }
-
-    &:active {
-      border: 2px solid #696969;
-      color: #696969;
-    }
-  }
-
-  &.outline {
-    min-width: auto !important;
-    border: 2px solid #000;
-
-    &:hover {
-      background: var(--link-color);
-      color: var(--link-hover-color);
-      transition: all 100ms ease-in;
-    }
-
-    &:not(:hover) {
-      transition: all 80ms ease-out;
-    }
-
-    &:active {
-      color: rgb(255 255 255 / 40%)
-    }
-  }
-
   &.primary-square {
     background: var(--background-color-invert);
     color: var(--default-color-invert);
+    border-radius: 2px;
 
     &:hover {
       color: #ccc;
@@ -128,6 +89,7 @@
   &.secondary-square {
     background: #f7f7f7;
     color: #141414;
+    border-radius: 2px;
 
     &:hover {
       background: #e9e9ee;
@@ -199,12 +161,56 @@
     padding: 6px 12px;
   }
 
+  &.bordered {
+    min-width: auto !important;
+    background: var(--link-color);
+    color: var(--link-hover-color);
+    border-radius: 8px;
+    border: 2px solid #000;
+
+    &:hover {
+      background: none;
+      color: #000;
+      transition: all 100ms ease-in;
+    }
+
+    &:not(:hover) {
+      transition: all 80ms ease-out;
+    }
+
+    &:active {
+      border: 2px solid #696969;
+      color: #696969;
+    }
+  }
+
+  &.outline {
+    min-width: auto !important;
+    border: 2px solid #000;
+
+    &:hover {
+      background: var(--link-color);
+      color: var(--link-hover-color);
+      transition: all 100ms ease-in;
+    }
+
+    &:not(:hover) {
+      transition: all 80ms ease-out;
+    }
+
+    &:active {
+      color: rgb(255 255 255 / 40%)
+    }
+  }
+
   &.loadingDots {
     display: inline-flex;
     align-items: center;
-    font-size: 30px;
+    font-size: 50px;
 
     & span {
+      position: relative;
+      bottom: 9px;
       animation: blink 2s infinite;
 
       &:nth-child(1) {

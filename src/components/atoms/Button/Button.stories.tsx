@@ -37,6 +37,9 @@ const meta: Meta<typeof Button> = {
     loading: {
       control: 'boolean'
     },
+    isSubscribeButton: {
+      control: 'boolean'
+    },
     onClick: { action: 'clicked' }
   }
 }
@@ -51,7 +54,8 @@ export const Primary: Story = {
     variant: 'primary',
     size: 'M',
     disabled: false,
-    loading: false
+    loading: false,
+    isSubscribeButton: false
   }
 }
 
@@ -81,7 +85,7 @@ export const SecondaryDisabled: Story = {
   }
 }
 
-export const PrimarySwitchFromStateAToStateB: Story = {
+export const Subscribe: Story = {
   args: {
     value: 'State A',
     variant: 'bordered',
@@ -103,7 +107,8 @@ export const PrimarySquare: Story = {
     variant: 'primary-square',
     size: 'S-square',
     disabled: false,
-    loading: false
+    loading: false,
+    isSubscribeButton: false
   }
 }
 

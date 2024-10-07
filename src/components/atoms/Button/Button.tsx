@@ -7,7 +7,7 @@ import styles from './Button.module.scss'
 export type ButtonVariant = 'primary' | 'primary-disabled' | 'secondary' |
                             'secondary-disabled' | 'bordered' |
                             'outline' | 'primary-square' |
-                            'secondary-square' | 'disabled'| 'loading'
+                            'secondary-square' | 'disabled'
 type Props = {
   title?: string
   value: string | JSX.Element
@@ -65,7 +65,7 @@ export const Button = (props: Props) => {
         styles[props.variant ?? 'primary'],
         {
           [styles.disabled]: props.disabled,
-          [styles['loadingDots']]: isLoading
+          [styles['loadingDots']]: isLoading,
 
           // [styles.subscribeButton]: props.isSubscribeButton
         },

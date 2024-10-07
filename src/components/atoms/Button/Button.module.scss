@@ -161,11 +161,10 @@
     padding: 6px 12px;
   }
 
-  &.bordered {
+  &.subscribeButton {
     min-width: auto !important;
     background: var(--link-color);
     color: var(--link-hover-color);
-    border-radius: 8px;
     border: 2px solid #000;
 
     &:hover {
@@ -184,7 +183,7 @@
     }
   }
 
-  &.outline {
+  &.unsubscribeButton {
     min-width: auto !important;
     border: 2px solid #000;
 

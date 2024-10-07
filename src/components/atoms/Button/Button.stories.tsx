@@ -16,14 +16,11 @@ const meta: Meta<typeof Button> = {
     variant: {
       options: [
         'primary',
-        'primary-disabled',
         'secondary',
-        'secondary-disabled',
-        'bordered',
-        'outline',
+        'subscribeButton',
+        'unsubscribeButton',
         'primary-square',
-        'secondary-square',
-        'disabled'
+        'secondary-square'
       ],
       control: { type: 'select' }
     },
@@ -59,14 +56,6 @@ export const Primary: Story = {
   }
 }
 
-export const PrimaryDisabled: Story = {
-  args: {
-    value: 'Button',
-    variant: 'primary-disabled',
-    size: 'M'
-  }
-}
-
 export const Secondary: Story = {
   args: {
     value: 'Button',
@@ -77,26 +66,18 @@ export const Secondary: Story = {
   }
 }
 
-export const SecondaryDisabled: Story = {
-  args: {
-    value: 'Button',
-    variant: 'secondary-disabled',
-    size: 'M'
-  }
-}
-
 export const Subscribe: Story = {
   args: {
     value: 'State A',
-    variant: 'bordered',
+    variant: 'subscribeButton',
     size: 'M'
   }
 }
 
-export const PrimarySwitchFromStateBToStateA: Story = {
+export const Unsubscribe: Story = {
   args: {
     value: 'State B',
-    variant: 'outline',
+    variant: 'unsubscribeButton',
     size: 'M'
   }
 }
@@ -119,13 +100,5 @@ export const SecondarySquare: Story = {
     size: 'S-square',
     disabled: false,
     loading: false
-  }
-}
-
-export const Disabled: Story = {
-  args: {
-    value: 'Button',
-    variant: 'disabled',
-    size: 'S-square'
   }
 }

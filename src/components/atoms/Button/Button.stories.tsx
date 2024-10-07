@@ -14,9 +14,16 @@ const meta: Meta<typeof Button> = {
       control: { type: 'text' }
     },
     variant: {
-      options: ['primary', 'primary-disabled', 'secondary',
-                'secondary-disabled', 'bordered', 'outline',
-                'primary-square', 'secondary-square', 'disabled'
+      options: [
+        'primary',
+        'primary-disabled',
+        'secondary',
+        'secondary-disabled',
+        'bordered',
+        'outline',
+        'primary-square',
+        'secondary-square',
+        'disabled'
       ],
       control: { type: 'select' }
     },
@@ -90,7 +97,6 @@ export const PrimarySwitchFromStateBToStateA: Story = {
   }
 }
 
-
 export const PrimarySquare: Story = {
   args: {
     value: 'Button',
@@ -100,7 +106,6 @@ export const PrimarySquare: Story = {
     loading: false
   }
 }
-
 
 export const SecondarySquare: Story = {
   args: {
@@ -119,7 +124,3 @@ export const Disabled: Story = {
     size: 'S-square'
   }
 }
-
-
-
-

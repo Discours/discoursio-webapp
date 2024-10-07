@@ -6,6 +6,7 @@
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
+
   &:disabled {
     opacity: 1 !important;
   }
@@ -21,18 +22,18 @@
 
     &:active {
       background: #000;
-      color: rgb(255, 255, 255, 40%);
+      color: rgb(255 255 255 / 40%);
     }
 
     &:disabled {
       background: var(--background-color-invert);
-      color: rgb(255, 255, 255, 40%);
+      color: rgb(255 255 255 / 40%);
     }
   }
 
   &.primary-disabled {
     background: var(--background-color-invert);
-    color: rgb(255, 255, 255, 40%);
+    color: rgb(255 255 255 / 40%);
     pointer-events: none;
   }
 
@@ -48,7 +49,7 @@
 
     &:active {
       background: #f7f7f8;
-      color: rgb(105, 105, 105, 40%);
+      color: rgb(105 105 105 / 40%);
     }
 
     &:disabled {
@@ -101,7 +102,7 @@
     }
 
     &:active {
-      color: rgb(255, 255, 255, 40%)
+      color: rgb(255 255 255 / 40%)
     }
   }
 
@@ -205,12 +206,15 @@
 
     & span {
       animation: blink 2s infinite;
+
       &:nth-child(1) {
         animation-delay: 0s;
       }
+
       &:nth-child(2) {
         animation-delay: 0.2s;
       }
+
       &:nth-child(3) {
         animation-delay: 0.4s;
       }
@@ -219,6 +223,7 @@
         0%, 50%, 100% {
           opacity: 0;
         }
+
         10%, 30% {
           opacity: 1;
         }

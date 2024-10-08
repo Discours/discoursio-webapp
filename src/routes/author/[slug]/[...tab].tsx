@@ -1,5 +1,46 @@
-import { RouteSectionProps, createAsync } from '@solidjs/router'
-import { ErrorBoundary, Suspense, createEffect, createSignal, on } from 'solid-js'
+/**
+ * AuthorPage Component
+ * 
+ * This component is responsible for displaying the author's profile page. It fetches and displays
+ * the author's details, their shouts (posts), and comments. It also handles the reactivity of the
+ * component when the URL parameters change.
+ * 
+ * Key Features:
+ * - Fetches author details, shouts, and comments based on the slug parameter.
+ * - Updates the component when the slug parameter changes.
+ * - Displays the author's profile, shouts, and comments.
+ * - Integrates with Google Analytics to track page views.
+ * - Uses SolidJS reactive primitives and hooks for state management and reactivity.
+ * 
+ * Props:
+ * - RouteSectionProps<AuthorPageProps>: The properties passed to the component, including the author's data.
+ * 
+ * AuthorPageProps:
+ * - articles?: Shout[]
+ * - author?: Author
+ * - topics?: Topic[]
+ * - comments?: Reaction[]
+ * 
+ * Example Usage:
+ * 
+ * ```tsx
+ * import AuthorPage from '~/routes/author/[slug]/[...tab]'
+ * 
+ * <AuthorPage params={{ slug: 'author-slug' }} data={{ author: authorData, articles: articlesData }} />
+ * ```
+ * 
+ * Dependencies:
+ * - SolidJS Router for routing and URL parameter handling.
+ * - SolidJS for reactivity and state management.
+ * - Various context providers for localization, authors, reactions, etc.
+ * - GraphQL API for fetching author details, shouts, comments, and topics.
+ * 
+ * Note:
+ * - Ensure that the necessary context providers and GraphQL API functions are properly set up and imported.
+ */
+
+import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
+import { ErrorBoundary, Suspense, createEffect, createSignal, on, Show } from 'solid-js'
 import { COMMENTS_PER_PAGE } from '~/components/Article/FullArticle'
 import { AuthorView } from '~/components/Views/AuthorView'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
@@ -69,6 +110,15 @@ export type AuthorPageProps = {
 
 export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   const { t } = useLocalize()
+  const params = useParams()
+  const [currentSlug, setCurrentSlug] = createSignal(params.slug)
+
+  createEffect(() => {
+    const newSlug = params.slug
+    if (newSlug !== currentSlug()) {
+      setCurrentSlug(newSlug)
+    }
+  })
 
   // load author's profile
   const { addAuthor, authorsEntities } = useAuthors()
@@ -133,30 +183,34 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
   )
 
   return (
-    <ErrorBoundary
-      fallback={(_err) => {
-        console.error('ErrorBoundary caught an error', _err)
-        return <FourOuFourView />
-      }}
-    >
-      <Suspense fallback={<Loading />}>
-        <PageLayout
-          title={title()}
-          headerTitle={author()?.name || ''}
-          slug={author()?.slug}
-          desc={desc()}
-          cover={cover()}
+    <Show when={currentSlug()} keyed>
+      {(slug) => (
+        <ErrorBoundary
+          fallback={(_err) => {
+            console.error('ErrorBoundary caught an error', _err)
+            return <FourOuFourView />
+          }}
         >
-          <ReactionsProvider>
-            <AuthorView
-              author={author() as Author}
-              authorSlug={props.params.slug}
-              shouts={authorShouts() || []}
-              comments={authorComments() || []}
-            />
-          </ReactionsProvider>
-        </PageLayout>
-      </Suspense>
-    </ErrorBoundary>
+          <Suspense fallback={<Loading />}>
+            <PageLayout
+              title={title()}
+              headerTitle={author()?.name || ''}
+              slug={author()?.slug}
+              desc={desc()}
+              cover={cover()}
+            >
+              <ReactionsProvider>
+                <AuthorView
+                  author={author() as Author}
+                  authorSlug={props.params.slug}
+                  shouts={authorShouts() || []}
+                  comments={authorComments() || []}
+                />
+              </ReactionsProvider>
+            </PageLayout>
+          </Suspense>
+        </ErrorBoundary>
+      )}
+    </Show>
   )
 }

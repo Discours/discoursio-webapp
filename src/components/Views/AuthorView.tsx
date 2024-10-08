@@ -147,16 +147,30 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [loadMoreHidden, setLoadMoreHidden] = createSignal(false)
   const loadMore = async () => {
     saveScrollPosition()
-    const authorhoutsFetcher = loadShouts({
+    const authorShoutsFetcher = loadShouts({
       filters: { author: props.authorSlug },
       limit: SHOUTS_PER_PAGE,
       offset: feedByAuthor()?.[props.authorSlug]?.length || 0
     })
-    const result = await authorhoutsFetcher()
-    result && addFeed(result)
+    const result = await authorShoutsFetcher()
+    if (result) {
+      addFeed(result)
+    }
     restoreScrollPosition()
     return result as LoadMoreItems
   }
+
+  // Function to chunk the sortedFeed into arrays of 3 shouts each
+  const chunkArray = (array: Shout[], chunkSize: number): Shout[][] => {
+    const chunks: Shout[][] = []
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize))
+    }
+    return chunks
+  }
+
+  // Memoize the chunked feed
+  const feedChunks = createMemo(() => chunkArray(sortedFeed(), 3))
 
   // fx to update author's feed
   createEffect(
@@ -188,29 +202,48 @@ export const AuthorView = (props: AuthorViewProps) => {
       offset: commentsByAuthor()[aid]?.length || 0
     })
     const result = await authorCommentsFetcher()
-    result && addShoutReactions(result)
+    if (result) {
+      addShoutReactions(result)
+    }
     restoreScrollPosition()
     return result as LoadMoreItems
   }
 
   createEffect(() => setCurrentTab(params.tab))
 
+  // Update commented when author or commentsByAuthor changes
   createEffect(
-    on([author, commentsByAuthor], ([a, ccc]) => a && ccc && ccc[a.id] && setCommented(ccc[a.id]), {})
+    on(
+      [author, commentsByAuthor],
+      ([a, ccc]) => {
+        if (a && ccc && ccc[a.id]) {
+          setCommented(ccc[a.id])
+        }
+      },
+      {}
+    )
   )
 
   createEffect(
     on(
       [author, commented],
-      ([a, ccc]) => a && ccc && setLoadMoreCommentsHidden((ccc || []).length === a.stat?.comments)
+      ([a, ccc]) => {
+        if (a && ccc) {
+          setLoadMoreCommentsHidden((ccc || []).length === a.stat?.comments)
+        }
+      },
+      {}
     )
   )
 
   createEffect(
     on(
       [author, feedByAuthor],
-      ([a, feed]) =>
-        a && feed[props.authorSlug] && setLoadMoreHidden(feed[props.authorSlug]?.length === a.stat?.shouts),
+      ([a, feed]) => {
+        if (a && feed[props.authorSlug]) {
+          setLoadMoreHidden(feed[props.authorSlug]?.length === a.stat?.shouts)
+        }
+      },
       {}
     )
   )
@@ -230,7 +263,7 @@ export const AuthorView = (props: AuthorViewProps) => {
             <div class={clsx(styles.groupControls, 'row')}>
               <TabNavigator />
               <div class={clsx('col-md-8', styles.additionalControls)}>
-                <Show when={author()?.stat?.rating || author()?.stat?.rating === 0}>
+                <Show when={typeof author()?.stat?.rating === 'number'}>
                   <div class={styles.ratingContainer}>
                     {t('All posts rating')}
                     <AuthorShoutsRating author={author() as Author} class={styles.ratingControl} />
@@ -249,8 +282,7 @@ export const AuthorView = (props: AuthorViewProps) => {
               <div class="col-md-20 col-lg-18">
                 <div
                   ref={(el) => (bioWrapperRef = el)}
-                  class={styles.longBio}
-                  classList={{ [styles.longBioExpanded]: isBioExpanded() }}
+                  class={clsx(styles.longBio, { [styles.longBioExpanded]: isBioExpanded() })}
                 >
                   <div ref={(el) => (bioContainerRef = el)} innerHTML={author()?.about || ''} />
                 </div>
@@ -260,7 +292,7 @@ export const AuthorView = (props: AuthorViewProps) => {
                     class={clsx('button button--subscribe-topic', styles.longBioExpandedControl)}
                     onClick={() => setIsBioExpanded(!isBioExpanded())}
                   >
-                    {t('Show more')}
+                    {isBioExpanded() ? t('Show less') : t('Show more')}
                   </button>
                 </Show>
               </div>
@@ -269,7 +301,7 @@ export const AuthorView = (props: AuthorViewProps) => {
         </Match>
 
         <Match when={currentTab() === 'comments'}>
-          <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
+          <Show when={me()?.slug === props.authorSlug && !me()?.stat?.comments}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
             </div>
@@ -302,32 +334,27 @@ export const AuthorView = (props: AuthorViewProps) => {
         </Match>
 
         <Match when={!currentTab()}>
-          <Show when={me()?.slug === props.authorSlug && !me().stat?.shouts}>
+          <Show when={me()?.slug === props.authorSlug && !me()?.stat?.shouts}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
             </div>
           </Show>
 
           <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE} hidden={loadMoreHidden()}>
-            <For each={sortedFeed().filter((_, i) => i % 3 === 0)}>
-              {(_shout, index) => {
-                const articles = sortedFeed().slice(index() * 3, index() * 3 + 3)
-                return (
-                  <>
-                    <Switch>
-                      <Match when={articles.length === 1}>
-                        <Row1 article={articles[0]} noauthor={true} nodate={true} />
-                      </Match>
-                      <Match when={articles.length === 2}>
-                        <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
-                      </Match>
-                      <Match when={articles.length === 3}>
-                        <Row3 articles={articles} noauthor={true} nodate={true} />
-                      </Match>
-                    </Switch>
-                  </>
-                )
-              }}
+            <For each={feedChunks()}>
+              {(articles) => (
+                <Switch>
+                  <Match when={articles.length === 1}>
+                    <Row1 article={articles[0]} noauthor={true} nodate={true} />
+                  </Match>
+                  <Match when={articles.length === 2}>
+                    <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
+                  </Match>
+                  <Match when={articles.length === 3}>
+                    <Row3 articles={articles} noauthor={true} nodate={true} />
+                  </Match>
+                </Switch>
+              )}
             </For>
           </LoadMoreWrapper>
         </Match>

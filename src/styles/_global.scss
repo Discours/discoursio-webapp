@@ -129,3 +129,8 @@ $container-padding-x: $grid-gutter-width * 0.5;
     max-width: 100%;
   }
 }
+
+@mixin make-col-offset($size, $columns: $grid-columns) {
+  $num: calc($size / $columns);
+  margin-left: if($num == 0, 0, calc(100% * $num));
+}

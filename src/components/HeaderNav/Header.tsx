@@ -173,34 +173,34 @@ export const Header = (props: Props) => {
               <ul class="view-switcher">
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsZineVisible)}
-                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event)}
                   href="/"
                   active={isZineVisible()}
                   body={t('Journal')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsFeedVisible)}
-                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event)}
                   href="/feed"
                   active={isFeedVisible()}
                   body={t('Feed')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsTopicsVisible)}
-                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event)}
                   href="/topic"
                   active={isTopicsVisible()}
                   body={t('Topics')}
                 />
                 <Link
                   onMouseOver={(event?: MouseEvent) => hideSubnavigation(event, 0)}
-                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event)}
                   href="/author"
                   body={t('Authors')}
                 />
                 <Link
                   onMouseOver={() => toggleSubnavigation(true, setIsKnowledgeBaseVisible)}
-                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event, 0)}
+                  onMouseOut={(event?: MouseEvent) => hideSubnavigation(event)}
                   href="/guide"
                   body={t('Knowledge base')}
                   active={isKnowledgeBaseVisible()}

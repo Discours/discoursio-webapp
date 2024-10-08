@@ -4,7 +4,6 @@ import { Show, createEffect, createSignal, lazy, on, onCleanup, onMount } from '
 import { createStore } from 'solid-js/store'
 import { debounce } from 'throttle-debounce'
 import { EditorComponent } from '~/components/Editor/Editor'
-import { Panel } from '~/components/Editor/Panel/Panel'
 import { DropArea } from '~/components/_shared/DropArea'
 import { Icon } from '~/components/_shared/Icon'
 import { InviteMembers } from '~/components/_shared/InviteMembers'
@@ -265,6 +264,164 @@ export const EditView = (props: Props) => {
     setIsLeadVisible(true)
   }
 
+  const HeadingActions = () => {
+    return (
+      <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
+        <Show when={props.shout}>
+          <div class={styles.headingActions}>
+            <Show when={!isSubtitleVisible() && props.shout.layout !== 'audio'}>
+              <div class={styles.action} onClick={showSubtitleInput}>
+                {t('Add subtitle')}
+              </div>
+            </Show>
+            <Show when={!isLeadVisible() && props.shout.layout !== 'audio'}>
+              <div class={styles.action} onClick={showLeadInput}>
+                {t('Add intro')}
+              </div>
+            </Show>
+          </div>
+          <>
+            <div class={clsx({ [styles.audioHeader]: props.shout.layout === 'audio' })}>
+              <div class={styles.inputContainer}>
+                <GrowingTextarea
+                  allowEnterKey={true}
+                  value={(value) => handleTitleInputChange(value)}
+                  class={styles.titleInput}
+                  placeholder={articleTitle()}
+                  initialValue={form.title}
+                  maxLength={MAX_HEADER_LIMIT}
+                />
+
+                <Show when={formErrors.title}>
+                  <div class={styles.validationError}>{formErrors.title}</div>
+                </Show>
+
+                <Show when={props.shout.layout === 'audio'}>
+                  <div class={styles.additional}>
+                    <input
+                      type="text"
+                      placeholder={t('Artist...')}
+                      class={styles.additionalInput}
+                      value={mediaItems()[0]?.artist || ''}
+                      onChange={(event) => handleBaseFieldsChange('artist', event.target.value)}
+                    />
+                    <input
+                      type="number"
+                      min="1900"
+                      max={new Date().getFullYear()}
+                      step="1"
+                      class={styles.additionalInput}
+                      placeholder={t('Release date...')}
+                      value={mediaItems()[0]?.date || ''}
+                      onChange={(event) => handleBaseFieldsChange('date', event.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder={t('Genre...')}
+                      class={styles.additionalInput}
+                      value={mediaItems()[0]?.genre || ''}
+                      onChange={(event) => handleBaseFieldsChange('genre', event.target.value)}
+                    />
+                  </div>
+                </Show>
+                <Show when={props.shout.layout !== 'audio'}>
+                  <Show when={isSubtitleVisible()}>
+                    <GrowingTextarea
+                      textAreaRef={setSubtitleInput}
+                      allowEnterKey={false}
+                      value={(value) => handleInputChange('subtitle', value || '')}
+                      class={styles.subtitleInput}
+                      placeholder={t('Subheader')}
+                      initialValue={form.subtitle || ''}
+                      maxLength={MAX_HEADER_LIMIT}
+                    />
+                  </Show>
+                  <Show when={isLeadVisible()}>
+                    <MicroEditor
+                      placeholder={t('A short introduction to keep the reader interested')}
+                      content={form.lead}
+                      onChange={(value: string) => handleInputChange('lead', value)}
+                    />
+                  </Show>
+                </Show>
+              </div>
+              <Show when={props.shout.layout === 'audio'}>
+                <Show
+                  when={form.coverImageUrl}
+                  fallback={
+                    <DropArea
+                      isSquare={true}
+                      placeholder={t('Add cover')}
+                      description={
+                        <>
+                          {t('min. 1400×1400 pix')}
+                          <br />
+                          {t('jpg, .png, max. 10 mb.')}
+                        </>
+                      }
+                      isMultiply={false}
+                      fileType={'image'}
+                      onUpload={(val) => handleInputChange('coverImageUrl', val[0].url)}
+                    />
+                  }
+                >
+                  <div
+                    class={styles.cover}
+                    style={{
+                      'background-image': `url(${getImageUrl(form.coverImageUrl || '', {
+                        width: 1600
+                      })})`
+                    }}
+                  >
+                    <Popover content={t('Delete cover')}>
+                      {(triggerRef: (_el: HTMLElement | null) => void) => (
+                        <div
+                          ref={triggerRef}
+                          class={styles.delete}
+                          onClick={() => handleInputChange('coverImageUrl', '')}
+                        >
+                          <Icon name="close-white" />
+                        </div>
+                      )}
+                    </Popover>
+                  </div>
+                </Show>
+              </Show>
+            </div>
+
+            <Show when={props.shout.layout === 'image'}>
+              <EditorSwiper
+                images={mediaItems()}
+                onImageChange={handleMediaChange}
+                onImageDelete={(index) => handleMediaDelete(index)}
+                onImagesAdd={(value: MediaItem[]) => handleAddMedia(value)}
+                onImagesSorted={(value) => handleSortedMedia(value)}
+              />
+            </Show>
+
+            <Show when={props.shout.layout === 'video'}>
+              <VideoUploader
+                video={mediaItems()}
+                onVideoAdd={(data) => handleAddMedia(data)}
+                onVideoDelete={(index) => handleMediaDelete(index)}
+              />
+            </Show>
+
+            <Show when={props.shout.layout === 'audio'}>
+              <AudioUploader
+                audio={mediaItems()}
+                baseFields={baseAudioFields()}
+                onAudioAdd={(value) => handleAddMedia(value)}
+                onAudioChange={handleMediaChange}
+                onAudioSorted={(value) => handleSortedMedia(value)}
+              />
+            </Show>
+          </>
+        </Show>
+      </div>
+    )
+  }
+
   return (
     <>
       <div class={styles.container}>
@@ -289,159 +446,7 @@ export const EditView = (props: Props) => {
             </div>
 
             <div class="row">
-              <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
-                <Show when={props.shout}>
-                  <div class={styles.headingActions}>
-                    <Show when={!isSubtitleVisible() && props.shout.layout !== 'audio'}>
-                      <div class={styles.action} onClick={showSubtitleInput}>
-                        {t('Add subtitle')}
-                      </div>
-                    </Show>
-                    <Show when={!isLeadVisible() && props.shout.layout !== 'audio'}>
-                      <div class={styles.action} onClick={showLeadInput}>
-                        {t('Add intro')}
-                      </div>
-                    </Show>
-                  </div>
-                  <>
-                    <div class={clsx({ [styles.audioHeader]: props.shout.layout === 'audio' })}>
-                      <div class={styles.inputContainer}>
-                        <GrowingTextarea
-                          allowEnterKey={true}
-                          value={(value) => handleTitleInputChange(value)}
-                          class={styles.titleInput}
-                          placeholder={articleTitle()}
-                          initialValue={form.title}
-                          maxLength={MAX_HEADER_LIMIT}
-                        />
-
-                        <Show when={formErrors.title}>
-                          <div class={styles.validationError}>{formErrors.title}</div>
-                        </Show>
-
-                        <Show when={props.shout.layout === 'audio'}>
-                          <div class={styles.additional}>
-                            <input
-                              type="text"
-                              placeholder={t('Artist...')}
-                              class={styles.additionalInput}
-                              value={mediaItems()[0]?.artist || ''}
-                              onChange={(event) => handleBaseFieldsChange('artist', event.target.value)}
-                            />
-                            <input
-                              type="number"
-                              min="1900"
-                              max={new Date().getFullYear()}
-                              step="1"
-                              class={styles.additionalInput}
-                              placeholder={t('Release date...')}
-                              value={mediaItems()[0]?.date || ''}
-                              onChange={(event) => handleBaseFieldsChange('date', event.target.value)}
-                            />
-                            <input
-                              type="text"
-                              placeholder={t('Genre...')}
-                              class={styles.additionalInput}
-                              value={mediaItems()[0]?.genre || ''}
-                              onChange={(event) => handleBaseFieldsChange('genre', event.target.value)}
-                            />
-                          </div>
-                        </Show>
-                        <Show when={props.shout.layout !== 'audio'}>
-                          <Show when={isSubtitleVisible()}>
-                            <GrowingTextarea
-                              textAreaRef={setSubtitleInput}
-                              allowEnterKey={false}
-                              value={(value) => handleInputChange('subtitle', value || '')}
-                              class={styles.subtitleInput}
-                              placeholder={t('Subheader')}
-                              initialValue={form.subtitle || ''}
-                              maxLength={MAX_HEADER_LIMIT}
-                            />
-                          </Show>
-                          <Show when={isLeadVisible()}>
-                            <MicroEditor
-                              placeholder={t('A short introduction to keep the reader interested')}
-                              content={form.lead}
-                              onChange={(value: string) => handleInputChange('lead', value)}
-                            />
-                          </Show>
-                        </Show>
-                      </div>
-                      <Show when={props.shout.layout === 'audio'}>
-                        <Show
-                          when={form.coverImageUrl}
-                          fallback={
-                            <DropArea
-                              isSquare={true}
-                              placeholder={t('Add cover')}
-                              description={
-                                <>
-                                  {t('min. 1400×1400 pix')}
-                                  <br />
-                                  {t('jpg, .png, max. 10 mb.')}
-                                </>
-                              }
-                              isMultiply={false}
-                              fileType={'image'}
-                              onUpload={(val) => handleInputChange('coverImageUrl', val[0].url)}
-                            />
-                          }
-                        >
-                          <div
-                            class={styles.cover}
-                            style={{
-                              'background-image': `url(${getImageUrl(form.coverImageUrl || '', {
-                                width: 1600
-                              })})`
-                            }}
-                          >
-                            <Popover content={t('Delete cover')}>
-                              {(triggerRef: (_el: HTMLElement | null) => void) => (
-                                <div
-                                  ref={triggerRef}
-                                  class={styles.delete}
-                                  onClick={() => handleInputChange('coverImageUrl', '')}
-                                >
-                                  <Icon name="close-white" />
-                                </div>
-                              )}
-                            </Popover>
-                          </div>
-                        </Show>
-                      </Show>
-                    </div>
-
-                    <Show when={props.shout.layout === 'image'}>
-                      <EditorSwiper
-                        images={mediaItems()}
-                        onImageChange={handleMediaChange}
-                        onImageDelete={(index) => handleMediaDelete(index)}
-                        onImagesAdd={(value: MediaItem[]) => handleAddMedia(value)}
-                        onImagesSorted={(value) => handleSortedMedia(value)}
-                      />
-                    </Show>
-
-                    <Show when={props.shout.layout === 'video'}>
-                      <VideoUploader
-                        video={mediaItems()}
-                        onVideoAdd={(data) => handleAddMedia(data)}
-                        onVideoDelete={(index) => handleMediaDelete(index)}
-                      />
-                    </Show>
-
-                    <Show when={props.shout.layout === 'audio'}>
-                      <AudioUploader
-                        audio={mediaItems()}
-                        baseFields={baseAudioFields()}
-                        onAudioAdd={(value) => handleAddMedia(value)}
-                        onAudioChange={handleMediaChange}
-                        onAudioSorted={(value) => handleSortedMedia(value)}
-                      />
-                    </Show>
-                  </>
-                </Show>
-              </div>
+              <HeadingActions />
             </div>
             <Show when={draft()?.id} fallback={<Loading />}>
               <EditorComponent
@@ -453,9 +458,6 @@ export const EditView = (props: Props) => {
           </div>
         </form>
       </div>
-      <Show when={props.shout}>
-        <Panel shoutId={props.shout.id} />
-      </Show>
 
       <Modal variant="medium" name="inviteCoauthors">
         <InviteMembers variant={'coauthors'} title={t('Invite experts')} />

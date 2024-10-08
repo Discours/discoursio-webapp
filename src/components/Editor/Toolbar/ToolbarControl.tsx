@@ -5,7 +5,7 @@ import { Popover } from '~/components/_shared/Popover'
 
 import styles from '../MiniEditor.module.scss'
 
-interface ControlProps {
+export interface ControlProps {
   editor: Editor | undefined
   title: string
   key: string

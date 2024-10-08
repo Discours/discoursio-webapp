@@ -1,4 +1,5 @@
 import { HocuspocusProvider } from '@hocuspocus/provider'
+import { UploadFile } from '@solid-primitives/upload'
 import { Editor, EditorOptions, isTextSelection } from '@tiptap/core'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { CharacterCount } from '@tiptap/extension-character-count'
@@ -6,9 +7,10 @@ import { Collaboration } from '@tiptap/extension-collaboration'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { FloatingMenu } from '@tiptap/extension-floating-menu'
 import { Placeholder } from '@tiptap/extension-placeholder'
-import { Show, createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { createTiptapEditor } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
-import { Doc, Transaction } from 'yjs'
+import { Doc } from 'yjs'
 import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
@@ -24,6 +26,8 @@ import { IncutBubbleMenu } from './Toolbar/IncutBubbleMenu'
 import { TextBubbleMenu } from './Toolbar/TextBubbleMenu'
 
 import './Editor.module.scss'
+import { isServer } from 'solid-js/web'
+import { Panel } from './Panel/Panel'
 
 export type EditorComponentProps = {
   shoutId: number
@@ -37,35 +41,61 @@ const providers: Record<string, HocuspocusProvider> = {}
 
 export const EditorComponent = (props: EditorComponentProps) => {
   const { t } = useLocalize()
-  const { session } = useSession()
+  const { session, requireAuthentication } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
   const { showSnackbar } = useSnackbar()
-  const { createEditor, countWords, editor } = useEditorContext()
+  const { countWords, setEditing } = useEditorContext()
   const [editorOptions, setEditorOptions] = createSignal<Partial<EditorOptions>>({})
   const [editorElRef, setEditorElRef] = createSignal<HTMLElement | undefined>()
   const [textBubbleMenuRef, setTextBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
-  const [incutBubbleMenuRef, setIncutBubbleMenuRef] = createSignal<HTMLElement | undefined>()
-  const [figureBubbleMenuRef, setFigureBubbleMenuRef] = createSignal<HTMLElement | undefined>()
-  const [blockquoteBubbleMenuRef, setBlockquoteBubbleMenuRef] = createSignal<HTMLElement | undefined>()
+  const [incutBubbleMenuRef, setIncutBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
+  const [figureBubbleMenuRef, setFigureBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
+  const [blockquoteBubbleMenuRef, setBlockquoteBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
   const [floatingMenuRef, setFloatingMenuRef] = createSignal<HTMLDivElement | undefined>()
+  const [editor, setEditor] = createSignal<Editor | null>(null)
+  const [menusInitialized, setMenusInitialized] = createSignal(false)
+
+  // store tiptap editor in context provider's signal to use it in Panel
+  createEffect(() => setEditing(editor() || undefined))
+
+  /**
+   * Создает экземпляр редактора с заданными опциями
+   * @param opts Опции редактора
+   */
+  const createEditorInstance = (opts?: Partial<EditorOptions>) => {
+    if (!opts?.element) {
+      console.error('Editor options or element is missing')
+      return
+    }
+    console.log('stage 2: create editor instance without menus', opts)
+
+    const old = editor() || { options: {} }
+    const fresh = createTiptapEditor(() => ({
+      ...old?.options,
+      ...opts,
+      element: opts.element as HTMLElement
+    }))
+    if (old instanceof Editor) old?.destroy()
+    setEditor(fresh() || null)
+  }
 
   const handleClipboardPaste = async () => {
     try {
-      const clipboardItems = await navigator.clipboard.read()
+      const clipboardItems: ClipboardItems = await navigator.clipboard.read()
 
       if (clipboardItems.length === 0) return
       const [clipboardItem] = clipboardItems
       const { types } = clipboardItem
-      const imageType = types.find((type) => allowedImageTypes.has(type))
+      const imageType: string | undefined = types.find((type) => allowedImageTypes.has(type))
 
       if (!imageType) return
       const blob = await clipboardItem.getType(imageType)
       const extension = imageType.split('/')[1]
       const file = new File([blob], `clipboardImage.${extension}`)
 
-      const uplFile = {
+      const uplFile: UploadFile = {
         source: blob.toString(),
         name: file.name,
         size: file.size,
@@ -73,7 +103,10 @@ export const EditorComponent = (props: EditorComponentProps) => {
       }
 
       showSnackbar({ body: t('Uploading image') })
-      const image = await handleImageUpload(uplFile, session()?.access_token || '')
+      const image: { url: string; originalFilename?: string } = await handleImageUpload(
+        uplFile,
+        session()?.access_token || ''
+      )
       renderUploadedImage(editor() as Editor, image)
     } catch (error) {
       console.error('[Paste Image Error]:', error)
@@ -81,180 +114,243 @@ export const EditorComponent = (props: EditorComponentProps) => {
     return false
   }
 
-  createEffect(
-    on([editorOptions, editorElRef, author], ([opts, element, a]) => {
-      if (!opts && a && element) {
-        const options = {
-          element: editorElRef()!,
-          editorProps: {
-            attributes: { class: 'articleEditor' },
-            transformPastedHTML: (c: string) => c.replaceAll(/<img.*?>/g, ''),
-            handlePaste: handleClipboardPaste
-          },
-          extensions: [
-            ...base,
-            ...custom,
-            ...extended,
-
-            Placeholder.configure({ placeholder: t('Add a link or click plus to embed media') }),
-            CharacterCount.configure(), // https://github.com/ueberdosis/tiptap/issues/2589#issuecomment-1093084689
-
-            // menus
-
-            BubbleMenu.configure({
-              pluginKey: 'textBubbleMenu',
-              element: textBubbleMenuRef(),
-              shouldShow: ({ editor: e, view, state: { doc, selection }, from, to }) => {
-                const isEmptyTextBlock =
-                  doc.textBetween(from, to).length === 0 && isTextSelection(selection)
-                isEmptyTextBlock &&
-                  e?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
-
-                setIsCommonMarkup(e?.isActive('figcaption'))
-                const result =
-                  (view.hasFocus() &&
-                    !selection.empty &&
-                    !isEmptyTextBlock &&
-                    !e.isActive('image') &&
-                    !e.isActive('figure')) ||
-                  e.isActive('footnote') ||
-                  (e.isActive('figcaption') && !selection.empty)
-                setShouldShowTextBubbleMenu(result)
-                return result
-              },
-              tippyOptions: {
-                onHide: () => editor()?.commands.focus() as false
-              }
-            }),
-            BubbleMenu.configure({
-              pluginKey: 'blockquoteBubbleMenu',
-              element: blockquoteBubbleMenuRef(),
-              shouldShow: ({ editor: e, view, state }) =>
-                view.hasFocus() && !state.selection.empty && e.isActive('blockquote')
-            }),
-            BubbleMenu.configure({
-              pluginKey: 'figureBubbleMenu',
-              element: figureBubbleMenuRef(),
-              shouldShow: ({ editor: e, view, state }) =>
-                view.hasFocus() && !state.selection.empty && e.isActive('figure')
-            }),
-            BubbleMenu.configure({
-              pluginKey: 'incutBubbleMenu',
-              element: incutBubbleMenuRef(),
-              shouldShow: ({ editor: e, view, state }) =>
-                view.hasFocus() && !state.selection.empty && e.isActive('figcaption')
-            }),
-            FloatingMenu.configure({
-              element: floatingMenuRef(),
-              pluginKey: 'floatingMenu',
-              shouldShow: ({ editor: e, state: { selection } }) => {
-                const isRootDepth = selection.$anchor.depth === 1
-                if (!(isRootDepth && selection.empty)) return false
-                return !(e.isActive('codeBlock') || e.isActive('heading'))
-              }
-            })
-
-            // dynamic
-            // Collaboration.configure({ document: yDocs[docName] }),
-            // CollaborationCursor.configure({ provider: providers[docName], user: { name: a.name, color: uniqolor(a.slug).color } }),
-          ],
-          onTransaction({ transaction, editor }: { transaction: Transaction; editor: Editor }) {
-            if (transaction.changed) {
-              // Get the current HTML content from the editor
-              const html = editor.getHTML()
-
-              // Trigger the onChange callback with the updated HTML
-              html && props.onChange(html)
-
-              // Get the word count from the editor's storage (using CharacterCount)
-              const wordCount = editor.storage.characterCount.words()
-
-              // Update the word count
-              wordCount && countWords(wordCount)
-            }
-          },
-          content: props.initialContent || ''
+  // stage 0: update editor options
+  const setupEditor = () => {
+    console.log('stage 0: update editor options')
+    const options: Partial<EditorOptions> = {
+      element: editorElRef()!,
+      editorProps: {
+        attributes: { class: 'articleEditor' },
+        transformPastedHTML: (c: string) => c.replaceAll(/<img.*?>/g, ''),
+        handlePaste: (_view, _event, _slice) => {
+          handleClipboardPaste().then((result) => result)
+          return false
         }
-        setEditorOptions(options as unknown as Partial<EditorOptions>)
-        createEditor(options as unknown as Partial<EditorOptions>)
-      }
-    })
-  )
-
-  createEffect(
-    on(
-      [
-        editor,
-        () => !props.disableCollaboration,
-        () => `shout-${props.shoutId}`,
-        () => session()?.access_token || '',
-        author
+      },
+      extensions: [
+        ...base,
+        ...custom,
+        ...extended,
+        Placeholder.configure({
+          placeholder: t('Add a link or click plus to embed media')
+        }),
+        CharacterCount.configure()
       ],
-      ([e, collab, docName, token, profile]) => {
-        if (!e) return
-
-        if (!yDocs[docName]) {
-          yDocs[docName] = new Doc()
+      onTransaction({ transaction, editor }) {
+        if (transaction.docChanged) {
+          const html = editor.getHTML()
+          html && props.onChange(html)
+          const wordCount: number = editor.storage.characterCount.words()
+          const charsCount: number = editor.storage.characterCount.characters()
+          wordCount && countWords({ words: wordCount, characters: charsCount })
         }
+      },
+      content: props.initialContent ?? null
+    }
+    console.log('Editor options created:', options)
+    setEditorOptions(() => options)
+  }
 
-        if (!providers[docName]) {
-          providers[docName] = new HocuspocusProvider({
-            url: 'wss://hocuspocus.discours.io',
-            name: docName,
-            document: yDocs[docName],
-            token
-          })
-        }
-
-        collab &&
-          createEditor({
-            ...editorOptions(),
-            extensions: [
-              ...(editor()?.options.extensions || []),
-              Collaboration.configure({ document: yDocs[docName] }),
-              CollaborationCursor.configure({
-                provider: providers[docName],
-                user: { name: profile.name, color: uniqolor(profile.slug).color }
-              })
-            ]
-          })
-      }
-    )
-  )
-
+  // stage 1: create editor options when got author profile
   createEffect(
-    on(editorElRef, (ee: HTMLElement | undefined) => {
-      ee?.addEventListener('focus', (_event) => {
-        if (editor()?.isActive('figcaption')) {
-          editor()?.commands.focus()
-        }
-      })
+    on([editorOptions, author], ([opts, a]: [Partial<EditorOptions> | undefined, Author | undefined]) => {
+      if (isServer) return
+      console.log('stage 1: create editor options when got author profile', { opts, a })
+      const noOptions = !opts || Object.keys(opts).length === 0
+      noOptions && a && setTimeout(setupEditor, 1)
     })
   )
+
+  // Перенос всех эффектов, зависящих от editor, внутрь onMount
+  onMount(() => {
+    console.log('Editor component mounted')
+    editorElRef()?.addEventListener('focus', handleFocus)
+    requireAuthentication(() => {
+      setTimeout(() => {
+        setupEditor()
+
+        // Создаем экземпляр редактора после монтирования
+        createEditorInstance(editorOptions())
+
+        // Инициализируем меню после создания редактора
+        if (editor()) {
+          initializeMenus()
+        }
+
+        // Инициализируем коллаборацию если необходимо
+        if (!props.disableCollaboration) {
+          initializeCollaboration()
+        }
+      }, 1200)
+    }, 'edit')
+  })
+
+  const initializeMenus = () => {
+    if (menusInitialized() || !editor()) return
+
+    console.log('stage 3: initialize menus when editor instance is ready')
+
+    if (
+      textBubbleMenuRef() &&
+      blockquoteBubbleMenuRef() &&
+      figureBubbleMenuRef() &&
+      incutBubbleMenuRef() &&
+      floatingMenuRef()
+    ) {
+      const menus = [
+        BubbleMenu.configure({
+          pluginKey: 'textBubbleMenu',
+          element: textBubbleMenuRef(),
+          shouldShow: ({ editor: e, view, state: { doc, selection }, from, to }) => {
+            const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
+            isEmptyTextBlock &&
+              e?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
+
+            setIsCommonMarkup(e?.isActive('figcaption'))
+            const result =
+              (view.hasFocus() &&
+                !selection.empty &&
+                !isEmptyTextBlock &&
+                !e.isActive('image') &&
+                !e.isActive('figure')) ||
+              e.isActive('footnote') ||
+              (e.isActive('figcaption') && !selection.empty)
+            setShouldShowTextBubbleMenu(result)
+            return result
+          },
+          tippyOptions: {
+            onHide: () => editor()?.commands.focus() as false
+          }
+        }),
+        BubbleMenu.configure({
+          pluginKey: 'blockquoteBubbleMenu',
+          element: blockquoteBubbleMenuRef(),
+          shouldShow: ({ editor: e, view, state }) =>
+            view.hasFocus() && !state.selection.empty && e?.isActive('blockquote')
+        }),
+        BubbleMenu.configure({
+          pluginKey: 'figureBubbleMenu',
+          element: figureBubbleMenuRef(),
+          shouldShow: ({ editor: e, view, state }) =>
+            view.hasFocus() && !state.selection.empty && e?.isActive('figure')
+        }),
+        BubbleMenu.configure({
+          pluginKey: 'incutBubbleMenu',
+          element: incutBubbleMenuRef(),
+          shouldShow: ({ editor: e, view, state }) =>
+            view.hasFocus() && !state.selection.empty && e?.isActive('figcaption')
+        }),
+        FloatingMenu.configure({
+          element: floatingMenuRef(),
+          pluginKey: 'floatingMenu',
+          shouldShow: ({ editor: e, state: { selection } }) => {
+            const isRootDepth = selection.$anchor.depth === 1
+            const show =
+              isRootDepth && selection.empty && !(e?.isActive('codeBlock') || e?.isActive('heading'))
+            console.log('FloatingMenu shouldShow:', show)
+            return show
+          }
+        })
+      ]
+      const extensions = [...(editorOptions().extensions || []), ...menus]
+      setEditorOptions((prev) => ({ ...prev, extensions }))
+      console.log('Editor menus initialized:', extensions)
+      setMenusInitialized(true)
+    } else {
+      console.error('Some menu references are missing')
+    }
+  }
+
+  const initializeCollaboration = () => {
+    if (!editor()) {
+      console.error('Editor is not initialized')
+      return
+    }
+
+    try {
+      const docName = `shout-${props.shoutId}`
+      const token = session()?.access_token || ''
+      const profile = author()
+
+      if (!(token && profile)) {
+        throw new Error('Missing authentication data')
+      }
+
+      if (!yDocs[docName]) {
+        yDocs[docName] = new Doc()
+      }
+
+      if (!providers[docName]) {
+        providers[docName] = new HocuspocusProvider({
+          url: 'wss://hocuspocus.discours.io',
+          name: docName,
+          document: yDocs[docName],
+          token
+        })
+        console.log(`HocuspocusProvider установлен для ${docName}`)
+      }
+
+      setEditorOptions((prev: Partial<EditorOptions>) => {
+        const extensions = [...(prev.extensions || [])]
+        extensions.push(
+          Collaboration.configure({ document: yDocs[docName] }),
+          CollaborationCursor.configure({
+            provider: providers[docName],
+            user: { name: profile.name, color: uniqolor(profile.slug).color }
+          })
+        )
+        console.log('collab extensions added:', extensions)
+        return { ...prev, extensions }
+      })
+    } catch (error) {
+      console.error('Error initializing collaboration:', error)
+      showSnackbar({ body: t('Failed to initialize collaboration') })
+    }
+  }
+
+  const handleFocus = (event: FocusEvent) => {
+    console.log('handling focus event', event)
+    if (editor()?.isActive('figcaption')) {
+      editor()?.commands.focus()
+      console.log('active figcaption detected, focusing editor')
+    }
+  }
 
   onCleanup(() => {
+    editorElRef()?.removeEventListener('focus', handleFocus)
     editor()?.destroy()
   })
 
   return (
     <>
+      <div>
+        <Show when={editor()} keyed>
+          {(ed: Editor) => (
+            <>
+              <TextBubbleMenu
+                shouldShow={shouldShowTextBubbleMenu()}
+                isCommonMarkup={isCommonMarkup()}
+                editor={ed}
+                ref={setTextBubbleMenuRef}
+              />
+              <BlockquoteBubbleMenu editor={ed} ref={setBlockquoteBubbleMenuRef} />
+              <FigureBubbleMenu editor={ed} ref={setFigureBubbleMenuRef} />
+              <IncutBubbleMenu editor={ed} ref={setIncutBubbleMenuRef} />
+              <EditorFloatingMenu editor={ed} ref={setFloatingMenuRef} />
+            </>
+          )}
+        </Show>
+      </div>
+
       <div class="row">
         <div class="col-md-5" />
         <div class="col-md-12">
           <div ref={setEditorElRef} id="editorBody" />
         </div>
       </div>
-      <Show when={editor()}>
-        <TextBubbleMenu
-          shouldShow={shouldShowTextBubbleMenu()}
-          isCommonMarkup={isCommonMarkup()}
-          editor={editor() as Editor}
-          ref={setTextBubbleMenuRef}
-        />
-        <BlockquoteBubbleMenu ref={setBlockquoteBubbleMenuRef} editor={editor() as Editor} />
-        <FigureBubbleMenu editor={editor() as Editor} ref={setFigureBubbleMenuRef} />
-        <IncutBubbleMenu editor={editor() as Editor} ref={setIncutBubbleMenuRef} />
-        <EditorFloatingMenu editor={editor() as Editor} ref={setFloatingMenuRef} />
+
+      <Show when={props.shoutId}>
+        <Panel shoutId={props.shoutId} />
       </Show>
     </>
   )

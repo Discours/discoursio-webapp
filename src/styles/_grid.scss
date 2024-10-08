@@ -31,6 +31,40 @@
         @include make-col($i, $grid-columns);
       }
     }
+
+    // Добавляем классы для управления порядком колонок
+    .order#{$infix}-first { order: -1; }
+    .order#{$infix}-last { order: $grid-columns + 1; }
+
+    @for $i from 0 through $grid-columns {
+      .order#{$infix}-#{$i} { order: $i; }
+    }
+
+    // Добавляем классы для смещения колонок
+    @for $i from 0 through $grid-columns - 1 {
+      .offset#{$infix}-#{$i} {
+        @include make-col-offset($i, $grid-columns);
+      }
+    }
+  }
+}
+
+// Добавляем только используемые классы display для разных размеров экрана
+@each $breakpoint in map-keys($grid-breakpoints) {
+  $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint) {
+    .d#{$infix}-flex { display: flex !important; }
+    .d#{$infix}-none { display: none !important; }
+  }
+}
+
+// Добавляем только используемый класс justify-content для разных размеров экрана
+@each $breakpoint in map-keys($grid-breakpoints) {
+  $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint) {
+    .justify-content#{$infix}-between { justify-content: space-between !important; }
   }
 }
 

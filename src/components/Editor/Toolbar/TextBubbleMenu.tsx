@@ -23,7 +23,10 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
 
   const isActive = (name: string, attributes?: Record<string, string | number>) =>
     createEditorTransaction(
-      () => props.editor,
+      () => {
+        console.log('isActive', name, attributes)
+        return props.editor
+      },
       (editor) => editor?.isActive(name, attributes)
     )
 

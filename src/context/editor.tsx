@@ -1,9 +1,8 @@
 import { useMatch, useNavigate } from '@solidjs/router'
-import { Editor, EditorOptions } from '@tiptap/core'
+import { Editor } from '@tiptap/core'
 import type { JSX } from 'solid-js'
 import { Accessor, createContext, createSignal, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
-import { createTiptapEditor } from 'solid-tiptap'
 import { useSnackbar } from '~/context/ui'
 import deleteShoutQuery from '~/graphql/mutation/core/article-delete'
 import updateShoutQuery from '~/graphql/mutation/core/article-update'
@@ -13,7 +12,7 @@ import { useFeed } from '../context/feed'
 import { useLocalize } from './localize'
 import { useSession } from './session'
 
-type WordCounter = {
+export type WordCounter = {
   characters: number
   words: number
 }
@@ -49,8 +48,8 @@ export type EditorContextType = {
   countWords: (value: WordCounter) => void
   setForm: SetStoreFunction<ShoutForm>
   setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
-  editor: Accessor<Editor | undefined>
-  createEditor: (opts?: Partial<EditorOptions>) => void
+  editing: Accessor<Editor | undefined>
+  setEditing: SetStoreFunction<Editor | undefined>
 }
 
 export const EditorContext = createContext<EditorContextType>({} as EditorContextType)
@@ -84,7 +83,6 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   const matchEdit = useMatch(() => '/edit')
   const matchEditSettings = useMatch(() => '/editSettings')
   const { client } = useSession()
-  const [editor, setEditor] = createSignal<Editor | undefined>()
   const { addFeed } = useFeed()
   const snackbar = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
@@ -268,17 +266,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  const createEditor = (opts?: Partial<EditorOptions>) => {
-    if (!opts) return
-    const old = editor() as Editor
-    const fresh = createTiptapEditor(() => ({
-      ...old.options,
-      ...opts,
-      element: opts.element as HTMLElement
-    }))
-    old?.destroy()
-    setEditor(fresh())
-  }
+  // current publishing editor instance to connect settings, panel and editor
+  const [editing, setEditing] = createSignal<Editor | undefined>(undefined)
 
   const actions = {
     saveShout,
@@ -292,8 +281,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     countWords,
     setForm,
     setFormErrors,
-    editor,
-    createEditor
+    setEditing
   }
 
   const value: EditorContextType = {
@@ -301,7 +289,8 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     form,
     formErrors,
     isEditorPanelVisible,
-    wordCounter
+    wordCounter,
+    editing
   }
 
   return <EditorContext.Provider value={value}>{props.children}</EditorContext.Provider>

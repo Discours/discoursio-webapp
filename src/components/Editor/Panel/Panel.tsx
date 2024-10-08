@@ -30,7 +30,7 @@ export const Panel = (props: Props) => {
     saveShout,
     saveDraft,
     publishShout,
-    editor
+    editing: editor
   } = useEditorContext()
 
   let containerRef: HTMLElement | undefined

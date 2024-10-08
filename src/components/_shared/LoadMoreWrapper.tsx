@@ -9,7 +9,7 @@ import { byCreated } from '~/utils/sort'
 export type LoadMoreItems = Shout[] | Author[] | Reaction[]
 
 type LoadMoreProps = {
-  loadFunction: (offset: number) => Promise<LoadMoreItems>
+  loadFunction: (offset: number) => Promise<LoadMoreItems | undefined>
   pageSize: number
   hidden?: boolean
   children: JSX.Element

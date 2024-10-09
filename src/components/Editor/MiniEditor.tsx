@@ -164,10 +164,9 @@ export function MiniEditor(props: MiniEditorProps): JSX.Element {
           value={t('Cancel')}
           variant="secondary"
           onClick={() => {
-              editor()?.commands.clearContent()
-              props.onCancel?.()
-            }
-          }
+            editor()?.commands.clearContent()
+            props.onCancel?.()
+          }}
         />
         <Button value={t('Save')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
       </div>

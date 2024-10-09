@@ -190,34 +190,36 @@ export const EditorComponent = (props: EditorComponentProps) => {
           pluginKey: 'textBubbleMenu',
           element: textBubbleMenuRef()!,
           shouldShow: ({ editor: e, view, state: { doc, selection }, from, to }) => {
-            const isEmptyTextBlock =
-              doc.textBetween(from, to).length === 0 && isTextSelection(selection)
+            const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
             if (isEmptyTextBlock) {
               e?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
             }
             const hasSelection = !selection.empty && from !== to
-            const isFootnoteOrFigcaption = e.isActive('footnote') || (e.isActive('figcaption') && hasSelection)
-            
+            const isFootnoteOrFigcaption =
+              e.isActive('footnote') || (e.isActive('figcaption') && hasSelection)
+
             setIsCommonMarkup(e?.isActive('figcaption'))
-            
-            const result = view.hasFocus() && 
-              hasSelection && 
-              !e.isActive('image') && 
+
+            const result =
+              view.hasFocus() &&
+              hasSelection &&
+              !e.isActive('image') &&
               !e.isActive('figure') &&
               (isFootnoteOrFigcaption || !e.isActive('figcaption'))
-            
+
             setShouldShowTextBubbleMenu(result)
             return result
           },
           tippyOptions: {
-            sticky: true,
+            sticky: true
             // onHide: () => { editor()?.commands.focus() }
           }
         }),
         BubbleMenu.configure({
           pluginKey: 'blockquoteBubbleMenu',
           element: blockquoteBubbleMenuRef()!,
-          shouldShow: ({ editor: e, state: { selection } }) => e.isFocused && !selection.empty && e.isActive('blockquote'),
+          shouldShow: ({ editor: e, state: { selection } }) =>
+            e.isFocused && !selection.empty && e.isActive('blockquote'),
           tippyOptions: {
             offset: [0, 0],
             placement: 'top',
@@ -235,15 +237,16 @@ export const EditorComponent = (props: EditorComponentProps) => {
         BubbleMenu.configure({
           pluginKey: 'incutBubbleMenu',
           element: incutBubbleMenuRef()!,
-          shouldShow: ({ editor: e, state: { selection } }) => e.isFocused && !selection.empty && e.isActive('figcaption'),
+          shouldShow: ({ editor: e, state: { selection } }) =>
+            e.isFocused && !selection.empty && e.isActive('figcaption'),
           tippyOptions: {
             offset: [0, -16],
             placement: 'top',
             getReferenceClientRect: () => {
               const selectedElement = editor()?.view.dom.querySelector('.has-focus')
               return selectedElement?.getBoundingClientRect() || new DOMRect()
-            },
-          },
+            }
+          }
         }),
         FloatingMenu.configure({
           element: floatingMenuRef()!,
@@ -255,7 +258,7 @@ export const EditorComponent = (props: EditorComponentProps) => {
             return !(e.isActive('codeBlock') || e.isActive('heading'))
           },
           tippyOptions: {
-            placement: 'left',
+            placement: 'left'
           }
         })
       ]
@@ -350,12 +353,12 @@ export const EditorComponent = (props: EditorComponentProps) => {
         <Show when={editor()} keyed>
           {(ed: Editor) => (
             <>
-            <TextBubbleMenu
-            shouldShow={shouldShowTextBubbleMenu()}
-            isCommonMarkup={isCommonMarkup()}
-            editor={ed}
-            ref={setTextBubbleMenuRef}
-          />
+              <TextBubbleMenu
+                shouldShow={shouldShowTextBubbleMenu()}
+                isCommonMarkup={isCommonMarkup()}
+                editor={ed}
+                ref={setTextBubbleMenuRef}
+              />
               <BlockquoteBubbleMenu editor={ed} ref={setBlockquoteBubbleMenuRef} />
               <FigureBubbleMenu editor={ed} ref={setFigureBubbleMenuRef} />
               <IncutBubbleMenu editor={ed} ref={setIncutBubbleMenuRef} />

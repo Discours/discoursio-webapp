@@ -1,6 +1,6 @@
 .TextBubbleMenu {
   background: var(--editor-bubble-menu-background);
-  box-shadow: 0 4px 10px rgba(#000, 0.25);
+  box-shadow: 0 4px 10px rgba(var(--primary-color), 0.25);
 
   &.growWidth {
     min-width: 460px;
@@ -36,7 +36,7 @@
   }
 
   .delimiter {
-    background: #999;
+    background: var(--secondary-color);
     display: inline-block;
     height: 1.4em;
     margin: 0 0.2em;
@@ -58,7 +58,7 @@
       left: 50%;
       transform: translateX(-50%);
       box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
-      background: var(--editor-bubble-menu-background);
+      background: var(--background-color);
       color: var(--default-color);
 
       & > header {

@@ -100,13 +100,11 @@
     "javascript-time-ago": "^2.5.11",
     "patch-package": "^8.0.0",
     "prosemirror-history": "^1.4.1",
-    "prosemirror-trailing-node": "^2.0.9",
+    "prosemirror-trailing-node": "^3.0.0",
     "prosemirror-view": "^1.34.3",
-    "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.79.4",
     "solid-js": "^1.9.2",
     "solid-tiptap": "0.7.0",
-    "solid-transition-group": "^0.2.3",
     "storybook": "^8.3.5",
     "storybook-addon-sass-postcss": "^0.3.2",
     "storybook-solidjs": "^1.0.0-beta.2",
@@ -133,10 +131,16 @@
     "yjs": "13.6.19",
     "y-prosemirror": "1.2.12"
   },
-  "trustedDependencies": ["@biomejs/biome", "@swc/core", "esbuild", "protobufjs"],
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@swc/core",
+    "esbuild",
+    "protobufjs"
+  ],
   "dependencies": {
     "form-data": "^4.0.0",
     "idb": "^8.0.0",
-    "mailgun.js": "^10.2.3"
+    "mailgun.js": "^10.2.3",
+    "solid-popper": "0.3.0"
   }
 }

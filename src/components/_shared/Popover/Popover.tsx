@@ -1,5 +1,5 @@
-import { JSX, Show, createSignal, onCleanup, onMount } from 'solid-js'
-import { createTooltip } from '~/lib/createTooltip'
+import { JSX, Show, createSignal, onMount } from 'solid-js'
+import usePopper from 'solid-popper'
 
 import styles from './Popover.module.scss'
 
@@ -7,58 +7,63 @@ type Props = {
   children: (setTooltipEl: (el: HTMLElement | null) => void) => JSX.Element
   content: string | JSX.Element
   disabled?: boolean
-  placement?: 'top' | 'bottom' | 'left' | 'right'
-  offset?: [number, number]
 }
 
 export const Popover = (props: Props) => {
   const [show, setShow] = createSignal(false)
   const [anchor, setAnchor] = createSignal<HTMLElement>()
-  const [tooltip, setTooltip] = createSignal<HTMLElement>()
+  const [popper, setPopper] = createSignal<HTMLElement>()
 
-  let tooltipInstance: ReturnType<typeof createTooltip> | undefined
+  usePopper(anchor, popper, {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [0, 8]
+        }
+      },
+      {
+        name: 'flip',
+        options: {
+          fallbackPlacements: ['top', 'bottom']
+        }
+      }
+    ]
+  })
 
-  onMount(() => {
-    const anchorEl = anchor()
-    const tooltipEl = tooltip()
+  const showEvents = ['mouseenter', 'focus']
+  const hideEvents = ['mouseleave', 'blur']
 
-    if (anchorEl && tooltipEl && !props.disabled) {
-      tooltipInstance = createTooltip(anchorEl, tooltipEl, {
-        placement: props.placement || 'top',
-        offset: props.offset || [0, 8]
+  const handleMouseOver = () => setShow(true)
+  const handleMouseOut = () => setShow(false)
+
+  if (!props.disabled) {
+    onMount(() => {
+      if (!anchor()) return
+      showEvents.forEach((event) => {
+        anchor()?.addEventListener(event, handleMouseOver)
       })
-    }
-  })
-
-  onCleanup(() => {
-    tooltipInstance?.destroy()
-  })
-
-  const handleMouseOver = () => {
-    if (!props.disabled) {
-      setShow(true)
-      tooltipInstance?.update()
-    }
-  }
-
-  const handleMouseOut = () => {
-    setShow(false)
+      hideEvents.forEach((event) => {
+        anchor()?.addEventListener(event, handleMouseOut)
+      })
+      return () => {
+        showEvents.forEach((event) => {
+          anchor()?.removeEventListener(event, handleMouseOver)
+        })
+        hideEvents.forEach((event) => {
+          anchor()?.removeEventListener(event, handleMouseOut)
+        })
+      }
+    })
   }
 
   return (
     <>
-      <div
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseOut}
-        onFocusIn={handleMouseOver}
-        onFocusOut={handleMouseOut}
-      >
-        {props.children(setAnchor)}
-      </div>
+      {props.children(setAnchor)}
       <Show when={show() && !props.disabled}>
-        <div ref={setTooltip} class={styles.tooltip}>
+        <div ref={setPopper} class={styles.tooltip}>
           {props.content}
-          <div class={styles.arrow} />
+          <div class={styles.arrow} data-popper-arrow={true} />
         </div>
       </Show>
     </>

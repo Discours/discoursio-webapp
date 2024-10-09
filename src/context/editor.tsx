@@ -50,6 +50,8 @@ export type EditorContextType = {
   setFormErrors: SetStoreFunction<Record<keyof ShoutForm, string>>
   editing: Accessor<Editor | undefined>
   setEditing: SetStoreFunction<Editor | undefined>
+  isCollabMode: Accessor<boolean>
+  setIsCollabMode: SetStoreFunction<boolean>
 }
 
 export const EditorContext = createContext<EditorContextType>({} as EditorContextType)
@@ -99,6 +101,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     words: 0
   })
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
+  const [isCollabMode, setIsCollabMode] = createSignal<boolean>(false)
   const countWords = (value: WordCounter) => setWordCounter(value)
   const validate = () => {
     if (!form.title) {
@@ -281,7 +284,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     countWords,
     setForm,
     setFormErrors,
-    setEditing
+    setEditing,
+    isCollabMode,
+    setIsCollabMode
   }
 
   const value: EditorContextType = {

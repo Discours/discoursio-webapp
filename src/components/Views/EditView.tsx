@@ -62,7 +62,8 @@ export const EditView = (props: Props) => {
     setFormErrors,
     saveDraft,
     saveDraftToLocalStorage,
-    getDraftFromLocalStorage
+    getDraftFromLocalStorage,
+    isCollabMode
   } = useEditorContext()
 
   const [subtitleInput, setSubtitleInput] = createSignal<HTMLTextAreaElement | undefined>()
@@ -453,6 +454,7 @@ export const EditView = (props: Props) => {
                 shoutId={form.shoutId}
                 initialContent={form.body}
                 onChange={(body: string) => handleInputChange('body', body)}
+                disableCollaboration={!isCollabMode()}
               />
             </Show>
           </div>

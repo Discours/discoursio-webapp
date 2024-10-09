@@ -16,10 +16,9 @@ import { Icon } from '~/components/_shared/Icon'
 import { Popover } from '~/components/_shared/Popover'
 import { useLocalize } from '~/context/localize'
 import { InsertLinkForm } from './InsertLinkForm'
+import { MiniEditor } from '../MiniEditor'
 
 import styles from './TextBubbleMenu.module.scss'
-
-const MiniEditor = lazy(() => import('../MiniEditor'))
 
 type BubbleMenuProps = {
   editor: Editor

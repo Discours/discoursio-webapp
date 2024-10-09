@@ -12,7 +12,7 @@ main {
   right: 0;
   padding-left: 42px;
   padding-right: 26px;
-  background: #fff;
+  background: var(--background-color);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -65,7 +65,7 @@ main {
 }
 
 .chat-list__search {
-  border-bottom: 3px solid #141414;
+  border-bottom: 3px solid var(--default-color);
   padding: 1em 0;
 }
 

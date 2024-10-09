@@ -1,3 +1,5 @@
+@import 'theme';
+
 $include-column-box-sizing: true !default;
 $rfs-breakpoint: 1460px !default;
 $rfs-base-value: 1.6rem !default;
@@ -30,10 +32,10 @@ $font-family: muller, arial, helvetica, sans-serif;
 $font-size-base: 2rem;
 $line-height-base: 1.6;
 
-// Базовые цвета (не зависящие от темы)
-$color-primary: #2638d9;
-$color-danger: #d00820;
-$default-color: #141414;
+// цвета
+$color-primary: var(--blue-500);
+$color-danger: var(--danger-color);
+$default-color: var(--black-500);
 
 // Другие переменные
 $border-radius: 2px;

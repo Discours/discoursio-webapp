@@ -1,6 +1,6 @@
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import { UploadFile } from '@solid-primitives/upload'
-import { Editor, EditorOptions } from '@tiptap/core'
+import { Editor, EditorOptions, isTextSelection } from '@tiptap/core'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { CharacterCount } from '@tiptap/extension-character-count'
 import { Collaboration } from '@tiptap/extension-collaboration'
@@ -43,13 +43,8 @@ export const EditorComponent = (props: EditorComponentProps) => {
   const { t } = useLocalize()
   const { session, requireAuthentication } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
-  const [isCommonMarkup, _setIsCommonMarkup] = createSignal(false)
-  const createMenuSignal = () => createSignal(false)
-  const [shouldShowTextBubbleMenu, _setShouldShowTextBubbleMenu] = createMenuSignal()
-  const [shouldShowBlockquoteBubbleMenu, _setShouldShowBlockquoteBubbleMenu] = createMenuSignal()
-  const [shouldShowFigureBubbleMenu, _setShouldShowFigureBubbleMenu] = createMenuSignal()
-  const [shouldShowIncutBubbleMenu, _setShouldShowIncutBubbleMenu] = createMenuSignal()
-  const [shouldShowFloatingMenu, _setShouldShowFloatingMenu] = createMenuSignal()
+  const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
+  const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
   const { showSnackbar } = useSnackbar()
   const { countWords, setEditing } = useEditorContext()
   const [editorOptions, setEditorOptions] = createSignal<Partial<EditorOptions>>({})
@@ -180,14 +175,8 @@ export const EditorComponent = (props: EditorComponentProps) => {
     requireAuthentication(() => {
       setTimeout(() => {
         setupEditor()
-
-        // Создаем экземпляр редактора после монтирования
         createEditorInstance(editorOptions())
-
-        // Инициализируем меню после создания редактора
-        if (editor()) {
-          initializeMenus()
-        }
+        initializeMenus()
       }, 1200)
     }, 'edit')
   })
@@ -196,30 +185,80 @@ export const EditorComponent = (props: EditorComponentProps) => {
     if (menusInitialized() || !editor()) return
     if (blockquoteBubbleMenuRef() && figureBubbleMenuRef() && incutBubbleMenuRef() && floatingMenuRef()) {
       console.log('stage 3: initialize menus when editor instance is ready')
-      const menuConfigs = [
-        { key: 'textBubbleMenu', ref: textBubbleMenuRef, shouldShow: shouldShowTextBubbleMenu },
-        {
-          key: 'blockquoteBubbleMenu',
-          ref: blockquoteBubbleMenuRef,
-          shouldShow: shouldShowBlockquoteBubbleMenu
-        },
-        { key: 'figureBubbleMenu', ref: figureBubbleMenuRef, shouldShow: shouldShowFigureBubbleMenu },
-        { key: 'incutBubbleMenu', ref: incutBubbleMenuRef, shouldShow: shouldShowIncutBubbleMenu },
-        { key: 'floatingMenu', ref: floatingMenuRef, shouldShow: shouldShowFloatingMenu, isFloating: true }
+      const menus = [
+        BubbleMenu.configure({
+          pluginKey: 'textBubbleMenu',
+          element: textBubbleMenuRef()!,
+          shouldShow: ({ editor: e, view, state: { doc, selection }, from, to }) => {
+            const isEmptyTextBlock =
+              doc.textBetween(from, to).length === 0 && isTextSelection(selection)
+            if (isEmptyTextBlock) {
+              e?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
+            }
+            const hasSelection = !selection.empty && from !== to
+            const isFootnoteOrFigcaption = e.isActive('footnote') || (e.isActive('figcaption') && hasSelection)
+            
+            setIsCommonMarkup(e?.isActive('figcaption'))
+            
+            const result = view.hasFocus() && 
+              hasSelection && 
+              !e.isActive('image') && 
+              !e.isActive('figure') &&
+              (isFootnoteOrFigcaption || !e.isActive('figcaption'))
+            
+            setShouldShowTextBubbleMenu(result)
+            return result
+          },
+          tippyOptions: {
+            sticky: true,
+            // onHide: () => { editor()?.commands.focus() }
+          }
+        }),
+        BubbleMenu.configure({
+          pluginKey: 'blockquoteBubbleMenu',
+          element: blockquoteBubbleMenuRef()!,
+          shouldShow: ({ editor: e, state: { selection } }) => e.isFocused && !selection.empty && e.isActive('blockquote'),
+          tippyOptions: {
+            offset: [0, 0],
+            placement: 'top',
+            getReferenceClientRect: () => {
+              const selectedElement = editor()?.view.dom.querySelector('.has-focus')
+              return selectedElement?.getBoundingClientRect() || new DOMRect()
+            }
+          }
+        }),
+        BubbleMenu.configure({
+          pluginKey: 'figureBubbleMenu',
+          element: figureBubbleMenuRef()!,
+          shouldShow: ({ editor: e, view }) => view.hasFocus() && e.isActive('figure')
+        }),
+        BubbleMenu.configure({
+          pluginKey: 'incutBubbleMenu',
+          element: incutBubbleMenuRef()!,
+          shouldShow: ({ editor: e, state: { selection } }) => e.isFocused && !selection.empty && e.isActive('figcaption'),
+          tippyOptions: {
+            offset: [0, -16],
+            placement: 'top',
+            getReferenceClientRect: () => {
+              const selectedElement = editor()?.view.dom.querySelector('.has-focus')
+              return selectedElement?.getBoundingClientRect() || new DOMRect()
+            },
+          },
+        }),
+        FloatingMenu.configure({
+          element: floatingMenuRef()!,
+          pluginKey: 'floatingMenu',
+          shouldShow: ({ editor: e, state: { selection } }) => {
+            const { $anchor, empty } = selection
+            const isRootDepth = $anchor.depth === 1
+            if (!(isRootDepth && empty)) return false
+            return !(e.isActive('codeBlock') || e.isActive('heading'))
+          },
+          tippyOptions: {
+            placement: 'left',
+          }
+        })
       ]
-      const menus = menuConfigs.map((config) =>
-        config.isFloating
-          ? FloatingMenu.configure({
-              pluginKey: config.key,
-              element: config.ref(),
-              shouldShow: config.shouldShow
-            })
-          : BubbleMenu.configure({
-              pluginKey: config.key,
-              element: config.ref(),
-              shouldShow: config.shouldShow
-            })
-      )
       setEditorOptions((prev) => ({ ...prev, extensions: [...(prev.extensions || []), ...menus] }))
       setMenusInitialized(true)
     } else {
@@ -311,12 +350,12 @@ export const EditorComponent = (props: EditorComponentProps) => {
         <Show when={editor()} keyed>
           {(ed: Editor) => (
             <>
-              <TextBubbleMenu
-                shouldShow={shouldShowTextBubbleMenu()}
-                isCommonMarkup={isCommonMarkup()}
-                editor={ed}
-                ref={setTextBubbleMenuRef}
-              />
+            <TextBubbleMenu
+            shouldShow={shouldShowTextBubbleMenu()}
+            isCommonMarkup={isCommonMarkup()}
+            editor={ed}
+            ref={setTextBubbleMenuRef}
+          />
               <BlockquoteBubbleMenu editor={ed} ref={setBlockquoteBubbleMenuRef} />
               <FigureBubbleMenu editor={ed} ref={setFigureBubbleMenuRef} />
               <IncutBubbleMenu editor={ed} ref={setIncutBubbleMenuRef} />

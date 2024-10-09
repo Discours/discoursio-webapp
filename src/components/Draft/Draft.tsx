@@ -53,7 +53,7 @@ export const Draft = (props: Props) => {
         <span class={styles.title}>{props.shout.title || t('Unnamed draft')}</span> {props.shout.subtitle}
       </div>
       <div class={styles.actions}>
-        <A class={styles.actionItem} href={`edit/${props.shout?.id.toString()}`}>
+        <A class={styles.actionItem} href={`/edit/${props.shout?.id.toString()}`}>
           {t('Edit')}
         </A>
         <span onClick={handlePublishLinkClick} class={clsx(styles.actionItem, styles.publish)}>

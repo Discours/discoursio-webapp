@@ -1,5 +1,4 @@
 @import 'fonts';
-@import 'theme';
 @import 'grid';
 
 *,
@@ -603,8 +602,7 @@ figure {
 }
 
 .view-switcher__counter {
-  align-items: center;
-  background: #f7f7f8;
+  background: var(--black-50);
   border-radius: 0.8rem;
   display: inline-flex;
   font-size: 1.2rem;
@@ -838,14 +836,6 @@ figure {
   }
 }
 
-.load-more-container {
-  text-align: center;
-
-  button {
-    padding: 0.6em 1.5em;
-  }
-}
-
 details {
   @include media-breakpoint-down(md) {
     padding-left: 3rem;
@@ -960,4 +950,32 @@ iframe {
 
 .img-align-column {
   clear: both;
+}
+
+.view-switcher__counter {
+  align-items: center;
+  background: var(--black-50);
+  border-radius: 0.8rem;
+  display: inline-flex;
+  font-size: 1.2rem;
+  font-weight: bold;
+  height: 2.2rem;
+  justify-content: center;
+  line-height: 2.2rem;
+  margin-left: 0.4rem;
+  min-width: 2.2rem;
+  padding: 0 0.6rem;
+  text-align: center;
+
+  .view-switcher__item--selected & {
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
+  }
+}
+
+// Добавим глобальный стиль для SVG
+[data-theme='dark'] {
+  svg {
+    filter: invert(1);
+  }
 }

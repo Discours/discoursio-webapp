@@ -162,11 +162,14 @@ export function MiniEditor(props: MiniEditorProps): JSX.Element {
       <div class={styles.buttons}>
         <Button
           value={t('Cancel')}
-          disabled={isEmpty()}
           variant="secondary"
-          onClick={() => editor()?.commands.clearContent()}
+          onClick={() => {
+              editor()?.commands.clearContent()
+              props.onCancel?.()
+            }
+          }
         />
-        <Button value={t('Send')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
+        <Button value={t('Save')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
       </div>
 
       <Show when={counter() > 0}>

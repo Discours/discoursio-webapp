@@ -42,12 +42,8 @@ bun run e2e:tests    # Run tests
 bun run e2e:tests:ci # Run tests in CI
 ```
 
-Structure:
-- `/tests/*`: Tests without authentication
-- `/tests-with-auth/*`: Tests with authentication
-
 ## CI/CD
 
 Tests are executed in GitHub Actions. Make sure `BASE_URL` is correctly configured in CI.
 
-## Project version: 0.9.7
+## Version: 0.9.7

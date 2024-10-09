@@ -1,7 +1,7 @@
 {
   "name": "discoursio-webapp",
   "private": true,
-  "version": "0.9.6",
+  "version": "0.9.7",
   "type": "module",
   "scripts": {
     "dev": "vinxi dev",
@@ -81,7 +81,6 @@
     "@tiptap/extension-underline": "^2.8.0",
     "@tiptap/extension-youtube": "^2.8.0",
     "@tiptap/starter-kit": "^2.8.0",
-    "@types/cookie": "^0.6.0",
     "@types/cookie-signature": "^1.1.2",
     "@types/node": "^22.7.5",
     "@types/throttle-debounce": "^5.0.2",

@@ -4,6 +4,7 @@
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [SolidJS](https://www.solidjs.com/)
+- [Solid Start](https://start.solidjs.com/)
 - [Vinxi](https://vinxi.vercel.app/)
 - [SCSS](https://sass-lang.com/)
 - [URQL](https://formidable.com/open-source/urql/)

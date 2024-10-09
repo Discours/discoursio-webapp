@@ -122,18 +122,18 @@ $container-padding-x: $grid-gutter-width * 0.5;
 // Миксин make-col
 @mixin make-col($size: false, $columns: $grid-columns) {
   $size-factor: 0;
-  $size-factor: $size / $columns;
+  $size-factor: calc($size / $columns);
   
   $flex-grow: 1 - $size-factor;
   $flex-shrink: 1 - $size-factor;
-  $flex-basis: calc(100% * #{$size-factor});
+  $flex-basis: calc(100% * #{calc($size-factor)});
   
   flex: $flex-grow $flex-shrink $flex-basis;
   max-width: max($flex-basis, 100% * $size-factor);
 }
 
 @mixin make-col-offset($size, $columns: $grid-columns) {
-  $offset: calc(100% * #{$size / $columns});
+  $offset: calc(100% * #{calc($size / $columns)});
 
   margin-left: max(0px, $offset);
 }

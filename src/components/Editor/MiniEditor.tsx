@@ -28,7 +28,7 @@ interface MiniEditorProps {
   placeholder?: string
 }
 
-export default function MiniEditor(props: MiniEditorProps): JSX.Element {
+export function MiniEditor(props: MiniEditorProps): JSX.Element {
   const { t } = useLocalize()
   const { showModal } = useUI()
   const [editorElement, setEditorElement] = createSignal<HTMLDivElement>()
@@ -177,3 +177,5 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     </div>
   )
 }
+
+export default MiniEditor

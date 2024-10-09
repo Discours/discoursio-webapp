@@ -4,6 +4,7 @@ import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
+import usePopper from 'solid-popper'
 
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
@@ -13,7 +14,6 @@ import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
 import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
 import { processPrepositions } from '~/intl/prepositions'
 import { isCyrillic } from '~/intl/translate'
-import { createTooltip } from '~/lib/createTooltip'
 import { getImageUrl } from '~/lib/getThumbUrl'
 import { MediaItem } from '~/types/mediaitem'
 import { capitalize } from '~/utils/capitalize'
@@ -217,25 +217,25 @@ export const FullArticle = (props: Props) => {
         element.setAttribute('href', 'javascript: void(0)')
       }
 
-      const popperInstance = createTooltip(element, tooltip, {
-        placement: 'top',
-        modifiers: [
-          {
-            name: 'eventListeners',
-            options: { scroll: false }
-          },
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8]
+      const popperInstance = usePopper(
+        () => element,
+        () => tooltip,
+        {
+          placement: 'top',
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, 8]
+              }
+            },
+            {
+              name: 'flip',
+              options: { fallbackPlacements: ['top'] }
             }
-          },
-          {
-            name: 'flip',
-            options: { fallbackPlacements: ['top'] }
-          }
-        ]
-      })
+          ]
+        }
+      )
 
       tooltip.style.visibility = 'hidden'
       let isTooltipVisible = false
@@ -248,7 +248,7 @@ export const FullArticle = (props: Props) => {
           isTooltipVisible = true
         }
 
-        popperInstance.update()
+        popperInstance()?.update()
       }
 
       const handleDocumentClick = (e: MouseEvent) => {

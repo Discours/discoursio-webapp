@@ -105,6 +105,8 @@
     "sass": "^1.79.4",
     "solid-js": "^1.9.2",
     "solid-tiptap": "0.7.0",
+    "solid-transition-group": "^0.2.3",
+    "solid-popper": "^0.3.0",
     "storybook": "^8.3.5",
     "storybook-addon-sass-postcss": "^0.3.2",
     "storybook-solidjs": "^1.0.0-beta.2",
@@ -140,7 +142,6 @@
   "dependencies": {
     "form-data": "^4.0.0",
     "idb": "^8.0.0",
-    "mailgun.js": "^10.2.3",
-    "solid-popper": "0.3.0"
+    "mailgun.js": "^10.2.3"
   }
 }

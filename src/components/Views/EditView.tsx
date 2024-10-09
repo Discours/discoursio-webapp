@@ -28,6 +28,7 @@ import { Modal } from '../_shared/Modal'
 import { TableOfContents } from '../_shared/TableOfContents'
 
 import styles from '~/styles/views/EditView.module.scss'
+import { Panel } from '../Editor/Panel/Panel'
 
 const MicroEditor = lazy(() => import('../Editor/MicroEditor'))
 const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
@@ -456,6 +457,9 @@ export const EditView = (props: Props) => {
                 onChange={(body: string) => handleInputChange('body', body)}
                 disableCollaboration={!isCollabMode()}
               />
+              <Show when={draft()?.id}>
+                <Panel shoutId={draft()?.id} />
+              </Show>
             </Show>
           </div>
         </form>

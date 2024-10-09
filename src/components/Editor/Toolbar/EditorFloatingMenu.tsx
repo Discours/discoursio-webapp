@@ -39,9 +39,8 @@ const validateEmbed = (value: string): boolean => {
   const doc = parser.parseFromString(value, 'text/html')
   const iframe = doc.querySelector('iframe')
 
-  return !iframe || !iframe.getAttribute('src')
+  return !iframe?.getAttribute('src')
 }
-
 
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const { t } = useLocalize()
@@ -68,7 +67,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         return
       }
       default: {
-        props.editor.chain().focus().run()
+        props.editor?.chain().focus().run()
         setSelectedMenuItem()
         return
       }
@@ -118,7 +117,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
                 showInput={true}
                 onClose={closeUploadModalHandler}
                 onClear={() => setSelectedMenuItem()}
-                validate={(value: string) => validateEmbed(value) ? t('Error') : ''}
+                validate={(value: string) => (validateEmbed(value) ? t('Error') : '')}
                 onSubmit={handleEmbedFormSubmit}
               />
             </Show>

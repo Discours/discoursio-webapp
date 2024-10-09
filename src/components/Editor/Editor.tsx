@@ -7,7 +7,7 @@ import { Collaboration } from '@tiptap/extension-collaboration'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { FloatingMenu } from '@tiptap/extension-floating-menu'
 import { Placeholder } from '@tiptap/extension-placeholder'
-import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import { createTiptapEditor } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
@@ -20,7 +20,6 @@ import { Author } from '~/graphql/schema/core.gen'
 import { base, custom, extended } from '~/lib/editorExtensions'
 import { handleImageUpload } from '~/lib/handleImageUpload'
 import { allowedImageTypes, renderUploadedImage } from '../Upload/renderUploadedImage'
-import { Panel } from './Panel/Panel'
 import { BlockquoteBubbleMenu } from './Toolbar/BlockquoteBubbleMenu'
 import { EditorFloatingMenu } from './Toolbar/EditorFloatingMenu'
 import { FigureBubbleMenu } from './Toolbar/FigureBubbleMenu'
@@ -349,25 +348,6 @@ export const EditorComponent = (props: EditorComponentProps) => {
 
   return (
     <>
-      <div>
-        <Show when={editor()} keyed>
-          {(ed: Editor) => (
-            <>
-              <TextBubbleMenu
-                shouldShow={shouldShowTextBubbleMenu()}
-                isCommonMarkup={isCommonMarkup()}
-                editor={ed}
-                ref={setTextBubbleMenuRef}
-              />
-              <BlockquoteBubbleMenu editor={ed} ref={setBlockquoteBubbleMenuRef} />
-              <FigureBubbleMenu editor={ed} ref={setFigureBubbleMenuRef} />
-              <IncutBubbleMenu editor={ed} ref={setIncutBubbleMenuRef} />
-              <EditorFloatingMenu editor={ed} ref={setFloatingMenuRef} />
-            </>
-          )}
-        </Show>
-      </div>
-
       <div class="row">
         <div class="col-md-5" />
         <div class="col-md-12">
@@ -375,9 +355,16 @@ export const EditorComponent = (props: EditorComponentProps) => {
         </div>
       </div>
 
-      <Show when={props.shoutId}>
-        <Panel shoutId={props.shoutId} />
-      </Show>
+      <TextBubbleMenu
+        shouldShow={shouldShowTextBubbleMenu()}
+        isCommonMarkup={isCommonMarkup()}
+        editor={editor() as Editor}
+        ref={setTextBubbleMenuRef}
+      />
+      <BlockquoteBubbleMenu editor={editor() as Editor} ref={setBlockquoteBubbleMenuRef} />
+      <FigureBubbleMenu editor={editor() as Editor} ref={setFigureBubbleMenuRef} />
+      <IncutBubbleMenu editor={editor() as Editor} ref={setIncutBubbleMenuRef} />
+      <EditorFloatingMenu editor={editor() as Editor} ref={setFloatingMenuRef} />
     </>
   )
 }

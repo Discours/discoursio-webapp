@@ -49,11 +49,7 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
         [styles.bordered]: props.bordered
       })}
     >
-      <MicroBubbleMenu
-        editor={editor()!}
-        ref={setBubbleMenuElement}
-        hidden={!!editor()?.state.selection.empty}
-      />
+      <MicroBubbleMenu editor={editor} ref={setBubbleMenuElement} />
       <div id="micro-editor" ref={setEditorElement} style={styles.minimal} />
     </div>
   )

@@ -7,9 +7,9 @@ import { Collaboration } from '@tiptap/extension-collaboration'
 import { CollaborationCursor } from '@tiptap/extension-collaboration-cursor'
 import { FloatingMenu } from '@tiptap/extension-floating-menu'
 import { Placeholder } from '@tiptap/extension-placeholder'
-import { createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { Accessor, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
-import { createTiptapEditor } from 'solid-tiptap'
+import { createEditorTransaction, createTiptapEditor } from 'solid-tiptap'
 import uniqolor from 'uniqolor'
 import { Doc } from 'yjs'
 import { useEditorContext } from '~/context/editor'
@@ -23,10 +23,10 @@ import { allowedImageTypes, renderUploadedImage } from '../Upload/renderUploaded
 import { BlockquoteBubbleMenu } from './Toolbar/BlockquoteBubbleMenu'
 import { EditorFloatingMenu } from './Toolbar/EditorFloatingMenu'
 import { FigureBubbleMenu } from './Toolbar/FigureBubbleMenu'
+import { FullBubbleMenu } from './Toolbar/FullBubbleMenu'
 import { IncutBubbleMenu } from './Toolbar/IncutBubbleMenu'
-import { TextBubbleMenu } from './Toolbar/TextBubbleMenu'
 
-import './Prosemirror.scss'
+import styles from './Editor.module.scss'
 
 export type EditorComponentProps = {
   shoutId: number
@@ -126,11 +126,10 @@ export const EditorComponent = (props: EditorComponentProps) => {
     const options: Partial<EditorOptions> = {
       element: editorElRef()!,
       editorProps: {
-        attributes: { class: 'articleEditor' },
+        attributes: { class: styles.articleEditor },
         transformPastedHTML: (c: string) => c.replaceAll(/<img.*?>/g, ''),
-        handlePaste: (_view, _event, _slice) => {
-          handleClipboardPaste().then((result) => result)
-          return false
+        handlePaste: () => {
+          handleClipboardPaste().then((_) => 0)
         }
       },
       extensions: [
@@ -180,6 +179,11 @@ export const EditorComponent = (props: EditorComponentProps) => {
     }, 'edit')
   })
 
+  const isFigcaptionActive = createEditorTransaction(editor as Accessor<Editor | undefined>, (e) =>
+    e?.isActive('figcaption')
+  )
+  createEffect(() => setIsCommonMarkup(!!isFigcaptionActive()))
+
   const initializeMenus = () => {
     if (menusInitialized() || !editor()) return
     if (blockquoteBubbleMenuRef() && figureBubbleMenuRef() && incutBubbleMenuRef() && floatingMenuRef()) {
@@ -188,7 +192,7 @@ export const EditorComponent = (props: EditorComponentProps) => {
         BubbleMenu.configure({
           pluginKey: 'textBubbleMenu',
           element: textBubbleMenuRef()!,
-          shouldShow: ({ editor: e, view, state: { doc, selection }, from, to }) => {
+          shouldShow: ({ editor: e, state: { doc, selection }, from, to }) => {
             const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
             if (isEmptyTextBlock) {
               e?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
@@ -197,10 +201,8 @@ export const EditorComponent = (props: EditorComponentProps) => {
             const isFootnoteOrFigcaption =
               e.isActive('footnote') || (e.isActive('figcaption') && hasSelection)
 
-            setIsCommonMarkup(e?.isActive('figcaption'))
-
             const result =
-              view.hasFocus() &&
+              e.isFocused &&
               hasSelection &&
               !e.isActive('image') &&
               !e.isActive('figure') &&
@@ -355,10 +357,10 @@ export const EditorComponent = (props: EditorComponentProps) => {
         </div>
       </div>
 
-      <TextBubbleMenu
-        shouldShow={shouldShowTextBubbleMenu()}
+      <FullBubbleMenu
+        shouldShow={shouldShowTextBubbleMenu}
         isCommonMarkup={isCommonMarkup()}
-        editor={editor() as Editor}
+        editor={editor as Accessor<Editor | undefined>}
         ref={setTextBubbleMenuRef}
       />
       <BlockquoteBubbleMenu editor={editor() as Editor} ref={setBlockquoteBubbleMenuRef} />

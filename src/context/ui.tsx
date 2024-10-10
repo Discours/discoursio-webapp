@@ -88,7 +88,7 @@ export type ModalType =
   | 'confirm'
   | 'donate'
   | 'uploadImage'
-  | 'simplifiedEditorUploadImage'
+  | 'editorUploadImage'
   | 'uploadCoverImage'
   | 'editorInsertLink'
   | 'followers'
@@ -108,7 +108,7 @@ export const MODALS: Record<ModalType, ModalType> = {
   donate: 'donate',
   inviteMembers: 'inviteMembers',
   uploadImage: 'uploadImage',
-  simplifiedEditorUploadImage: 'simplifiedEditorUploadImage',
+  editorUploadImage: 'editorUploadImage',
   uploadCoverImage: 'uploadCoverImage',
   editorInsertLink: 'editorInsertLink',
   followers: 'followers',

@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/core'
 import { clsx } from 'clsx'
-import { Match, Show, Switch, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import { Accessor, Match, Show, Switch, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { createEditorTransaction } from 'solid-tiptap'
 import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'
@@ -14,7 +14,7 @@ type BubbleMenuProps = {
   editor: Editor
   isCommonMarkup: boolean
   ref: (el: HTMLDivElement) => void
-  shouldShow: boolean
+  shouldShow: Accessor<boolean>
 }
 
 export const TextBubbleMenu = (props: BubbleMenuProps) => {
@@ -32,12 +32,14 @@ export const TextBubbleMenu = (props: BubbleMenuProps) => {
   const [footnoteEditorOpen, setFootnoteEditorOpen] = createSignal(false)
   const [footNote, setFootNote] = createSignal<string>()
 
-  createEffect(() => {
-    if (!props.shouldShow) {
-      setFootNote()
-      setFootnoteEditorOpen(false)
-    }
-  })
+  createEffect(
+    on(props.shouldShow, (show?: boolean) => {
+      if (!show) {
+        setFootNote()
+        setFootnoteEditorOpen(false)
+      }
+    })
+  )
 
   const isBold = isActive('bold')
   const isItalic = isActive('italic')

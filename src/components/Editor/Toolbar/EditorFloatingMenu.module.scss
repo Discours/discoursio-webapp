@@ -4,7 +4,7 @@
   vertical-align: middle;
   padding-top: 5px;
 
-  button {
+  .actionButton {
     opacity: 0.3;
     transition: opacity 0.3s ease-in-out;
 
@@ -19,7 +19,23 @@
     position: absolute;
     top: -4px;
     min-width: 64vw;
+
+    .innerMenu {
+      display: flex;
+      flex-direction: row;
+
+      .icon {
+        opacity: 0.5;
+        display: block;
+        transition: opacity 0.3s ease-in-out;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
   }
+
 }
 
 :global(.tippy-box) {

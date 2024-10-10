@@ -13,7 +13,7 @@ import styles from './FullBubbleMenu.module.scss'
 
 type FullBubbleMenuProps = {
   editor: () => Editor | undefined
-  ref: (el: HTMLDivElement) => void
+  ref?: (el: HTMLDivElement) => void
   shouldShow: Accessor<boolean>
   isCommonMarkup?: boolean
 }

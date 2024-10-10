@@ -2,7 +2,7 @@ import { Meta, StoryObj } from 'storybook-solidjs'
 import { EditorComponent } from './Editor'
 
 const meta: Meta<typeof EditorComponent> = {
-  title: 'Components/Editor',
+  title: 'Editor/Editor',
   component: EditorComponent,
   argTypes: {
     content: {

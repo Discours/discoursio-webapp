@@ -4,12 +4,12 @@ import { UploadModalContent } from '~/components/Upload/UploadModalContent/Uploa
 import { renderUploadedImage } from '~/components/Upload/renderUploadedImage'
 import { InlineForm } from '~/components/_shared/InlineForm/InlineForm'
 import { Modal } from '~/components/_shared/Modal/Modal'
+import { Popover } from '~/components/_shared/Popover/Popover'
 import { useUI } from '~/context/ui'
 import { useOutsideClickHandler } from '~/lib/useOutsideClickHandler'
 import { UploadedFile } from '~/types/upload'
 import { useLocalize } from '../../../context/localize'
 import { Icon } from '../../_shared/Icon'
-import { Menu, type MenuItem } from './Menu/Menu'
 
 import styles from './EditorFloatingMenu.module.scss'
 
@@ -45,7 +45,7 @@ const validateEmbed = (value: string): boolean => {
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const { t } = useLocalize()
   const { showModal } = useUI()
-  const [selectedMenuItem, setSelectedMenuItem] = createSignal<MenuItem | undefined>()
+  const [selectedMenuItem, setSelectedMenuItem] = createSignal()
   const [menuOpen, setMenuOpen] = createSignal<boolean>(false)
   const [menuRef, setMenuRef] = createSignal<HTMLDivElement | undefined>()
   const [plusButtonRef, setPlusButtonRef] = createSignal<HTMLButtonElement | undefined>()
@@ -96,6 +96,32 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
     renderUploadedImage(props.editor, image)
   }
 
+  const PlusButtonMenu = () => (
+    <div class={styles.innerMenu}>
+      <Popover content={t('Add image')}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('image')}>
+            <Icon class={styles.icon} name="editor-image" />
+          </button>
+        )}
+      </Popover>
+      <Popover content={t('Add an embed widget')}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('embed')}>
+            <Icon class={styles.icon} name="editor-embed" />
+          </button>
+        )}
+      </Popover>
+      <Popover content={t('Add rule')}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('horizontal-rule')}>
+            <Icon class={styles.icon} name="editor-horizontal-rule" />
+          </button>
+        )}
+      </Popover>
+    </div>
+  )
+
   return (
     <>
       <div ref={props.ref} class={styles.editorFloatingMenu}>
@@ -105,11 +131,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
         <Show when={menuOpen()}>
           <div class={styles.menuHolder} ref={setMenuRef}>
             <Show when={!selectedMenuItem()}>
-              <Menu
-                selectedItem={(value: string) => {
-                  setSelectedMenuItem(value as MenuItem)
-                }}
-              />
+              <PlusButtonMenu />
             </Show>
             <Show when={selectedMenuItem() === 'embed'}>
               <InlineForm

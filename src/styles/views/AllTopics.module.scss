@@ -29,21 +29,6 @@
   }
 }
 
-
-.loadMoreContainer {
-  margin-top: 48px;
-  text-align: center;
-
-  .loadMoreButton {
-    @include media-breakpoint-up(sm) {
-      width: auto;
-    }
-
-    padding: 0.6em 3em;
-    width: 100%;
-  }
-}
-
 .alphabet {
   font-size:1.5rem;
   color: rgba(0 0 0 / 20%);

@@ -1,6 +1,6 @@
 import { HocuspocusProvider } from '@hocuspocus/provider'
 import { UploadFile } from '@solid-primitives/upload'
-import { Editor, EditorOptions, isTextSelection } from '@tiptap/core'
+import { Editor, EditorOptions } from '@tiptap/core'
 import { BubbleMenu } from '@tiptap/extension-bubble-menu'
 import { CharacterCount } from '@tiptap/extension-character-count'
 import { Collaboration } from '@tiptap/extension-collaboration'
@@ -42,18 +42,18 @@ export const EditorComponent = (props: EditorComponentProps) => {
   const { session, requireAuthentication } = useSession()
   const author = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
-  const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
   const { showSnackbar } = useSnackbar()
   const { countWords, setEditing, isCollabMode } = useEditorContext()
   const [editorOptions, setEditorOptions] = createSignal<Partial<EditorOptions>>({})
   const [editorElRef, setEditorElRef] = createSignal<HTMLElement | undefined>()
-  const [textBubbleMenuRef, setTextBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
   const [incutBubbleMenuRef, setIncutBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
   const [figureBubbleMenuRef, setFigureBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
   const [blockquoteBubbleMenuRef, setBlockquoteBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
   const [floatingMenuRef, setFloatingMenuRef] = createSignal<HTMLDivElement | undefined>()
+  const [fullBubbleMenuRef, setFullBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
   const [editor, setEditor] = createSignal<Editor | null>(null)
   const [menusInitialized, setMenusInitialized] = createSignal(false)
+  const [shouldShowFullBubbleMenu, setShouldShowFullBubbleMenu] = createSignal(false)
 
   // store tiptap editor in context provider's signal to use it in Panel
   createEffect(() => setEditing(editor() || undefined))
@@ -173,35 +173,29 @@ export const EditorComponent = (props: EditorComponentProps) => {
 
   const initializeMenus = () => {
     if (menusInitialized() || !editor()) return
-    if (blockquoteBubbleMenuRef() && figureBubbleMenuRef() && incutBubbleMenuRef() && floatingMenuRef()) {
+    if (
+      blockquoteBubbleMenuRef() &&
+      figureBubbleMenuRef() &&
+      incutBubbleMenuRef() &&
+      floatingMenuRef() &&
+      fullBubbleMenuRef()
+    ) {
       console.log('stage 3: initialize menus when editor instance is ready')
       const menus = [
         BubbleMenu.configure({
-          pluginKey: 'textBubbleMenu',
-          element: textBubbleMenuRef()!,
-          shouldShow: ({ editor: e, state: { doc, selection }, from, to }) => {
-            const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
-            if (isEmptyTextBlock) {
-              e?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
-              return false
-            }
-            const hasSelection = !selection.empty && from !== to
-            const isFootnoteOrFigcaption =
-              e.isActive('footnote') || (e.isActive('figcaption') && hasSelection)
-
-            const result =
-              e.view.hasFocus() &&
-              hasSelection &&
-              !e.isActive('image') &&
-              !e.isActive('figure') &&
-              (isFootnoteOrFigcaption || !e.isActive('figcaption'))
-
-            setShouldShowTextBubbleMenu(result)
-            return result
+          element: fullBubbleMenuRef()!,
+          pluginKey: 'fullBubbleMenu',
+          shouldShow: ({ editor: e, state: { selection } }) => {
+            const { empty, from, to } = selection
+            const hasSelection = !empty && from !== to
+            const shouldShow =
+              e.view.hasFocus() && hasSelection && !e.isActive('image') && !e.isActive('figure')
+            setShouldShowFullBubbleMenu(shouldShow)
+            return shouldShow
           },
           tippyOptions: {
-            sticky: true
-            // onHide: () => { editor()?.commands.focus() }
+            duration: 200,
+            placement: 'top'
           }
         }),
         BubbleMenu.configure({
@@ -351,10 +345,10 @@ export const EditorComponent = (props: EditorComponentProps) => {
       </div>
 
       <FullBubbleMenu
-        shouldShow={shouldShowTextBubbleMenu}
-        isCommonMarkup={isCommonMarkup()}
         editor={editor as Accessor<Editor | undefined>}
-        ref={setTextBubbleMenuRef}
+        ref={setFullBubbleMenuRef}
+        shouldShow={shouldShowFullBubbleMenu}
+        isCommonMarkup={isCommonMarkup()}
       />
       <BlockquoteBubbleMenu editor={editor() as Editor} ref={setBlockquoteBubbleMenuRef} />
       <FigureBubbleMenu editor={editor() as Editor} ref={setFigureBubbleMenuRef} />

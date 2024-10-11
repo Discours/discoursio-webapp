@@ -10,6 +10,7 @@ import { ToolbarControl } from './ToolbarControl'
 
 import { Popover } from '~/components/_shared/Popover/Popover'
 import styles from './FullBubbleMenu.module.scss'
+import { useEditorContext } from '~/context/editor'
 
 type FullBubbleMenuProps = {
   editor: () => Editor | undefined
@@ -20,6 +21,7 @@ type FullBubbleMenuProps = {
 
 export const FullBubbleMenu = (props: FullBubbleMenuProps) => {
   const { t } = useLocalize()
+  const { isCollabMode, setIsCollabMode } = useEditorContext()
 
   // SIGNALS
   const [textSizeBubbleOpen, setTextSizeBubbleOpen] = createSignal(false)
@@ -259,6 +261,18 @@ export const FullBubbleMenu = (props: FullBubbleMenuProps) => {
         <div style={{ width: '5px' }} />
 
         <ListDropdown />
+
+        <div class={styles.dropDownHolder}>
+          <Popover content={t('Collaborative mode')}>
+            {(triggerRef: (el: HTMLButtonElement) => void) => (
+              <button ref={triggerRef} type="button" class={styles.actionButton}
+                onClick={() => setIsCollabMode(x => !x)}
+              >
+                <Icon name={`comment${isCollabMode() ? '-hover' : ''}`} />
+              </button>
+            )}
+          </Popover>
+        </div>
       </Show>
     </>
   )

@@ -32,7 +32,6 @@ export type EditorComponentProps = {
   shoutId: number
   initialContent?: string
   onChange: (text: string) => void
-  disableCollaboration?: boolean
 }
 
 const yDocs: Record<string, Doc> = {}
@@ -45,7 +44,7 @@ export const EditorComponent = (props: EditorComponentProps) => {
   const [isCommonMarkup, setIsCommonMarkup] = createSignal(false)
   const [shouldShowTextBubbleMenu, setShouldShowTextBubbleMenu] = createSignal(false)
   const { showSnackbar } = useSnackbar()
-  const { countWords, setEditing } = useEditorContext()
+  const { countWords, setEditing, isCollabMode } = useEditorContext()
   const [editorOptions, setEditorOptions] = createSignal<Partial<EditorOptions>>({})
   const [editorElRef, setEditorElRef] = createSignal<HTMLElement | undefined>()
   const [textBubbleMenuRef, setTextBubbleMenuRef] = createSignal<HTMLDivElement | undefined>()
@@ -154,6 +153,7 @@ export const EditorComponent = (props: EditorComponentProps) => {
     }
     console.log(options)
     setEditorOptions(() => options)
+    return options
   }
 
   // stage 1: create editor options when got author profile
@@ -165,19 +165,6 @@ export const EditorComponent = (props: EditorComponentProps) => {
       noOptions && a && setTimeout(setupEditor, 1)
     })
   )
-
-  // Перенос всех эффектов, зависящих от editor, внутрь onMount
-  onMount(() => {
-    console.log('Editor component mounted')
-    editorElRef()?.addEventListener('focus', handleFocus)
-    requireAuthentication(() => {
-      setTimeout(() => {
-        setupEditor()
-        createEditorInstance(editorOptions())
-        initializeMenus()
-      }, 1200)
-    }, 'edit')
-  })
 
   const isFigcaptionActive = createEditorTransaction(editor as Accessor<Editor | undefined>, (e) =>
     e?.isActive('figcaption')
@@ -276,37 +263,38 @@ export const EditorComponent = (props: EditorComponentProps) => {
       return
     }
 
-    try {
-      const docName = `shout-${props.shoutId}`
-      const token = session()?.access_token || ''
-      const profile = author()
+    setEditorOptions((prev: Partial<EditorOptions>) => {
+      const extensions = [...(prev.extensions || [])]
 
-      if (!(token && profile)) {
-        throw new Error('Missing authentication data')
-      }
-
-      if (!yDocs[docName]) {
-        yDocs[docName] = new Doc()
-      }
-
-      if (!providers[docName]) {
-        providers[docName] = new HocuspocusProvider({
-          url: 'wss://hocuspocus.discours.io',
-          name: docName,
-          document: yDocs[docName],
-          token
-        })
-        console.log(`HocuspocusProvider установлен для ${docName}`)
-      }
-
-      setEditorOptions((prev: Partial<EditorOptions>) => {
-        const extensions = [...(prev.extensions || [])]
-        if (props.disableCollaboration) {
-          // Remove collaboration extensions if they exist
+      try {
+        if (!isCollabMode()) {
+          // Remove collaboration extensions and return
           const filteredExtensions = extensions.filter(
             (ext) => ext.name !== 'collaboration' && ext.name !== 'collaborationCursor'
           )
           return { ...prev, extensions: filteredExtensions }
+        }
+
+        const docName = `shout-${props.shoutId}`
+        const token = session()?.access_token || ''
+        const profile = author()
+
+        if (!(token && profile)) {
+          throw new Error('Missing authentication data')
+        }
+
+        if (!yDocs[docName]) {
+          yDocs[docName] = new Doc()
+        }
+
+        if (!providers[docName]) {
+          providers[docName] = new HocuspocusProvider({
+            url: 'wss://hocuspocus.discours.io',
+            name: docName,
+            document: yDocs[docName],
+            token
+          })
+          console.log(`HocuspocusProvider установлен для ${docName}`)
         }
         extensions.push(
           Collaboration.configure({ document: yDocs[docName] }),
@@ -315,13 +303,14 @@ export const EditorComponent = (props: EditorComponentProps) => {
             user: { name: profile.name, color: uniqolor(profile.slug).color }
           })
         )
-        console.log('collab extensions added:', extensions)
-        return { ...prev, extensions }
-      })
-    } catch (error) {
-      console.error('Error initializing collaboration:', error)
-      showSnackbar({ body: t('Failed to initialize collaboration') })
-    }
+
+      } catch (error) {
+        console.error('Error initializing collaboration:', error)
+        showSnackbar({ body: t('Failed to initialize collaboration') })
+      }
+      console.log('collab extensions added:', extensions)
+      return { ...prev, extensions }
+    })
   }
 
   const handleFocus = (event: FocusEvent) => {
@@ -332,13 +321,23 @@ export const EditorComponent = (props: EditorComponentProps) => {
     }
   }
 
-  // Инициализируем коллаборацию если необходимо
+  onMount(() => {
+    console.log('Editor component mounted')
+    editorElRef()?.addEventListener('focus', handleFocus)
+    requireAuthentication(() => {
+      setTimeout(() => {
+        const opts = setupEditor()
+        createEditorInstance(opts)
+        initializeMenus()
+      }, 120)
+    }, 'edit')
+  })
+
+  // collab mode on/off
   createEffect(
     on(
-      () => props.disableCollaboration,
-      () => {
-        initializeCollaboration()
-      },
+      isCollabMode,
+      (x) => !x && initializeCollaboration(),
       { defer: true }
     )
   )

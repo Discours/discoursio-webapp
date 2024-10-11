@@ -19,6 +19,7 @@ import { FullBubbleMenu } from './Toolbar/FullBubbleMenu'
 import { IncutBubbleMenu } from './Toolbar/IncutBubbleMenu'
 import { ArticleNode } from './extensions/Article'
 import { TrailingNode } from './extensions/TrailingNode'
+import { sticky } from 'tippy.js'
 
 import './Editor.module.scss'
 
@@ -86,6 +87,7 @@ export const EditorComponent = (props: Props) => {
           return result
         },
         tippyOptions: {
+          plugins: [sticky],
           sticky: true
         }
       }),

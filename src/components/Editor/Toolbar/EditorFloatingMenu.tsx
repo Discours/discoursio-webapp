@@ -125,7 +125,12 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   return (
     <>
       <div ref={props.ref} class={styles.editorFloatingMenu}>
-        <button ref={setPlusButtonRef} type="button" onClick={() => setMenuOpen(!menuOpen())}>
+        <button
+          class={styles.actionButton}
+          ref={setPlusButtonRef}
+          type="button"
+          onClick={() => setMenuOpen(!menuOpen())}
+        >
           <Icon name="editor-plus" />
         </button>
         <Show when={menuOpen()}>

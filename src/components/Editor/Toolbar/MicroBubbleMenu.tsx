@@ -1,11 +1,12 @@
 import type { Editor } from '@tiptap/core'
+import { clsx } from 'clsx'
 import { Accessor, Show, createSignal, onCleanup, onMount } from 'solid-js'
 import { Icon } from '~/components/_shared/Icon'
+import { useEditorContext } from '~/context/editor'
 import { InsertLinkForm } from './InsertLinkForm'
+import { ToolbarControl } from './ToolbarControl'
 
-import clsx from 'clsx'
 import styles from './MicroBubbleMenu.module.scss'
-import ToolbarControl from './ToolbarControl'
 
 type MicroBubbleMenuProps = {
   editor: Accessor<Editor | undefined>
@@ -15,6 +16,7 @@ type MicroBubbleMenuProps = {
 
 export const MicroBubbleMenu = (props: MicroBubbleMenuProps) => {
   const [linkEditorOpen, setLinkEditorOpen] = createSignal(false)
+  const { editing } = useEditorContext()
 
   const handleOpenLinkForm = () => {
     const { from, to } = props.editor()!.state.selection
@@ -29,15 +31,21 @@ export const MicroBubbleMenu = (props: MicroBubbleMenuProps) => {
     props.editor()?.chain().focus().setTextSelection(to).run()
   }
 
-  // handle ctrl+k to insert link
   const handleKeyDown = (event: KeyboardEvent) => {
-    if (
+    // handle ctrl+k to insert link
+    if ( 
       event.code === 'KeyK' &&
       (event.metaKey || event.ctrlKey) &&
       !props.editor()?.state.selection.empty
     ) {
       event.preventDefault()
       setLinkEditorOpen((prev) => !prev)
+    }
+
+    // handle shift+enter to change focus
+    if (event.code === 'Enter' && (event.metaKey || event.shiftKey)) {
+      event.preventDefault()
+      editing()?.commands.focus()
     }
   }
 

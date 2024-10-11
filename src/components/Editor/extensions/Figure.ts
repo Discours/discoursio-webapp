@@ -12,7 +12,7 @@ export const Figure = Node.create({
   name: 'figure',
   addOptions() {
     return {
-      HTMLAttributes: {}
+      HTMLAttributes: { class: 'figure' }
     }
   },
   group: 'block',

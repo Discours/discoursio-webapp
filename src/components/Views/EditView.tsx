@@ -342,6 +342,7 @@ export const EditView = (props: Props) => {
                   </Show>
                   <Show when={isLeadVisible()}>
                     <MicroEditor
+                      focusOnMount={true}
                       shownAsLead={isLeadVisible()}
                       placeholder={t('A short introduction to keep the reader interested')}
                       content={form.lead}

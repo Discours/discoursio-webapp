@@ -2,7 +2,7 @@ import BubbleMenu from '@tiptap/extension-bubble-menu'
 import Placeholder from '@tiptap/extension-placeholder'
 import clsx from 'clsx'
 import { type JSX, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
-import { createEditorTransaction, createTiptapEditor, useEditorHTML } from 'solid-tiptap'
+import { createTiptapEditor, useEditorHTML } from 'solid-tiptap'
 import { minimal } from '~/lib/editorExtensions'
 import { MicroBubbleMenu } from './Toolbar/MicroBubbleMenu'
 
@@ -47,10 +47,6 @@ export const MicroEditor = (props: MicroEditorProps): JSX.Element => {
   const html = useEditorHTML(editor)
   createEffect(on(html, (c?: string) => c && props.onChange?.(c)))
 
-  const lostFocusEmpty = createEditorTransaction(
-    editor,
-    (e) => e && !e.isFocused && e?.view.state.doc.textContent.trim() === ''
-  )
   createEffect(
     on(
       isBlurred,

@@ -183,13 +183,14 @@ export const EditorComponent = (props: EditorComponentProps) => {
             const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
             if (isEmptyTextBlock) {
               e?.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
+              return false
             }
             const hasSelection = !selection.empty && from !== to
             const isFootnoteOrFigcaption =
               e.isActive('footnote') || (e.isActive('figcaption') && hasSelection)
 
             const result =
-              e.isFocused &&
+              e.view.hasFocus() &&
               hasSelection &&
               !e.isActive('image') &&
               !e.isActive('figure') &&

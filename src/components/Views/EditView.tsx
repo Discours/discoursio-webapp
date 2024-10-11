@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
 import deepEqual from 'fast-deep-equal'
-import { Show, createEffect, createSignal, lazy, on, onCleanup, onMount } from 'solid-js'
+import { Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { debounce } from 'throttle-debounce'
 import { EditorComponent } from '~/components/Editor/Editor'
@@ -22,16 +22,15 @@ import { LayoutType } from '~/types/common'
 import { MediaItem } from '~/types/mediaitem'
 import { clone } from '~/utils/clone'
 import { AutoSaveNotice } from '../Editor/AutoSaveNotice'
+import { Panel } from '../Editor/Panel/Panel'
 import { AudioUploader } from '../Upload/AudioUploader'
 import { VideoUploader } from '../Upload/VideoUploader'
 import { Modal } from '../_shared/Modal'
 import { TableOfContents } from '../_shared/TableOfContents'
 
 import styles from '~/styles/views/EditView.module.scss'
-import { Panel } from '../Editor/Panel/Panel'
-
-const MicroEditor = lazy(() => import('../Editor/MicroEditor'))
-const GrowingTextarea = lazy(() => import('~/components/_shared/GrowingTextarea/GrowingTextarea'))
+import MicroEditor from '../Editor/MicroEditor'
+import GrowingTextarea from '../_shared/GrowingTextarea/GrowingTextarea'
 
 type Props = {
   shout: Shout
@@ -63,8 +62,7 @@ export const EditView = (props: Props) => {
     setFormErrors,
     saveDraft,
     saveDraftToLocalStorage,
-    getDraftFromLocalStorage,
-    isCollabMode
+    getDraftFromLocalStorage
   } = useEditorContext()
 
   const [subtitleInput, setSubtitleInput] = createSignal<HTMLTextAreaElement | undefined>()
@@ -266,6 +264,10 @@ export const EditView = (props: Props) => {
     setIsLeadVisible(true)
   }
 
+  const hideLeadInput = () => {
+    setIsLeadVisible(false)
+  }
+
   const HeadingActions = () => {
     return (
       <div class="col-md-19 col-lg-18 col-xl-16 offset-md-5">
@@ -340,8 +342,10 @@ export const EditView = (props: Props) => {
                   </Show>
                   <Show when={isLeadVisible()}>
                     <MicroEditor
+                      shownAsLead={isLeadVisible()}
                       placeholder={t('A short introduction to keep the reader interested')}
                       content={form.lead}
+                      onBlur={hideLeadInput}
                       onChange={(value: string) => handleInputChange('lead', value)}
                     />
                   </Show>
@@ -455,7 +459,6 @@ export const EditView = (props: Props) => {
                 shoutId={form.shoutId}
                 initialContent={form.body}
                 onChange={(body: string) => handleInputChange('body', body)}
-                disableCollaboration={!isCollabMode()}
               />
               <Show when={draft()?.id}>
                 <Panel shoutId={draft()?.id} />

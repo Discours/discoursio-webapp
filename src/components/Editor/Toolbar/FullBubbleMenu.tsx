@@ -9,8 +9,8 @@ import { MicroBubbleMenu } from './MicroBubbleMenu'
 import { ToolbarControl } from './ToolbarControl'
 
 import { Popover } from '~/components/_shared/Popover/Popover'
-import styles from './FullBubbleMenu.module.scss'
 import { useEditorContext } from '~/context/editor'
+import styles from './FullBubbleMenu.module.scss'
 
 type FullBubbleMenuProps = {
   editor: () => Editor | undefined
@@ -265,8 +265,11 @@ export const FullBubbleMenu = (props: FullBubbleMenuProps) => {
         <div class={styles.dropDownHolder}>
           <Popover content={t('Collaborative mode')}>
             {(triggerRef: (el: HTMLButtonElement) => void) => (
-              <button ref={triggerRef} type="button" class={styles.actionButton}
-                onClick={() => setIsCollabMode(x => !x)}
+              <button
+                ref={triggerRef}
+                type="button"
+                class={styles.actionButton}
+                onClick={() => setIsCollabMode((x) => !x)}
               >
                 <Icon name={`comment${isCollabMode() ? '-hover' : ''}`} />
               </button>

@@ -303,7 +303,6 @@ export const EditorComponent = (props: EditorComponentProps) => {
             user: { name: profile.name, color: uniqolor(profile.slug).color }
           })
         )
-
       } catch (error) {
         console.error('Error initializing collaboration:', error)
         showSnackbar({ body: t('Failed to initialize collaboration') })
@@ -334,13 +333,7 @@ export const EditorComponent = (props: EditorComponentProps) => {
   })
 
   // collab mode on/off
-  createEffect(
-    on(
-      isCollabMode,
-      (x) => !x && initializeCollaboration(),
-      { defer: true }
-    )
-  )
+  createEffect(on(isCollabMode, (x) => !x && initializeCollaboration(), { defer: true }))
 
   onCleanup(() => {
     editorElRef()?.removeEventListener('focus', handleFocus)

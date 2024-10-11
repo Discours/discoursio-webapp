@@ -33,7 +33,7 @@ export const MicroBubbleMenu = (props: MicroBubbleMenuProps) => {
 
   const handleKeyDown = (event: KeyboardEvent) => {
     // handle ctrl+k to insert link
-    if ( 
+    if (
       event.code === 'KeyK' &&
       (event.metaKey || event.ctrlKey) &&
       !props.editor()?.state.selection.empty

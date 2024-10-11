@@ -68,7 +68,7 @@ export const EditorComponent = (props: Props) => {
       BubbleMenu.configure({
         pluginKey: 'textBubbleMenu',
         element: textBubbleMenuRef()!,
-        shouldShow: ({ editor: e, view, state: { doc, selection } , from, to }) => {
+        shouldShow: ({ editor: e, view, state: { doc, selection }, from, to }) => {
           const isEmptyTextBlock = doc.textBetween(from, to).length === 0 && isTextSelection(selection)
           if (isEmptyTextBlock) {
             e.chain().focus().removeTextWrap({ class: 'highlight-fake-selection' }).run()
@@ -153,7 +153,7 @@ export const EditorComponent = (props: Props) => {
         html && props.onChange(html)
         const wordCount: number = e.storage.characterCount.words()
         const charsCount: number = e.storage.characterCount.characters()
-        wordCount && countWords({ words: wordCount, characters: charsCount })
+        charsCount && countWords({ words: wordCount, characters: charsCount })
       }
     }
   }))

@@ -45,9 +45,9 @@ export const FullBubbleMenu = (props: FullBubbleMenuProps) => {
   const isHighlight = isActive('highlight')
 
   // toggle open / close on submenus
-  createEffect(on(props.shouldShow, setFootnoteEditorOpen))
-  createEffect(on(props.shouldShow, setTextSizeBubbleOpen))
-  createEffect(on(props.shouldShow, setListBubbleOpen))
+  createEffect(on(props.shouldShow, (x) => !x && setFootnoteEditorOpen(false)))
+  createEffect(on(props.shouldShow, (x) => !x && setTextSizeBubbleOpen(false)))
+  createEffect(on(props.shouldShow, (x) => !x && setListBubbleOpen(false)))
   const toggleTextSizeMenu = () => setTextSizeBubbleOpen((x) => !x)
   const toggleListMenu = () => setListBubbleOpen((x) => !x)
   const toggleFootnoteEditor = () => setFootnoteEditorOpen((x) => !x)

@@ -1,16 +1,27 @@
+import { HocuspocusProvider } from '@hocuspocus/provider'
 import { useMatch, useNavigate } from '@solidjs/router'
 import { Editor } from '@tiptap/core'
+import Collaboration from '@tiptap/extension-collaboration'
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor'
 import type { JSX } from 'solid-js'
-import { Accessor, createContext, createSignal, useContext } from 'solid-js'
+import { Accessor, createContext, createEffect, createSignal, on, onCleanup, useContext } from 'solid-js'
 import { SetStoreFunction, createStore } from 'solid-js/store'
+import { debounce } from 'throttle-debounce'
+import uniqolor from 'uniqolor'
+import { Doc } from 'yjs'
 import { useSnackbar } from '~/context/ui'
-import deleteShoutQuery from '~/graphql/mutation/core/article-delete'
-import updateShoutQuery from '~/graphql/mutation/core/article-update'
+import createShoutMutation from '~/graphql/mutation/core/article-create'
+import deleteShoutMutation from '~/graphql/mutation/core/article-delete'
+import updateShoutMutation from '~/graphql/mutation/core/article-update'
 import { Topic, TopicInput } from '~/graphql/schema/core.gen'
 import { slugify } from '~/intl/translit'
 import { useFeed } from '../context/feed'
 import { useLocalize } from './localize'
 import { useSession } from './session'
+
+export const AUTO_SAVE_DELAY = 3000
+const yDocs: Record<string, Doc> = {}
+const providers: Record<string, HocuspocusProvider> = {}
 
 export type WordCounter = {
   characters: number
@@ -52,6 +63,9 @@ export type EditorContextType = {
   setEditing: SetStoreFunction<Editor | undefined>
   isCollabMode: Accessor<boolean>
   setIsCollabMode: SetStoreFunction<boolean>
+  handleInputChange: (key: keyof ShoutForm, value: string) => void
+  saving: Accessor<boolean>
+  hasChanges: Accessor<boolean>
 }
 
 export const EditorContext = createContext<EditorContextType>({} as EditorContextType)
@@ -79,29 +93,34 @@ const removeDraftFromLocalStorage = (shoutId: number) => {
   localStorage?.removeItem(`shout-${shoutId}`)
 }
 
+const defaultForm: ShoutForm = {
+  body: '',
+  slug: '',
+  shoutId: 0,
+  title: '',
+  selectedTopics: []
+}
+
 export const EditorProvider = (props: { children: JSX.Element }) => {
   const localize = useLocalize()
   const navigate = useNavigate()
   const matchEdit = useMatch(() => '/edit')
   const matchEditSettings = useMatch(() => '/editSettings')
-  const { client } = useSession()
+  const { client, session } = useSession()
   const { addFeed } = useFeed()
   const snackbar = useSnackbar()
   const [isEditorPanelVisible, setIsEditorPanelVisible] = createSignal<boolean>(false)
-  const [form, setForm] = createStore<ShoutForm>({
-    body: '',
-    slug: '',
-    shoutId: 0,
-    title: '',
-    selectedTopics: []
-  })
+  const [form, setForm] = createStore<ShoutForm>(defaultForm)
   const [formErrors, setFormErrors] = createStore({} as Record<keyof ShoutForm, string>)
-  const [wordCounter, setWordCounter] = createSignal<WordCounter>({
-    characters: 0,
-    words: 0
-  })
+  const [wordCounter, setWordCounter] = createSignal<WordCounter>({ characters: 0, words: 0 })
   const toggleEditorPanel = () => setIsEditorPanelVisible((value) => !value)
   const [isCollabMode, setIsCollabMode] = createSignal<boolean>(false)
+
+  // current publishing editor instance to connect settings, panel and editor
+  const [editing, setEditing] = createSignal<Editor | undefined>(undefined)
+  const [saving, setSaving] = createSignal(false)
+  const [hasChanges, setHasChanges] = createSignal(false)
+
   const countWords = (value: WordCounter) => setWordCounter(value)
   const validate = () => {
     if (!form.title) {
@@ -131,11 +150,14 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const updateShout = async (formToUpdate: ShoutForm, { publish }: { publish: boolean }) => {
-    if (!formToUpdate.shoutId) {
-      console.error(formToUpdate)
-      return { error: 'not enought data' }
+    if (!formToUpdate.shoutId && formToUpdate.body) {
+      console.debug('[updateShout] no shoutId, but body:', formToUpdate)
+      const resp = await client()
+        ?.mutation(createShoutMutation, { shout: { layout: formToUpdate.layout, body: formToUpdate.body } })
+        .toPromise()
+      return resp?.data?.create_shout
     }
-    const resp = await client()?.mutation(updateShoutQuery, {
+    const resp = await client()?.mutation(updateShoutMutation, {
       shout_id: formToUpdate.shoutId,
       shout_input: {
         body: formToUpdate.body,
@@ -157,15 +179,9 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const saveShout = async (formToSave: ShoutForm) => {
-    if (isEditorPanelVisible()) {
-      toggleEditorPanel()
-    }
+    isEditorPanelVisible() && toggleEditorPanel()
 
-    if (matchEdit() && !validate()) {
-      return
-    }
-
-    if (matchEditSettings() && !validateSettings()) {
+    if ((matchEdit() && !validate()) || (matchEditSettings() && !validateSettings())) {
       return
     }
 
@@ -176,12 +192,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
         return
       }
       removeDraftFromLocalStorage(formToSave.shoutId)
-
-      if (shout?.published_at) {
-        navigate(`/article/${shout.slug}`)
-      } else {
-        navigate('/edit')
-      }
+      navigate(shout?.published_at ? `/article/${shout.slug}` : '/edit')
     } catch (error) {
       console.error('[saveShout]', error)
       snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })
@@ -197,25 +208,21 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
   }
 
   const publishShout = async (formToPublish: ShoutForm) => {
-    if (isEditorPanelVisible()) {
-      toggleEditorPanel()
+    isEditorPanelVisible() && toggleEditorPanel()
+
+    if ((matchEdit() && !validate()) || (matchEditSettings() && !validateSettings())) {
+      return
     }
 
     if (matchEdit()) {
-      if (!validate()) return
-
       const slug = slugify(form.title)
       setForm('slug', slug)
       navigate(`/edit/${form.shoutId}/settings`)
       const { error } = await updateShout(formToPublish, { publish: false })
       if (error) {
         snackbar?.showSnackbar({ type: 'error', body: localize?.t(error) || '' })
+        return
       }
-      return
-    }
-
-    if (!validateSettings()) {
-      return
     }
 
     try {
@@ -237,7 +244,7 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       return
     }
     try {
-      const resp = await client()?.mutation(updateShoutQuery, { shout_id, publish: true }).toPromise()
+      const resp = await client()?.mutation(deleteShoutMutation, { shout_id, publish: true }).toPromise()
       const result = resp?.data?.update_shout
       if (result) {
         const { shout: newShout, error } = result
@@ -255,13 +262,13 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
       }
     } catch (error) {
       console.error('[publishShoutById]', error)
-      snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') })
+      snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })
     }
   }
 
   const deleteShout = async (shout_id: number) => {
     try {
-      const resp = await client()?.mutation(deleteShoutQuery, { shout_id }).toPromise()
+      const resp = await client()?.mutation(deleteShoutMutation, { shout_id }).toPromise()
       return resp?.data?.delete_shout
     } catch {
       snackbar?.showSnackbar({ type: 'error', body: localize?.t('Error') || '' })
@@ -269,8 +276,82 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     }
   }
 
-  // current publishing editor instance to connect settings, panel and editor
-  const [editing, setEditing] = createSignal<Editor | undefined>(undefined)
+  const debouncedAutoSave = debounce(AUTO_SAVE_DELAY, async () => {
+    console.log('autoSave called')
+    if (hasChanges()) {
+      console.debug('saving draft', form)
+      setSaving(true)
+      saveDraftToLocalStorage(form)
+      await saveDraft(form)
+      setSaving(false)
+      setHasChanges(false)
+    }
+  })
+  onCleanup(debouncedAutoSave.cancel)
+
+  createEffect(
+    on(
+      isCollabMode,
+      (x?: boolean) => () => {
+        const editorInstance = editing()
+        if (!editorInstance) return
+        try {
+          const docName = `shout-${form.shoutId}`
+          const token = session()?.access_token || ''
+          const profile = session()?.user?.app_data?.profile
+
+          if (!(token && profile)) {
+            throw new Error('Missing authentication data')
+          }
+
+          if (!yDocs[docName]) {
+            yDocs[docName] = new Doc()
+          }
+
+          if (!providers[docName]) {
+            providers[docName] = new HocuspocusProvider({
+              url: 'wss://hocuspocus.discours.io',
+              name: docName,
+              document: yDocs[docName],
+              token
+            })
+            console.log(`[collab mode] HocuspocusProvider connected for ${docName}`)
+          }
+          if (x) {
+            const newExtensions = [
+              Collaboration.configure({ document: yDocs[docName] }),
+              CollaborationCursor.configure({
+                provider: providers[docName],
+                user: { name: profile.name, color: uniqolor(profile.slug).color }
+              })
+            ]
+            const extensions = editing()?.options.extensions.concat(newExtensions)
+            editorInstance.setOptions({ ...editorInstance.options, extensions })
+            providers[docName].connect()
+          } else if (editorInstance) {
+            providers[docName].disconnect()
+            const updatedExtensions = editorInstance.options.extensions.filter(
+              (ext) => ext.name !== 'collaboration' && ext.name !== 'collaborationCursor'
+            )
+            editorInstance.setOptions({
+              ...editorInstance.options,
+              extensions: updatedExtensions
+            })
+          }
+        } catch (error) {
+          console.error('[collab mode] error', error)
+        }
+      },
+      { defer: true }
+    )
+  )
+
+  const handleInputChange = (key: keyof ShoutForm, value: string) => {
+    console.log(`[handleInputChange] ${key}: ${value}`)
+    setForm(key, value)
+    setHasChanges(true)
+    debouncedAutoSave()
+  }
 
   const actions = {
     saveShout,
@@ -286,7 +367,10 @@ export const EditorProvider = (props: { children: JSX.Element }) => {
     setFormErrors,
     setEditing,
     isCollabMode,
-    setIsCollabMode
+    setIsCollabMode,
+    handleInputChange,
+    saving,
+    hasChanges
   }
 
   const value: EditorContextType = {

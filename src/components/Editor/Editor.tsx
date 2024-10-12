@@ -140,7 +140,8 @@ export const EditorComponent = (props: Props) => {
       }),
       FloatingMenu.configure({
         tippyOptions: {
-          placement: 'left'
+          placement: 'left',
+          appendTo: document.body
         },
         element: floatingMenuRef()!
       }),
@@ -151,8 +152,8 @@ export const EditorComponent = (props: Props) => {
     content: props.initialContent || null,
     onTransaction: ({ editor: e, transaction }) => {
       if (transaction.docChanged) {
-        const html = e.getHTML()
-        html && props.onChange(html)
+        //const html = e.getHTML()
+        //html && props.onChange(html)
         const wordCount: number = e.storage.characterCount.words()
         const charsCount: number = e.storage.characterCount.characters()
         charsCount && countWords({ words: wordCount, characters: charsCount })

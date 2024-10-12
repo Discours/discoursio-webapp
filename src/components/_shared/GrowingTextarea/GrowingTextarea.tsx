@@ -17,7 +17,7 @@ type Props = {
   textAreaRef?: (el: HTMLTextAreaElement) => void
 }
 
-const GrowingTextarea = (props: Props) => {
+export const GrowingTextarea = (props: Props) => {
   const [value, setValue] = createSignal<string>('')
   const [isFocused, setIsFocused] = createSignal(false)
 

@@ -58,7 +58,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [commented, setCommented] = createSignal<Reaction[]>(props.comments || [])
   const [followersLoaded, setFollowersLoaded] = createSignal(false)
   const [followingsLoaded, setFollowingsLoaded] = createSignal(false)
-  const [initialRowsCount, setInitialRowsCount] = createSignal(0)
+  const [_initialRowsCount, setInitialRowsCount] = createSignal(0)
 
   // derivatives
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)

@@ -58,6 +58,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [commented, setCommented] = createSignal<Reaction[]>(props.comments || [])
   const [followersLoaded, setFollowersLoaded] = createSignal(false)
   const [followingsLoaded, setFollowingsLoaded] = createSignal(false)
+  const [_initialRowsCount, setInitialRowsCount] = createSignal(0)
 
   // derivatives
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
@@ -160,18 +161,6 @@ export const AuthorView = (props: AuthorViewProps) => {
     return result as LoadMoreItems
   }
 
-  // Function to chunk the sortedFeed into arrays of 3 shouts each
-  const chunkArray = (array: Shout[], chunkSize: number): Shout[][] => {
-    const chunks: Shout[][] = []
-    for (let i = 0; i < array.length; i += chunkSize) {
-      chunks.push(array.slice(i, i + chunkSize))
-    }
-    return chunks
-  }
-
-  // Memoize the chunked feed
-  const feedChunks = createMemo(() => chunkArray(sortedFeed(), 3))
-
   // fx to update author's feed
   createEffect(
     on(
@@ -180,6 +169,7 @@ export const AuthorView = (props: AuthorViewProps) => {
         const feed = byAuthor[props.authorSlug] as Shout[]
         if (!feed) return
         setSortedFeed(feed)
+        setInitialRowsCount(Math.ceil(props.shouts.length / 3))
       },
       {}
     )
@@ -341,20 +331,25 @@ export const AuthorView = (props: AuthorViewProps) => {
           </Show>
 
           <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE} hidden={loadMoreHidden()}>
-            <For each={feedChunks()}>
-              {(articles) => (
-                <Switch>
-                  <Match when={articles.length === 1}>
-                    <Row1 article={articles[0]} noauthor={true} nodate={true} />
-                  </Match>
-                  <Match when={articles.length === 2}>
-                    <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
-                  </Match>
-                  <Match when={articles.length === 3}>
-                    <Row3 articles={articles} noauthor={true} nodate={true} />
-                  </Match>
-                </Switch>
-              )}
+            <For each={sortedFeed().filter((_, i) => i % 3 === 0)}>
+              {(_shout, index) => {
+                const articles = sortedFeed().slice(index() * 3, index() * 3 + 3)
+                return (
+                  <>
+                    <Switch>
+                      <Match when={articles.length === 1}>
+                        <Row1 article={articles[0]} noauthor={true} nodate={true} />
+                      </Match>
+                      <Match when={articles.length === 2}>
+                        <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
+                      </Match>
+                      <Match when={articles.length === 3}>
+                        <Row3 articles={articles} noauthor={true} nodate={true} />
+                      </Match>
+                    </Switch>
+                  </>
+                )
+              }}
             </For>
           </LoadMoreWrapper>
         </Match>

@@ -847,14 +847,14 @@ figure {
 }
 
 .main-content {
+  @include media-breakpoint-up(lg) {
+     padding-top: 130px;
+  }
+
   flex: 1 100%;
   min-height: 90vh;
   padding-top: 80px;
   position: relative;
-
-  @include media-breakpoint-up(lg) {
-     padding-top: 130px;
-  }
 }
 
 .main-content--no-padding {

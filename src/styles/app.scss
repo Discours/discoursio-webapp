@@ -243,11 +243,12 @@ button {
   border: none;
   cursor: pointer;
   font-family: inherit;
+  font-weight: 500;
   padding: 0;
 
   &[disabled] {
     cursor: default;
-    opacity: 0.5 !important;
+    opacity: 1 !important;
   }
 }
 
@@ -291,21 +292,21 @@ button {
     }
   }
 }
-
-.button--light {
-  @include font-size(1.5rem);
-
-  background-color: #f6f6f6;
-  border-radius: 0.8rem;
-  color: #000;
-  font-weight: 500;
-  height: auto;
-  padding: 0.6rem 1.2rem 0.6rem 1rem;
-
-  &:hover {
-    background: #e9e9ee;
-  }
-}
+//
+//.button--light {
+//  @include font-size(1.5rem);
+//
+//  background-color: #f6f6f6;
+//  border-radius: 0.8rem;
+//  color: #000;
+//  font-weight: 500;
+//  height: auto;
+//  padding: 0.6rem 1.2rem 0.6rem 1rem;
+//
+//  &:hover {
+//    background: #e9e9ee;
+//  }
+//}
 
 .button--subscribe-topic {
   background: #fff;
@@ -339,73 +340,149 @@ button {
     width: 1.4em;
   }
 }
+//
+//.button--content-index {
+//  @include media-breakpoint-up(md) {
+//    margin-top: -0.5rem;
+//    position: sticky;
+//    top: 135px;
+//  }
+//
+//  @include media-breakpoint-up(sm) {
+//    right: $container-padding-x;
+//  }
+//
+//  background: none;
+//  border: 2px solid #fff;
+//  height: 3.2rem;
+//  float: right;
+//  padding: 0;
+//  position: absolute;
+//  right: $container-padding-x * 0.5;
+//  top: -0.5rem;
+//  width: 3.2rem;
+//  z-index: 1;
+//
+//  .icon {
+//    background: #fff;
+//    transition: filter 0.3s;
+//  }
+//
+//  .icon,
+//  img {
+//    height: 100%;
+//    vertical-align: middle;
+//    width: auto;
+//  }
+//
+//  &:hover {
+//    .icon {
+//      filter: invert(1);
+//    }
+//  }
+//
+//  .expanded {
+//    border-radius: 100%;
+//    overflow: hidden;
+//
+//    img {
+//      height: auto;
+//      margin-top: 0.8rem;
+//    }
+//  }
+//}
+//
+//.button--submit,
+//.button--outline {
+//  @include font-size(2rem);
+//
+//  padding: 1.6rem 2rem;
+//}
+//
+//.button--outline {
+//  background: none;
+//  box-shadow: inset 0 0 0 2px #000;
+//  color: #000;
+//
+//  &:hover {
+//    box-shadow: inset 0 0 0 2px #ccc;
+//  }
+//}
 
-.button--content-index {
-  @include media-breakpoint-up(md) {
-    margin-top: -0.5rem;
-    position: sticky;
-    top: 135px;
-  }
-
-  @include media-breakpoint-up(sm) {
-    right: $container-padding-x;
-  }
-
-  background: none;
-  border: 2px solid #fff;
-  height: 3.2rem;
-  float: right;
-  padding: 0;
-  position: absolute;
-  right: $container-padding-x * 0.5;
-  top: -0.5rem;
-  width: 3.2rem;
-  z-index: 1;
-
-  .icon {
-    background: #fff;
-    transition: filter 0.3s;
-  }
-
-  .icon,
-  img {
-    height: 100%;
-    vertical-align: middle;
-    width: auto;
-  }
+.button--square-primary {
+  background: var(--background-color-invert);
+  color: var(--default-color-invert);
 
   &:hover {
-    .icon {
-      filter: invert(1);
-    }
+    color: #ccc;
   }
 
-  .expanded {
-    border-radius: 100%;
-    overflow: hidden;
+  &:active {
+    color: #9fa1a7;
+  }
 
-    img {
-      height: auto;
-      margin-top: 0.8rem;
-    }
+  &:disabled {
+    background: #f7f7f8;
+    color: #9fa1a7;
   }
 }
 
-.button--submit,
-.button--outline {
-  @include font-size(2rem);
+.button--square-secondary {
+  background: #f7f7f7;
+  color: #141414;
 
+  &:hover {
+    background: #e9e9ee;
+  }
+
+  &:active {
+    background: #ccc;
+  }
+
+  &:disabled {
+    background: #f7f7f8;
+    color: #9fa1a7;
+  }
+}
+
+.button--L {
+  height: 5rem;
+  border-radius: 1.4rem;
+  font-size: 1.6rem;
+  padding: 0 3rem;
+}
+
+.button--M {
+  height: 4rem;
+  border-radius: 1.2rem;
+  font-size: 1.5rem;
+  padding: 0 2rem;
+}
+
+.button--S {
+  height: 3.2rem;
+  border-radius: 0.8rem;
+  font-size: 1.4rem;
+  padding: 0 1.8rem;
+}
+
+
+.button--square-M {
+  height: 5.6rem;
+  font-size: 2rem;
   padding: 1.6rem 2rem;
 }
 
-.button--outline {
-  background: none;
-  box-shadow: inset 0 0 0 2px #000;
-  color: #000;
+.button--square-S {
+  height: 3.7rem;
+  font-size: 1.6rem;
+  padding: 0.8rem 1.6rem;
+}
 
-  &:hover {
-    box-shadow: inset 0 0 0 2px #ccc;
-  }
+.button--square-XS {
+  height: 3rem;
+  font-size: 1.4rem;
+  padding: 0.6rem 1.2rem;
 }
 
 form {

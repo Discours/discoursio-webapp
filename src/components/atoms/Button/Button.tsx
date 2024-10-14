@@ -61,9 +61,16 @@ export const Button = (props: Props) => {
         styles[props.size ?? 'M'],
         styles[props.variant ?? 'primary'],
         {
-          [styles.disabled]: props.disabled,
           [styles['loadingDots']]: isLoading,
-          [styles.subscribeButton]: props.isSubscribeButton
+          [styles.subscribeButton]: props.isSubscribeButton,
+
+          'button--square-primary': props.variant === 'primary-square',
+          'button--square-secondary': props.variant === 'secondary-square',
+          'button--L': props.size === 'L',
+          'button--M': props.size === 'M',
+          'button--S': props.size === 'S',
+          'button--square-M': props.size === 'M-square',
+          'button--square-S': props.size === 'S-square'
         },
         props.class
       )}

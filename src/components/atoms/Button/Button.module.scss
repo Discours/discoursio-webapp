@@ -7,9 +7,9 @@
   cursor: pointer;
   white-space: nowrap;
 
-  &:disabled {
-    opacity: 1 !important;
-  }
+  //&:disabled {
+  //  opacity: 1 !important;
+  //}
 
   &.primary {
     background: var(--background-color-invert);
@@ -31,108 +31,47 @@
     }
   }
 
-  &.primary-disabled {
-    background: var(--background-color-invert);
-    color: rgb(255 255 255 / 40%);
-    pointer-events: none;
-  }
-
   &.secondary {
-    border: 2px solid #f7f7f8;
+    border: 0.2rem solid #f7f7f8;
     background: #f7f7f8;
     color: #000;
 
     &:hover {
-      border: 2px solid #e9e9ee;
+      border: 0.2rem solid #e9e9ee;
       background: #e9e9ee;
       color: #000;
     }
 
     &:active {
-      border: 2px solid #f7f7f8;
+      border: 0.2rem solid #f7f7f8;
       background: #f7f7f8;
       color: rgb(105 105 105 / 40%);
     }
 
     &:disabled {
-      border: 2px solid #696969;
+      border: 0.2rem solid #696969;
       color: #696969;
     }
   }
 
-  &.secondary-disabled {
-    border: 2px solid #696969;
-    color: #696969;
-    pointer-events: none;
+  &.primary-square :global(.button--square-primary) {
+
   }
 
-  &.primary-square {
-    background: var(--background-color-invert);
-    color: var(--default-color-invert);
+  &.secondary-square :global(.button--square-secondary) {
 
-    &:hover {
-      color: #ccc;
-    }
-
-    &:active {
-      color: #9fa1a7;
-    }
-
-    &:disabled {
-      border-radius: 2px;
-      background: #f7f7f8;
-      color: #9fa1a7;
-    }
   }
 
-  &.secondary-square {
-    background: #f7f7f7;
-    color: #141414;
-
-    &:hover {
-      background: #e9e9ee;
-    }
-
-    &:active {
-      background: #ccc;
-    }
-
-    &:disabled {
-      border-radius: 2px;
-      background: #f7f7f8;
-      color: #9fa1a7;
-    }
+  &.M-square :global(.button--square-M) {
+    min-width: 8rem;
   }
 
-  &.disabled {
-    border-radius: 2px;
-    background: #f7f7f8;
-    color: #9fa1a7;
-    pointer-events: none;
+  &.S-square :global(.button--square-S) {
+    min-width: 6.3rem;
   }
 
-  &.M-square {
-    min-width: 80px;
-    height: 56px;
-    border-radius: 2px;
-    font-size: 20px;
-    padding: 16px 20px;
-  }
-
-  &.S-square {
-    min-width: 63px;
-    height: 37px;
-    border-radius: 2px;
-    font-size: 16px;
-    padding: 8px 16px;
-  }
-
-  &.XS-square {
-    min-width: 51px;
-    height: 30px;
-    border-radius: 2px;
-    font-size: 14px;
-    padding: 6px 12px;
+  &.XS-square :global(.button--square-XS){
+    min-width: 5.1rem;
   }
 
   &.subscribeButton {
@@ -178,28 +117,16 @@
     }
   }
 
-  &.L {
-    height: 50px;
-    min-width: 112px;
-    border-radius: 14px;
-    font-size: 16px;
-    padding: 0 30px;
+  &.L :global(.button--L){
+    min-width: 11.2rem;
   }
 
-  &.M {
-    height: 40px;
-    min-width: 89px;
-    border-radius: 12px;
-    font-size: 15px;
-    padding: 0 20px;
+  &.M :global(.button--M) {
+    min-width: 8.9rem;
   }
 
-  &.S {
-    height: 32px;
-    min-width: 82px;
-    border-radius: 8px;
-    font-size: 14px;
-    padding: 0 18px;
+  &.S :global(.button--S) {
+    min-width: 8.2rem;
   }
 
   &.loadingDots {

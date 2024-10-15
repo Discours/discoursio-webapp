@@ -7,7 +7,7 @@
 
 import { clsx } from 'clsx'
 import { For, Show, createMemo } from 'solid-js'
-import { A } from '@solidjs/router' // Import SolidJS A for routing
+import { A } from '@solidjs/router'
 
 import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'

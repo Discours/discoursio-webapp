@@ -184,7 +184,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
 
   return (
     <Show when={currentSlug()} keyed>
-      {(slug) => (
+      {(_slug) => (
         <ErrorBoundary
           fallback={(_err) => {
             console.error('ErrorBoundary caught an error', _err)

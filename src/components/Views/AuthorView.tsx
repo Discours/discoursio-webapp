@@ -58,6 +58,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [commented, setCommented] = createSignal<Reaction[]>(props.comments || [])
   const [followersLoaded, setFollowersLoaded] = createSignal(false)
   const [followingsLoaded, setFollowingsLoaded] = createSignal(false)
+  const [_initialRowsCount, setInitialRowsCount] = createSignal(0)
 
   // derivatives
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
@@ -147,13 +148,15 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [loadMoreHidden, setLoadMoreHidden] = createSignal(false)
   const loadMore = async () => {
     saveScrollPosition()
-    const authorhoutsFetcher = loadShouts({
+    const authorShoutsFetcher = loadShouts({
       filters: { author: props.authorSlug },
       limit: SHOUTS_PER_PAGE,
       offset: feedByAuthor()?.[props.authorSlug]?.length || 0
     })
-    const result = await authorhoutsFetcher()
-    result && addFeed(result)
+    const result = await authorShoutsFetcher()
+    if (result) {
+      addFeed(result)
+    }
     restoreScrollPosition()
     return result as LoadMoreItems
   }
@@ -166,6 +169,7 @@ export const AuthorView = (props: AuthorViewProps) => {
         const feed = byAuthor[props.authorSlug] as Shout[]
         if (!feed) return
         setSortedFeed(feed)
+        setInitialRowsCount(Math.ceil(props.shouts.length / 3))
       },
       {}
     )
@@ -188,29 +192,48 @@ export const AuthorView = (props: AuthorViewProps) => {
       offset: commentsByAuthor()[aid]?.length || 0
     })
     const result = await authorCommentsFetcher()
-    result && addShoutReactions(result)
+    if (result) {
+      addShoutReactions(result)
+    }
     restoreScrollPosition()
     return result as LoadMoreItems
   }
 
   createEffect(() => setCurrentTab(params.tab))
 
+  // Update commented when author or commentsByAuthor changes
   createEffect(
-    on([author, commentsByAuthor], ([a, ccc]) => a && ccc && ccc[a.id] && setCommented(ccc[a.id]), {})
+    on(
+      [author, commentsByAuthor],
+      ([a, ccc]) => {
+        if (a && ccc && ccc[a.id]) {
+          setCommented(ccc[a.id])
+        }
+      },
+      {}
+    )
   )
 
   createEffect(
     on(
       [author, commented],
-      ([a, ccc]) => a && ccc && setLoadMoreCommentsHidden((ccc || []).length === a.stat?.comments)
+      ([a, ccc]) => {
+        if (a && ccc) {
+          setLoadMoreCommentsHidden((ccc || []).length === a.stat?.comments)
+        }
+      },
+      {}
     )
   )
 
   createEffect(
     on(
       [author, feedByAuthor],
-      ([a, feed]) =>
-        a && feed[props.authorSlug] && setLoadMoreHidden(feed[props.authorSlug]?.length === a.stat?.shouts),
+      ([a, feed]) => {
+        if (a && feed[props.authorSlug]) {
+          setLoadMoreHidden(feed[props.authorSlug]?.length === a.stat?.shouts)
+        }
+      },
       {}
     )
   )
@@ -230,7 +253,7 @@ export const AuthorView = (props: AuthorViewProps) => {
             <div class={clsx(styles.groupControls, 'row')}>
               <TabNavigator />
               <div class={clsx('col-md-8', styles.additionalControls)}>
-                <Show when={author()?.stat?.rating || author()?.stat?.rating === 0}>
+                <Show when={typeof author()?.stat?.rating === 'number'}>
                   <div class={styles.ratingContainer}>
                     {t('All posts rating')}
                     <AuthorShoutsRating author={author() as Author} class={styles.ratingControl} />
@@ -249,8 +272,7 @@ export const AuthorView = (props: AuthorViewProps) => {
               <div class="col-md-20 col-lg-18">
                 <div
                   ref={(el) => (bioWrapperRef = el)}
-                  class={styles.longBio}
-                  classList={{ [styles.longBioExpanded]: isBioExpanded() }}
+                  class={clsx(styles.longBio, { [styles.longBioExpanded]: isBioExpanded() })}
                 >
                   <div ref={(el) => (bioContainerRef = el)} innerHTML={author()?.about || ''} />
                 </div>
@@ -260,7 +282,7 @@ export const AuthorView = (props: AuthorViewProps) => {
                     class={clsx('button button--subscribe-topic', styles.longBioExpandedControl)}
                     onClick={() => setIsBioExpanded(!isBioExpanded())}
                   >
-                    {t('Show more')}
+                    {isBioExpanded() ? t('Show less') : t('Show more')}
                   </button>
                 </Show>
               </div>
@@ -269,7 +291,7 @@ export const AuthorView = (props: AuthorViewProps) => {
         </Match>
 
         <Match when={currentTab() === 'comments'}>
-          <Show when={me()?.slug === props.authorSlug && !me().stat?.comments}>
+          <Show when={me()?.slug === props.authorSlug && !me()?.stat?.comments}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
             </div>
@@ -302,7 +324,7 @@ export const AuthorView = (props: AuthorViewProps) => {
         </Match>
 
         <Match when={!currentTab()}>
-          <Show when={me()?.slug === props.authorSlug && !me().stat?.shouts}>
+          <Show when={me()?.slug === props.authorSlug && !me()?.stat?.shouts}>
             <div class="wide-container">
               <Placeholder type={loc?.pathname} mode="profile" />
             </div>

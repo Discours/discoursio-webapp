@@ -1,5 +1,5 @@
-import { For, Show, createMemo, createEffect } from 'solid-js'
 import { A, useLocation } from '@solidjs/router'
+import { For, Show, createEffect, createMemo } from 'solid-js'
 
 import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
@@ -24,12 +24,12 @@ const UserpicList = (props: { items: Array<Author | Topic>; onClose?: () => void
   <div class={styles.subscribersList}>
     <For each={props.items.slice(0, 3)}>
       {(item) => (
-          <Userpic
-            size="XS"
-            name={'name' in item ? item.name || '' : 'title' in item ? item.title || '' : ''}
-            userpic={item.pic || ''}
-            class={styles.subscribersItem}
-          />
+        <Userpic
+          size="XS"
+          name={'name' in item ? item.name || '' : 'title' in item ? item.title || '' : ''}
+          userpic={item.pic || ''}
+          class={styles.subscribersItem}
+        />
       )}
     </For>
   </div>

@@ -10,6 +10,11 @@
   > * {
     @include make-col-ready;
   }
+
+  @include media-breakpoint-down(sm) {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
 }
 
 // Генерация только используемых классов колонок

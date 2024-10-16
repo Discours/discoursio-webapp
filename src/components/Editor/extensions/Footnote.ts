@@ -14,7 +14,7 @@ export const Footnote = Node.create({
   name: 'footnote',
   addOptions() {
     return {
-      HTMLAttributes: {}
+      HTMLAttributes: { class: 'footnote' }
     }
   },
   group: 'inline',

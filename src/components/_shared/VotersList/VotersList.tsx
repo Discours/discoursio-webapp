@@ -1,23 +1,36 @@
 import { clsx } from 'clsx'
 import { For, Show } from 'solid-js'
 
+import { useLocalize } from '~/context/localize'
+import { useSession } from '~/context/session'
 import { Reaction, ReactionKind } from '~/graphql/schema/core.gen'
 import { Userpic } from '../../Author/Userpic'
 
+import { A } from '@solidjs/router'
 import styles from './VotersList.module.scss'
 
-type Props = {
+export type VotersListProps = {
   reactions: Reaction[]
-  fallbackMessage: string
 }
 
-export const VotersList = (props: Props) => {
+export const RATINGS_PER_PAGE = 10
+
+export const VotersList = (props: VotersListProps) => {
+  const { t } = useLocalize()
+  const { session } = useSession()
   return (
     <div class={styles.VotersList}>
       <ul class={clsx('nodash', styles.users)}>
         <Show
           when={props.reactions.length > 0}
-          fallback={<li class={clsx(styles.item, styles.fallbackMessage)}>{props.fallbackMessage}</li>}
+          fallback={
+            <li class={clsx(styles.item, styles.fallbackMessage)}>
+              <Show when={!session()?.access_token} fallback={t('No one rated yet')}>
+                <A href="?m=auth&mode=login">{t('Sign in')}</A>
+                {`, ${t('to see who rated')}`}
+              </Show>
+            </li>
+          }
         >
           <For each={props.reactions}>
             {(reaction) => (

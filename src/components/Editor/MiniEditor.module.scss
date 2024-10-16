@@ -8,13 +8,11 @@
   position: relative;
 
   .compactEditor {
-    @include font-size(1.4rem);
-
+    font-size:1.4rem;
     min-height: 100px;
 
     .emptyNode:first-child::before {
-      @include font-size(1.4rem);
-
+      font-size:1.4rem;
       position: absolute;
       top: 4px;
       height: 0;
@@ -33,10 +31,10 @@
     outline: none;
   }
 
-  .blockQuote {
+  .blockquote {
     font-weight: 500;
-    color: var(--black-500);
-    border-left: 2px solid #696969;
+    color: var(--black-300);
+    border-left: 2px solid var(--black-100);
     padding: 0 0 0 8px;
     margin: 0;
 
@@ -47,10 +45,10 @@
   
   .bubbleMenu {
     display: flex;
-    background-color: white;
+    background-color: var(--background-color);
     padding: 5px;
     border-radius: 5px;
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 5%), 0 10px 20px rgb(0 0 0 / 10%);
+    box-shadow: 0 0 0 1px var(--shadow-color-light), 0 10px 20px var(--shadow-color-medium);
   }
 
   .controls {
@@ -82,22 +80,6 @@
       justify-content: center;
       gap: 12px;
       margin-left: auto;
-    }
-
-    .actionButton {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.5;
-      transition: opacity ease-in-out 0.3s;
-
-      &.active,
-      &:hover {
-        opacity: 1;
-      }
-
     }
 
     .linkInput {
@@ -154,8 +136,7 @@
   }
 
   .label {
-    @include font-size(1.2rem);
-
+    font-size:1.2rem;
     position: absolute;
     top: 6px;
     left: 12px;

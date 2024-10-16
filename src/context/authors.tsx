@@ -70,7 +70,7 @@ export const AuthorsProvider = (props: { children: JSX.Element }) => {
   )
 
   const addAuthors = (newAuthors: Author[]) => {
-    console.debug('[context.authors] storing new authors:', newAuthors)
+    // console.debug('[context.authors] storing new authors:', newAuthors)
     setAuthors((prevAuthors) => {
       const updatedAuthors = { ...prevAuthors }
       Array.isArray(newAuthors) &&

@@ -17,8 +17,7 @@
   }
 
   .fieldName {
-    @include font-size(1.2rem);
-
+    font-size: 1.2rem;
     position: absolute;
     top: 6px;
     left: 12px;

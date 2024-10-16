@@ -15,16 +15,14 @@
   }
 
   input {
-    @include font-size(4rem);
-
+    font-size:4rem;
     border: none;
     border-bottom: 1px solid #ccc;
     height: 100%;
   }
 
   button {
-    @include font-size(2rem);
-
+    font-size:2rem;
     line-height: 4rem;
   }
 }

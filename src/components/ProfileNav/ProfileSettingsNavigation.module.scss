@@ -1,13 +1,10 @@
 .navigationHeader {
-  @include font-size(1.8rem);
-
+  font-size:1.8rem;
   font-weight: bold;
   margin-top: 1.1em;
 }
 
 .navigation {
-  @include font-size(1.4rem);
-
   @include media-breakpoint-down(md) {
     display: flex;
 
@@ -15,6 +12,8 @@
       margin-right: 2.4rem;
     }
   }
+
+  font-size:1.4rem;
 
   a {
     border: none;

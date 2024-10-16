@@ -1,6 +1,7 @@
 import { A, redirect, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import { isServer } from 'solid-js/web'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { useUI } from '~/context/ui'
@@ -53,6 +54,7 @@ export const Header = (props: Props) => {
   let windowScrollTop = 0
 
   createEffect(() => {
+    if (isServer) return
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
 
     if (fixed() || modal() !== null) {

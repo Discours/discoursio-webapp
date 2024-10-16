@@ -12,7 +12,7 @@ export const Figcaption = Node.create({
 
   addOptions() {
     return {
-      HTMLAttributes: {}
+      HTMLAttributes: { class: 'figcaption' }
     }
   },
 

@@ -26,8 +26,7 @@ export default defineConfig({
       '~': path.resolve('./src'),
       '@': path.resolve('./public'),
       '/icons': path.resolve('./public/icons'),
-      '/fonts': path.resolve('./public/fonts'),
-      bootstrap: path.resolve('./node_modules/bootstrap')
+      '/fonts': path.resolve('./public/fonts')
     }
   },
   envPrefix: 'PUBLIC_',
@@ -35,8 +34,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        silenceDeprecations: ['mixed-decls'],
-        additionalData: '@import "~/styles/imports";\n',
+        silenceDeprecations: ['mixed-decls', 'legacy-js-api'],
+        additionalData: '@import "~/styles/global";\n',
         includePaths: ['./public', './src/styles', './node_modules']
       }
     } as CSSOptions['preprocessorOptions']

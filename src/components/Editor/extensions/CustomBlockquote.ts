@@ -17,7 +17,9 @@ export const CustomBlockquote = Blockquote.extend({
   content: 'block+',
 
   addOptions(): BlockquoteOptions {
-    return {} as BlockquoteOptions
+    return {
+      HTMLAttributes: { class: 'blockquote' }
+    } as BlockquoteOptions
   },
 
   addAttributes() {

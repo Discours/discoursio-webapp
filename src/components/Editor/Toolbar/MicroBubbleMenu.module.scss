@@ -1,9 +1,9 @@
 .MicroBubbleMenu {
     display: flex;
-    background-color: white;
+    background-color: var(--background-color);
     padding: 5px;
     border-radius: 5px;
-    box-shadow: 0 0 0 1px rgb(0 0 0 / 5%), 0 10px 20px rgb(0 0 0 / 10%);
+    box-shadow: 0 0 0 1px var(--shadow-color-light), 0 10px 20px var(--shadow-color-medium);
 
     .bubbleMenuButton {
       width: 32px;
@@ -25,5 +25,11 @@
 
     .noWrap {
       white-space: nowrap;
+    }
+
+    &.noBorders {
+      border: 0 !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
     }
   }

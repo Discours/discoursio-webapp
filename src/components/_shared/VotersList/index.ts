@@ -1,1 +1,1 @@
-export { VotersList } from './VotersList'
+export { VotersList, RATINGS_PER_PAGE } from './VotersList'

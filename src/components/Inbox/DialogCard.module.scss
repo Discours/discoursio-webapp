@@ -77,7 +77,7 @@
     .name,
     .message,
     .time {
-      color: #fff !important;
+      color: var(--default-color-invert) !important;
     }
   }
 }

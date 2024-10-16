@@ -41,14 +41,13 @@
 }
 
 .errorText {
-  @include font-size(3rem);
-
   @include media-breakpoint-up(sm) {
     left: 80px;
     position: absolute;
     text-align: center;
   }
 
+  font-size:3rem;
   font-weight: 300;
   left: 52px;
   margin: 0 60px 1em 0;
@@ -56,8 +55,7 @@
   top: -2.25em;
 
   .big {
-    @include font-size(7rem);
-
+    font-size:7rem;
     font-weight: 900;
     letter-spacing: 4px;
   }

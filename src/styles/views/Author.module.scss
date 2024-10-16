@@ -29,15 +29,13 @@
 }
 
 .ratingContainer {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   display: inline-flex;
   vertical-align: top;
 }
 
 .ratingControl {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   display: inline-flex;
   margin-left: 1em;
   vertical-align: middle;
@@ -105,8 +103,7 @@
 }
 
 .longBioExpandedControl {
-  @include font-size(1.6rem);
-
+  font-size:1.6rem;
   border-radius: 1.2rem;
   display: block;
   height: auto;

@@ -12,8 +12,7 @@
 
   button,
   .button {
-    @include font-size(1.5rem);
-
+    font-size:1.5rem;
     align-items: center;
     border-radius: 1.2rem;
     display: flex;
@@ -119,7 +118,7 @@
   }
 
   h3 {
-    @include font-size(3.8rem);
+    font-size:3.8rem;
   }
 
   .button {
@@ -233,13 +232,12 @@
 }
 
 .bottomLinks {
-  @include font-size(1.6rem);
-
   @include media-breakpoint-down(sm) {
     flex-direction: column;
     gap: 1.4rem;
   }
 
+  font-size:1.6rem;
   display: flex;
   gap: 4rem;
 

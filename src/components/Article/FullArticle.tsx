@@ -1,10 +1,11 @@
 import { AuthToken } from '@authorizerdev/authorizer-js'
-import { createPopper } from '@popperjs/core'
 import { Link } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
+import usePopper from 'solid-popper'
+
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
@@ -19,7 +20,6 @@ import { capitalize } from '~/utils/capitalize'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
-import stylesHeader from '../HeaderNav/Header.module.scss'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
 import { InviteMembers } from '../_shared/InviteMembers'
@@ -30,12 +30,14 @@ import { ShareModal } from '../_shared/ShareModal'
 import { ImageSwiper } from '../_shared/SolidSwiper'
 import { TableOfContents } from '../_shared/TableOfContents'
 import { VideoPlayer } from '../_shared/VideoPlayer'
-import styles from './Article.module.scss'
 import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
 import { CommentsTree } from './CommentsTree'
+import { RatingControl } from './RatingControl'
 import { SharePopup, getShareUrl } from './SharePopup'
-import { ShoutRatingControl } from './ShoutRatingControl'
+
+import stylesHeader from '../HeaderNav/Header.module.scss'
+import styles from './Article.module.scss'
 
 type Props = {
   article: Shout
@@ -215,25 +217,25 @@ export const FullArticle = (props: Props) => {
         element.setAttribute('href', 'javascript: void(0)')
       }
 
-      const popperInstance = createPopper(element, tooltip, {
-        placement: 'top',
-        modifiers: [
-          {
-            name: 'eventListeners',
-            options: { scroll: false }
-          },
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8]
+      const popperInstance = usePopper(
+        () => element,
+        () => tooltip,
+        {
+          placement: 'top',
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, 8]
+              }
+            },
+            {
+              name: 'flip',
+              options: { fallbackPlacements: ['top'] }
             }
-          },
-          {
-            name: 'flip',
-            options: { fallbackPlacements: ['top'] }
-          }
-        ]
-      })
+          ]
+        }
+      )
 
       tooltip.style.visibility = 'hidden'
       let isTooltipVisible = false
@@ -246,7 +248,7 @@ export const FullArticle = (props: Props) => {
           isTooltipVisible = true
         }
 
-        popperInstance.update()
+        popperInstance()?.update()
       }
 
       const handleDocumentClick = (e: MouseEvent) => {
@@ -366,7 +368,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <figure class="img-align-column">
+                  <figure class={styles.figureAlignColumn}>
                     <Image
                       width={800}
                       alt={props.article.cover_caption || ''}
@@ -443,7 +445,7 @@ export const FullArticle = (props: Props) => {
           <div class="col-md-16 offset-md-5">
             <div class={styles.shoutStats}>
               <div class={styles.shoutStatsItem}>
-                <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
+                <RatingControl shout={props.article} class={styles.ratingControl} />
               </div>
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>

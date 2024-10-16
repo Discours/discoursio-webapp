@@ -18,7 +18,7 @@ import {
 import { AuthorLink } from '../../Author/AuthorLink'
 import { Userpic } from '../../Author/Userpic'
 import { CommentDate } from '../CommentDate'
-import { CommentRatingControl } from '../CommentRatingControl'
+import { RatingControl } from '../RatingControl'
 import styles from './Comment.module.scss'
 
 const MiniEditor = lazy(() => import('../../Editor/MiniEditor'))
@@ -180,7 +180,7 @@ export const Comment = (props: Props) => {
                 </div>
               </Show>
               <CommentDate showOnHover={true} comment={props.comment} isShort={true} />
-              <CommentRatingControl comment={props.comment} />
+              <RatingControl comment={props.comment} />
             </div>
           </Show>
           <div class={styles.commentBody}>

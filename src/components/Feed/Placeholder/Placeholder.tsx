@@ -7,6 +7,7 @@
 
 import { clsx } from 'clsx'
 import { For, Show, createMemo } from 'solid-js'
+import { A } from '@solidjs/router'
 
 import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'
@@ -96,18 +97,14 @@ export const Placeholder = (props: PlaceholderProps) => {
   const { t } = useLocalize()
   const { session } = useSession()
 
-  // dufok (^-^') mem for placeholder data without a fallback, it will be `undefined` if not found
-
   const placeholderData = createMemo(() => {
     const dataForType = data[props.type]
     if (!dataForType) {
       console.warn(`No placeholder data found for type: ${props.type}`)
     }
     return dataForType
-    // (^-^') No fallback to ensure it is empty when data is missing
   })
 
-  // (^-^') Return null if no placeholder data is found
   if (!placeholderData()) {
     return null
   }
@@ -133,10 +130,10 @@ export const Placeholder = (props: PlaceholderProps) => {
           <div class={styles.bottomLinks}>
             <For each={placeholderData()?.profileLinks}>
               {(link) => (
-                <a href={link.href}>
+                <A href={link.href}>
                   <Icon name="link-white" class={styles.icon} />
                   {t(link.label)}
-                </a>
+                </A>
               )}
             </For>
           </div>
@@ -145,16 +142,16 @@ export const Placeholder = (props: PlaceholderProps) => {
         <Show
           when={session()?.access_token}
           fallback={
-            <a class={styles.button} href="?m=auth&mode=login">
+            <A class={styles.button} href="?m=auth&mode=login">
               {t(
                 session()?.access_token
                   ? placeholderData()?.buttonLabelAuthor || ''
                   : placeholderData()?.buttonLabelFeed || ''
               )}
-            </a>
+            </A>
           }
         >
-          <a class={styles.button} href={placeholderData()?.href}>
+          <A class={styles.button} href={placeholderData()?.href}>
             {t(
               session()?.access_token
                 ? placeholderData()?.buttonLabelAuthor || ''
@@ -163,7 +160,7 @@ export const Placeholder = (props: PlaceholderProps) => {
             <Show when={props.mode === 'profile'}>
               <Icon name="arrow-right-2" class={styles.icon} />
             </Show>
-          </a>
+          </A>
         </Show>
       </div>
     </div>

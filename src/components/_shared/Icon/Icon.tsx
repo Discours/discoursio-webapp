@@ -19,9 +19,11 @@ export const Icon = (passedProps: IconProps) => {
 
   return (
     <div class={clsx('icon', styles.icon, props.class)} style={props.style}>
-      <img src={`/icons/${props.name}.svg`} alt={props.title ?? props.name} class={props.iconClassName} />
-      <Show when={props.counter}>
-        <div class={styles.notificationsCounter}>{props.counter}</div>
+      <Show when={props.name}>
+        <img src={`/icons/${props.name}.svg`} alt={props.title ?? props.name} class={props.iconClassName} />
+        <Show when={props.counter}>
+          <div class={styles.notificationsCounter}>{props.counter}</div>
+        </Show>
       </Show>
     </div>
   )

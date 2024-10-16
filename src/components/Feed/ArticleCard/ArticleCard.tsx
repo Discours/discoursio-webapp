@@ -1,6 +1,7 @@
 import { A, useNavigate } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { Accessor, For, Show, createMemo, createSignal } from 'solid-js'
+import { RatingControl } from '~/components/Article/RatingControl'
 import { Icon } from '~/components/_shared/Icon'
 import { Image } from '~/components/_shared/Image'
 import { Popover } from '~/components/_shared/Popover'
@@ -11,11 +12,11 @@ import { capitalize } from '~/utils/capitalize'
 import { descFromBody } from '~/utils/meta'
 import { CoverImage } from '../../Article/CoverImage'
 import { SharePopup, getShareUrl } from '../../Article/SharePopup'
-import { ShoutRatingControl } from '../../Article/ShoutRatingControl'
 import { AuthorLink } from '../../Author/AuthorLink'
-import stylesHeader from '../../HeaderNav/Header.module.scss'
 import { CardTopic } from '../CardTopic'
 import { FeedArticlePopup } from '../FeedArticlePopup'
+
+import stylesHeader from '../../HeaderNav/Header.module.scss'
 import styles from './ArticleCard.module.scss'
 
 export type ArticleCardProps = {
@@ -292,7 +293,7 @@ export const ArticleCard = (props: ArticleCardProps) => {
             classList={{ [styles.shoutCardDetailsActive]: isActionPopupActive() }}
           >
             <div class={styles.shoutCardDetailsContent}>
-              <ShoutRatingControl shout={props.article} class={styles.shoutCardDetailsItem} />
+              <RatingControl shout={props.article} class={styles.shoutCardDetailsItem} />
 
               <div class={clsx(styles.shoutCardDetailsItem, styles.shoutCardComments)}>
                 <a href="#" onClick={(event) => scrollToComments(event)}>

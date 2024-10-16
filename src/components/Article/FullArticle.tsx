@@ -33,8 +33,8 @@ import { VideoPlayer } from '../_shared/VideoPlayer'
 import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
 import { CommentsTree } from './CommentsTree'
+import { RatingControl } from './RatingControl'
 import { SharePopup, getShareUrl } from './SharePopup'
-import { ShoutRatingControl } from './ShoutRatingControl'
 
 import stylesHeader from '../HeaderNav/Header.module.scss'
 import styles from './Article.module.scss'
@@ -445,7 +445,7 @@ export const FullArticle = (props: Props) => {
           <div class="col-md-16 offset-md-5">
             <div class={styles.shoutStats}>
               <div class={styles.shoutStatsItem}>
-                <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
+                <RatingControl shout={props.article} class={styles.ratingControl} />
               </div>
 
               <Popover content={t('Comment')} disabled={isActionPopupActive()}>

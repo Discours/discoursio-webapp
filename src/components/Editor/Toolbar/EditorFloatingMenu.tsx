@@ -1,16 +1,15 @@
 import type { Editor } from '@tiptap/core'
 import { Show, createEffect, createSignal } from 'solid-js'
+import { UploadModalContent } from '~/components/Upload/UploadModalContent/UploadModalContent'
 import { renderUploadedImage } from '~/components/Upload/renderUploadedImage'
-import { Icon } from '~/components/_shared/Icon'
-import { useLocalize } from '~/context/localize'
+import { InlineForm } from '~/components/_shared/InlineForm/InlineForm'
+import { Modal } from '~/components/_shared/Modal/Modal'
+import { Popover } from '~/components/_shared/Popover/Popover'
 import { useUI } from '~/context/ui'
 import { useOutsideClickHandler } from '~/lib/useOutsideClickHandler'
 import { UploadedFile } from '~/types/upload'
-import { UploadModalContent } from '../../Upload/UploadModalContent'
-import { InlineForm } from '../../_shared/InlineForm'
-import { Modal } from '../../_shared/Modal'
-import { Menu } from './Menu'
-import type { MenuItem } from './Menu/Menu'
+import { useLocalize } from '../../../context/localize'
+import { Icon } from '../../_shared/Icon'
 
 import styles from './EditorFloatingMenu.module.scss'
 
@@ -19,109 +18,125 @@ type FloatingMenuProps = {
   ref: (el: HTMLDivElement) => void
 }
 
-const embedData = (data: string) => {
-  const element = document.createRange().createContextualFragment(data)
-  const { attributes } = element.firstChild as HTMLIFrameElement
-  const result: { src: string; width?: string; height?: string } = { src: '' }
+const embedData = (data: string): { [key: string]: string } | undefined => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(data, 'text/html')
+  const iframe = doc.querySelector('iframe')
 
-  for (let i = 0; i < attributes.length; i++) {
-    const attribute = attributes.item(i)
-    if (attribute?.name) {
-      result[attribute.name as keyof typeof result] = attribute.value as string
-    }
+  if (!iframe) {
+    return undefined
+  }
+  const attributes: { [key: string]: string } = {}
+  for (const attr of Array.from(iframe.attributes)) {
+    attributes[attr.name] = attr.value
   }
 
-  return result
+  return attributes
+}
+
+const validateEmbed = (value: string): boolean => {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(value, 'text/html')
+  const iframe = doc.querySelector('iframe')
+
+  return !iframe?.getAttribute('src')
 }
 
 export const EditorFloatingMenu = (props: FloatingMenuProps) => {
   const { t } = useLocalize()
-  const { showModal, hideModal } = useUI()
-  const [selectedMenuItem, setSelectedMenuItem] = createSignal<MenuItem | undefined>()
+  const { showModal } = useUI()
+  const [selectedMenuItem, setSelectedMenuItem] = createSignal()
   const [menuOpen, setMenuOpen] = createSignal<boolean>(false)
-  let menuRef: HTMLDivElement | undefined
-  let plusButtonRef: HTMLButtonElement | undefined
+  const [menuRef, setMenuRef] = createSignal<HTMLDivElement | undefined>()
+  const [plusButtonRef, setPlusButtonRef] = createSignal<HTMLButtonElement | undefined>()
   const handleEmbedFormSubmit = async (value: string) => {
     // TODO: add support instagram embed (blockquote)
     const emb = await embedData(value)
-    props.editor
-      ?.chain()
-      .focus()
-      .insertContent({
-        type: 'figure',
-        attrs: { 'data-type': 'iframe' },
-        content: [
-          {
-            type: 'iframe',
-            attrs: {
-              src: emb.src,
-              width: emb.width,
-              height: emb.height
-            }
-          },
-          {
-            type: 'figcaption',
-            content: [{ type: 'text', text: t('Description') }]
-          }
-        ]
-      })
-      .run()
-  }
-
-  const validateEmbed = (value: string) => {
-    const element = document.createRange().createContextualFragment(value)
-    if (element.firstChild?.nodeName !== 'IFRAME') {
-      return t('Error')
-    }
+    emb && props.editor.chain().focus().setIframe({ src: emb.src }).run()
   }
 
   createEffect(() => {
-    if (selectedMenuItem() === 'image') {
-      showModal('uploadImage')
-      return
-    }
-    if (selectedMenuItem() === 'horizontal-rule') {
-      props.editor?.chain().focus().setHorizontalRule().run()
-      setSelectedMenuItem()
-      return
+    switch (selectedMenuItem()) {
+      case 'image': {
+        showModal('uploadImage')
+        return
+      }
+      case 'horizontal-rule': {
+        props.editor.chain().focus().setHorizontalRule().run()
+        setSelectedMenuItem()
+        return
+      }
+      default: {
+        props.editor?.chain().focus().run()
+        setSelectedMenuItem()
+        return
+      }
     }
   })
 
   const closeUploadModalHandler = () => {
     setSelectedMenuItem()
     setMenuOpen(false)
-    setSelectedMenuItem()
   }
 
   useOutsideClickHandler({
-    containerRef: menuRef,
+    containerRef: menuRef()!,
     handler: (e) => {
-      if (plusButtonRef?.contains(e.target)) {
+      if (plusButtonRef()?.contains(e.target as Node)) {
         return
       }
 
       if (menuOpen()) {
         setMenuOpen(false)
-        setSelectedMenuItem()
       }
     }
   })
 
   const handleUpload = (image: UploadedFile) => {
     renderUploadedImage(props.editor, image)
-    hideModal()
   }
+
+  const PlusButtonMenu = () => (
+    <div class={styles.innerMenu}>
+      <Popover content={t('Add image')}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('image')}>
+            <Icon class={styles.icon} name="editor-image" />
+          </button>
+        )}
+      </Popover>
+      <Popover content={t('Add an embed widget')}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('embed')}>
+            <Icon class={styles.icon} name="editor-embed" />
+          </button>
+        )}
+      </Popover>
+      <Popover content={t('Add rule')}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <button ref={triggerRef} type="button" onClick={() => setSelectedMenuItem('horizontal-rule')}>
+            <Icon class={styles.icon} name="editor-horizontal-rule" />
+          </button>
+        )}
+      </Popover>
+    </div>
+  )
 
   return (
     <>
       <div ref={props.ref} class={styles.editorFloatingMenu}>
-        <button ref={(el) => (plusButtonRef = el)} type="button" onClick={() => setMenuOpen(!menuOpen())}>
+        <button
+          class={styles.actionButton}
+          ref={setPlusButtonRef}
+          type="button"
+          onClick={() => setMenuOpen(!menuOpen())}
+        >
           <Icon name="editor-plus" />
         </button>
         <Show when={menuOpen()}>
-          <div class={styles.menuHolder} ref={(el) => (menuRef = el)}>
+          <div class={styles.menuHolder} ref={setMenuRef}>
             <Show when={!selectedMenuItem()}>
-              <Menu selectedItem={(value: string) => setSelectedMenuItem(value as MenuItem)} />
+              <PlusButtonMenu />
             </Show>
             <Show when={selectedMenuItem() === 'embed'}>
               <InlineForm
@@ -129,7 +144,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
                 showInput={true}
                 onClose={closeUploadModalHandler}
                 onClear={() => setSelectedMenuItem()}
-                validate={(val) => validateEmbed(val) || ''}
+                validate={(value: string) => (validateEmbed(value) ? t('Error') : '')}
                 onSubmit={handleEmbedFormSubmit}
               />
             </Show>
@@ -138,7 +153,7 @@ export const EditorFloatingMenu = (props: FloatingMenuProps) => {
       </div>
       <Modal variant="narrow" name="uploadImage" onClose={closeUploadModalHandler}>
         <UploadModalContent
-          onClose={(value) => {
+          onClose={(value?: UploadedFile) => {
             handleUpload(value as UploadedFile)
             setSelectedMenuItem()
           }}

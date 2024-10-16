@@ -1,4 +1,4 @@
-// biome-ignore lint/correctness/noNodejsModules: <explanation>
+// biome-ignore lint/correctness/noNodejsModules: тесты
 import https from 'node:https'
 import { type Page, expect, test } from '@playwright/test'
 
@@ -72,63 +72,121 @@ test.beforeEach(async ({ page }) => {
   await page.getByRole('button', { name: 'Войти' }).click()
 })
 
-test.describe('Create new draft', () => {
-  test('Open /edit/new', async ({ page }) => {
+test.describe('Создание новых материалов', () => {
+  test('Открытие /edit/new', async ({ page }) => {
     await page.goto('/edit/new')
-    await expect(page).toHaveTitle('Выберите тип публикации')
+    await expect(page).toHaveTitle('Discours :: Выберите тип публикации')
+    await expect(page.getByRole('heading', { name: 'Выберите тип публикации' })).toBeVisible()
+  })
+
+  test('Создание статьи', async ({ page }) => {
+    await page.goto('/edit/new')
+    await page.locator('li').filter({ hasText: 'статья' }).locator('img').click()
+    // biome-ignore lint/performance/useTopLevelRegex: тесты
+    await expect(page).toHaveURL(/\/edit\/[a-zA-Z0-9-]+/)
+    await expect(page.getByRole('heading', { name: 'Новая статья' })).toBeVisible()
+  })
+
+  test('Литература', async ({ page }) => {
+    await page.getByRole('button', { name: 'Т.Р' }).click()
+    await page.getByRole('link', { name: 'Черновики' }).click()
+    await page.getByRole('link', { name: 'Создать публикацию' }).click()
+    await page
+      .locator('li')
+      // biome-ignore lint/performance/useTopLevelRegex: тесты
+      .filter({ hasText: /^литература$/ })
+      .locator('img')
+      .click()
+    // biome-ignore lint/performance/useTopLevelRegex: тесты
+    await expect(page).toHaveURL(/\/edit\/[a-zA-Z0-9-]+/)
+    await expect(page.getByRole('heading', { name: 'Новая литература' })).toBeVisible()
+  })
+
+  test('Галерея', async ({ page }) => {
+    await page.getByRole('button', { name: 'Т.Р' }).click()
+    await page.getByRole('link', { name: 'Черновики' }).click()
+    await page.getByRole('link', { name: 'Создать публикацию' }).click()
+    await page.locator('li').filter({ hasText: 'изображения' }).locator('img').click()
+    // biome-ignore lint/performance/useTopLevelRegex: тесты
+    await expect(page).toHaveURL(/\/edit\/[a-zA-Z0-9-]+/)
+    await expect(page.getByRole('heading', { name: 'Новые изображения' })).toBeVisible()
+
+    // Заполнение формы
+    await page.getByLabel('Заголовок').fill('Тестовая галерея')
+    await page.getByLabel('Описание').fill('Это тестовая галерея изображений')
+
+    // Загрузка изображения (предполагается, что есть кнопка для загрузки)
+    await page.setInputFiles('input[type="file"]', 'path/to/test/image.jpg')
+
+    // Сохранение
+    await page.getByRole('button', { name: 'Сохранить' }).click()
+
+    // Проверка создания
+    await expect(page.getByText('Черновик сохранен')).toBeVisible()
+  })
+
+  test('Audio', async ({ page }) => {
+    await page.getByRole('button', { name: 'Т.Р.' }).click()
+    await page.getByRole('link', { name: 'Черновики' }).click()
+    await page.getByRole('link', { name: 'Создать публикацию' }).click()
+    await page.locator('li').filter({ hasText: 'музыка' }).locator('img').click()
+    // biome-ignore lint/performance/useTopLevelRegex: тесты
+    await expect(page).toHaveURL(/\/edit\/[a-zA-Z0-9-]+/)
+    await expect(page.getByRole('heading', { name: 'Новая музыка' })).toBeVisible()
+
+    // Заполнение формы
+    await page.getByLabel('Название трека').fill('Тестовый трек')
+    await page.getByLabel('Исполнитель').fill('Тестовый исполнитель')
+
+    // Загрузка аудио файла (предполагается, что есть кнопка для загрузки)
+    await page.setInputFiles('input[type="file"]', 'path/to/test/audio.mp3')
+
+    // Сохранение
+    await page.getByRole('button', { name: 'Сохранить' }).click()
+
+    // Проверка создания
+    await expect(page.getByText('Черновик сохранен')).toBeVisible()
+  })
+
+  test('Video', async ({ page }) => {
+    await page.getByRole('button', { name: 'Т.Р' }).click()
+    await page.getByRole('link', { name: 'Черновики' }).click()
+    await page.getByRole('link', { name: 'Создать публикацию' }).click()
+    await page.locator('li').filter({ hasText: 'видео' }).locator('img').click()
+    // biome-ignore lint/performance/useTopLevelRegex: тесты
+    await expect(page).toHaveURL(/\/edit\/[a-zA-Z0-9-]+/)
+    await expect(page.getByRole('heading', { name: 'Новое видео' })).toBeVisible()
+
+    // Заполнение формы
+    await page.getByLabel('Название видео').fill('Тестовое видео')
+    await page.getByLabel('Описание').fill('Это тестовое видео')
+
+    // Вставка ссылки на видео (предполагается, что есть поле для ввода ссылки)
+    await page.getByLabel('Ссылка на видео').fill('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+
+    // Сохранение
+    await page.getByRole('button', { name: 'Сохранить' }).click()
+
+    // Проверка создания
+    await expect(page.getByText('Черновик сохранен')).toBeVisible()
   })
 })
 
-test('Create article', async ({ page }) => {
-  await page.goto('/edit/new')
+test('Публикация темы', async ({ page }) => {
+  await page.getByRole('button', { name: 'Т.Р.' }).click()
+  await page.getByRole('link', { name: 'Черновики' }).click()
+  await page.getByRole('link', { name: 'Создать публикацию' }).click()
   await page.locator('li').filter({ hasText: 'статья' }).locator('img').click()
-})
 
-test('Drafts - create literature', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р' }).click()
-  await page.getByRole('link', { name: 'Черновики' }).click()
-  await page.getByRole('link', { name: 'Создать публикацию' }).click()
-  // biome-ignore lint/performance/useTopLevelRegex: <explanation>
-  await page
-    .locator('li')
-    .filter({ hasText: /^литература$/ })
-    .locator('img')
-    .click()
-})
+  // Заполнение формы
+  await page.getByLabel('Заголовок').fill('Тестовая тема')
+  await page.getByLabel('Текст').fill('Это тестовая тема для проверки публикации')
 
-test('Drafts - create images', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р' }).click()
-  await page.getByRole('link', { name: 'Черновики' }).click()
-  await page.getByRole('link', { name: 'Создать публикацию' }).click()
-  await page.locator('li').filter({ hasText: 'изображения' }).locator('img').click()
-  // Fill the form
-  // Save
-  // Check is it created
-})
+  // Публикация
+  await page.getByRole('button', { name: 'Опубликовать' }).click()
 
-test('Drafts - create music', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р.' }).click()
-  await page.getByRole('link', { name: 'Черновики' }).click()
-  await page.getByRole('link', { name: 'Создать публикацию' }).click()
-  await page.locator('li').filter({ hasText: 'музыка' }).locator('img').click()
-  // TODO: Fill the form
-  // TODO: Save
-  // TODO: Check is it created
-})
-
-test('Drafts - create video', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р' }).click()
-  await page.getByRole('link', { name: 'Черновики' }).click()
-  await page.getByRole('link', { name: 'Создать публикацию' }).click()
-  await page.locator('li').filter({ hasText: 'видео' }).locator('img').click()
-  // Fill the form
-  // Save
-  // Check is it created
-})
-
-test('Post topic', async ({ page }) => {
-  await page.getByRole('button', { name: 'Т.Р.' }).click()
-  await page.getByRole('link', { name: 'Черновики' }).click()
-  await page.getByRole('link', { name: 'Создать публикацию' }).click()
-  // Post
+  // Проверка публикации
+  // biome-ignore lint/performance/useTopLevelRegex: тесты
+  await expect(page).toHaveURL(/\/[a-zA-Z0-9-]+/)
+  await expect(page.getByText('Тестовая тема')).toBeVisible()
 })

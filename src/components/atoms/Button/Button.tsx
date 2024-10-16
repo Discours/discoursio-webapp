@@ -36,7 +36,7 @@ export const Button = (props: Props) => {
       class={clsx(
         styles.button,
         styles[props.size ?? 'M'],
-        styles[props.variant ?? 'primary'],
+        styles[(props.variant ?? 'primary') as keyof typeof styles],
         {
           [styles.loading]: props.loading,
           [styles.subscribeButton]: props.isSubscribeButton

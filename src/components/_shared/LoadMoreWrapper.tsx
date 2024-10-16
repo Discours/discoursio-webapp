@@ -6,10 +6,12 @@ import { SortFunction } from '~/types/common'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { byCreated } from '~/utils/sort'
 
+import styles from './LoadMoreWrapper.module.scss'
+
 export type LoadMoreItems = Shout[] | Author[] | Reaction[]
 
 type LoadMoreProps = {
-  loadFunction: (offset: number) => Promise<LoadMoreItems>
+  loadFunction: (offset: number) => Promise<LoadMoreItems | undefined>
   pageSize: number
   hidden?: boolean
   children: JSX.Element
@@ -58,7 +60,7 @@ export const LoadMoreWrapper = (props: LoadMoreProps) => {
       {props.children}
       <div>
         <Show when={isLoadMoreButtonVisible() && !props.hidden}>
-          <div class="load-more-container">
+          <div class={styles.loadMoreWrapper}>
             <Button
               onClick={loadItems}
               disabled={isLoading()}

@@ -16,8 +16,6 @@
   width: 100%;
 
   .input {
-    @include font-size(2rem);
-
     @include media-breakpoint-up(xxl) {
       border-right: none;
     }
@@ -26,6 +24,7 @@
       border-bottom: none;
     }
 
+    font-size:2rem;
     background: none;
     color: #fff;
     font-family: inherit;

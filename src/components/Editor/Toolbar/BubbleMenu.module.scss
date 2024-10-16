@@ -26,7 +26,6 @@
   }
 
   .delimiter {
-    background: #fff;
     opacity: 0.5;
     display: inline-block;
     height: 1.4em;
@@ -48,9 +47,9 @@
       top: calc(100% + 8px);
       left: 50%;
       transform: translateX(-50%);
-      box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
-      background: #000;
-      color: #898c94;
+      box-shadow: 0 4px 10px var(--shadow-color-medium);
+      background: var(--black-500);
+      color: var(--text-color-secondary);
 
       & > header {
         font-size: 10px;

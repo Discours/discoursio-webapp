@@ -1,23 +1,23 @@
+import { Editor } from '@tiptap/core'
 import CharacterCount from '@tiptap/extension-character-count'
 import Placeholder from '@tiptap/extension-placeholder'
 import clsx from 'clsx'
 import { type JSX, Show, createEffect, createSignal, on } from 'solid-js'
-import { createTiptapEditor, useEditorHTML, useEditorIsEmpty } from 'solid-tiptap'
-import { Button } from '~/components/_shared/Button'
-import { useLocalize } from '~/context/localize'
-import { base } from '~/lib/editorExtensions'
-import { ToolbarControl as Control } from './Toolbar/ToolbarControl'
-
-import { Editor } from '@tiptap/core'
 import { Portal } from 'solid-js/web'
+import { createTiptapEditor, useEditorHTML, useEditorIsEmpty } from 'solid-tiptap'
 import { UploadModalContent } from '~/components/Upload/UploadModalContent'
 import { renderUploadedImage } from '~/components/Upload/renderUploadedImage'
+import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon/Icon'
 import { Modal } from '~/components/_shared/Modal'
+import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
+import { base } from '~/lib/editorExtensions'
 import { UploadedFile } from '~/types/upload'
-import styles from './MiniEditor.module.scss'
 import { InsertLinkForm } from './Toolbar/InsertLinkForm'
+import { ToolbarControl as Control } from './Toolbar/ToolbarControl'
+
+import styles from './MiniEditor.module.scss'
 
 interface MiniEditorProps {
   content?: string
@@ -28,7 +28,7 @@ interface MiniEditorProps {
   placeholder?: string
 }
 
-export default function MiniEditor(props: MiniEditorProps): JSX.Element {
+export function MiniEditor(props: MiniEditorProps): JSX.Element {
   const { t } = useLocalize()
   const { showModal } = useUI()
   const [editorElement, setEditorElement] = createSignal<HTMLDivElement>()
@@ -96,13 +96,12 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
 
   return (
     <div class={clsx(styles.MiniEditor, styles.isFocused)}>
-      <div class={clsx(styles.controls, styles.isFocused)}>
-        <div class={clsx(styles.actions, styles.active)}>
+      <div class={clsx(styles.controls)}>
+        <div class={clsx(styles.actions)}>
           <Control
             key="bold"
             editor={editor()}
             onChange={() => editor()?.chain().focus().toggleBold().run()}
-            title={t('Bold')}
           >
             <Icon name="editor-bold" />
           </Control>
@@ -110,32 +109,25 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
             key="italic"
             editor={editor()}
             onChange={() => editor()?.chain().focus().toggleItalic().run()}
-            title={t('Italic')}
           >
             <Icon name="editor-italic" />
           </Control>
-          <Control
-            key="link"
-            editor={editor()}
-            onChange={handleLinkButtonClick}
-            title={t('Add url')}
-            isActive={(e: Editor) => Boolean(e?.isActive('link'))}
-          >
+          <Control key="link" editor={editor()} onChange={handleLinkButtonClick} caption={t('Add url')}>
             <Icon name="editor-link" />
           </Control>
           <Control
             key="blockquote"
             editor={editor()}
             onChange={() => editor()?.chain().focus().toggleBlockquote().run()}
-            title={t('Add blockquote')}
+            caption={t('Add blockquote')}
           >
             <Icon name="editor-quote" />
           </Control>
           <Control
             key="image"
             editor={editor()}
-            onChange={() => showModal('simplifiedEditorUploadImage')}
-            title={t('Add image')}
+            onChange={() => showModal('editorUploadImage')}
+            caption={t('Add image')}
           >
             <Icon name="editor-image-dd-full" />
           </Control>
@@ -150,7 +142,7 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
       </div>
 
       <Portal>
-        <Modal variant="narrow" name="simplifiedEditorUploadImage">
+        <Modal variant="narrow" name="editorUploadImage">
           <UploadModalContent
             onClose={(image) => renderUploadedImage(editor() as Editor, image as UploadedFile)}
           />
@@ -162,11 +154,13 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
       <div class={styles.buttons}>
         <Button
           value={t('Cancel')}
-          disabled={isEmpty()}
           variant="secondary"
-          onClick={() => editor()?.commands.clearContent()}
+          onClick={() => {
+            editor()?.commands.clearContent()
+            props.onCancel?.()
+          }}
         />
-        <Button value={t('Send')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
+        <Button value={t('Save')} variant="primary" disabled={isEmpty()} onClick={handleSubmit} />
       </div>
 
       <Show when={counter() > 0}>
@@ -177,3 +171,5 @@ export default function MiniEditor(props: MiniEditorProps): JSX.Element {
     </div>
   )
 }
+
+export default MiniEditor

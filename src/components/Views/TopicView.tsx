@@ -199,9 +199,9 @@ export const TopicView = (props: Props) => {
               </ul>
             </div>
             <div class="col-md-8">
-              <div class="mode-switcher">
+              <div class={styles.modeSwitcher}>
                 {`${t('Show')} `}
-                <span class="mode-switcher__control">{t('All posts')}</span>
+                <span class={styles.modeSwitcherControl}>{t('All posts')}</span>
               </div>
             </div>
           </div>

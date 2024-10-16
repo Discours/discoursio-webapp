@@ -15,21 +15,12 @@
     "function-no-unknown": [
       true,
       {
-        "ignoreFunctions": ["divide", "transparentize"]
+        "ignoreFunctions": ["divide", "transparentize", "map-get", "percentage"]
       }
     ],
     "function-url-quotes": null,
     "keyframes-name-pattern": null,
     "no-descending-specificity": null,
-    "order/order": [
-      {
-        "type": "at-rule",
-        "name": "include"
-      },
-      "custom-properties",
-      "declarations",
-      "rules"
-    ],
     "property-no-vendor-prefix": [
       true,
       {
@@ -40,12 +31,6 @@
     "scss/at-mixin-pattern": null,
     "scss/dollar-variable-colon-space-after": "always-single-line",
     "scss/dollar-variable-colon-space-before": "never",
-    "scss/dollar-variable-pattern": [
-      "^[a-z][a-zA-Z]+$",
-      {
-        "ignore": "global"
-      }
-    ],
     "scss/double-slash-comment-empty-line-before": [
       "always",
       {
@@ -68,6 +53,8 @@
       {
         "ignorePseudoClasses": ["global", "export"]
       }
-    ]
+    ],
+    "scss/at-if-no-null": true,
+    "media-query-no-invalid": null
   }
 }

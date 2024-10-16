@@ -1,57 +1,49 @@
-## Development setup recommendations
+# Discoursio Webapp
+
+## Technology Stack
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [SolidJS](https://www.solidjs.com/)
+- [Vinxi](https://vinxi.vercel.app/)
+- [SCSS](https://sass-lang.com/)
+- [URQL](https://formidable.com/open-source/urql/)
+- [i18next](https://www.i18next.com/)
+- [Tiptap](https://tiptap.dev/)
+- [Playwright](https://playwright.dev/)
+- [Storybook](https://storybook.js.org/)
+- [Stylelint](https://stylelint.io/)
+- [Biome](https://biomejs.dev/)
+
+## Development
 
 ### How to start
 
-Use `bun i`, `npm i`, `pnpm i` or `yarn` to install packages.
+1. Clone the repository
+2. Install dependencies: `bun i` (or npm/pnpm/yarn)
+3. Create a `.env` file (variables with `PUBLIC_` are used in `/src/utils/config.ts`)
 
-### Config of variables
+### Main commands
 
-- Use `.env` file to setup your own development environment
-- Env vars with prefix `PUBLIC_` are widely used in `/src/utils/config.ts`
-
-### Useful commands
-
-run checks, fix styles, imports, formatting and autofixable linting errors:
+```bash
+bun run dev         # Start development server
+bun run build       # Build for production
+bun run typecheck   # Type checking
+bun run fix         # Fix styles and linting
+bun run storybook   # Start Storybook
 ```
-bun run typecheck
-bun run fix
+
+## Testing
+
+### E2E tests (Playwright)
+
+```bash
+bun run e2e:install  # Install E2E dependencies
+bun run e2e:tests    # Run tests
+bun run e2e:tests:ci # Run tests in CI
 ```
 
-## End-to-End (E2E) Tests
+## CI/CD
 
-This directory contains end-to-end tests. These tests are written using [Playwright](https://playwright.dev/)
+Tests are executed in GitHub Actions. Make sure `BASE_URL` is correctly configured in CI.
 
-### Structure
-
-- `/tests/*`: This directory contains the test files.
-- `/playwright.config.ts`: This is the configuration file for Playwright.
-
-### Getting Started
-
-Follow these steps:
-
-1. **Install dependencies**: Run `npm run e2e:install` to install the necessary dependencies for running the tests.
-
-2. **Run the tests**: After using `npm run e2e:tests`.
-
-### Additional Information
-
-If workers is no needed use:
-- `npx playwright test --project=webkit --workers 4`
-
-For more information on how to write tests using Playwright - [Playwright documentation](https://playwright.dev/docs/intro).
-
-### 🚀 Tests in CI Mode
-
-Tests are executed within a GitHub workflow. We organize our tests into two main directories:
-
-- `tests`: Contains tests that do not require authentication.
-- `tests-with-auth`: Houses tests that interact with authenticated parts of the application.
-
-🔧 **Configuration:**
-
-Playwright is configured to utilize the `BASE_URL` environment variable. Ensure this is properly set in your CI configuration to point to the correct environment.
-
-📝 **Note:**
-
-After pages have been adjusted to work with authentication, all tests should be moved to the `tests` directory to streamline the testing process.
+## Version: 0.9.7

@@ -21,22 +21,6 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag'
   },
-  viteFinal: (config) => {
-    if (config.build) {
-      config.build.sourcemap = true
-      config.build.minify = process.env.NODE_ENV === 'production'
-    }
-    if (config.css) {
-      config.css.preprocessorOptions = {
-        scss: {
-          silenceDeprecations: ['mixed-decls'],
-          additionalData: '@import "~/styles/imports";\n',
-          includePaths: ['./public', './src/styles', './node_modules']
-        }
-      }
-    }
-    return config
-  },
   previewHead: (head) => `
     ${head}
     <style>

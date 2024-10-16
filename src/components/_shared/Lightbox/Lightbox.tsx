@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Show, createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js'
+import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 
 import { getImageUrl } from '~/lib/getThumbUrl'
 import { useEscKeyDownHandler } from '~/lib/useEscKeyDownHandler'
@@ -23,7 +23,7 @@ export const Lightbox = (props: Props) => {
   const [translateX, setTranslateX] = createSignal(0)
   const [translateY, setTranslateY] = createSignal(0)
   const [transitionEnabled, setTransitionEnabled] = createSignal(false)
-  let lightboxRef: HTMLElement | null
+  const [lightboxRef, setLightboxRef] = createSignal<HTMLDivElement | undefined>()
 
   const handleSmoothAction = (action: () => void) => {
     setTransitionEnabled(true)
@@ -32,11 +32,8 @@ export const Lightbox = (props: Props) => {
   }
 
   const closeLightbox = () => {
-    lightboxRef?.classList.add(styles.fadeOut)
-
-    setTimeout(() => {
-      props.onClose()
-    }, 200)
+    lightboxRef()?.classList.add(styles.fadeOut)
+    setTimeout(props.onClose, 200)
   }
 
   const zoomIn = (event: MouseEvent & { currentTarget: HTMLButtonElement; target: Element }) => {
@@ -88,30 +85,30 @@ export const Lightbox = (props: Props) => {
 
   useEscKeyDownHandler(closeLightbox)
 
-  let startX = 0
-  let startY = 0
-  let isDragging = false
+  const [startX, setStartX] = createSignal(0)
+  const [startY, setStartY] = createSignal(0)
+  const [isDragging, setIsDragging] = createSignal(false)
 
   const onMouseDown: (event: MouseEvent) => void = (event) => {
-    startX = event.clientX - translateX()
-    startY = event.clientY - translateY()
-    isDragging = true
+    setStartX(event.clientX - translateX())
+    setStartY(event.clientY - translateY())
+    setIsDragging(true)
     event.preventDefault()
   }
 
   const onMouseMove: (event: MouseEvent) => void = (event) => {
-    if (isDragging) {
-      setTranslateX(event.clientX - startX)
-      setTranslateY(event.clientY - startY)
+    if (isDragging()) {
+      setTranslateX(event.clientX - startX())
+      setTranslateY(event.clientY - startY())
     }
   }
 
-  const onMouseUp: () => void = () => {
-    isDragging = false
-  }
+  const onMouseUp = () => setIsDragging(false)
 
-  document.addEventListener('mousemove', onMouseMove)
-  document.addEventListener('mouseup', onMouseUp)
+  onMount(() => {
+    document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
+  })
 
   onCleanup(() => {
     document.removeEventListener('mousemove', onMouseMove)
@@ -125,7 +122,6 @@ export const Lightbox = (props: Props) => {
   }))
 
   let fadeTimer: string | number | NodeJS.Timeout
-
   createEffect(
     on(
       zoomLevel,
@@ -147,7 +143,7 @@ export const Lightbox = (props: Props) => {
       class={clsx(styles.Lightbox, props.class)}
       onClick={closeLightbox}
       onWheel={(e) => e.preventDefault()}
-      ref={(el) => (lightboxRef = el)}
+      ref={setLightboxRef}
     >
       <Show when={pictureScalePercentage()}>
         <div class={styles.scalePercentage}>{`${pictureScalePercentage()}%`}</div>

@@ -1,10 +1,9 @@
 .group {
-  @include font-size(1.6rem);
-
   @include media-breakpoint-down(sm) {
     margin-bottom: 6.4rem;
   }
 
+  font-size:1.6rem;
   margin: 3em 0 9.6rem;
 
   h2 {
@@ -30,24 +29,8 @@
   }
 }
 
-
-.loadMoreContainer {
-  margin-top: 48px;
-  text-align: center;
-
-  .loadMoreButton {
-    @include media-breakpoint-up(sm) {
-      width: auto;
-    }
-
-    padding: 0.6em 3em;
-    width: 100%;
-  }
-}
-
 .alphabet {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   color: rgba(0 0 0 / 20%);
   display: flex;
   flex-wrap: wrap;
@@ -66,8 +49,7 @@
 }
 
 .articlesCounter {
-  @include font-size(1.2rem);
-
+  font-size:1.2rem;
   margin-left: 0.5em;
   vertical-align: super;
 }

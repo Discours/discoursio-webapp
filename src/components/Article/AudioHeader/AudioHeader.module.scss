@@ -15,8 +15,7 @@
       flex-direction: row;
 
       .item {
-        @include font-size(1.6rem);
-
+        font-size:1.6rem;
         font-weight: 500;
         padding: 2px 12px;
         border-left: 2px solid #e9e9ee;

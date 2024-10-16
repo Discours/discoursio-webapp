@@ -35,7 +35,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        silenceDeprecations: ['mixed-decls'],
+        silenceDeprecations: ['mixed-decls', 'legacy-js-api'],
         additionalData: '@import "~/styles/imports";\n',
         includePaths: ['./public', './src/styles', './node_modules']
       }

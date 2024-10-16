@@ -9,22 +9,34 @@ import './Button.module.scss'
 const meta: Meta<typeof Button> = {
   title: 'Atom/Button',
   component: Button,
-
   argTypes: {
     value: {
       control: { type: 'text' }
     },
     variant: {
-      options: ['primary', 'secondary', 'bordered', 'inline', 'light', 'outline', 'danger'],
+      options: [
+        'primary',
+        'secondary',
+        'subscribeButton',
+        'unsubscribeButton',
+        'primary-square',
+        'secondary-square'
+      ],
       control: { type: 'select' }
     },
     size: {
-      options: ['S', 'M', 'L'],
-      control: { type: 'radio' }
+      options: ['S', 'M', 'L', 'M-square', 'S-square', 'XS-square'],
+      control: { type: 'select' }
     },
-    loading: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    isSubscribeButton: { control: 'boolean' },
+    disabled: {
+      control: 'boolean'
+    },
+    loading: {
+      control: 'boolean'
+    },
+    isSubscribeButton: {
+      control: 'boolean'
+    },
     onClick: { action: 'clicked' }
   }
 }
@@ -38,8 +50,8 @@ export const Primary: Story = {
     value: 'Button',
     variant: 'primary',
     size: 'M',
-    loading: false,
     disabled: false,
+    loading: false,
     isSubscribeButton: false
   }
 }
@@ -48,46 +60,45 @@ export const Secondary: Story = {
   args: {
     value: 'Button',
     variant: 'secondary',
+    size: 'M',
+    disabled: false,
+    loading: false
+  }
+}
+
+export const Subscribe: Story = {
+  args: {
+    value: 'State A',
+    variant: 'subscribeButton',
     size: 'M'
   }
 }
 
-export const Bordered: Story = {
+export const Unsubscribe: Story = {
   args: {
-    value: 'Button',
-    variant: 'bordered',
+    value: 'State B',
+    variant: 'unsubscribeButton',
     size: 'M'
   }
 }
 
-export const Inline: Story = {
+export const PrimarySquare: Story = {
   args: {
     value: 'Button',
-    variant: 'inline',
-    size: 'M'
+    variant: 'primary-square',
+    size: 'S-square',
+    disabled: false,
+    loading: false,
+    isSubscribeButton: false
   }
 }
 
-export const Light: Story = {
+export const SecondarySquare: Story = {
   args: {
     value: 'Button',
-    variant: 'light',
-    size: 'M'
-  }
-}
-
-export const Outline: Story = {
-  args: {
-    value: 'Button',
-    variant: 'outline',
-    size: 'M'
-  }
-}
-
-export const Danger: Story = {
-  args: {
-    value: 'Button',
-    variant: 'danger',
-    size: 'M'
+    variant: 'secondary-square',
+    size: 'S-square',
+    disabled: false,
+    loading: false
   }
 }

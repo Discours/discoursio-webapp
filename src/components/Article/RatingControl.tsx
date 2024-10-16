@@ -38,7 +38,9 @@ export const RatingControl = (props: Props) => {
       ([rrr, profile]) => {
         if (rrr) {
           const shoutRatings = rrr.filter(props.comment ? commentRatingFilter : shoutRatingFilter)
-          profile && setRatings((_rrr) => Array.from(new Set(shoutRatings)).sort(byCreated))
+          const urrr = Array.from(new Set(shoutRatings))
+          urrr.sort(byCreated)
+          profile && setRatings((_rrr) => urrr)
 
           const my = shoutRatings.find((r) => r.created_by.slug === profile?.slug)
           setMyRate(my ? my.kind : null)

@@ -1,8 +1,8 @@
+// biome-ignore lint/correctness/noNodejsModules: nodejs env
+import { Buffer } from 'node:buffer'
 import { withThemeByClassName } from '@storybook/addon-themes'
-import { Buffer } from 'buffer'
 import '../src/styles/app.scss'
 
-   
 if (typeof global !== 'undefined') {
   global.Buffer = Buffer
 }

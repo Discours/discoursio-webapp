@@ -35,7 +35,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         silenceDeprecations: ['mixed-decls', 'legacy-js-api'],
-        additionalData: '@import "~/styles/global";\n',
+        additionalData: (content: string) => `@use '~/styles/global' as *;\n${content}`,
         includePaths: ['./public', './src/styles', './node_modules']
       }
     } as CSSOptions['preprocessorOptions']

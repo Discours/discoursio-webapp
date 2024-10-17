@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from 'storybook-solidjs'
-import { MiniEditor } from './MiniEditor'
-import { createMock } from 'storybook-addon-vite-mock'
-import { useUI } from '~/context/ui'
 import { render } from 'solid-js/web'
+import { createMock } from 'storybook-addon-vite-mock'
+import type { Meta, StoryObj } from 'storybook-solidjs'
+import { useUI } from '~/context/ui'
+import { MiniEditor } from './MiniEditor'
 
 const meta = {
   title: 'Editor/MiniEditor',
@@ -10,10 +10,10 @@ const meta = {
   parameters: {
     moduleMock: {
       mock: () => {
-        const mock = createMock(useUI);
-        return [mock];
-      },
-    },
+        const mock = createMock(useUI)
+        return [mock]
+      }
+    }
   },
   argTypes: {
     content: {
@@ -49,13 +49,11 @@ export const Default: Story = {
     placeholder: 'Start typing here...'
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    const mockShowModal = (s: string) => {}; // Простая заглушка
-    (useUI as any).mockReturnValue({ showModal: mockShowModal });
-     
-      
-  render(() => <MiniEditor {...Default.args} />, canvasElement);
+    // const mockShowModal = (s: string) => {} // Простая заглушка
+    // useUI.mockReturnValue({ showModal: mockShowModal })
 
-  },
+    render(() => <MiniEditor {...Default.args} />, canvasElement)
+  }
 }
 
 export const WithInitialContent: Story = {

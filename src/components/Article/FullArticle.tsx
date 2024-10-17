@@ -142,7 +142,6 @@ export const FullArticle = (props: Props) => {
   const clickHandlers: { element: HTMLElement; handler: () => void }[] = []
   const documentClickHandlers: ((e: MouseEvent) => void)[] = []
 
-
   createEffect(() => {
     if (searchParams?.commentId && isReactionsLoaded()) {
       console.debug('comment id is in link, scroll to')

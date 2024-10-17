@@ -1,5 +1,5 @@
 import type { FrameworkOptions, StorybookConfig } from 'storybook-solidjs-vite'
-import { mergeConfig } from 'vite';
+import { mergeConfig } from 'vite'
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
@@ -31,18 +31,18 @@ const config: StorybookConfig = {
       }
     </style>
   `,
-  async viteFinal(config) {
+  viteFinal(config) {
     return mergeConfig(config, {
       resolve: {
         alias: {
-          buffer: 'buffer',
-        },
+          buffer: 'buffer'
+        }
       },
       define: {
         'process.env': {},
-        global: 'globalThis',
-      },
-    });
-  },
+        global: 'globalThis'
+      }
+    })
+  }
 }
 export default config

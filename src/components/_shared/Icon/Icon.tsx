@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 
 import { clsx } from 'clsx'
-import { Show, mergeProps, createMemo } from 'solid-js'
+import { Show, createMemo, mergeProps } from 'solid-js'
 
 import styles from './Icon.module.scss'
 
@@ -24,7 +24,7 @@ export const Icon = (passedProps: IconProps) => {
       <div class={clsx('icon', styles.icon, props.class)} style={props.style}>
         <Show when={iconSrc()} fallback={null}>
           <img
-            alt={props.title || props.name} 
+            alt={props.title || props.name}
             class={clsx(props.iconClassName)}
             src={iconSrc()}
             onError={(e) => {

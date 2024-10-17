@@ -1,4 +1,7 @@
-@import 'theme';
+@use "sass:color" as color;
+@use "sass:math" as math;
+@use "sass:map" as map;
+@use "theme";
 
 $include-column-box-sizing: true !default;
 $rfs-breakpoint: 1460px !default;
@@ -44,7 +47,7 @@ $container-padding-x: $grid-gutter-width * 0.5;
 
 // Миксин для media-breakpoint-up
 @mixin media-breakpoint-up($breakpoint, $breakpoints: $grid-breakpoints) {
-  $min-width: map-get($breakpoints, $breakpoint);
+  $min-width: map.get($breakpoints, $breakpoint);
 
   @if $min-width {
     @media (min-width: #{$min-width}) {
@@ -57,7 +60,7 @@ $container-padding-x: $grid-gutter-width * 0.5;
 
 // Миксин для media-breakpoint-down
 @mixin media-breakpoint-down($breakpoint, $breakpoints: $grid-breakpoints) {
-  $max-width: map-get($breakpoints, $breakpoint);
+  $max-width: map.get($breakpoints, $breakpoint);
 
   @if $max-width {
     @media (max-width: #{$max-width - 0.02}) {
@@ -70,8 +73,8 @@ $container-padding-x: $grid-gutter-width * 0.5;
 
 // Миксин для media-breakpoint-between
 @mixin media-breakpoint-between($lower, $upper, $breakpoints: $grid-breakpoints) {
-  $min-width: map-get($breakpoints, $lower);
-  $max-width: map-get($breakpoints, $upper);
+  $min-width: map.get($breakpoints, $lower);
+  $max-width: map.get($breakpoints, $upper);
 
   @if $min-width and $max-width {
     @media (min-width: #{$min-width}) and (max-width: #{$max-width - 0.02}) {

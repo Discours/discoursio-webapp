@@ -2,7 +2,7 @@ import { AuthToken } from '@authorizerdev/authorizer-js'
 import { Link } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { For, Show, Suspense, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import usePopper from 'solid-popper'
 
@@ -38,6 +38,7 @@ import { SharePopup, getShareUrl } from './SharePopup'
 
 import stylesHeader from '../HeaderNav/Header.module.scss'
 import styles from './Article.module.scss'
+import { Loading } from '../_shared/Loading'
 
 type Props = {
   article: Shout
@@ -427,10 +428,44 @@ export const FullArticle = (props: Props) => {
     </div>
   )
 
+  const ArticleTopics = () => (<div class={styles.topicsList}>
+    <For each={props.article.topics || []}>
+      {(topic) => (
+        <div class={styles.shoutTopic}>
+          <A href={`/topic/${topic?.slug || ''}`}>
+            {lang() === 'en' ? capitalize(topic?.slug || '') : topic?.title || ''}
+          </A>
+        </div>
+      )}
+    </For>
+  </div>)
+
+  const AuthorItem = (props: { author: Author }) => (
+    <div class="col-xl-12">
+      <AuthorBadge iconButtons={true} showMessageButton={true} author={props.author} />
+    </div>
+  )
+
+  const ArticleAuthors = () => (
+    <div>
+      <Show when={(props.article.authors?.length || 0) > 1} fallback={
+        <Show when={props.article.created_by}>
+          <AuthorItem author={props.article.created_by as Author} />
+        </Show>}>
+        <h4>{t('Authors')}</h4>
+      </Show>
+      <div class={styles.shoutAuthorsList}>
+        <For each={props.article.authors?.filter((a: Maybe<Author>) => a?.id)}>
+          {(a: Maybe<Author>) => <AuthorItem author={a as Author} />}
+        </For>
+      </div>
+    </div>
+  )
+
   return (
     <>
-      
-      <For each={imageUrls()}>{(imageUrl) => 
+
+      <For each={imageUrls()}>{(imageUrl) =>
         <Link rel="preload" as="image" href={imageUrl} />}
       </For>
 
@@ -481,7 +516,7 @@ export const FullArticle = (props: Props) => {
                 </Show>
               </div>
             </Show>
-            
+
             <Show when={props.article.lead}>
               <section class={styles.lead} innerHTML={processPrepositions(props.article.lead || '')} />
             </Show>
@@ -545,50 +580,42 @@ export const FullArticle = (props: Props) => {
         </div>
       </Show>
 
+      <Show when={selectedImage()}>
+        <Lightbox image={selectedImage()} onClose={() => setSelectedImage('')} />
+      </Show>
+
+      <Modal variant="medium" name="inviteMembers">
+        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      </Modal>
+
+      <ShareModal
+        title={props.article.title}
+        description={props.article.description || body() || media()[0]?.body}
+        imageUrl={props.article.cover || ''}
+        shareUrl={shareUrl()}
+      />
+
+
       <div class="wide-container">
         <div class="row">
           <div class="col-md-16 offset-md-5">
             <ArticleActionsBar />
 
-            <Show when={session()?.access_token && !canEdit()}>
+            <Show when={session()?.access_token && !canEdit() && !isServer}>
               <div class={styles.help}>
                 <button class="button">{t('Cooperate')}</button>
               </div>
             </Show>
-            <Show when={canEdit()}>
+
+            <Show when={canEdit() && !isServer}>
               <div class={styles.help}>
                 <button class="button button--light">{t('Invite to collab')}</button>
               </div>
             </Show>
 
-            <Show when={props.article.topics?.length}>
-              <div class={styles.topicsList}>
-                <For each={props.article.topics || []}>
-                  {(topic) => (
-                    <div class={styles.shoutTopic}>
-                      <A href={`/topic/${topic?.slug || ''}`}>
-                        {lang() === 'en' ? capitalize(topic?.slug || '') : topic?.title || ''}
-                      </A>
-                    </div>
-                  )}
-                </For>
-              </div>
-            </Show>
+            <ArticleTopics />
 
-            <div>
-              <Show when={(props.article.authors?.length || 0) > 1}>
-                <h4>{t('Authors')}</h4>
-              </Show>
-              <div class={styles.shoutAuthorsList}>
-                <For each={props.article.authors?.filter((a: Maybe<Author>) => a?.id)}>
-                  {(a: Maybe<Author>) => (
-                    <div class="col-xl-12">
-                      <AuthorBadge iconButtons={true} showMessageButton={true} author={a as Author} />
-                    </div>
-                  )}
-                </For>
-              </div>
-            </div>
+            {/* <ArticleAuthors /> */}
 
             <div id="comments" ref={setCommentsWrapper}>
               <Show when={isReactionsLoaded()}>
@@ -602,18 +629,6 @@ export const FullArticle = (props: Props) => {
           </div>
         </div>
       </div>
-      <Show when={selectedImage()}>
-        <Lightbox image={selectedImage()} onClose={() => setSelectedImage('')} />
-      </Show>
-      <Modal variant="medium" name="inviteMembers">
-        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
-      </Modal>
-      <ShareModal
-        title={props.article.title}
-        description={props.article.description || body() || media()[0]?.body}
-        imageUrl={props.article.cover || ''}
-        shareUrl={shareUrl()}
-      />
     </>
   )
 }

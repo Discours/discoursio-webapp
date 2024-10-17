@@ -8,11 +8,11 @@ import { useSession } from '~/context/session'
 import { Author, Reaction, ReactionKind, ReactionSort } from '~/graphql/schema/core.gen'
 import { SortFunction } from '~/types/common'
 import { byCreated, byStat } from '~/utils/sort'
+import { MiniEditor } from '../Editor/MiniEditor'
 import { Button } from '../_shared/Button'
 import { Loading } from '../_shared/Loading'
 import { ShowIfAuthenticated } from '../_shared/ShowIfAuthenticated'
 import { Comment } from './Comment'
-import { MiniEditor } from '../Editor/MiniEditor'
 
 import styles from './Article.module.scss'
 
@@ -131,7 +131,7 @@ export const CommentsTree = (props: Props) => {
       </Show>
     </div>
   )
-  
+
   const CommentsTreeItems = () => (
     <ul class={styles.comments}>
       <For each={sortedComments().filter((r) => !r.reply_to)}>
@@ -165,7 +165,7 @@ export const CommentsTree = (props: Props) => {
   return (
     <Show when={!isLoading()} fallback={<Loading />}>
       <CommentsTreeHeader />
-      
+
       <CommentsTreeItems />
 
       <ShowIfAuthenticated fallback={<FallbackMessage />}>
@@ -174,6 +174,6 @@ export const CommentsTree = (props: Props) => {
           <Loading />
         </Show>
       </ShowIfAuthenticated>
-  </Show>
+    </Show>
   )
 }

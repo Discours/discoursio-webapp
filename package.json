@@ -135,12 +135,7 @@
     "yjs": "13.6.19",
     "y-prosemirror": "1.2.12"
   },
-  "trustedDependencies": [
-    "@biomejs/biome",
-    "@swc/core",
-    "esbuild",
-    "protobufjs"
-  ],
+  "trustedDependencies": ["@biomejs/biome", "@swc/core", "esbuild", "protobufjs"],
   "dependencies": {
     "form-data": "^4.0.1",
     "idb": "^8.0.0",

@@ -2,7 +2,7 @@ import { AuthToken } from '@authorizerdev/authorizer-js'
 import { Link } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, Suspense, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import usePopper from 'solid-popper'
 
@@ -38,7 +38,6 @@ import { SharePopup, getShareUrl } from './SharePopup'
 
 import stylesHeader from '../HeaderNav/Header.module.scss'
 import styles from './Article.module.scss'
-import { Loading } from '../_shared/Loading'
 
 type Props = {
   article: Shout
@@ -325,7 +324,6 @@ export const FullArticle = (props: Props) => {
   const getAuthorName = (a: Author) =>
     lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replaceAll('-', ' ')) : a.name
 
-
   const ArticleActionsBar = () => (
     <div class={styles.shoutStats}>
       <div class={styles.shoutStatsItem}>
@@ -428,17 +426,19 @@ export const FullArticle = (props: Props) => {
     </div>
   )
 
-  const ArticleTopics = () => (<div class={styles.topicsList}>
-    <For each={props.article.topics || []}>
-      {(topic) => (
-        <div class={styles.shoutTopic}>
-          <A href={`/topic/${topic?.slug || ''}`}>
-            {lang() === 'en' ? capitalize(topic?.slug || '') : topic?.title || ''}
-          </A>
-        </div>
-      )}
-    </For>
-  </div>)
+  const ArticleTopics = () => (
+    <div class={styles.topicsList}>
+      <For each={props.article.topics || []}>
+        {(topic) => (
+          <div class={styles.shoutTopic}>
+            <A href={`/topic/${topic?.slug || ''}`}>
+              {lang() === 'en' ? capitalize(topic?.slug || '') : topic?.title || ''}
+            </A>
+          </div>
+        )}
+      </For>
+    </div>
+  )
 
   const AuthorItem = (props: { author: Author }) => (
     <div class="col-xl-12">
@@ -446,12 +446,17 @@ export const FullArticle = (props: Props) => {
     </div>
   )
 
+  // biome-ignore lint/correctness/noUnusedVariables: FIXME hydration
   const ArticleAuthors = () => (
     <div>
-      <Show when={(props.article.authors?.length || 0) > 1} fallback={
-        <Show when={props.article.created_by}>
-          <AuthorItem author={props.article.created_by as Author} />
-        </Show>}>
+      <Show
+        when={(props.article.authors?.length || 0) > 1}
+        fallback={
+          <Show when={props.article.created_by}>
+            <AuthorItem author={props.article.created_by as Author} />
+          </Show>
+        }
+      >
         <h4>{t('Authors')}</h4>
       </Show>
       <div class={styles.shoutAuthorsList}>
@@ -464,10 +469,7 @@ export const FullArticle = (props: Props) => {
 
   return (
     <>
-
-      <For each={imageUrls()}>{(imageUrl) =>
-        <Link rel="preload" as="image" href={imageUrl} />}
-      </For>
+      <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
 
       <div class="wide-container">
         <div class="row position-relative">
@@ -594,7 +596,6 @@ export const FullArticle = (props: Props) => {
         imageUrl={props.article.cover || ''}
         shareUrl={shareUrl()}
       />
-
 
       <div class="wide-container">
         <div class="row">

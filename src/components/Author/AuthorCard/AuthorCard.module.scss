@@ -199,7 +199,9 @@
       background: #000;
 
       &::before {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
 
       .authorSubscribeSocialLabel {

@@ -17,7 +17,7 @@
 }
 
 // Генерация только используемых классов колонок
-@each $breakpoint in map-keys($grid-breakpoints) {
+@each $breakpoint in map.keys($grid-breakpoints) {
   $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
 
   @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
@@ -56,7 +56,7 @@
 }
 
 // Добавляем только используемые классы display для разных размеров экрана
-@each $breakpoint in map-keys($grid-breakpoints) {
+@each $breakpoint in map.keys($grid-breakpoints) {
   $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
 
   @include media-breakpoint-up($breakpoint) {
@@ -66,7 +66,7 @@
 }
 
 // Добавляем только используемый класс justify-content для разных размеров экрана
-@each $breakpoint in map-keys($grid-breakpoints) {
+@each $breakpoint in map.keys($grid-breakpoints) {
   $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
 
   @include media-breakpoint-up($breakpoint) {
@@ -82,7 +82,7 @@
 .justify-content-between { justify-content: space-between !important; }
 
 // Добавляем классы для отступов (gutters)
-@each $breakpoint in map-keys($grid-breakpoints) {
+@each $breakpoint in map.keys($grid-breakpoints) {
   $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
 
   @include media-breakpoint-up($breakpoint) {

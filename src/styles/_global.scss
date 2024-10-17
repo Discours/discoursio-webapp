@@ -53,8 +53,6 @@ $container-padding-x: $grid-gutter-width * 0.5;
     @media (min-width: #{$min-width}) {
       @content;
     }
-  } @else {
-    @warn "Нет валидного брейкпоинта для '#{$breakpoint}'.";
   }
 }
 
@@ -66,8 +64,6 @@ $container-padding-x: $grid-gutter-width * 0.5;
     @media (max-width: #{$max-width - 0.02}) {
       @content;
     }
-  } @else {
-    @warn "Нет валидного брейкпоинта для '#{$breakpoint}'.";
   }
 }
 
@@ -80,8 +76,6 @@ $container-padding-x: $grid-gutter-width * 0.5;
     @media (min-width: #{$min-width}) and (max-width: #{$max-width - 0.02}) {
       @content;
     }
-  } @else {
-    @warn "Нет валидных брейкпоинтов для '#{$lower}' или '#{$upper}'.";
   }
 }
 

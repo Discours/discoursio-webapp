@@ -52,7 +52,9 @@
     right: 40px;
 
     &:hover {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
   }
 
@@ -130,7 +132,9 @@
   cursor: pointer;
 
   &:hover {
-    filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
   }
 }
 

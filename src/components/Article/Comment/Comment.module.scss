@@ -127,13 +127,15 @@
     color: var(--default-color-invert);
 
     .icon {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       opacity: 1;
     }
   }
 
   .icon {
-    filter: invert(0);
+    filter: none;
     margin-right: 0.3em;
     opacity: 0.6;
     transition:

@@ -304,7 +304,10 @@
 
       .icon {
         display: inline-block;
-        filter: invert(1);
+        
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
     }
   }

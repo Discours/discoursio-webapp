@@ -87,7 +87,9 @@
     width: 100px;
 
     [data-theme='dark'] & {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
   }
 
@@ -244,7 +246,9 @@
 
     &:hover {
       .icon {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
     }
 
@@ -508,7 +512,9 @@
       background: var(--background-color-invert);
 
       img {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
     }
   }
@@ -765,7 +771,9 @@
     color: #fff;
 
     .icon {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
 
     &:hover {

@@ -113,20 +113,25 @@ $container-padding-x: $grid-gutter-width * 0.5;
   flex-shrink: 0;
   width: 100%;
   max-width: 100%;
-  padding-right: calc(var(--gutter-x) * 0.5);
-  padding-left: calc(var(--gutter-x) * 0.5);
+  padding-right: calc(var(--gutter-x) * 0.25);
+  padding-left: calc(var(--gutter-x) * 0.25);
   margin-top: var(--gutter-y);
+
+  @include media-breakpoint-up(sm) {
+    padding-right: calc(var(--gutter-x) * 0.5);
+    padding-left: calc(var(--gutter-x) * 0.5);
+  }
 }
 
 // Миксин make-col
 @mixin make-col($size: false, $columns: $grid-columns) {
   $size-factor: 0;
   $size-factor: calc($size / $columns);
-  
+
   $flex-grow: 1 - $size-factor;
   $flex-shrink: 1 - $size-factor;
   $flex-basis: calc(100% * #{calc($size-factor)});
-  
+
   flex: $flex-grow $flex-shrink $flex-basis;
   max-width: max($flex-basis, 100% * $size-factor);
 }

@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .mainHeader {
   background: var(--background-color);
   color: var(--default-color);
@@ -9,7 +11,7 @@
 
   .wide-container {
     @include media-breakpoint-down(lg) {
-      padding: 0 divide($container-padding-x, 2);
+      padding: 0 math.div($container-padding-x, 2);
     }
 
     background: var(--background-color);
@@ -191,7 +193,7 @@
   }
 
   @include media-breakpoint-down(sm) {
-    padding: divide($container-padding-x, 2) !important;
+    padding: math.div($container-padding-x, 2) !important;
   }
 
   font-size: 1.4rem !important;

@@ -1,5 +1,6 @@
 @use 'fonts';
 @use 'grid';
+@use 'sass:math';
 
 * {
   box-sizing: border-box;
@@ -55,7 +56,7 @@ section {
 
   margin: 0 auto;
   max-width: 1500px;
-  padding: 0 divide($container-padding-x, 2);
+  padding: 0 math.div($container-padding-x, 2);
   width: 100%;
 }
 
@@ -172,7 +173,7 @@ button {
   padding: 0;
   margin: 0;
   font: inherit;
-  
+
   &[disabled] {
     cursor: default;
     opacity: 0.5 !important;
@@ -684,12 +685,12 @@ figure {
   }
 
   @include media-breakpoint-down(sm) {
-    margin-left: divide(-$container-padding-x, 2rem);
-    margin-right: divide(-$container-padding-x, 2rem);
+    margin-left: math.div(-$container-padding-x, 2);
+    margin-right: math.div(-$container-padding-x, 2);
 
     > * {
-      padding-left: divide($container-padding-x, 2rem);
-      padding-right: divide($container-padding-x, 2rem);
+      padding-left: math.div($container-padding-x, 2);
+      padding-right: math.div($container-padding-x, 2);
     }
   }
 }

@@ -678,12 +678,12 @@ figure {
   }
 
   @include media-breakpoint-down(sm) {
-    margin-left: divide(-$container-padding-x, 2);
-    margin-right: divide(-$container-padding-x, 2);
+    margin-left: divide(-$container-padding-x, 2rem);
+    margin-right: divide(-$container-padding-x, 2rem);
 
     > * {
-      padding-left: divide($container-padding-x, 2);
-      padding-right: divide($container-padding-x, 2);
+      padding-left: divide($container-padding-x, 2rem);
+      padding-right: divide($container-padding-x, 2rem);
     }
   }
 }

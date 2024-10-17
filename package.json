@@ -109,6 +109,7 @@
     "solid-transition-group": "^0.2.3",
     "storybook": "^8.3.5",
     "storybook-addon-sass-postcss": "^0.3.2",
+    "storybook-addon-vite-mock": "^0.0.14",
     "storybook-solidjs": "^1.0.0-beta.2",
     "storybook-solidjs-vite": "^1.0.0-beta.2",
     "stylelint": "^16.10.0",

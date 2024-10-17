@@ -77,62 +77,11 @@ export const FullArticle = (props: Props) => {
   const { t, formatDate, lang } = useLocalize()
   const { session, requireAuthentication } = useSession()
   const { addSeen } = useFeed()
-  const formattedDate = createMemo(() => formatDate(new Date((props.article.published_at || 0) * 1000)))
-
   const [pages, setPages] = createSignal<Record<string, number>>({})
-  createEffect(
-    on(
-      pages,
-      (p: Record<string, number>) => {
-        console.debug('content paginated')
-        loadReactionsBy({
-          by: { shout: props.article.slug, comment: true },
-          limit: COMMENTS_PER_PAGE,
-          offset: COMMENTS_PER_PAGE * p.comments || 0
-        })
-        loadReactionsBy({
-          by: { shout: props.article.slug, rating: true },
-          limit: VOTES_PER_PAGE,
-          offset: VOTES_PER_PAGE * p.rating || 0
-        })
-        setIsReactionsLoaded(true)
-        console.debug('reactions paginated')
-      },
-      { defer: true }
-    )
-  )
-
+  const [commentsWrapper, setCommentsWrapper] = createSignal<HTMLElement | undefined>()
   const [canEdit, setCanEdit] = createSignal<boolean>(false)
-  createEffect(
-    on(
-      () => session(),
-      (s?: AuthToken) => {
-        const profile = s?.user?.app_data?.profile
-        if (!profile) return
-        const isEditor = s?.user?.roles?.includes('editor')
-        const isCreator = props.article.created_by?.id === profile.id
-        const fit = (a: Maybe<Author>) => a?.id === profile.id || isCreator || isEditor
-        setCanEdit((_: boolean) => Boolean(props.article.authors?.some(fit)))
-      }
-    )
-  )
 
-  const mainTopic = createMemo(() => {
-    const mainTopicSlug = (props.article.topics?.length || 0) > 0 ? props.article.main_topic : null
-    const mt = props.article.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
-    if (mt) {
-      mt.title = lang() === 'en' ? capitalize(mt.slug.replaceAll('-', ' ')) : mt.title
-      return mt
-    }
-    return props.article.topics?.[0]
-  })
-
-  const handleBookmarkButtonClick = (ev: MouseEvent | undefined) => {
-    requireAuthentication(() => {
-      // TODO: implement bookmark clicked
-      ev?.preventDefault()
-    }, 'bookmark')
-  }
+  const formattedDate = createMemo(() => formatDate(new Date((props.article.published_at || 0) * 1000)))
 
   const body = createMemo(() => {
     if (props.article.layout === 'literature') {
@@ -173,13 +122,33 @@ export const FullArticle = (props: Props) => {
 
   const media = createMemo<MediaItem[]>(() => JSON.parse(props.article.media || '[]'))
 
-  let commentsRef: HTMLDivElement | undefined
+  const mainTopic = createMemo(() => {
+    const mainTopicSlug = (props.article.topics?.length || 0) > 0 ? props.article.main_topic : null
+    const mt = props.article.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
+    if (mt) {
+      mt.title = lang() === 'en' ? capitalize(mt.slug.replaceAll('-', ' ')) : mt.title
+      return mt
+    }
+    return props.article.topics?.[0]
+  })
+
+  const handleBookmarkButtonClick = (ev: MouseEvent | undefined) => {
+    requireAuthentication(() => {
+      // TODO: implement bookmark clicked
+      ev?.preventDefault()
+    }, 'bookmark')
+  }
+
+  const clickHandlers: { element: HTMLElement; handler: () => void }[] = []
+  const documentClickHandlers: ((e: MouseEvent) => void)[] = []
+
+
   createEffect(() => {
     if (searchParams?.commentId && isReactionsLoaded()) {
       console.debug('comment id is in link, scroll to')
       const scrollToElement =
         document.querySelector<HTMLElement>(`[id='comment_${searchParams?.commentId}']`) ||
-        commentsRef ||
+        commentsWrapper() ||
         document.body
 
       if (scrollToElement) {
@@ -188,8 +157,41 @@ export const FullArticle = (props: Props) => {
     }
   })
 
-  const clickHandlers: { element: HTMLElement; handler: () => void }[] = []
-  const documentClickHandlers: ((e: MouseEvent) => void)[] = []
+  createEffect(
+    on(
+      pages,
+      (p: Record<string, number>) => {
+        console.debug('content paginated')
+        loadReactionsBy({
+          by: { shout: props.article.slug, comment: true },
+          limit: COMMENTS_PER_PAGE,
+          offset: COMMENTS_PER_PAGE * p.comments || 0
+        })
+        loadReactionsBy({
+          by: { shout: props.article.slug, rating: true },
+          limit: VOTES_PER_PAGE,
+          offset: VOTES_PER_PAGE * p.rating || 0
+        })
+        setIsReactionsLoaded(true)
+        console.debug('reactions paginated')
+      },
+      { defer: true }
+    )
+  )
+
+  createEffect(
+    on(
+      () => session(),
+      (s?: AuthToken) => {
+        const profile = s?.user?.app_data?.profile
+        if (!profile) return
+        const isEditor = s?.user?.roles?.includes('editor')
+        const isCreator = props.article.created_by?.id === profile.id
+        const fit = (a: Maybe<Author>) => a?.id === profile.id || isCreator || isEditor
+        setCanEdit((_: boolean) => Boolean(props.article.authors?.some(fit)))
+      }
+    )
+  )
 
   createEffect(() => {
     if (!body()) {
@@ -275,18 +277,11 @@ export const FullArticle = (props: Props) => {
     })
   })
 
-  const openLightbox = (image: string) => {
-    setSelectedImage(image)
-  }
-  const handleLightboxClose = () => {
-    setSelectedImage('')
-  }
-
   // biome-ignore lint/suspicious/noExplicitAny: FIXME: typing
   const handleArticleBodyClick = (event: any) => {
     if (event.target.tagName === 'IMG' && !event.target.dataset.disableLightbox) {
       const src = event.target.src
-      openLightbox(getImageUrl(src))
+      setSelectedImage(getImageUrl(src))
     }
   }
 
@@ -453,7 +448,7 @@ export const FullArticle = (props: Props) => {
                   <div
                     class={clsx(styles.shoutStatsItem)}
                     ref={triggerRef}
-                    onClick={() => commentsRef && scrollTo(commentsRef)}
+                    onClick={() => commentsWrapper() && scrollTo(commentsWrapper() as HTMLElement)}
                   >
                     <Icon name="comment" class={styles.icon} />
                     <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
@@ -580,7 +575,7 @@ export const FullArticle = (props: Props) => {
                 )}
               </For>
             </div>
-            <div id="comments" ref={(el) => (commentsRef = el)}>
+            <div id="comments" ref={setCommentsWrapper}>
               <Show when={isReactionsLoaded()}>
                 <CommentsTree
                   shoutId={props.article.id}
@@ -593,7 +588,7 @@ export const FullArticle = (props: Props) => {
         </div>
       </div>
       <Show when={selectedImage()}>
-        <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
+        <Lightbox image={selectedImage()} onClose={() => setSelectedImage('')} />
       </Show>
       <Modal variant="medium" name="inviteMembers">
         <InviteMembers variant={'coauthors'} title={t('Invite experts')} />

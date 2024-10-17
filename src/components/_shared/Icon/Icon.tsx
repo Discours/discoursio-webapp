@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 
 import { clsx } from 'clsx'
-import { Show, mergeProps } from 'solid-js'
+import { Show, mergeProps, createMemo } from 'solid-js'
 
 import styles from './Icon.module.scss'
 
@@ -15,16 +15,28 @@ type IconProps = {
 }
 
 export const Icon = (passedProps: IconProps) => {
-  const props = mergeProps({ title: '', counter: 0 }, passedProps)
+  const props = mergeProps({ title: '', name: '', counter: 0 }, passedProps)
+
+  const iconSrc = createMemo(() => `/icons/${props.name || 'default'}.svg`)
 
   return (
-    <div class={clsx('icon', styles.icon, props.class)} style={props.style}>
-      <Show when={props.name}>
-        <img src={`/icons/${props.name}.svg`} alt={props.title ?? props.name} class={props.iconClassName} />
-        <Show when={props.counter}>
+    <Show when={props.name} fallback={null}>
+      <div class={clsx('icon', styles.icon, props.class)} style={props.style}>
+        <Show when={iconSrc()} fallback={null}>
+          <img
+            alt={props.title || props.name} 
+            class={clsx(props.iconClassName)}
+            src={iconSrc()}
+            onError={(e) => {
+              console.warn(`Failed to load icon: ${props.name}`)
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+        </Show>
+        <Show when={props.counter > 0}>
           <div class={styles.notificationsCounter}>{props.counter}</div>
         </Show>
-      </Show>
-    </div>
+      </div>
+    </Show>
   )
 }

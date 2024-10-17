@@ -1,4 +1,5 @@
 import type { FrameworkOptions, StorybookConfig } from 'storybook-solidjs-vite'
+import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
@@ -8,7 +9,8 @@ const config: StorybookConfig = {
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
     '@storybook/addon-themes',
-    'storybook-addon-sass-postcss'
+    'storybook-addon-sass-postcss',
+    'storybook-addon-vite-mock'
   ],
   framework: {
     name: 'storybook-solidjs-vite',
@@ -28,6 +30,19 @@ const config: StorybookConfig = {
         transition: none !important;
       }
     </style>
-  `
+  `,
+  async viteFinal(config) {
+    return mergeConfig(config, {
+      resolve: {
+        alias: {
+          buffer: 'buffer',
+        },
+      },
+      define: {
+        'process.env': {},
+        global: 'globalThis',
+      },
+    });
+  },
 }
 export default config

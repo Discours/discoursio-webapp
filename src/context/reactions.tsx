@@ -77,7 +77,7 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
     if (!opts.by) console.warn('reactions provider got wrong opts')
     const fetcher = await loadReactions(opts)
     const result = (await fetcher()) || []
-    console.debug('[context.reactions] loaded', result)
+    // console.debug('[context.reactions] loaded', result)
     if (result) addShoutReactions(result)
     setReactionsLoading(false)
     return result

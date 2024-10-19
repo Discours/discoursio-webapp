@@ -50,7 +50,7 @@ const fetchAuthor = async (slug: string) => {
 
 export const route = {
   load: async ({ params, location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
-    const offset: number = Number.parseInt(query.offset, 10)
+    const offset: number = Number.parseInt(query.offset as string, 10)
     console.debug('route loading with offset', offset)
     return {
       author: await fetchAuthor(params.slug),

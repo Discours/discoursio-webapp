@@ -41,7 +41,7 @@ export default defineConfig({
   server: {
     preset,
     port: 3000,
-    https: !isDev || { key, cert }
+    https: isDev ? { key, cert } : true
   },
   devOverlay: isDev,
   vite: viteConfig

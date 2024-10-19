@@ -17,8 +17,7 @@
   }
 
   .input {
-    @include font-size(1.7rem);
-
+    font-size:1.7rem;
     margin: 0 16px;
     width: 100%;
     border: none;
@@ -45,7 +44,9 @@
       background: var(--background-color-invert);
 
       img {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
     }
   }

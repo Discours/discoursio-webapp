@@ -11,6 +11,7 @@ import { useLocalize } from '~/context/localize'
 import { useUI } from '~/context/ui'
 import { useEscKeyDownHandler } from '~/lib/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '~/lib/useOutsideClickHandler'
+
 import styles from './Panel.module.scss'
 
 const typograf = new Typograf({ locale: ['ru', 'en-US'] })
@@ -23,6 +24,7 @@ export const Panel = (props: Props) => {
   const { t } = useLocalize()
   const { showModal } = useUI()
   const {
+    setIsCollabMode,
     isEditorPanelVisible,
     wordCounter,
     form,
@@ -30,15 +32,14 @@ export const Panel = (props: Props) => {
     saveShout,
     saveDraft,
     publishShout,
-    editor
+    editing: editor
   } = useEditorContext()
-
-  let containerRef: HTMLElement | undefined
+  const [containerRef, setAsideContainerRef] = createSignal<HTMLElement | undefined>()
   const [isShortcutsVisible, setIsShortcutsVisible] = createSignal(false)
   const [isTypographyFixed, setIsTypographyFixed] = createSignal(false)
 
   useOutsideClickHandler({
-    containerRef,
+    containerRef: containerRef(),
     predicate: () => isEditorPanelVisible(),
     handler: () => toggleEditorPanel()
   })
@@ -67,7 +68,7 @@ export const Panel = (props: Props) => {
 
   return (
     <aside
-      ref={(el) => (containerRef = el)}
+      ref={setAsideContainerRef}
       class={clsx('col-md-6', styles.Panel, { [styles.hidden]: !isEditorPanelVisible() })}
     >
       <Button
@@ -96,6 +97,13 @@ export const Panel = (props: Props) => {
               {t('Invite co-authors')}
             </span>
           </p>
+          {/* TODO: <Show when={coauthorsCount() > 0}> */}
+          <p>
+            <span class={styles.link} onClick={() => setIsCollabMode((x) => !x)}>
+              {t('Collaborative mode')}
+            </span>
+          </p>
+          {/*</Show> */}
           <p>
             <A
               class={styles.link}

@@ -12,7 +12,9 @@
   z-index: 10;
 
   .close {
-    filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     margin: -1.6rem 0 0 -2.4rem;
   }
 
@@ -104,7 +106,7 @@
   }
 
   .typographStatus {
-    @include font-size(1.2rem);
+    font-size:1.2rem;
   }
 
   .typographStatusSuccess {

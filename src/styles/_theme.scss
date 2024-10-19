@@ -1,0 +1,61 @@
+:root {
+  --background-color-invert: #000;
+  --background-color: #fff;
+  --blue-link: #2638d9;
+  --danger-color: #f00;
+  --default-color-invert: #fff;
+  --default-color: #000;
+  --editor-bubble-menu-background: #fff;
+  --editor-bubble-menu-border: #000;
+  --embed-background: #f7f7f8;
+  --embed-border: #e9e9ee;
+  --icon-filter-hover: invert(1);
+  --icon-filter: invert(0);
+  --lightgray-color: rgb(84 16 17 / 6%);
+  --link-color: #000;
+  --link-hover-background: #000;
+  --link-hover-color: #fff;
+  --placeholder-color-semi: rgb(159 169 167 / 20%);
+  --placeholder-color: #9fa1a7;
+  --secondary-color: #85878a;
+  --selection-background: #000;
+  --selection-color: #fff;
+  --shadow-color-light: rgb(0 0 0 / 5%);
+  --shadow-color-medium: rgb(0 0 0 / 10%);
+
+  // names from figma
+  --black-50: #f7f7f8;
+  --black-100: #e9e9ee;
+  --black-300: #9fa1a7;
+  --black-400: #696969;
+  --black-500: #141414;
+  --white-500: #fff;
+  --blue-500: #2638d9;
+  --yellow-50: #fffbeb;
+  --gray-100: #f3f4f6;
+}
+
+[data-theme='dark'] {
+  --background-color-invert: #fff;
+  --background-color: #121416;
+  --default-color-invert: #121416;
+  --default-color: #fff;
+  --editor-bubble-menu-background: #444;
+  --icon-filter-hover: invert(0);
+  --icon-filter: invert(1);
+  --link-color: #fff;
+  --link-hover-background: #fff;
+  --link-hover-color: #000;
+  --selection-background: #eee;
+  --selection-color: #000;
+  --shadow-color-light: rgb(255 255 255 / 5%);
+  --shadow-color-medium: rgb(255 255 255 / 10%);
+
+  // names from figma
+  --black-50: #080807;
+  --black-100: #161611;
+  --black-300: #696969;
+  --black-400: #969696;
+  --black-500: #ebebeb;
+  --white-500: #000;
+}

@@ -95,7 +95,7 @@ export const EditSettingsView = (props: Props) => {
         if (d) {
           const draftForm = Object.keys(d).length !== 0 ? d : { shoutId: props.shout.id }
           setForm(draftForm)
-          console.debug('draft from localstorage: ', draftForm)
+          console.debug('got draft from localstorage')
         }
       },
       { defer: true }

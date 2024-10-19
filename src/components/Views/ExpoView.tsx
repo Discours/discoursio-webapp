@@ -1,7 +1,6 @@
 import { A } from '@solidjs/router'
 import clsx from 'clsx'
 import { For, Show, createEffect, createSignal, on } from 'solid-js'
-import { ConditionalWrapper } from '~/components/_shared/ConditionalWrapper'
 import { Loading } from '~/components/_shared/Loading'
 import { ArticleCardSwiper } from '~/components/_shared/SolidSwiper/ArticleCardSwiper'
 import { EXPO_LAYOUTS, SHOUTS_PER_PAGE } from '~/context/feed'
@@ -18,20 +17,24 @@ import styles from '~/styles/views/Expo.module.scss'
 
 export const ExpoNav = (props: { layout: ExpoLayoutType | '' }) => {
   const { t } = useLocalize()
+
   return (
     <div class="wide-container">
       <ul class={clsx('view-switcher')}>
         <For each={[...EXPO_LAYOUTS, '']}>
           {(layoutKey) => (
             <li class={clsx({ 'view-switcher__item--selected': props.layout === layoutKey })}>
-              <ConditionalWrapper
-                condition={props.layout !== layoutKey}
-                wrapper={(children) => <A href={`/expo/${layoutKey}`}>{children}</A>}
-              >
+              {props.layout !== layoutKey ? (
+                <A href={`/expo/${layoutKey}`}>
+                  <span class="linkReplacement">
+                    {layoutKey in EXPO_TITLES ? t(EXPO_TITLES[layoutKey as ExpoLayoutType]) : t('All')}
+                  </span>
+                </A>
+              ) : (
                 <span class="linkReplacement">
                   {layoutKey in EXPO_TITLES ? t(EXPO_TITLES[layoutKey as ExpoLayoutType]) : t('All')}
                 </span>
-              </ConditionalWrapper>
+              )}
             </li>
           )}
         </For>
@@ -88,36 +91,41 @@ export const Expo = (props: Props) => {
     )
   )
 
-  return (
-    <div class={styles.Expo}>
-      <Show when={props.shouts} fallback={<Loading />} keyed>
-        {(feed: Shout[]) => (
-          <div class="wide-container">
-            <div class="row">
-              <For each={feed.slice(0, SHOUTS_PER_PAGE) || []}>
-                {(shout) => (
-                  <div id={`shout-${shout.id}`} class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
-                    <ArticleCard
-                      article={shout}
-                      settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
-                      desktopCoverSize="XS"
-                      withAspectRatio={true}
-                    />
-                  </div>
-                )}
-              </For>
+  try {
+    return (
+      <div class={styles.Expo}>
+        <Show when={props.shouts} fallback={<Loading />} keyed>
+          {(feed) => (
+            <div class="wide-container">
+              <div class="row">
+                <For each={Array.from(feed || []).slice(0, SHOUTS_PER_PAGE)}>
+                  {(shout) => (
+                    <div id={`shout-${shout.id}`} class="col-md-6 mt-md-5 col-sm-8 mt-sm-3">
+                      <ArticleCard
+                        article={shout}
+                        settings={{ nodate: true, nosubtitle: true, noAuthorLink: true }}
+                        desktopCoverSize="XS"
+                        withAspectRatio={true}
+                      />
+                    </div>
+                  )}
+                </For>
+              </div>
+
+              <Show when={reactedTopMonthArticles()?.length > 0}>
+                <ArticleCardSwiper title={t('Top month')} slides={reactedTopMonthArticles()} />
+              </Show>
+
+              <Show when={favoriteTopArticles()?.length > 0}>
+                <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
+              </Show>
             </div>
-
-            <Show when={reactedTopMonthArticles()?.length > 0}>
-              <ArticleCardSwiper title={t('Top month')} slides={reactedTopMonthArticles()} />
-            </Show>
-
-            <Show when={favoriteTopArticles()?.length > 0}>
-              <ArticleCardSwiper title={t('Favorite')} slides={favoriteTopArticles()} />
-            </Show>
-          </div>
-        )}
-      </Show>
-    </div>
-  )
+          )}
+        </Show>
+      </div>
+    )
+  } catch (error) {
+    console.error('Error in Expo component:', error)
+    return <div>An error occurred. Please try again later.</div>
+  }
 }

@@ -1,16 +1,27 @@
 // biome-ignore lint/correctness/noNodejsModules: build
 import path from 'node:path'
 import dotenv from 'dotenv'
-import { CSSOptions, defineConfig } from 'vite'
-import mkcert from 'vite-plugin-mkcert'
 import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
-import sassDts from 'vite-plugin-sass-dts'
+import { CSSOptions, LogLevel, LoggerOptions, createLogger, defineConfig } from 'vite'
 
 // Load environment variables from .env file
 dotenv.config()
 
-export const isDev = process.env.NODE_ENV !== 'production'
+export const isDev = process.env.NODE_ENV !== 'production' && !process.env.CI
 console.log(`[vite.config] ${process.env.NODE_ENV} mode`)
+
+const customLogger = createLogger(
+  'debug' as LogLevel,
+  {
+    warn: (message: string, options: LoggerOptions) => {
+      console.debug(message)
+      if (message.startsWith('Future global-builtin')) {
+        return // Игнорируем это конкретное предупреждение
+      }
+      console.warn(message, options)
+    }
+  } as LoggerOptions
+)
 
 const polyfillOptions = {
   include: ['path', 'stream', 'util'],
@@ -26,21 +37,23 @@ export default defineConfig({
       '~': path.resolve('./src'),
       '@': path.resolve('./public'),
       '/icons': path.resolve('./public/icons'),
-      '/fonts': path.resolve('./public/fonts'),
-      bootstrap: path.resolve('./node_modules/bootstrap')
+      '/fonts': path.resolve('./public/fonts')
     }
   },
   envPrefix: 'PUBLIC_',
-  plugins: [isDev && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
   css: {
     preprocessorOptions: {
       scss: {
-        silenceDeprecations: ['mixed-decls', 'legacy-js-api', 'color-functions'],
-        additionalData: '@import "~/styles/imports";\n',
+        api: 'modern-compiler',
+        quietDeps: true,
+        silenceDeprecations: ['mixed-decls', 'legacy-js-api', 'global-builtin'],
+        additionalData: (content: string) => `@use '~/styles/global' as *;\n${content}`,
         includePaths: ['./public', './src/styles', './node_modules']
       }
     } as CSSOptions['preprocessorOptions']
   },
+  customLogger,
+  plugins: [nodePolyfills(polyfillOptions), ],
   build: {
     target: 'esnext',
     sourcemap: true,
@@ -51,7 +64,7 @@ export default defineConfig({
       }
     },
     rollupOptions: {
-      // plugins: [visualizer()]
+      plugins: [], // visualizer()]
       output: {
         manualChunks: {
           icons: ['./src/components/_shared/Icon/Icon.tsx'],
@@ -66,8 +79,12 @@ export default defineConfig({
       ignore: ['punycode']
     }
   },
+  define: {
+    'process.env': process.env,
+    global: 'globalThis',
+  },
   optimizeDeps: {
-    include: ['solid-tiptap'],
+    include: ['solid-tiptap', 'buffer'],
     exclude: ['punycode']
   }
 })

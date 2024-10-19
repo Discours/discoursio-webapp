@@ -2,8 +2,7 @@
   position: relative;
 
   .toggler {
-    @include font-size(1.3rem);
-
+    font-size: 1.3rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -43,15 +42,13 @@
       transition: 0.3s ease-in-out;
 
       .title {
-        @include font-size(1.6rem);
-
+        font-size:1.6rem;
         font-weight: 700 !important;
         margin-bottom: 0;
       }
 
       .description {
-        @include font-size(1.2rem);
-
+        font-size:1.2rem;
         color: var(--default-color);
         opacity: 0.5;
         margin: 6px 0;

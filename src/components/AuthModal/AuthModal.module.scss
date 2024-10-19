@@ -34,17 +34,18 @@
   }
 
   & ~ :global(.close-control) {
-    filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
   }
 }
 
 .authImage {
-  @include font-size(1.5rem);
-
   @include media-breakpoint-down(sm) {
     display: none;
   }
 
+  font-size:1.5rem;
   background: var(--background-color-invert)
     url('https://images.discours.io/unsafe/1600x/production/image/auth-page.jpg') center no-repeat;
   background-size: cover;
@@ -88,8 +89,7 @@
 }
 
 .disclaimer {
-  @include font-size(1.2rem);
-
+  font-size:1.2rem;
   color: #9fa1a7;
   margin-bottom: 0;
 
@@ -103,8 +103,7 @@
 }
 
 .authActions {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   margin-top: 1.6rem;
   text-align: center;
   display: flex;
@@ -136,21 +135,19 @@
 }
 
 .authControl {
-  color: $link-color;
+  color: $color-primary;
   margin-top: 1em;
   text-align: center;
 }
 
 .authLink {
-  @include font-size(1.6rem);
-
+  font-size:1.6rem;
   cursor: pointer;
   font-weight: 500;
 }
 
 .authSubtitle {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   margin-bottom: 1em;
 }
 

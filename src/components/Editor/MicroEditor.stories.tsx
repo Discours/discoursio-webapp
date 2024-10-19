@@ -2,7 +2,7 @@ import { Meta, StoryObj } from 'storybook-solidjs'
 import { MicroEditor } from './MicroEditor'
 
 const meta: Meta<typeof MicroEditor> = {
-  title: 'Components/MicroEditor',
+  title: 'Editor/MicroEditor',
   component: MicroEditor,
   argTypes: {
     content: {

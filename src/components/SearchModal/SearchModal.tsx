@@ -2,7 +2,8 @@ import { For, Show, createResource, createSignal, onCleanup } from 'solid-js'
 import { debounce } from 'throttle-debounce'
 import { Button } from '~/components/_shared/Button'
 import { Icon } from '~/components/_shared/Icon'
-import { useFeed } from '~/context/feed'
+import { LoadMoreItems, LoadMoreWrapper } from '~/components/_shared/LoadMoreWrapper'
+import { SHOUTS_PER_PAGE, useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import type { Shout } from '~/graphql/schema/core.gen'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
@@ -13,9 +14,7 @@ import { SearchResultItem } from './SearchResultItem'
 import styles from './SearchModal.module.scss'
 
 // @@TODO handle empty article options after backend support (subtitle, cover, etc.)
-// @@TODO implement load more
 // @@TODO implement FILTERS & TOPICS
-// @@TODO use save/restoreScrollPosition if needed
 
 const getSearchCoincidences = ({ str, intersection }: { str: string; intersection: string }) =>
   `<span>${str.replaceAll(
@@ -48,34 +47,30 @@ export const SearchModal = () => {
   const [inputValue, setInputValue] = createSignal('')
   const [isLoading, setIsLoading] = createSignal(false)
   const [offset, setOffset] = createSignal<number>(0)
+
+  const fetchSearchResults = async () => {
+    setIsLoading(true)
+    saveScrollPosition()
+    const { hasMore, newShouts } = await loadShoutsSearch({
+      limit: FEED_PAGE_SIZE,
+      text: inputValue(),
+      offset: offset()
+    })
+    setIsLoading(false)
+    setOffset(newShouts.length)
+    setIsLoadMoreButtonVisible(hasMore)
+    return newShouts
+  }
   const [searchResultsList, { refetch: loadSearchResults, mutate: setSearchResultsList }] = createResource<
     Shout[]
-  >(
-    async () => {
-      setIsLoading(true)
-      saveScrollPosition()
-      const { hasMore, newShouts } = await loadShoutsSearch({
-        limit: FEED_PAGE_SIZE,
-        text: inputValue(),
-        offset: offset()
-      })
-      setIsLoading(false)
-      setOffset(newShouts.length)
-      setIsLoadMoreButtonVisible(hasMore)
-      return newShouts
-    },
-    {
-      ssrLoadFrom: 'initial',
-      initialValue: []
-    }
-  )
+  >(fetchSearchResults, { ssrLoadFrom: 'initial', initialValue: [] })
 
-  let searchEl: HTMLInputElement
+  const [searchEl, setSearchEl] = createSignal<HTMLInputElement | undefined>()
   const debouncedLoadMore = debounce(500, loadSearchResults)
 
   const handleQueryInput = async () => {
-    setInputValue(searchEl.value)
-    if (searchEl.value?.length > 2) {
+    setInputValue(searchEl()?.value ?? '')
+    if ((searchEl()?.value?.length || 0) > 2) {
       await debouncedLoadMore()
     } else {
       setIsLoading(false)
@@ -101,6 +96,11 @@ export const SearchModal = () => {
     // console.debug('[SearchModal] cleanup debouncing search')
   })
 
+  const loadMoreResults = async () => {
+    const result = await fetchSearchResults()
+    return result as LoadMoreItems
+  }
+
   return (
     <div class={styles.searchContainer}>
       <input
@@ -109,7 +109,7 @@ export const SearchModal = () => {
         class={styles.searchInput}
         onInput={handleQueryInput}
         onKeyDown={enterQuery}
-        ref={(el: HTMLInputElement) => (searchEl = el)}
+        ref={setSearchEl}
       />
 
       <Button
@@ -127,28 +127,26 @@ export const SearchModal = () => {
 
       <Show when={!isLoading()}>
         <Show when={searchResultsList()}>
-          <For each={prepareSearchResults(searchResultsList(), inputValue())}>
-            {(article: Shout) => (
-              <div>
-                <SearchResultItem
-                  article={article}
-                  settings={{
-                    isFloorImportant: true,
-                    isSingle: true,
-                    nodate: true
-                  }}
-                />
-              </div>
-            )}
-          </For>
-
-          <Show when={isLoadMoreButtonVisible()}>
-            <p class="load-more-container">
-              <button class="button" onClick={loadSearchResults}>
-                {t('Load more')}
-              </button>
-            </p>
-          </Show>
+          <LoadMoreWrapper
+            loadFunction={loadMoreResults}
+            pageSize={SHOUTS_PER_PAGE}
+            hidden={!isLoadMoreButtonVisible()}
+          >
+            <For each={prepareSearchResults(searchResultsList(), inputValue())}>
+              {(article: Shout) => (
+                <div>
+                  <SearchResultItem
+                    article={article}
+                    settings={{
+                      isFloorImportant: true,
+                      isSingle: true,
+                      nodate: true
+                    }}
+                  />
+                </div>
+              )}
+            </For>
+          </LoadMoreWrapper>
         </Show>
 
         <Show when={Array.isArray(searchResultsList()) && searchResultsList().length === 0}>

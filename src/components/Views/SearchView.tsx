@@ -3,11 +3,12 @@ import { For, Show, createSignal, onMount } from 'solid-js'
 import { useSearchParams } from '@solidjs/router'
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
-import type { SearchResult } from '~/graphql/schema/core.gen'
+import type { SearchResult, Shout } from '~/graphql/schema/core.gen'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { ArticleCard } from '../Feed/ArticleCard'
 
 import '~/styles/views/Search.module.scss'
+import { LoadMoreItems, LoadMoreWrapper } from '../_shared/LoadMoreWrapper'
 
 type Props = {
   query: string
@@ -31,19 +32,22 @@ export const SearchView = (props: Props) => {
 
   const loadMore = async () => {
     saveScrollPosition()
+    let results: Shout[] = []
     if (query()) {
       console.log(query())
-      const { hasMore } = await loadShoutsSearch({
+      const { hasMore, newShouts } = await loadShoutsSearch({
         text: query(),
         offset: offset(),
         limit: LOAD_MORE_PAGE_SIZE
       })
       setIsLoadMoreButtonVisible(hasMore)
       setOffset(offset() + LOAD_MORE_PAGE_SIZE)
+      results = newShouts
     } else {
       console.warn('[SaerchView] no query found')
     }
     restoreScrollPosition()
+    return results as LoadMoreItems
   }
 
   onMount(() => {
@@ -95,13 +99,19 @@ export const SearchView = (props: Props) => {
 
         <div class="floor">
           <div class="row">
-            <For each={sortedFeed()}>
-              {(article) => (
-                <div class="col-md-6">
-                  <ArticleCard article={article} desktopCoverSize="L" />
-                </div>
-              )}
-            </For>
+            <LoadMoreWrapper
+              pageSize={LOAD_MORE_PAGE_SIZE}
+              hidden={!isLoadMoreButtonVisible()}
+              loadFunction={loadMore}
+            >
+              <For each={sortedFeed()}>
+                {(article) => (
+                  <div class="col-md-6">
+                    <ArticleCard article={article} desktopCoverSize="L" />
+                  </div>
+                )}
+              </For>
+            </LoadMoreWrapper>
 
             <Show when={isLoadMoreButtonVisible()}>
               <div class="col-md-6">

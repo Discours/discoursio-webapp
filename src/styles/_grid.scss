@@ -1,0 +1,104 @@
+@use "sass:map" as map;
+@use "global" as *;
+
+// Генерация классов контейнера и ряда
+.container,
+.container-fluid {
+  @include make-container($container-max-widths, $grid-gutter-width);
+}
+
+.row {
+  @include make-row;
+
+  > * {
+    @include make-col-ready;
+  }
+
+  @include media-breakpoint-down(sm) {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+}
+
+// Генерация только используемых классов колонок
+@each $breakpoint in map.keys($grid-breakpoints) {
+  $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+    .col#{$infix} {
+      flex: 1 0 0;
+    }
+
+    .col#{$infix}-auto {
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+    @for $i from 1 through $grid-columns {
+      .col#{$infix}-#{$i} {
+        @include make-col($i, $grid-columns);
+      }
+    }
+
+    // Добавляем классы для управления порядком колонок
+    .order#{$infix}-first { order: -1; }
+    .order#{$infix}-last { order: $grid-columns + 1; }
+
+    @for $i from 0 through $grid-columns {
+      .order#{$infix}-#{$i} { order: $i; }
+    }
+
+    // Добавляем классы для смещения колонок
+    @for $i from 0 through $grid-columns - 1 {
+      @if $i > 0 {
+        .offset#{$infix}-#{$i} {
+          @include make-col-offset($i, $grid-columns);
+        }
+      }
+    }
+  }
+}
+
+// Добавляем только используемые классы display для разных размеров экрана
+@each $breakpoint in map.keys($grid-breakpoints) {
+  $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint) {
+    .d#{$infix}-flex { display: flex !important; }
+    .d#{$infix}-none { display: none !important; }
+  }
+}
+
+// Добавляем только используемый класс justify-content для разных размеров экрана
+@each $breakpoint in map.keys($grid-breakpoints) {
+  $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint) {
+    .justify-content#{$infix}-between { justify-content: space-between !important; }
+  }
+}
+
+// Добавляем только используемые классы display
+.d-flex { display: flex !important; }
+.d-none { display: none !important; }
+
+// Добавляем только используемый класс justify-content
+.justify-content-between { justify-content: space-between !important; }
+
+// Добавляем классы для отступов (gutters)
+@each $breakpoint in map.keys($grid-breakpoints) {
+  $infix: if($breakpoint == 'xs', '', "-#{$breakpoint}");
+
+  @include media-breakpoint-up($breakpoint) {
+    @each $key, $gutter in $gutters {
+      .g#{$infix}-#{$key},
+      .gx#{$infix}-#{$key} {
+        --gutter-x: #{$gutter};
+      }
+      .g#{$infix}-#{$key},
+      .gy#{$infix}-#{$key} {
+        --gutter-y: #{$gutter};
+      }
+    }
+  }
+}

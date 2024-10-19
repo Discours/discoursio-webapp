@@ -1,18 +1,30 @@
-.TextBubbleMenu {
-  background: var(--editor-bubble-menu-background);
-  box-shadow: 0 4px 10px rgba(#000, 0.25);
+.FullBubbleMenu {
+  display: flex;
+  background-color: var(--background-color);
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px var(--shadow-color-light), 0 10px 20px var(--shadow-color-medium);
 
   &.growWidth {
     min-width: 460px;
   }
 
-  .bubbleMenuButton {
-    display: inline-flex;
+  .actionButton {
+    width: 32px;
+    height: 32px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: nowrap;
+    background: none;
+    border: none;
+    cursor: pointer;
     opacity: 0.5;
-    padding: 1rem;
+    transition: opacity 0.2s;
+
+    &:hover,
+    &.buttonActive {
+      opacity: 1;
+    }
 
     .triangle {
       margin-left: 4px;
@@ -31,16 +43,15 @@
     }
   }
 
-  .bubbleMenuButtonActive {
-    opacity: 1;
+  .noWrap {
+    white-space: nowrap;
   }
 
   .delimiter {
-    background: #999;
+    background: var(--secondary-color);
     display: inline-block;
-    height: 1.4em;
     margin: 0 0.2em;
-    vertical-align: text-bottom;
+    vertical-align: middle;
     width: 1px;
   }
 
@@ -58,10 +69,10 @@
       left: 50%;
       transform: translateX(-50%);
       box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
-      background: var(--editor-bubble-menu-background);
+      background: var(--background-color);
       color: var(--default-color);
 
-      & > header {
+      &>header {
         font-size: 10px;
         border-bottom: 1px solid #898c94;
       }
@@ -89,9 +100,5 @@
   .dropDownExit {
     height: 0;
     color: transparent;
-  }
-
-  .noWrap {
-    white-space: nowrap;
   }
 }

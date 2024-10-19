@@ -20,10 +20,11 @@ type ReactionsContextType = {
   reactionsByShout: Accessor<Record<number, Reaction[]>>
   commentsByAuthor: Accessor<Record<number, Reaction[]>>
   loadReactionsBy: (args: QueryLoad_Reactions_ByArgs) => Promise<Reaction[]>
-  createShoutReaction: (reaction: MutationCreate_ReactionArgs) => Promise<void>
-  updateShoutReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction>
+  createShoutReaction: (reaction: MutationCreate_ReactionArgs) => Promise<Reaction | undefined>
+  updateShoutReaction: (reaction: MutationUpdate_ReactionArgs) => Promise<Reaction | undefined>
   deleteShoutReaction: (id: number) => Promise<{ error: string } | null>
   addShoutReactions: (rrr: Reaction[]) => void
+  reactionsLoading: Accessor<boolean>
 }
 
 const ReactionsContext = createContext<ReactionsContextType>({} as ReactionsContextType)
@@ -33,6 +34,7 @@ export function useReactions() {
 }
 
 export const ReactionsProvider = (props: { children: JSX.Element }) => {
+  const [reactionsLoading, setReactionsLoading] = createSignal(false)
   const [reactionEntities, setReactionEntities] = createSignal<Record<number, Reaction>>({})
   const [reactionsByShout, setReactionsByShout] = createSignal<Record<number, Reaction[]>>({})
   const [reactionsByAuthor, setReactionsByAuthor] = createSignal<Record<number, Reaction[]>>({})
@@ -71,28 +73,35 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
   }
 
   const loadReactionsBy = async (opts: QueryLoad_Reactions_ByArgs): Promise<Reaction[]> => {
+    setReactionsLoading(true)
     if (!opts.by) console.warn('reactions provider got wrong opts')
     const fetcher = await loadReactions(opts)
     const result = (await fetcher()) || []
-    console.debug('[context.reactions] loaded', result)
+    // console.debug('[context.reactions] loaded', result)
     if (result) addShoutReactions(result)
+    setReactionsLoading(false)
     return result
   }
 
-  const createShoutReaction = async (input: MutationCreate_ReactionArgs): Promise<void> => {
+  const createShoutReaction = async (input: MutationCreate_ReactionArgs): Promise<Reaction | undefined> => {
+    setReactionsLoading(true)
     const resp = await client()?.mutation(createReactionMutation, input).toPromise()
     const { error, reaction } = resp?.data?.create_reaction || {}
     if (error) await showSnackbar({ type: 'error', body: t(error) })
     if (!reaction) return
     addShoutReactions([reaction])
+    setReactionsLoading(false)
+    return reaction
   }
 
   const deleteShoutReaction = async (
     reaction_id: number
   ): Promise<{ error: string; reaction?: string } | null> => {
+    setReactionsLoading(true)
+    console.log('[context.reactions] deleteShoutReaction', reaction_id)
     if (reaction_id) {
       const resp = await client()?.mutation(destroyReactionMutation, { reaction_id }).toPromise()
-      const result = resp?.data?.destroy_reaction
+      const result = resp?.data?.delete_reaction
 
       if (!result.error) {
         const reactionToDelete = reactionEntities()[reaction_id]
@@ -123,15 +132,21 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
         }
       }
 
+      setReactionsLoading(false)
       return result
     }
+    setReactionsLoading(false)
     return null
   }
 
-  const updateShoutReaction = async (input: MutationUpdate_ReactionArgs): Promise<Reaction> => {
+  const updateShoutReaction = async (input: MutationUpdate_ReactionArgs): Promise<Reaction | undefined> => {
+    setReactionsLoading(true)
     const resp = await client()?.mutation(updateReactionMutation, input).toPromise()
     const result = resp?.data?.update_reaction
-    if (!result) throw new Error('cannot update reaction')
+    if (!result) {
+      console.error('[context.reactions] updateShoutReaction', result)
+      throw new Error('cannot update reaction')
+    }
     const { error, reaction } = result
     if (error) await showSnackbar({ type: 'error', body: t(error) })
     if (reaction) {
@@ -139,24 +154,22 @@ export const ReactionsProvider = (props: { children: JSX.Element }) => {
       newReactionEntities[reaction.id] = reaction
       setReactionEntities(newReactionEntities)
     }
+    setReactionsLoading(false)
     return reaction
   }
 
   onCleanup(() => setReactionEntities({}))
 
-  const actions = {
-    loadReactionsBy,
-    createShoutReaction,
-    updateShoutReaction,
-    deleteShoutReaction,
-    addShoutReactions
-  }
-
   const value: ReactionsContextType = {
     reactionEntities,
     reactionsByShout,
     commentsByAuthor,
-    ...actions
+    loadReactionsBy,
+    createShoutReaction,
+    updateShoutReaction,
+    deleteShoutReaction,
+    addShoutReactions,
+    reactionsLoading
   }
 
   return <ReactionsContext.Provider value={value}>{props.children}</ReactionsContext.Provider>

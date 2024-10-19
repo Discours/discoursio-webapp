@@ -8,7 +8,7 @@
 
     &:hover {
       .icon img {
-        filter: invert(0);
+        filter: none;
       }
     }
 
@@ -18,7 +18,10 @@
 
       img {
         display: inline-block;
-        filter: invert(1);
+        
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
         max-height: 2rem;
         max-width: 2rem;
         transition: filter 0.3s;
@@ -68,8 +71,7 @@
   }
 
   .isCopied {
-    @include font-size(1.6rem);
-
+    font-size:1.6rem;
     position: absolute;
     top: 100%;
     left: 1.2rem;

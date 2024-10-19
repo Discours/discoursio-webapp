@@ -77,8 +77,6 @@ const CreateModalContent = (props: Props) => {
           type="text"
           required={true}
           class={styles.chatTitleInput}
-          // TODO: Удалите эти классы, если они не нужны
-          // class="form-control form-control-lg fs-3"
           placeholder={t('Chat Title')}
         />
       )}

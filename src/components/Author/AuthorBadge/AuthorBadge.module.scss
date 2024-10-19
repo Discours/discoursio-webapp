@@ -29,12 +29,11 @@
   }
 
   .info {
-    @include font-size(1.4rem);
-
     @include media-breakpoint-up(sm) {
       flex: 1 100%;
     }
 
+    font-size:1.4rem;
     border: none;
     display: flex;
     flex-direction: column;
@@ -46,8 +45,7 @@
   }
 
   .name {
-    @include font-size(1.4rem);
-
+    font-size:1.4rem;
     color: var(--default-color);
     font-weight: 500;
 
@@ -58,8 +56,7 @@
   }
 
   .bio {
-    @include font-size(1.2rem);
-
+    font-size:1.2rem;
     color: var(--black-400);
     display: flex;
     flex-direction: row;
@@ -103,7 +100,9 @@
       width: unset;
 
       &:hover img {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
     }
 

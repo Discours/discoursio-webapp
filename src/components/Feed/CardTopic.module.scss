@@ -10,10 +10,10 @@
   a:visited {
     background: transparent;
     border: none;
-    color: $link-color;
+    color: $color-primary;
 
     &:hover {
-      background: $link-color;
+      background: $color-primary;
       color: #fff !important;
     }
   }

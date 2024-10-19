@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .mainHeader {
   background: var(--background-color);
   color: var(--default-color);
@@ -9,7 +11,7 @@
 
   .wide-container {
     @include media-breakpoint-down(lg) {
-      padding: 0 divide($container-padding-x, 2);
+      padding: 0 math.div($container-padding-x, 2);
     }
 
     background: var(--background-color);
@@ -86,8 +88,10 @@
     vertical-align: middle;
     width: 100px;
 
-    [data-editor-dark-mode='true'] & {
-      filter: invert(1);
+    [data-theme='dark'] & {
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
   }
 
@@ -122,12 +126,11 @@
 }
 
 .mainNavigationWrapper {
-  @include font-size(1.7rem);
-
   @include media-breakpoint-down(lg) {
     display: none;
   }
 
+  font-size:1.7rem;
   position: relative;
 
   .fixed & {
@@ -190,7 +193,7 @@
   }
 
   @include media-breakpoint-down(sm) {
-    padding: divide($container-padding-x, 2) !important;
+    padding: math.div($container-padding-x, 2) !important;
   }
 
   font-size: 1.4rem !important;
@@ -245,7 +248,9 @@
 
     &:hover {
       .icon {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
     }
 
@@ -380,12 +385,11 @@
 }
 
 .articleHeader {
-  @include font-size(1.4rem);
-
   @include media-breakpoint-down(md) {
     display: none;
   }
 
+  font-size:1.4rem;
   left: $container-padding-x;
   margin: 0.2em 0;
   overflow: hidden;
@@ -510,7 +514,9 @@
       background: var(--background-color-invert);
 
       img {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
     }
   }
@@ -767,7 +773,9 @@
     color: #fff;
 
     .icon {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
 
     &:hover {

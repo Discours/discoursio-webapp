@@ -1,6 +1,5 @@
 .discoursFooter {
-  @include font-size(1.7rem);
-
+  font-size:1.7rem;
   background: #000;
   color: rgb(255 255 255 / 64%);
   padding: 2.4rem 0 4.2rem;
@@ -51,8 +50,7 @@
 }
 
 .footerCopyright {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   border-top: 5px solid #404040;
   color: #696969;
   padding-top: 1.6rem;

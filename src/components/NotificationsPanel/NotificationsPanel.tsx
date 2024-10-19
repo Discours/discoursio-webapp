@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { isServer } from 'solid-js/web'
 import { throttle } from 'throttle-debounce'
-
 import { useLocalize } from '~/context/localize'
 import { PAGE_SIZE, useNotifications } from '~/context/notifications'
 import { useSession } from '~/context/session'
@@ -9,7 +9,6 @@ import { useEscKeyDownHandler } from '~/lib/useEscKeyDownHandler'
 import { useOutsideClickHandler } from '~/lib/useOutsideClickHandler'
 import { Button } from '../_shared/Button'
 import { Icon } from '../_shared/Icon'
-
 import { EmptyMessage } from './EmptyMessage'
 import { NotificationGroup } from './NotificationView/NotificationGroup'
 
@@ -72,6 +71,7 @@ export const NotificationsPanel = (props: Props) => {
   let windowScrollTop = 0
 
   createEffect(() => {
+    if (isServer) return
     const mainContent = document.querySelector<HTMLDivElement>('.main-content')
 
     if (props.isOpen && mainContent && window) {

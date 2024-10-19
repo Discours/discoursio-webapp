@@ -41,7 +41,7 @@ export const BlockquoteBubbleMenu = (props: Props) => {
           </button>
         )}
       </Popover>
-      <Popover content={t('Alignment center')}>
+      <Popover content={t('Alignment right')}>
         {(triggerRef: (el: HTMLElement) => void) => (
           <button
             ref={triggerRef}

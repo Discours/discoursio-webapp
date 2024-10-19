@@ -30,8 +30,7 @@ $transition-duration: 200ms;
     flex-direction: column;
 
     .title {
-      @include font-size(2rem);
-
+      font-size:2rem;
       color: var(--black-500);
       font-style: normal;
       font-weight: 700;
@@ -47,8 +46,7 @@ $transition-duration: 200ms;
       padding: 0 38px 1rem;
 
       .loading {
-        @include font-size(1.2rem);
-
+        font-size:1.2rem;
         text-align: center;
         padding: 1rem;
         color: var(--black-300);
@@ -90,7 +88,9 @@ $transition-duration: 200ms;
     background-color: var(--background-color-invert);
 
     .closeIcon {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
   }
 }

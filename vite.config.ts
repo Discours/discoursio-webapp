@@ -1,6 +1,7 @@
 // biome-ignore lint/correctness/noNodejsModules: build
 import path from 'node:path'
 import dotenv from 'dotenv'
+import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { CSSOptions, LogLevel, LoggerOptions, createLogger, defineConfig } from 'vite'
 
 // Load environment variables from .env file
@@ -13,12 +14,22 @@ const customLogger = createLogger(
   'debug' as LogLevel,
   {
     warn: (message: string, options: LoggerOptions) => {
-      if (!message.startsWith('Future global-builtin')) {
-        console.warn(message, options)
+      console.debug(message)
+      if (message.startsWith('Future global-builtin')) {
+        return // Игнорируем это конкретное предупреждение
       }
+      console.warn(message, options)
     }
   } as LoggerOptions
 )
+
+const polyfillOptions = {
+  include: ['path', 'stream', 'util'],
+  exclude: ['http'],
+  globals: { Buffer: true },
+  overrides: { fs: 'memfs' },
+  protocolImports: true
+} as PolyfillOptions
 
 export default defineConfig({
   resolve: {
@@ -42,6 +53,7 @@ export default defineConfig({
     } as CSSOptions['preprocessorOptions']
   },
   customLogger,
+  plugins: [nodePolyfills(polyfillOptions), ],
   build: {
     target: 'esnext',
     sourcemap: true,
@@ -52,6 +64,7 @@ export default defineConfig({
       }
     },
     rollupOptions: {
+      plugins: [], // visualizer()]
       output: {
         manualChunks: {
           icons: ['./src/components/_shared/Icon/Icon.tsx'],
@@ -66,8 +79,12 @@ export default defineConfig({
       ignore: ['punycode']
     }
   },
+  define: {
+    'process.env': process.env,
+    global: 'globalThis',
+  },
   optimizeDeps: {
-    include: ['solid-tiptap'],
+    include: ['solid-tiptap', 'buffer'],
     exclude: ['punycode']
   }
 })

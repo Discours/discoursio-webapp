@@ -2,15 +2,17 @@ import { Editor } from '@tiptap/core'
 import clsx from 'clsx'
 import { JSX } from 'solid-js'
 import { Popover } from '~/components/_shared/Popover'
+import { capitalize } from '~/utils/capitalize'
 
-import styles from '../MiniEditor.module.scss'
+import styles from './ToolbarControl.module.scss'
 
-interface ControlProps {
+import { t } from 'i18next'
+export interface ControlProps {
   editor: Editor | undefined
-  title: string
-  key: string
+  caption?: string
+  key?: string
   onChange: () => void
-  isActive?: (editor: Editor) => boolean
+  isActive?: () => boolean | undefined
   children: JSX.Element
 }
 
@@ -20,14 +22,15 @@ export const ToolbarControl = (props: ControlProps): JSX.Element => {
     ev?.stopPropagation()
     props.onChange?.()
   }
-
+  const isActive =
+    props.isActive || props.key ? () => props.editor?.isActive?.(props.key || '') : () => false
   return (
-    <Popover content={props.title}>
+    <Popover content={props.caption || t(capitalize(props.key || ''))}>
       {(triggerRef: (el: HTMLElement) => void) => (
         <button
           ref={triggerRef}
           type="button"
-          class={clsx(styles.actionButton, { [styles.active]: props.editor?.isActive?.(props.key) })}
+          class={clsx(styles.actionButton, { [styles.active]: isActive() })}
           onClick={handleClick}
         >
           {props.children}

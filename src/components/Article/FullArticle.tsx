@@ -1,10 +1,11 @@
 import { AuthToken } from '@authorizerdev/authorizer-js'
-import { createPopper } from '@popperjs/core'
 import { Link } from '@solidjs/meta'
 import { A, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
+import usePopper from 'solid-popper'
+
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
@@ -19,7 +20,6 @@ import { capitalize } from '~/utils/capitalize'
 import { AuthorBadge } from '../Author/AuthorBadge'
 import { CardTopic } from '../Feed/CardTopic'
 import { FeedArticlePopup } from '../Feed/FeedArticlePopup'
-import stylesHeader from '../HeaderNav/Header.module.scss'
 import { Icon } from '../_shared/Icon'
 import { Image } from '../_shared/Image'
 import { InviteMembers } from '../_shared/InviteMembers'
@@ -30,12 +30,14 @@ import { ShareModal } from '../_shared/ShareModal'
 import { ImageSwiper } from '../_shared/SolidSwiper'
 import { TableOfContents } from '../_shared/TableOfContents'
 import { VideoPlayer } from '../_shared/VideoPlayer'
-import styles from './Article.module.scss'
 import { AudioHeader } from './AudioHeader'
 import { AudioPlayer } from './AudioPlayer'
 import { CommentsTree } from './CommentsTree'
+import { RatingControl } from './RatingControl'
 import { SharePopup, getShareUrl } from './SharePopup'
-import { ShoutRatingControl } from './ShoutRatingControl'
+
+import stylesHeader from '../HeaderNav/Header.module.scss'
+import styles from './Article.module.scss'
 
 type Props = {
   article: Shout
@@ -75,62 +77,11 @@ export const FullArticle = (props: Props) => {
   const { t, formatDate, lang } = useLocalize()
   const { session, requireAuthentication } = useSession()
   const { addSeen } = useFeed()
-  const formattedDate = createMemo(() => formatDate(new Date((props.article.published_at || 0) * 1000)))
-
   const [pages, setPages] = createSignal<Record<string, number>>({})
-  createEffect(
-    on(
-      pages,
-      (p: Record<string, number>) => {
-        console.debug('content paginated')
-        loadReactionsBy({
-          by: { shout: props.article.slug, comment: true },
-          limit: COMMENTS_PER_PAGE,
-          offset: COMMENTS_PER_PAGE * p.comments || 0
-        })
-        loadReactionsBy({
-          by: { shout: props.article.slug, rating: true },
-          limit: VOTES_PER_PAGE,
-          offset: VOTES_PER_PAGE * p.rating || 0
-        })
-        setIsReactionsLoaded(true)
-        console.debug('reactions paginated')
-      },
-      { defer: true }
-    )
-  )
-
+  const [commentsWrapper, setCommentsWrapper] = createSignal<HTMLElement | undefined>()
   const [canEdit, setCanEdit] = createSignal<boolean>(false)
-  createEffect(
-    on(
-      () => session(),
-      (s?: AuthToken) => {
-        const profile = s?.user?.app_data?.profile
-        if (!profile) return
-        const isEditor = s?.user?.roles?.includes('editor')
-        const isCreator = props.article.created_by?.id === profile.id
-        const fit = (a: Maybe<Author>) => a?.id === profile.id || isCreator || isEditor
-        setCanEdit((_: boolean) => Boolean(props.article.authors?.some(fit)))
-      }
-    )
-  )
 
-  const mainTopic = createMemo(() => {
-    const mainTopicSlug = (props.article.topics?.length || 0) > 0 ? props.article.main_topic : null
-    const mt = props.article.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
-    if (mt) {
-      mt.title = lang() === 'en' ? capitalize(mt.slug.replaceAll('-', ' ')) : mt.title
-      return mt
-    }
-    return props.article.topics?.[0]
-  })
-
-  const handleBookmarkButtonClick = (ev: MouseEvent | undefined) => {
-    requireAuthentication(() => {
-      // TODO: implement bookmark clicked
-      ev?.preventDefault()
-    }, 'bookmark')
-  }
+  const formattedDate = createMemo(() => formatDate(new Date((props.article.published_at || 0) * 1000)))
 
   const body = createMemo(() => {
     if (props.article.layout === 'literature') {
@@ -171,13 +122,32 @@ export const FullArticle = (props: Props) => {
 
   const media = createMemo<MediaItem[]>(() => JSON.parse(props.article.media || '[]'))
 
-  let commentsRef: HTMLDivElement | undefined
+  const mainTopic = createMemo(() => {
+    const mainTopicSlug = (props.article.topics?.length || 0) > 0 ? props.article.main_topic : null
+    const mt = props.article.topics?.find((tpc: Maybe<Topic>) => tpc?.slug === mainTopicSlug)
+    if (mt) {
+      mt.title = lang() === 'en' ? capitalize(mt.slug.replaceAll('-', ' ')) : mt.title
+      return mt
+    }
+    return props.article.topics?.[0]
+  })
+
+  const handleBookmarkButtonClick = (ev: MouseEvent | undefined) => {
+    requireAuthentication(() => {
+      // TODO: implement bookmark clicked
+      ev?.preventDefault()
+    }, 'bookmark')
+  }
+
+  const clickHandlers: { element: HTMLElement; handler: () => void }[] = []
+  const documentClickHandlers: ((e: MouseEvent) => void)[] = []
+
   createEffect(() => {
     if (searchParams?.commentId && isReactionsLoaded()) {
       console.debug('comment id is in link, scroll to')
       const scrollToElement =
         document.querySelector<HTMLElement>(`[id='comment_${searchParams?.commentId}']`) ||
-        commentsRef ||
+        commentsWrapper() ||
         document.body
 
       if (scrollToElement) {
@@ -186,8 +156,41 @@ export const FullArticle = (props: Props) => {
     }
   })
 
-  const clickHandlers: { element: HTMLElement; handler: () => void }[] = []
-  const documentClickHandlers: ((e: MouseEvent) => void)[] = []
+  createEffect(
+    on(
+      pages,
+      (p: Record<string, number>) => {
+        console.debug('content paginated')
+        loadReactionsBy({
+          by: { shout: props.article.slug, comment: true },
+          limit: COMMENTS_PER_PAGE,
+          offset: COMMENTS_PER_PAGE * p.comments || 0
+        })
+        loadReactionsBy({
+          by: { shout: props.article.slug, rating: true },
+          limit: VOTES_PER_PAGE,
+          offset: VOTES_PER_PAGE * p.rating || 0
+        })
+        setIsReactionsLoaded(true)
+        console.debug('reactions paginated')
+      },
+      { defer: true }
+    )
+  )
+
+  createEffect(
+    on(
+      () => session(),
+      (s?: AuthToken) => {
+        const profile = s?.user?.app_data?.profile
+        if (!profile) return
+        const isEditor = s?.user?.roles?.includes('editor')
+        const isCreator = props.article.created_by?.id === profile.id
+        const fit = (a: Maybe<Author>) => a?.id === profile.id || isCreator || isEditor
+        setCanEdit((_: boolean) => Boolean(props.article.authors?.some(fit)))
+      }
+    )
+  )
 
   createEffect(() => {
     if (!body()) {
@@ -215,25 +218,25 @@ export const FullArticle = (props: Props) => {
         element.setAttribute('href', 'javascript: void(0)')
       }
 
-      const popperInstance = createPopper(element, tooltip, {
-        placement: 'top',
-        modifiers: [
-          {
-            name: 'eventListeners',
-            options: { scroll: false }
-          },
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8]
+      const popperInstance = usePopper(
+        () => element,
+        () => tooltip,
+        {
+          placement: 'top',
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, 8]
+              }
+            },
+            {
+              name: 'flip',
+              options: { fallbackPlacements: ['top'] }
             }
-          },
-          {
-            name: 'flip',
-            options: { fallbackPlacements: ['top'] }
-          }
-        ]
-      })
+          ]
+        }
+      )
 
       tooltip.style.visibility = 'hidden'
       let isTooltipVisible = false
@@ -246,7 +249,7 @@ export const FullArticle = (props: Props) => {
           isTooltipVisible = true
         }
 
-        popperInstance.update()
+        popperInstance()?.update()
       }
 
       const handleDocumentClick = (e: MouseEvent) => {
@@ -273,18 +276,11 @@ export const FullArticle = (props: Props) => {
     })
   })
 
-  const openLightbox = (image: string) => {
-    setSelectedImage(image)
-  }
-  const handleLightboxClose = () => {
-    setSelectedImage('')
-  }
-
   // biome-ignore lint/suspicious/noExplicitAny: FIXME: typing
   const handleArticleBodyClick = (event: any) => {
     if (event.target.tagName === 'IMG' && !event.target.dataset.disableLightbox) {
       const src = event.target.src
-      openLightbox(getImageUrl(src))
+      setSelectedImage(getImageUrl(src))
     }
   }
 
@@ -327,9 +323,153 @@ export const FullArticle = (props: Props) => {
   const shareUrl = createMemo(() => getShareUrl({ pathname: `/${props.article.slug || ''}` }))
   const getAuthorName = (a: Author) =>
     lang() === 'en' && isCyrillic(a.name || '') ? capitalize(a.slug.replaceAll('-', ' ')) : a.name
+
+  const ArticleActionsBar = () => (
+    <div class={styles.shoutStats}>
+      <div class={styles.shoutStatsItem}>
+        <RatingControl shout={props.article} class={styles.ratingControl} />
+      </div>
+
+      <Popover content={t('Comment')} disabled={isActionPopupActive()}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <div
+            class={clsx(styles.shoutStatsItem)}
+            ref={triggerRef}
+            onClick={() => commentsWrapper() && scrollTo(commentsWrapper() as HTMLElement)}
+          >
+            <Icon name="comment" class={styles.icon} />
+            <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
+            <Show
+              when={props.article.stat?.commented}
+              fallback={<span class={styles.commentsTextLabel}>{t('Add comment')}</span>}
+            >
+              {props.article.stat?.commented}
+            </Show>
+          </div>
+        )}
+      </Popover>
+
+      <Show when={props.article.stat?.viewed}>
+        <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
+          {t('some views', { count: props.article.stat?.viewed || 0 })}
+        </div>
+      </Show>
+
+      <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
+        <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
+          {formattedDate()}
+        </div>
+      </div>
+
+      <Popover content={t('Add to bookmarks')} disabled={isActionPopupActive()}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <div
+            class={clsx(styles.shoutStatsItem, styles.shoutStatsItemBookmarks)}
+            ref={triggerRef}
+            onClick={handleBookmarkButtonClick}
+          >
+            <div class={styles.shoutStatsItemInner}>
+              <Icon name="bookmark" class={styles.icon} />
+              <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
+            </div>
+          </div>
+        )}
+      </Popover>
+
+      <Popover content={t('Share')} disabled={isActionPopupActive()}>
+        {(triggerRef: (el: HTMLElement) => void) => (
+          <div class={styles.shoutStatsItem} ref={triggerRef}>
+            <SharePopup
+              title={props.article.title}
+              description={props.article.description || body() || media()[0]?.body}
+              imageUrl={props.article.cover || ''}
+              shareUrl={shareUrl()}
+              containerCssClass={stylesHeader.control}
+              onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
+              trigger={
+                <div class={styles.shoutStatsItemInner}>
+                  <Icon name="share-outline" class={styles.icon} />
+                  <Icon name="share-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
+                </div>
+              }
+            />
+          </div>
+        )}
+      </Popover>
+
+      <Show when={canEdit()}>
+        <Popover content={t('Edit')}>
+          {(triggerRef: (el: HTMLElement) => void) => (
+            <div class={styles.shoutStatsItem} ref={triggerRef}>
+              <A href={`/edit/${props.article.id}`} class={styles.shoutStatsItemInner}>
+                <Icon name="pencil-outline" class={styles.icon} />
+                <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
+              </A>
+            </div>
+          )}
+        </Popover>
+      </Show>
+
+      <FeedArticlePopup
+        canEdit={Boolean(canEdit())}
+        containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
+        onShareClick={() => showModal('share')}
+        onInviteClick={() => showModal('inviteMembers')}
+        onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
+        trigger={
+          <button>
+            <Icon name="ellipsis" class={clsx(styles.icon)} />
+            <Icon name="ellipsis" class={clsx(styles.icon, styles.iconHover)} />
+          </button>
+        }
+      />
+    </div>
+  )
+
+  const ArticleTopics = () => (
+    <div class={styles.topicsList}>
+      <For each={props.article.topics || []}>
+        {(topic) => (
+          <div class={styles.shoutTopic}>
+            <A href={`/topic/${topic?.slug || ''}`}>
+              {lang() === 'en' ? capitalize(topic?.slug || '') : topic?.title || ''}
+            </A>
+          </div>
+        )}
+      </For>
+    </div>
+  )
+
+  const AuthorItem = (props: { author: Author }) => (
+    <div class="col-xl-12">
+      <AuthorBadge iconButtons={true} showMessageButton={true} author={props.author} />
+    </div>
+  )
+
+  const ArticleAuthors = () => (
+    <div>
+      <Show
+        when={(props.article.authors?.length || 0) > 1}
+        fallback={
+          <Show when={props.article.created_by}>
+            <AuthorItem author={props.article.created_by as Author} />
+          </Show>
+        }
+      >
+        <h4>{t('Authors')}</h4>
+      </Show>
+      <div class={styles.shoutAuthorsList}>
+        <For each={props.article.authors?.filter((a: Maybe<Author>) => a?.id)}>
+          {(a: Maybe<Author>) => <AuthorItem author={a as Author} />}
+        </For>
+      </div>
+    </div>
+  )
+
   return (
     <>
       <For each={imageUrls()}>{(imageUrl) => <Link rel="preload" as="image" href={imageUrl} />}</For>
+
       <div class="wide-container">
         <div class="row position-relative">
           <article
@@ -366,7 +506,7 @@ export const FullArticle = (props: Props) => {
                     props.article.layout !== 'image'
                   }
                 >
-                  <figure class="img-align-column">
+                  <figure class={styles.figureAlignColumn}>
                     <Image
                       width={800}
                       alt={props.article.cover_caption || ''}
@@ -377,9 +517,11 @@ export const FullArticle = (props: Props) => {
                 </Show>
               </div>
             </Show>
+
             <Show when={props.article.lead}>
               <section class={styles.lead} innerHTML={processPrepositions(props.article.lead || '')} />
             </Show>
+
             <Show when={props.article.layout === 'audio'}>
               <AudioHeader
                 title={props.article.title || ''}
@@ -393,6 +535,7 @@ export const FullArticle = (props: Props) => {
                 </div>
               </Show>
             </Show>
+
             <Show when={media() && props.article.layout === 'video'}>
               <div class="media-items">
                 <For each={media() || []}>
@@ -438,147 +581,43 @@ export const FullArticle = (props: Props) => {
         </div>
       </Show>
 
+      <Show when={selectedImage()}>
+        <Lightbox image={selectedImage()} onClose={() => setSelectedImage('')} />
+      </Show>
+
+      <Modal variant="medium" name="inviteMembers">
+        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
+      </Modal>
+
+      <ShareModal
+        title={props.article.title}
+        description={props.article.description || body() || media()[0]?.body}
+        imageUrl={props.article.cover || ''}
+        shareUrl={shareUrl()}
+      />
+
       <div class="wide-container">
         <div class="row">
           <div class="col-md-16 offset-md-5">
-            <div class={styles.shoutStats}>
-              <div class={styles.shoutStatsItem}>
-                <ShoutRatingControl shout={props.article} class={styles.ratingControl} />
-              </div>
+            <ArticleActionsBar />
 
-              <Popover content={t('Comment')} disabled={isActionPopupActive()}>
-                {(triggerRef: (el: HTMLElement) => void) => (
-                  <div
-                    class={clsx(styles.shoutStatsItem)}
-                    ref={triggerRef}
-                    onClick={() => commentsRef && scrollTo(commentsRef)}
-                  >
-                    <Icon name="comment" class={styles.icon} />
-                    <Icon name="comment-hover" class={clsx(styles.icon, styles.iconHover)} />
-                    <Show
-                      when={props.article.stat?.commented}
-                      fallback={<span class={styles.commentsTextLabel}>{t('Add comment')}</span>}
-                    >
-                      {props.article.stat?.commented}
-                    </Show>
-                  </div>
-                )}
-              </Popover>
-
-              <Show when={props.article.stat?.viewed}>
-                <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemViews)}>
-                  {t('some views', { count: props.article.stat?.viewed || 0 })}
-                </div>
-              </Show>
-
-              <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalData)}>
-                <div class={clsx(styles.shoutStatsItem, styles.shoutStatsItemAdditionalDataItem)}>
-                  {formattedDate()}
-                </div>
-              </div>
-
-              <Popover content={t('Add to bookmarks')} disabled={isActionPopupActive()}>
-                {(triggerRef: (el: HTMLElement) => void) => (
-                  <div
-                    class={clsx(styles.shoutStatsItem, styles.shoutStatsItemBookmarks)}
-                    ref={triggerRef}
-                    onClick={handleBookmarkButtonClick}
-                  >
-                    <div class={styles.shoutStatsItemInner}>
-                      <Icon name="bookmark" class={styles.icon} />
-                      <Icon name="bookmark-hover" class={clsx(styles.icon, styles.iconHover)} />
-                    </div>
-                  </div>
-                )}
-              </Popover>
-
-              <Popover content={t('Share')} disabled={isActionPopupActive()}>
-                {(triggerRef: (el: HTMLElement) => void) => (
-                  <div class={styles.shoutStatsItem} ref={triggerRef}>
-                    <SharePopup
-                      title={props.article.title}
-                      description={props.article.description || body() || media()[0]?.body}
-                      imageUrl={props.article.cover || ''}
-                      shareUrl={shareUrl()}
-                      containerCssClass={stylesHeader.control}
-                      onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
-                      trigger={
-                        <div class={styles.shoutStatsItemInner}>
-                          <Icon name="share-outline" class={styles.icon} />
-                          <Icon name="share-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
-                        </div>
-                      }
-                    />
-                  </div>
-                )}
-              </Popover>
-
-              <Show when={canEdit()}>
-                <Popover content={t('Edit')}>
-                  {(triggerRef: (el: HTMLElement) => void) => (
-                    <div class={styles.shoutStatsItem} ref={triggerRef}>
-                      <A href={`/edit/${props.article.id}`} class={styles.shoutStatsItemInner}>
-                        <Icon name="pencil-outline" class={styles.icon} />
-                        <Icon name="pencil-outline-hover" class={clsx(styles.icon, styles.iconHover)} />
-                      </A>
-                    </div>
-                  )}
-                </Popover>
-              </Show>
-
-              <FeedArticlePopup
-                canEdit={Boolean(canEdit())}
-                containerCssClass={clsx(stylesHeader.control, styles.articlePopupOpener)}
-                onShareClick={() => showModal('share')}
-                onInviteClick={() => showModal('inviteMembers')}
-                onVisibilityChange={(isVisible) => setIsActionPopupActive(isVisible)}
-                trigger={
-                  <button>
-                    <Icon name="ellipsis" class={clsx(styles.icon)} />
-                    <Icon name="ellipsis" class={clsx(styles.icon, styles.iconHover)} />
-                  </button>
-                }
-              />
-            </div>
-
-            <Show when={session()?.access_token && !canEdit()}>
+            <Show when={session()?.access_token && !canEdit() && !isServer}>
               <div class={styles.help}>
                 <button class="button">{t('Cooperate')}</button>
               </div>
             </Show>
-            <Show when={canEdit()}>
+
+            <Show when={canEdit() && !isServer}>
               <div class={styles.help}>
                 <button class="button button--light">{t('Invite to collab')}</button>
               </div>
             </Show>
 
-            <Show when={props.article.topics?.length}>
-              <div class={styles.topicsList}>
-                <For each={props.article.topics || []}>
-                  {(topic) => (
-                    <div class={styles.shoutTopic}>
-                      <A href={`/topic/${topic?.slug || ''}`}>
-                        {lang() === 'en' ? capitalize(topic?.slug || '') : topic?.title || ''}
-                      </A>
-                    </div>
-                  )}
-                </For>
-              </div>
-            </Show>
+            <ArticleTopics />
 
-            <div class={styles.shoutAuthorsList}>
-              <Show when={(props.article.authors?.length || 0) > 1}>
-                <h4>{t('Authors')}</h4>
-              </Show>
-              <For each={props.article.authors}>
-                {(a: Maybe<Author>) => (
-                  <div class="col-xl-12">
-                    <AuthorBadge iconButtons={true} showMessageButton={true} author={a as Author} />
-                  </div>
-                )}
-              </For>
-            </div>
-            <div id="comments" ref={(el) => (commentsRef = el)}>
+            <ArticleAuthors />
+
+            <div id="comments" ref={setCommentsWrapper}>
               <Show when={isReactionsLoaded()}>
                 <CommentsTree
                   shoutId={props.article.id}
@@ -590,18 +629,6 @@ export const FullArticle = (props: Props) => {
           </div>
         </div>
       </div>
-      <Show when={selectedImage()}>
-        <Lightbox image={selectedImage()} onClose={handleLightboxClose} />
-      </Show>
-      <Modal variant="medium" name="inviteMembers">
-        <InviteMembers variant={'coauthors'} title={t('Invite experts')} />
-      </Modal>
-      <ShareModal
-        title={props.article.title}
-        description={props.article.description || body() || media()[0]?.body}
-        imageUrl={props.article.cover || ''}
-        shareUrl={shareUrl()}
-      />
     </>
   )
 }

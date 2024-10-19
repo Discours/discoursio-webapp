@@ -1,3 +1,11 @@
+// biome-ignore lint/correctness/noNodejsModules: build
+import { execSync } from 'node:child_process'
+// biome-ignore lint/correctness/noNodejsModules: build
+import fs from 'node:fs'
+// biome-ignore lint/correctness/noNodejsModules: build
+import path from 'node:path'
+// biome-ignore lint/correctness/noNodejsModules: build
+import { fileURLToPath } from 'node:url'
 import { SolidStartInlineConfig, defineConfig } from '@solidjs/start/config'
 import viteConfig, { isDev } from './vite.config'
 
@@ -8,6 +16,21 @@ const isBun = Boolean(process.env.BUN)
 const preset = isNetlify ? 'netlify' : isVercel ? 'vercel_edge' : isBun ? 'bun' : 'node'
 console.info(`[app.config] solid-start preset {> ${preset} <}`)
 
+// certs for local development
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const keyPath = path.join(__dirname, 'key.pem')
+const certPath = path.join(__dirname, 'cert.pem')
+
+if (isDev) {
+  if (!fs.existsSync(keyPath)) {
+    console.log('Generating certs...')
+    const cmd = `mkcert -key-file ${keyPath} -cert-file ${certPath} localhost 127.0.0.1 ::1`
+    console.log(cmd)
+    execSync(cmd)
+  }
+}
+
 export default defineConfig({
   nitro: {
     timing: true
@@ -16,7 +39,12 @@ export default defineConfig({
   server: {
     preset,
     port: 3000,
-    https: true
+    https: isDev
+      ? {
+          key: fs.readFileSync(keyPath).toString(),
+          cert: fs.readFileSync(certPath).toString()
+        }
+      : true
   },
   devOverlay: isDev,
   vite: viteConfig

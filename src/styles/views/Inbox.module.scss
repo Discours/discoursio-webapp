@@ -12,7 +12,7 @@ main {
   right: 0;
   padding-left: 42px;
   padding-right: 26px;
-  background: #fff;
+  background: var(--background-color);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -37,7 +37,7 @@ main {
   flex-direction: column;
   padding: 10px;
 
-  $fadeHeight: 10px;
+  $fade-height: 10px;
 
   .sidebarHeader {
     display: flex;
@@ -49,7 +49,7 @@ main {
     overflow: hidden;
     flex: 1;
     position: relative;
-    padding: $fadeHeight 0;
+    padding: $fade-height 0;
 
     .dialogs {
       scroll-behavior: smooth;
@@ -65,7 +65,7 @@ main {
 }
 
 .chat-list__search {
-  border-bottom: 3px solid #141414;
+  border-bottom: 3px solid var(--default-color);
   padding: 1em 0;
 }
 
@@ -138,8 +138,7 @@ main {
     }
 
     time {
-      @include font-size(1.5rem);
-
+      font-size:1.5rem;
       background: #fff;
       color: #9fa1a7;
       padding: 0 0.5em;

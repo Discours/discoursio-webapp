@@ -1,46 +1,46 @@
 /**
  * AuthorPage Component
- * 
+ *
  * This component is responsible for displaying the author's profile page. It fetches and displays
  * the author's details, their shouts (posts), and comments. It also handles the reactivity of the
  * component when the URL parameters change.
- * 
+ *
  * Key Features:
  * - Fetches author details, shouts, and comments based on the slug parameter.
  * - Updates the component when the slug parameter changes.
  * - Displays the author's profile, shouts, and comments.
  * - Integrates with Google Analytics to track page views.
  * - Uses SolidJS reactive primitives and hooks for state management and reactivity.
- * 
+ *
  * Props:
  * - RouteSectionProps<AuthorPageProps>: The properties passed to the component, including the author's data.
- * 
+ *
  * AuthorPageProps:
  * - articles?: Shout[]
  * - author?: Author
  * - topics?: Topic[]
  * - comments?: Reaction[]
- * 
+ *
  * Example Usage:
- * 
+ *
  * ```tsx
  * import AuthorPage from '~/routes/author/[slug]/[...tab]'
- * 
+ *
  * <AuthorPage params={{ slug: 'author-slug' }} data={{ author: authorData, articles: articlesData }} />
  * ```
- * 
+ *
  * Dependencies:
  * - SolidJS Router for routing and URL parameter handling.
  * - SolidJS for reactivity and state management.
  * - Various context providers for localization, authors, reactions, etc.
  * - GraphQL API for fetching author details, shouts, comments, and topics.
- * 
+ *
  * Note:
  * - Ensure that the necessary context providers and GraphQL API functions are properly set up and imported.
  */
 
 import { RouteSectionProps, createAsync, useParams } from '@solidjs/router'
-import { ErrorBoundary, Suspense, createEffect, createSignal, on, Show } from 'solid-js'
+import { ErrorBoundary, Show, Suspense, createEffect, createSignal, on } from 'solid-js'
 import { COMMENTS_PER_PAGE } from '~/components/Article/FullArticle'
 import { AuthorView } from '~/components/Views/AuthorView'
 import { FourOuFourView } from '~/components/Views/FourOuFour'
@@ -91,7 +91,7 @@ const fetchAuthor = async (slug: string) => {
 
 export const route = {
   load: async ({ params, location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
-    const offset: number = Number.parseInt(query.offset, 10)
+    const offset: number = Number.parseInt(query.offset as string, 10)
     console.debug('route loading with offset', offset)
     return {
       author: await fetchAuthor(params.slug),

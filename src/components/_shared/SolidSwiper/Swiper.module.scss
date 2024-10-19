@@ -19,8 +19,7 @@
   }
 
   .sliderTitle {
-    @include font-size(4.5rem);
-
+    font-size:4.5rem;
     text-align: center;
     padding: 4rem 0 0;
   }
@@ -133,12 +132,11 @@
     width: 100%;
 
     .counter {
-      @include font-size(1.2rem);
-
       @include media-breakpoint-up(sm) {
         top: 477px;
       }
 
+      font-size:1.2rem;
       position: absolute;
       z-index: 2;
       top: 276px;
@@ -209,7 +207,9 @@
 
   &.articleMode .navigation {
     .icon {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
   }
 
@@ -218,23 +218,21 @@
     align-self: flex-start;
 
     .articleTitle {
-      @include font-size(1.4rem);
+      font-size:1.4rem;
     }
 
     .source {
-      @include font-size(1.2rem);
-
+      font-size:1.2rem;
       color: var(--secondary-color);
     }
 
     .body {
-      @include font-size(1.7rem);
-
       @include media-breakpoint-up(md) {
         // margin-left: calc((100% + 130px) * 0.15);
         margin-left: calc(15% + 24px);
       }
 
+      font-size:1.7rem;
       margin-top: 24px;
 
       * {
@@ -339,8 +337,7 @@
     margin: 1em 0;
 
     .input {
-      @include font-size(1.4rem);
-
+      font-size:1.4rem;
       padding: 0;
       margin: 0;
       border: none;

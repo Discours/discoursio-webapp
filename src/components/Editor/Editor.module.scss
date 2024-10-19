@@ -86,25 +86,25 @@ mark.highlight {
   }
 
   [data-float='half-left'] {
-    @include media-breakpoint-up(md) {
-      max-width: 50%;
-      min-width: 30%;
-    }
-
     float: left;
     margin: 1rem 1rem 0;
     clear: left;
-  }
 
-  [data-float='half-right'] {
     @include media-breakpoint-up(md) {
       max-width: 50%;
       min-width: 30%;
     }
+  }
 
+  [data-float='half-right'] {
     float: right;
     margin: 1rem 0;
     clear: right;
+
+    @include media-breakpoint-up(md) {
+      max-width: 50%;
+      min-width: 30%;
+    }
   }
 }
 
@@ -114,8 +114,7 @@ mark.highlight {
   }
 
   &[data-type='quote'] {
-    @include font-size(1.4rem);
-
+    font-size: 1.4rem;
     border: solid #000;
     border-width: 0 0 0 2px;
     margin: 1.6rem 0;
@@ -137,7 +136,19 @@ mark.highlight {
   }
 
   &[data-type='punchline'] {
-    @include font-size(3.2rem);
+    border: solid #000;
+    border-width: 2px 0;
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 1em 0;
+    padding: 2.4rem 0;
+
+    &[data-float='left'],
+    &[data-float='right'] {
+      font-size: 2.2rem;
+      line-height: 1.4;
+    }
 
     @include media-breakpoint-up(sm) {
       &[data-float='left'] {
@@ -150,25 +161,15 @@ mark.highlight {
         clear: right;
       }
     }
-
-    border: solid #000;
-    border-width: 2px 0;
-    font-weight: 700;
-    line-height: 1.2;
-    margin: 1em 0;
-    padding: 2.4rem 0;
-
-    &[data-float='left'],
-    &[data-float='right'] {
-      @include font-size(2.2rem);
-
-      line-height: 1.4;
-    }
   }
 }
 
 .ProseMirror article[data-type='incut'] {
-  @include font-size(1.4rem);
+  background: #f1f2f3;
+  font-size: 1.4rem;
+  margin: 1em -1rem;
+  padding: 2em 2rem;
+  transition: background 0.3s ease-in-out;
 
   @include media-breakpoint-up(sm) {
     margin-left: -2rem;
@@ -186,11 +187,6 @@ mark.highlight {
     margin-right: -3em;
   }
 
-  background: #f1f2f3;
-  margin: 1em -1rem;
-  padding: 2em 2rem;
-  transition: background 0.3s ease-in-out;
-
   &[data-float] img {
     float: none;
     max-width: unset;
@@ -200,6 +196,9 @@ mark.highlight {
 
   &[data-float='left'],
   &[data-float='half-left'] {
+    margin-left: -1rem;
+    clear: left;
+
     @include media-breakpoint-up(sm) {
       margin-left: -2rem;
       margin-right: 2rem;
@@ -212,13 +211,13 @@ mark.highlight {
     @include media-breakpoint-up(xl) {
       margin-left: -12.5%;
     }
-
-    margin-left: -1rem;
-    clear: left;
   }
 
   &[data-float='right'],
   &[data-float='half-right'] {
+    margin-right: -1rem;
+    clear: right;
+
     @include media-breakpoint-up(sm) {
       margin-left: 2rem;
       margin-right: -2rem;
@@ -231,9 +230,6 @@ mark.highlight {
     @include media-breakpoint-up(xl) {
       margin-right: -12.5%;
     }
-
-    margin-right: -1rem;
-    clear: right;
   }
 
   *:last-child {

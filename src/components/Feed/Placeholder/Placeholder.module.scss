@@ -12,8 +12,7 @@
 
   button,
   .button {
-    @include font-size(1.5rem);
-
+    font-size:1.5rem;
     align-items: center;
     border-radius: 1.2rem;
     display: flex;
@@ -119,7 +118,7 @@
   }
 
   h3 {
-    @include font-size(3.8rem);
+    font-size:3.8rem;
   }
 
   .button {
@@ -138,7 +137,9 @@
     width: 100%;
 
     .icon {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
   }
 }
@@ -233,13 +234,12 @@
 }
 
 .bottomLinks {
-  @include font-size(1.6rem);
-
   @include media-breakpoint-down(sm) {
     flex-direction: column;
     gap: 1.4rem;
   }
 
+  font-size:1.6rem;
   display: flex;
   gap: 4rem;
 
@@ -250,13 +250,15 @@
 
     &:hover {
       .icon {
-        filter: invert(0);
+        filter: none;
       }
     }
   }
 
   .icon {
-    filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     height: 1.8rem;
     left: 0;
     position: absolute;

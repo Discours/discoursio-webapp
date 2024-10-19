@@ -5,9 +5,9 @@
  * @returns {JSX.Element | null} The rendered placeholder or null if data is missing.
  */
 
+import { A } from '@solidjs/router'
 import { clsx } from 'clsx'
 import { For, Show, createMemo } from 'solid-js'
-import { A } from '@solidjs/router'
 
 import { Icon } from '~/components/_shared/Icon'
 import { useLocalize } from '~/context/localize'

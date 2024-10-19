@@ -10,8 +10,7 @@
   position: relative;
 
   .headingActions {
-    @include font-size(1.2rem);
-
+    font-size:1.2rem;
     margin-bottom: 0.5rem;
     display: flex;
     flex-direction: row;
@@ -48,8 +47,7 @@
     margin-top: auto;
 
     .additionalInput {
-      @include font-size(1.4rem);
-
+      font-size:1.4rem;
       appearance: textfield;
       font-weight: 600;
       padding: 0;
@@ -88,7 +86,9 @@
   z-index: 10;
 
   .close {
-    filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     margin: -1.6rem 0 0 -2.8rem;
   }
 
@@ -170,8 +170,7 @@
 }
 
 .scrollTopButtonLabel {
-  @include font-size(1.4rem);
-
+  font-size:1.4rem;
   display: none;
   font-weight: bold;
   left: 100%;

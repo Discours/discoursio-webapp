@@ -1,4 +1,5 @@
 import { withThemeByClassName } from '@storybook/addon-themes'
+
 import '../src/styles/app.scss'
 
 const preview = {

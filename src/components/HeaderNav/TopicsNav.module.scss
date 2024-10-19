@@ -1,10 +1,12 @@
+@use 'sass:math';
+
 .Topics {
   @include media-breakpoint-down(sm) {
-    padding: 0 divide($container-padding-x, 2);
+    padding: 0 math.div($container-padding-x, 2);
   }
 
   @include media-breakpoint-up(md) {
-    @include font-size(1.4rem);
+    font-size:1.4rem;
   }
 
   font-size: 1.6rem;
@@ -63,7 +65,9 @@
 
       &:hover {
         .icon {
-          filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
         }
       }
     }

@@ -29,7 +29,7 @@ const feedLoader = async (options: Partial<LoadShoutsOptions>, _client?: Client)
 
 export const route = {
   load: async ({ location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
-    const offset: number = Number.parseInt(query.offset, 10)
+    const offset: number = Number.parseInt(query.offset as string, 10)
     const result = await feedLoader({ offset })
     return result
   }

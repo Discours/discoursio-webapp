@@ -21,15 +21,13 @@
   }
 
   .authorName {
-    @include font-size(4rem);
-
+    font-size:4rem;
     font-weight: 700;
     margin-bottom: 1.2rem;
   }
 
   .authorAbout {
-    @include font-size(2rem);
-
+    font-size:2rem;
     color: #696969;
     font-weight: 500;
     margin-top: 1.5rem;
@@ -142,8 +140,7 @@
 }
 
 .authorName {
-  @include font-size(4rem);
-
+  font-size:4rem;
   line-height: 1.1;
 }
 
@@ -202,12 +199,13 @@
       background: #000;
 
       &::before {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
 
       .authorSubscribeSocialLabel {
-        @include font-size(1.6rem);
-
+        font-size:1.6rem;
         color: #000;
         display: block;
         left: 100%;

@@ -1,13 +1,11 @@
 h1 {
-  @include font-size(4rem);
-
+  font-size:4rem;
   line-height: 1.1;
   margin-top: 0.5em;
 }
 
 h2 {
-  @include font-size(4rem);
-
+  font-size:4rem;
   line-height: 1.1;
 }
 
@@ -20,7 +18,7 @@ img {
 }
 
 .articleContent {
-  img:not([data-disable-lightbox='true']) {
+  img:not(.icon) {
     cursor: zoom-in;
     width: 100%;
   }
@@ -96,12 +94,11 @@ img {
 
     &[data-float='left'],
     &[data-float='right'] {
-      @include font-size(2.2rem);
-
       @include media-breakpoint-up(sm) {
         clear: none;
       }
 
+      font-size:2.2rem;
       line-height: 1.4;
     }
 
@@ -114,13 +111,12 @@ img {
   ta-sub,
   ta-selection-frame,
   ta-border-sub {
-    @include font-size(1.4rem);
-
     @include media-breakpoint-up(md) {
       margin: 3.2rem -8.3333%;
       padding: 3.2rem 8.3333%;
     }
 
+    font-size:1.4rem;
     background: #f1f2f3;
     clear: both;
     display: block;
@@ -243,7 +239,7 @@ img {
 
 .shoutAuthor,
 .shoutDate {
-  @include font-size(1.5rem);
+  font-size:1.5rem;
 }
 
 .shoutAuthor {
@@ -282,8 +278,7 @@ img {
 }
 
 .writeComment {
-  @include font-size(1.7rem);
-
+  font-size:1.7rem;
   border: 2px solid #f6f6f6;
   outline: none;
   padding: 0.2em 0.4em;
@@ -295,8 +290,7 @@ img {
 }
 
 .commentWarning {
-  @include font-size(2.2rem);
-
+  font-size:2.2rem;
   background: #f6f6f6;
   margin-bottom: 1em;
   padding: 2.4rem 1.8rem;
@@ -325,12 +319,11 @@ img {
 }
 
 .shoutStatsItem {
-  @include font-size(1.5rem);
-
   @include media-breakpoint-up(xl) {
     margin-right: 3.2rem;
   }
 
+  font-size:1.5rem;
   align-items: center;
   font-weight: 500;
   display: flex;
@@ -487,8 +480,7 @@ img {
 }
 
 .topicsList {
-  @include font-size(1.2rem);
-
+  font-size:1.2rem;
   border-bottom: 1px solid #e8e8e8;
   letter-spacing: 0.08em;
   margin-top: 1.6rem;
@@ -535,8 +527,7 @@ img {
 }
 
 .commentsHeader {
-  @include font-size(2.4rem);
-
+  font-size: 2.4rem;
   margin-bottom: 1em;
 
   .newReactions {
@@ -569,8 +560,7 @@ img {
   padding-bottom: 3.2rem;
 
   button {
-    @include font-size(1.5rem);
-
+    font-size:1.5rem;
     border-radius: 0.8rem;
     margin-right: 1.2rem;
     padding: 0.9rem 1.2rem;
@@ -620,8 +610,7 @@ a[data-toggle='tooltip'] {
 }
 
 .tooltip {
-  @include font-size(1.4rem);
-
+  font-size:1.4rem;
   position: relative;
   padding: 8px;
   border-radius: 4px;
@@ -658,8 +647,7 @@ a[data-toggle='tooltip'] {
 }
 
 .lead {
-  @include font-size(1.8rem);
-
+  font-size:1.8rem;
   font-weight: 600;
 
   b,
@@ -682,4 +670,8 @@ a[data-toggle='tooltip'] {
       display: inline-block;
     }
   }
+}
+
+.figureAlignColumn {
+  clear: both;
 }

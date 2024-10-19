@@ -38,8 +38,7 @@
   }
 
   .counter {
-    @include font-size(1.2rem);
-
+    font-size:1.2rem;
     align-items: center;
     align-self: flex-start;
     background: #f6f6f6;
@@ -108,7 +107,9 @@
       }
 
       img {
-        filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
       }
     }
   }
@@ -131,8 +132,7 @@
   }
 
   h4 {
-    @include font-size(1.2rem);
-
+    font-size:1.2rem;
     font-weight: bold;
     color: #9fa1a7;
     cursor: pointer;

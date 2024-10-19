@@ -18,7 +18,8 @@
     "paths": {
       "~/*": ["./src/*"],
       "@/*": ["./public/*"]
-    }
+    },
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "exclude": ["./src/pages"]
 }

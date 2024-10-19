@@ -1,0 +1,142 @@
+@use "sass:color" as color;
+@use "sass:math" as math;
+@use "sass:map" as map;
+@use "theme";
+
+$include-column-box-sizing: true !default;
+$rfs-breakpoint: 1460px !default;
+$rfs-base-value: 1.6rem !default;
+$rfs-rem-value: 10 !default;
+$grid-columns: 24;
+$grid-gutter-width: 4rem !default;
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+) !default;
+$container-padding-x: $grid-gutter-width * 0.5 !default;
+$container-max-widths: $grid-breakpoints;
+$gutters: (
+  0: 0,
+  1: 0.25rem,
+  2: 0.5rem,
+  3: 1rem,
+  4: 1.5rem,
+  5: 3rem
+) !default;
+$grid-row-columns: 6 !default;
+$prefix: '' !default;
+
+// Шрифты
+$font-family: muller, arial, helvetica, sans-serif;
+$font-size-base: 2rem;
+$line-height-base: 1.6;
+
+// цвета
+$color-primary: var(--blue-500);
+$color-danger: var(--danger-color);
+$default-color: var(--black-500);
+
+// Другие переменные
+$border-radius: 2px;
+$transition-base: all 0.2s ease-in-out;
+$container-padding-x: $grid-gutter-width * 0.5;
+
+// Миксин для media-breakpoint-up
+@mixin media-breakpoint-up($breakpoint, $breakpoints: $grid-breakpoints) {
+  $min-width: map.get($breakpoints, $breakpoint);
+
+  @if $min-width {
+    @media (min-width: #{$min-width}) {
+      @content;
+    }
+  }
+}
+
+// Миксин для media-breakpoint-down
+@mixin media-breakpoint-down($breakpoint, $breakpoints: $grid-breakpoints) {
+  $max-width: map.get($breakpoints, $breakpoint);
+
+  @if $max-width {
+    @media (max-width: #{$max-width - 0.02}) {
+      @content;
+    }
+  }
+}
+
+// Миксин для media-breakpoint-between
+@mixin media-breakpoint-between($lower, $upper, $breakpoints: $grid-breakpoints) {
+  $min-width: map.get($breakpoints, $lower);
+  $max-width: map.get($breakpoints, $upper);
+
+  @if $min-width and $max-width {
+    @media (min-width: #{$min-width}) and (max-width: #{$max-width - 0.02}) {
+      @content;
+    }
+  }
+}
+
+// Миксин make-container
+@mixin make-container($max-widths: $container-max-widths, $gutter: $grid-gutter-width) {
+  width: 100%;
+  padding-right: $container-padding-x;
+  padding-left: $container-padding-x;
+  margin-right: auto;
+  margin-left: auto;
+
+  @each $breakpoint, $max-width in $max-widths {
+    @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+      @if $max-width {
+        max-width: $max-width;
+      }
+    }
+  }
+}
+
+// Миксин make-row
+@mixin make-row($gutter: $grid-gutter-width) {
+  --gutter-x: #{$gutter};
+  --gutter-y: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1 * var(--gutter-y));
+  margin-right: calc(-0.5 * var(--gutter-x));
+  margin-left: calc(-0.5 * var(--gutter-x));
+}
+
+// Миксин make-col-ready
+@mixin make-col-ready() {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: calc(var(--gutter-x) * 0.25);
+  padding-left: calc(var(--gutter-x) * 0.25);
+  margin-top: var(--gutter-y);
+
+  @include media-breakpoint-up(sm) {
+    padding-right: calc(var(--gutter-x) * 0.5);
+    padding-left: calc(var(--gutter-x) * 0.5);
+  }
+}
+
+// Миксин make-col
+@mixin make-col($size: false, $columns: $grid-columns) {
+  $size-factor: 0;
+  $size-factor: calc($size / $columns);
+  $flex-grow: 1 - $size-factor;
+  $flex-shrink: 1 - $size-factor;
+  $flex-basis: calc(100% * #{calc($size-factor)});
+
+  flex: $flex-grow $flex-shrink $flex-basis;
+  max-width: max($flex-basis, 100% * $size-factor);
+}
+
+@mixin make-col-offset($size, $columns: $grid-columns) {
+  $offset: calc(100% * #{calc($size / $columns)});
+
+  margin-left: max(0px, $offset);
+}

@@ -1,7 +1,9 @@
+@use 'sass:math';
+
 .search-form {
   @include media-breakpoint-down(sm) {
-    margin-left: divide(-$container-padding-x, 2);
-    margin-right: divide(-$container-padding-x, 2);
+    margin-left: math.div(-$container-padding-x, 2);
+    margin-right: math.div(-$container-padding-x, 2);
   }
 
   display: flex;
@@ -15,16 +17,14 @@
   }
 
   input {
-    @include font-size(4rem);
-
+    font-size:4rem;
     border: none;
     border-bottom: 1px solid #ccc;
     height: 100%;
   }
 
   button {
-    @include font-size(2rem);
-
+    font-size:2rem;
     line-height: 4rem;
   }
 }

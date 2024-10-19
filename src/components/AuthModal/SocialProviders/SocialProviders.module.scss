@@ -6,8 +6,7 @@
 }
 
 .text {
-  @include font-size(1.5rem);
-
+  font-size:1.5rem;
   font-weight: 500;
   margin-bottom: 1em;
   text-align: center;
@@ -50,7 +49,9 @@
 
   .github:hover {
     img {
-      filter: invert(1);
+        // filter: invert(1);
+        fill: var(--icon-color-invert);
+        color: var(--icon-color);
     }
   }
 }

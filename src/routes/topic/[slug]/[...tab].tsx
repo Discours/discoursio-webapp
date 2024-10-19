@@ -27,7 +27,7 @@ const fetchAllTopics = async () => {
 
 export const route = {
   load: async ({ params, location: { query } }: RouteSectionProps<{ articles: Shout[] }>) => {
-    const offset: number = Number.parseInt(query.offset, 10)
+    const offset: number = Number.parseInt(query.offset as string, 10)
     const result = await fetchTopicShouts(params.slug, offset)
     return {
       articles: result,

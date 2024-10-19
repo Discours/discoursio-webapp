@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename)
 const keyPath = path.join(__dirname, 'key.pem')
 const certPath = path.join(__dirname, 'cert.pem')
 
-if (!process.env.CI) {
+if (isDev) {
   if (!fs.existsSync(keyPath)) {
     console.log('Generating certs...')
     const cmd = `mkcert -key-file ${keyPath} -cert-file ${certPath} localhost 127.0.0.1 ::1`

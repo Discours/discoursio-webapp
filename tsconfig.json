@@ -19,7 +19,14 @@
       "~/*": ["./src/*"],
       "@/*": ["./public/*"]
     },
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          "customMatcher": "\\.module\\.scss$"
+        }
+      }
+    ]
   },
   "exclude": ["./src/pages"]
 }

@@ -1,15 +1,14 @@
 import type { FrameworkOptions, StorybookConfig } from 'storybook-solidjs-vite'
 
 const config: StorybookConfig = {
-  stories: ['../src/components/atoms/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
+  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     '@storybook/addon-a11y',
     '@storybook/addon-themes',
-    'storybook-addon-sass-postcss',
-    'storybook-addon-vite-mock'
+    'storybook-addon-sass-postcss'
   ],
   framework: {
     name: 'storybook-solidjs-vite',

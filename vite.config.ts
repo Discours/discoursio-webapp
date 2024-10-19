@@ -1,8 +1,8 @@
 // biome-ignore lint/correctness/noNodejsModules: build
 import path from 'node:path'
 import dotenv from 'dotenv'
-import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { CSSOptions, LogLevel, LoggerOptions, createLogger, defineConfig } from 'vite'
+import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -53,7 +53,7 @@ export default defineConfig({
     } as CSSOptions['preprocessorOptions']
   },
   customLogger,
-  plugins: [nodePolyfills(polyfillOptions), ],
+  plugins: [nodePolyfills(polyfillOptions)],
   build: {
     target: 'esnext',
     sourcemap: true,
@@ -81,7 +81,7 @@ export default defineConfig({
   },
   define: {
     'process.env': process.env,
-    global: 'globalThis',
+    global: 'globalThis'
   },
   optimizeDeps: {
     include: ['solid-tiptap', 'buffer'],

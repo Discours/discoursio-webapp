@@ -127,7 +127,6 @@ $container-padding-x: $grid-gutter-width * 0.5;
 @mixin make-col($size: false, $columns: $grid-columns) {
   $size-factor: 0;
   $size-factor: calc($size / $columns);
-
   $flex-grow: 1 - $size-factor;
   $flex-shrink: 1 - $size-factor;
   $flex-basis: calc(100% * #{calc($size-factor)});

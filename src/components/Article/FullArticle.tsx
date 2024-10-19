@@ -446,7 +446,6 @@ export const FullArticle = (props: Props) => {
     </div>
   )
 
-  // biome-ignore lint/correctness/noUnusedVariables: FIXME hydration
   const ArticleAuthors = () => (
     <div>
       <Show
@@ -616,7 +615,7 @@ export const FullArticle = (props: Props) => {
 
             <ArticleTopics />
 
-            {/* <ArticleAuthors /> */}
+            <ArticleAuthors />
 
             <div id="comments" ref={setCommentsWrapper}>
               <Show when={isReactionsLoaded()}>

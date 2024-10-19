@@ -1,9 +1,8 @@
 // biome-ignore lint/correctness/noNodejsModules: build
 import path from 'node:path'
 import dotenv from 'dotenv'
+import nodePolyfills, { NodePolyfillsOptions } from 'rollup-plugin-polyfill-node'
 import { CSSOptions, LogLevel, LoggerOptions, createLogger, defineConfig } from 'vite'
-import mkcert from 'vite-plugin-mkcert'
-import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
 
 // Load environment variables from .env file
@@ -12,12 +11,12 @@ dotenv.config()
 export const isDev = process.env.NODE_ENV !== 'production'
 console.log(`[vite.config] ${process.env.NODE_ENV} mode`)
 
-// biome-ignore lint/correctness/noUnusedVariables: doesnt work :/
 const customLogger = createLogger(
   'debug' as LogLevel,
   {
     warn: (message: string, options: LoggerOptions) => {
-      if (message.includes('Future global-builtin deprecation is not yet active')) {
+      console.debug(message)
+      if (message.startsWith('Future global-builtin')) {
         return // Игнорируем это конкретное предупреждение
       }
       console.warn(message, options)
@@ -28,10 +27,12 @@ const customLogger = createLogger(
 const polyfillOptions = {
   include: ['path', 'stream', 'util'],
   exclude: ['http'],
-  globals: { Buffer: true },
-  overrides: { fs: 'memfs' },
-  protocolImports: true
-} as PolyfillOptions
+  globals: {
+    Buffer: true,
+    global: true,
+    process: true
+  }
+} as NodePolyfillsOptions
 
 export default defineConfig({
   resolve: {
@@ -43,7 +44,7 @@ export default defineConfig({
     }
   },
   envPrefix: 'PUBLIC_',
-  plugins: [isDev && mkcert(), nodePolyfills(polyfillOptions), sassDts()],
+  plugins: [nodePolyfills(polyfillOptions), sassDts()],
   css: {
     preprocessorOptions: {
       scss: {
@@ -55,7 +56,7 @@ export default defineConfig({
       }
     } as CSSOptions['preprocessorOptions']
   },
-  // customLogger,
+  customLogger,
   build: {
     target: 'esnext',
     sourcemap: true,

@@ -1,13 +1,111 @@
 .button {
-  border-radius: 2px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
 
+  &:disabled {
+    opacity: 1 !important;
+  }
+
   &.primary {
+    background: var(--background-color-invert);
+    color: var(--default-color-invert);
+
+    &:hover {
+      background: #404040;
+      color: #fff;
+    }
+
+    &:active {
+      background: #000;
+      color: rgb(255 255 255 / 40%);
+    }
+
+    &:disabled {
+      background: var(--background-color-invert);
+      color: rgb(255 255 255 / 40%);
+    }
+  }
+
+  &.primary-disabled {
+    background: var(--background-color-invert);
+    color: rgb(255 255 255 / 40%);
+    pointer-events: none;
+  }
+
+  &.secondary {
+    background: #f7f7f8;
+    color: #000;
+
+    &:hover {
+      background: #e9e9ee;
+      color: #000;
+    }
+
+    &:active {
+      background: #f7f7f8;
+      color: rgb(105 105 105 / 40%);
+    }
+
+    &:disabled {
+      border: 2px solid #696969;
+      color: #696969;
+    }
+  }
+
+  &.secondary-disabled {
+    border: 2px solid #696969;
+    color: #696969;
+    pointer-events: none;
+  }
+
+  &.bordered {
+    min-width: auto !important;
+    background: var(--link-color);
+    color: var(--link-hover-color);
+    border-radius: 8px;
+    border: 2px solid #000;
+
+    &:hover {
+      background: none;
+      color: #000;
+      transition: all 100ms ease-in;
+    }
+
+    &:not(:hover) {
+      transition: all 80ms ease-out;
+    }
+
+    &:active {
+      border: 2px solid #696969;
+      color: #696969;
+    }
+  }
+
+  &.outline {
+    min-width: auto !important;
+    border: 2px solid #000;
+
+    &:hover {
+      background: var(--link-color);
+      color: var(--link-hover-color);
+      transition: all 100ms ease-in;
+    }
+
+    &:not(:hover) {
+      transition: all 80ms ease-out;
+    }
+
+    &:active {
+      color: rgb(255 255 255 / 40%)
+    }
+  }
+
+  &.primary-square {
     background: var(--background-color-invert);
     color: var(--default-color-invert);
 
@@ -18,180 +116,120 @@
     &:active {
       color: #9fa1a7;
     }
+
+    &:disabled {
+      border-radius: 2px;
+      background: #f7f7f8;
+      color: #9fa1a7;
+    }
   }
 
-  &.secondary {
-    border: 1px solid #f7f7f7;
+  &.secondary-square {
     background: #f7f7f7;
     color: #141414;
 
     &:hover {
-      background: #000;
-      color: #fff;
+      background: #e9e9ee;
     }
-  }
 
-  &.danger {
-    border: 3px solid var(--danger-color);
-    background: var(--background-color);
-    color: var(--danger-color);
-
-    &:hover {
-      background: var(--danger-color);
-      color: #fff;
-    }
-  }
-
-  &.inline {
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 21px;
-    color: #696969;
-
-    &:hover,
     &:active {
-      text-decoration: underline;
-      color: #141414;
+      background: #ccc;
+    }
+
+    &:disabled {
+      border-radius: 2px;
+      background: #f7f7f8;
+      color: #9fa1a7;
     }
   }
 
-  &.light {
-    font-weight: inherit;
-    padding: 0;
-  }
-
-  &.outline,
-  &.bordered {
-    border: 3px solid #f2f2f2;
-    border-radius: 1.2em;
-    cursor: pointer;
-    font-weight: bold;
-    margin-right: 0.8em;
-    min-width: auto !important;
-    padding: 0;
-    transition:
-      border-color 0.3s,
-      background-color 0.3s,
-      color 0.3s;
-
-    &:hover,
-    &:active {
-      background: var(--link-color);
-      border-color: var(--link-color);
-      color: var(--link-hover-color);
-
-      :global(.icon) {
-        filter: var(--icon-filter-hover);
-      }
-    }
-
-    :global(.icon) {
-      margin: 0 -0.5em;
-      filter: var(--icon-filter);
-      transition: filter 0.3s;
-    }
-  }
-
-  &.bordered {
+  &.disabled {
     border-radius: 2px;
-    border: 2px solid #000;
-    font-size: 16px;
-    font-weight: 500;
-  }
-
-  &:disabled,
-  &:disabled:hover {
-    cursor: default;
+    background: #f7f7f8;
     color: #9fa1a7;
-    background: #f6f6f6;
-  }
-
-  &.loading,
-  &.loading:hover {
-    background: #f6f6f6;
+    pointer-events: none;
   }
 
   &.L {
-    height: 56px;
-    min-width: 80px;
-    font-size: 20px;
-    padding: 16px 20px;
+    height: 50px;
+    min-width: 112px;
+    border-radius: 14px;
+    font-size: 16px;
+    padding: 0 30px;
   }
 
   &.M {
     height: 40px;
-    min-width: 64px;
-    font-size: 17px;
-    padding: 8px 16px;
+    min-width: 89px;
+    border-radius: 12px;
+    font-size: 15px;
+    padding: 0 20px;
   }
 
   &.S {
     height: 32px;
-    min-width: 53px;
-    font-size: 15px;
-    padding: 1rem 1.2rem;
+    min-width: 82px;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 0 18px;
   }
 
-  &.subscribeButton {
-    aspect-ratio: auto;
-    background-color: #000;
-    border: 2px solid #000;
-    border-radius: 0.8rem;
-    color: #fff;
-    float: none;
-    padding-bottom: 0.6rem;
-    padding-top: 0.6rem;
-    width: 9em;
-
-    .icon {
-      img {
-        // filter: invert(1);
-        fill: var(--icon-color-invert);
-        color: var(--icon-color);
-      }
-    }
-
-    &:hover {
-      background: #fff;
-      color: #000;
-
-      .icon img {
-        filter: none !important;
-      }
-
-      .buttonSubscribeLabel {
-        display: none;
-      }
-
-      .buttonSubscribeLabelHovered {
-        display: block;
-      }
-    }
-
-    .buttonSubscribeLabelHovered {
-      display: none;
-    }
-
-    img {
-      vertical-align: text-top;
-    }
+  &.M-square {
+    min-width: 80px;
+    height: 56px;
+    border-radius: 2px;
+    font-size: 20px;
+    padding: 16px 20px;
   }
 
-  &.followed {
-    background: #fff;
-    color: #000;
+  &.S-square {
+    min-width: 63px;
+    height: 37px;
+    border-radius: 2px;
+    font-size: 16px;
+    padding: 8px 16px;
+  }
 
-    .icon img {
-      filter: none;
-    }
+  &.XS-square {
+    min-width: 51px;
+    height: 30px;
+    border-radius: 2px;
+    font-size: 14px;
+    padding: 6px 12px;
+  }
 
-    &:hover {
-      background: #000;
-      color: #fff;
+  &.loadingDots {
+    display: inline-flex;
+    align-items: center;
+    font-size: 30px;
 
-      .icon img {
-        filter: invert(1) !important;
+    & span {
+      animation: blink 2s infinite;
+
+      &:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes blink {
+        0%, 50%, 100% {
+          opacity: 0;
+        }
+
+        10%, 30% {
+          opacity: 1;
+        }
       }
     }
   }
 }
+
+
+

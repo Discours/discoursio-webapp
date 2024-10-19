@@ -1,4 +1,3 @@
-import { render } from 'solid-js/web'
 import { createMock } from 'storybook-addon-vite-mock'
 import type { Meta, StoryObj } from 'storybook-solidjs'
 import { useUI } from '~/context/ui'
@@ -48,11 +47,9 @@ export const Default: Story = {
     limit: 500,
     placeholder: 'Start typing here...'
   },
-  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    // const mockShowModal = (s: string) => {} // Простая заглушка
-    // useUI.mockReturnValue({ showModal: mockShowModal })
-
-    render(() => <MiniEditor {...Default.args} />, canvasElement)
+  render: () => {
+    //const [editor] = createSignal(createMock())
+    return <MiniEditor {...Default.args} />
   }
 }
 

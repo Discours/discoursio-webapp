@@ -1,9 +1,7 @@
 // biome-ignore lint/correctness/noNodejsModules: build
 import path from 'node:path'
 import dotenv from 'dotenv'
-import nodePolyfills, { NodePolyfillsOptions } from 'rollup-plugin-polyfill-node'
 import { CSSOptions, LogLevel, LoggerOptions, createLogger, defineConfig } from 'vite'
-import sassDts from 'vite-plugin-sass-dts'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -15,24 +13,12 @@ const customLogger = createLogger(
   'debug' as LogLevel,
   {
     warn: (message: string, options: LoggerOptions) => {
-      console.debug(message)
-      if (message.startsWith('Future global-builtin')) {
-        return // Игнорируем это конкретное предупреждение
+      if (!message.startsWith('Future global-builtin')) {
+        console.warn(message, options)
       }
-      console.warn(message, options)
     }
   } as LoggerOptions
 )
-
-const polyfillOptions = {
-  include: ['path', 'stream', 'util'],
-  exclude: ['http'],
-  globals: {
-    Buffer: true,
-    global: true,
-    process: true
-  }
-} as NodePolyfillsOptions
 
 export default defineConfig({
   resolve: {
@@ -44,7 +30,6 @@ export default defineConfig({
     }
   },
   envPrefix: 'PUBLIC_',
-  plugins: [nodePolyfills(polyfillOptions), sassDts()],
   css: {
     preprocessorOptions: {
       scss: {
@@ -67,7 +52,6 @@ export default defineConfig({
       }
     },
     rollupOptions: {
-      // plugins: [visualizer()]
       output: {
         manualChunks: {
           icons: ['./src/components/_shared/Icon/Icon.tsx'],

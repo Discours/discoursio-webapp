@@ -6,7 +6,7 @@ import { CSSOptions, LogLevel, LoggerOptions, createLogger, defineConfig } from 
 // Load environment variables from .env file
 dotenv.config()
 
-export const isDev = process.env.NODE_ENV !== 'production' && !process.env.CI
+export const isDev = process.env.NODE_ENV !== 'production'
 console.log(`[vite.config] ${process.env.NODE_ENV} mode`)
 
 const customLogger = createLogger(

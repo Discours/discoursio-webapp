@@ -24,7 +24,7 @@ const certPath = path.join(__dirname, 'cert.pem')
 const key = fs.readFileSync(keyPath).toString()
 const cert = fs.readFileSync(certPath).toString()
 
-if (isDev) {
+if (!process.env.CI) {
   if (!fs.existsSync(keyPath)) {
     console.log('Generating certs...')
     const cmd = `mkcert -key-file ${keyPath} -cert-file ${certPath} localhost 127.0.0.1 ::1`
@@ -41,7 +41,7 @@ export default defineConfig({
   server: {
     preset,
     port: 3000,
-    https: isDev ? { key, cert } : true
+    https: !process.env.CI ? { key, cert } : true
   },
   devOverlay: isDev,
   vite: viteConfig

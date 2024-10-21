@@ -7,71 +7,69 @@
   cursor: pointer;
   white-space: nowrap;
 
-  //&:disabled {
-  //  opacity: 1 !important;
-  //}
-
   &.primary {
-    background: var(--background-color-invert);
-    color: var(--default-color-invert);
-
-    &:hover {
-      background: #404040;
-      color: #fff;
-    }
-
-    &:active {
-      background: #000;
-      color: rgb(255 255 255 / 40%);
-    }
-
     &:disabled {
       background: var(--background-color-invert);
       color: rgb(255 255 255 / 40%);
     }
+
+    :global(.button--primary) {
+
+    }
   }
 
   &.secondary {
-    border: 0.2rem solid #f7f7f8;
-    background: #f7f7f8;
-    color: #000;
-
-    &:hover {
-      border: 0.2rem solid #e9e9ee;
-      background: #e9e9ee;
-      color: #000;
-    }
-
-    &:active {
-      border: 0.2rem solid #f7f7f8;
-      background: #f7f7f8;
-      color: rgb(105 105 105 / 40%);
-    }
-
     &:disabled {
       border: 0.2rem solid #696969;
       color: #696969;
     }
+
+    :global(.button--secondary) {
+
+    }
   }
 
-  &.primary-square :global(.button--square-primary) {
+  &.primary-square {
+    &:disabled {
+      background: #f7f7f8;
+      color: #9fa1a7;
+    }
 
+    :global(.button--square-primary) {
+
+    }
   }
 
-  &.secondary-square :global(.button--square-secondary) {
+  &.secondary-square  {
+    &:disabled {
+      background: #f7f7f8;
+      color: #9fa1a7;
+    }
 
+    :global(.button--square-secondary) {
+
+    }
   }
 
-  &.M-square :global(.button--square-M) {
+  &.M-square {
     min-width: 8rem;
+    height: 5.6rem;
+    font-size: 2rem;
+    padding: 1.6rem 2rem;
   }
 
-  &.S-square :global(.button--square-S) {
+  &.S-square {
     min-width: 6.3rem;
+    height: 3.7rem;
+    font-size: 1.6rem;
+    padding: 0.8rem 1.6rem;
   }
 
-  &.XS-square :global(.button--square-XS){
+  &.XS-square {
     min-width: 5.1rem;
+    height: 3rem;
+    font-size: 1.4rem;
+    padding: 0.6rem 1.2rem;
   }
 
   &.subscribeButton {
@@ -117,16 +115,26 @@
     }
   }
 
-  &.L :global(.button--L){
+  &.L {
     min-width: 11.2rem;
+    border-radius: 1.4rem;
+    font-size: 1.6rem;
+    padding: 0 3rem;
   }
 
-  &.M :global(.button--M) {
+  &.M {
     min-width: 8.9rem;
+    height: 4rem;
+    border-radius: 1.2rem;
+    font-size: 1.5rem;
+    padding: 0 2rem;
   }
 
-  &.S :global(.button--S) {
+  &.S  {
     min-width: 8.2rem;
+    border-radius: 0.8rem;
+    font-size: 1.4rem;
+    padding: 0 1.8rem;
   }
 
   &.loadingDots {

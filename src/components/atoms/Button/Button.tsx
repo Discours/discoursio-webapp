@@ -64,13 +64,10 @@ export const Button = (props: Props) => {
           [styles['loadingDots']]: isLoading,
           [styles.subscribeButton]: props.isSubscribeButton,
 
+          'button--primary': props.variant === 'primary',
+          'button--secondary': props.variant === 'secondary',
           'button--square-primary': props.variant === 'primary-square',
-          'button--square-secondary': props.variant === 'secondary-square',
-          'button--L': props.size === 'L',
-          'button--M': props.size === 'M',
-          'button--S': props.size === 'S',
-          'button--square-M': props.size === 'M-square',
-          'button--square-S': props.size === 'S-square'
+          'button--square-secondary': props.variant === 'secondary-square'
         },
         props.class
       )}

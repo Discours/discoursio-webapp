@@ -409,6 +409,39 @@ button {
 //  }
 //}
 
+.button--primary {
+  background: var(--background-color-invert);
+  color: var(--default-color-invert);
+
+  &:hover {
+    background: #404040;
+    color: #fff;
+  }
+
+  &:active {
+    background: #000;
+    color: rgb(255 255 255 / 40%);
+  }
+}
+
+.button--secondary {
+  border: 0.2rem solid #f7f7f8;
+  background: #f7f7f8;
+  color: #000;
+
+  &:hover {
+    border: 0.2rem solid #e9e9ee;
+    background: #e9e9ee;
+    color: #000;
+  }
+
+  &:active {
+    border: 0.2rem solid #f7f7f8;
+    background: #f7f7f8;
+    color: rgb(105 105 105 / 40%);
+  }
+}
+
 .button--square-primary {
   background: var(--background-color-invert);
   color: var(--default-color-invert);
@@ -418,11 +451,6 @@ button {
   }
 
   &:active {
-    color: #9fa1a7;
-  }
-
-  &:disabled {
-    background: #f7f7f8;
     color: #9fa1a7;
   }
 }
@@ -438,51 +466,6 @@ button {
   &:active {
     background: #ccc;
   }
-
-  &:disabled {
-    background: #f7f7f8;
-    color: #9fa1a7;
-  }
-}
-
-.button--L {
-  height: 5rem;
-  border-radius: 1.4rem;
-  font-size: 1.6rem;
-  padding: 0 3rem;
-}
-
-.button--M {
-  height: 4rem;
-  border-radius: 1.2rem;
-  font-size: 1.5rem;
-  padding: 0 2rem;
-}
-
-.button--S {
-  height: 3.2rem;
-  border-radius: 0.8rem;
-  font-size: 1.4rem;
-  padding: 0 1.8rem;
-}
-
-
-.button--square-M {
-  height: 5.6rem;
-  font-size: 2rem;
-  padding: 1.6rem 2rem;
-}
-
-.button--square-S {
-  height: 3.7rem;
-  font-size: 1.6rem;
-  padding: 0.8rem 1.6rem;
-}
-
-.button--square-XS {
-  height: 3rem;
-  font-size: 1.4rem;
-  padding: 0.6rem 1.2rem;
 }
 
 form {

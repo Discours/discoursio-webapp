@@ -87,7 +87,7 @@ export const CommentsTree = (props: Props) => {
           shout: props.shoutId
         }
       })
-      await loadReactionsBy({ by: { shout: props.shoutSlug } })
+      await loadReactionsBy({ by: { shout: props.shoutSlug, kinds: [ReactionKind.Comment] } })
     } catch (error) {
       console.error('[handleCreate reaction]:', error)
     }

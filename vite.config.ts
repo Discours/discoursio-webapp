@@ -3,6 +3,7 @@ import path from 'node:path'
 import dotenv from 'dotenv'
 import { CSSOptions, LogLevel, LoggerOptions, createLogger, defineConfig } from 'vite'
 import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
+import sassDts from 'vite-plugin-sass-dts'
 
 // Load environment variables from .env file
 dotenv.config()
@@ -53,7 +54,7 @@ export default defineConfig({
     } as CSSOptions['preprocessorOptions']
   },
   customLogger,
-  plugins: [nodePolyfills(polyfillOptions)],
+  plugins: [nodePolyfills(polyfillOptions), sassDts()],
   build: {
     target: 'esnext',
     sourcemap: true,

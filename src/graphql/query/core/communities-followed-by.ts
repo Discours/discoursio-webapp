@@ -5,7 +5,7 @@ export default gql`
     get_communities_by_author(slug: $slug, user: $user, author_id: $author_id) {
       id
       slug
-      title
+      name
       pic
       stat {
         shouts

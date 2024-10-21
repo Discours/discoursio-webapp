@@ -51,6 +51,7 @@ import { SHOUTS_PER_PAGE } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { loadAuthors, loadReactions, loadShouts, loadTopics } from '~/graphql/api/public'
+import { ReactionKind } from '~/graphql/schema/core.gen'
 import {
   Author,
   LoadShoutsOptions,
@@ -70,7 +71,7 @@ const fetchAuthorShouts = async (slug: string, offset?: number) => {
 
 const fetchAuthorComments = async (slug: string, offset?: number) => {
   const opts: QueryLoad_Reactions_ByArgs = {
-    by: { comment: true, author: slug },
+    by: { kinds: [ReactionKind.Comment], author: slug },
     limit: COMMENTS_PER_PAGE,
     offset
   }

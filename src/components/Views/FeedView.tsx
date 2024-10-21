@@ -1,6 +1,6 @@
 import { A, createAsync, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Show, createEffect, createSignal, on } from 'solid-js'
 import { DropDown } from '~/components/_shared/DropDown'
 import { Option } from '~/components/_shared/DropDown/DropDown'
 import { Icon } from '~/components/_shared/Icon'
@@ -16,7 +16,6 @@ import { useUI } from '~/context/ui'
 import { loadUnratedShouts } from '~/graphql/api/private'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
 import { ReactionKind } from '~/graphql/schema/core.gen'
-import { FeedSearchParams } from '~/routes/feed/[...order]'
 import { byCreated } from '~/utils/sort'
 import { CommentDate } from '../Article/CommentDate'
 import { getShareUrl } from '../Article/SharePopup'
@@ -32,16 +31,18 @@ import stylesBeside from '../Feed/Beside.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 
 export const FEED_PAGE_SIZE = 20
-
+export type FeedMode = 'followed' | 'discussed' | 'coauthored' | 'unrated' | 'featured' | 'all'
+export type ShoutsOrder = 'recent' | 'likes' | 'hot'
+export type PeriodType = 'day' | 'week' | 'month' | 'year'
 export type FeedProps = {
   shouts: Shout[]
-  mode?: 'followed' | 'discussed' | 'coauthored' | 'unrated' | 'all'
-  order?: 'recent' | 'likes' | 'hot'
+  mode?: FeedMode
+  order?: ShoutsOrder
 }
 
-export type PeriodType = 'week' | 'month' | 'year'
 const PERIODS = {
   day: 24 * 60 * 60,
+  week: 7 * 24 * 60 * 60,
   month: 30 * 24 * 60 * 60,
   year: 365 * 24 * 60 * 60
 } as Record<PeriodType, number>
@@ -65,7 +66,7 @@ export const FeedView = (props: FeedProps) => {
   const { topTopics } = useTopics()
   const { topAuthors } = useAuthors()
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
-  const [searchParams, changeSearchParams] = useSearchParams<FeedSearchParams>()
+  const [searchParams, changeSearchParams] = useSearchParams<{ period: PeriodType }>()
   const loadRecentComments = async () => {
     const comments = await loadReactionsBy({ by: { kinds: [ReactionKind.Comment] }, limit: 50 })
     setTopComments(comments.sort(byCreated).reverse())
@@ -98,12 +99,17 @@ export const FeedView = (props: FeedProps) => {
     setShareData(shared)
   }
 
-  const asOption = (o: PeriodType) => {
-    const value = Math.floor(Date.now() / 1000) - PERIODS[o]
+  const asOption = (o: string) => {
+    const value = ['day', 'week', 'month', 'year'].includes(o)
+      ? Math.floor(Date.now() / 1000) - PERIODS[o as PeriodType]
+      : o
     return { value, title: t(o) }
   }
-  const asOptions = (opts: string[]) => opts.map(asOption)
-  const currentPeriod = createMemo(() => asOption(searchParams?.period || ''))
+  const asOptions = (opts: PeriodType[] | FeedMode[]) => opts.map(asOption)
+  const [currentPeriod, setCurrentPeriod] = createSignal(asOption(searchParams?.period || 'month'))
+  createEffect(() => {
+    setCurrentPeriod(asOption(searchParams?.period || 'month'))
+  })
 
   return (
     <div class={clsx('wide-container', styles.feed)}>
@@ -155,7 +161,7 @@ export const FeedView = (props: FeedProps) => {
                 <DropDown
                   popupProps={{ horizontalAnchor: 'right' }}
                   options={asOptions(['all', 'featured', 'followed', 'unrated', 'discussed', 'coauthored'])}
-                  currentOption={asOption(props.mode || '')}
+                  currentOption={currentPeriod()}
                   triggerCssClass={styles.periodSwitcher}
                   onChange={(mode: Option) => navigate(`/feed/${mode.value}`)}
                 />

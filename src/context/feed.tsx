@@ -72,7 +72,7 @@ export const useFeed = () => useContext(FeedContext)
 export const FeedProvider = (props: { children: JSX.Element }) => {
   const [sortedFeed, setSortedFeed] = createSignal<Shout[]>([])
   const [articleEntities, setArticleEntities] = createSignal<{ [articleSlug: string]: Shout }>({})
-  const [feed, setFeed] = createSignal<Shout[]>([])
+  const [feed, setFeed] = createSignal<Shout[]>([] as Shout[])
   const [featuredFeed, setFeaturedFeed] = createSignal<Shout[]>([])
   const [expoFeed, setExpoFeed] = createSignal<Shout[]>([])
   const [topFeed, setTopFeed] = createSignal<Shout[]>([])

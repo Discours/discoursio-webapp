@@ -12,6 +12,7 @@ import { useSession } from '~/context/session'
 import { loadReactions, loadShouts } from '~/graphql/api/public'
 import getAuthorFollowersQuery from '~/graphql/query/core/author-followers'
 import getAuthorFollowsQuery from '~/graphql/query/core/author-follows'
+import { ReactionKind } from '~/graphql/schema/core.gen'
 import type { Author, Reaction, Shout, Topic } from '~/graphql/schema/core.gen'
 import { restoreScrollPosition, saveScrollPosition } from '~/utils/scroll'
 import { byCreated } from '~/utils/sort'
@@ -185,7 +186,7 @@ export const AuthorView = (props: AuthorViewProps) => {
     const aid = author()?.id || 0
     const authorCommentsFetcher = loadReactions({
       by: {
-        comment: true,
+        kinds: [ReactionKind.Comment],
         author: author()?.slug
       },
       limit: COMMENTS_PER_PAGE,

@@ -2,7 +2,7 @@
 import path from 'node:path'
 import dotenv from 'dotenv'
 import { CSSOptions, LogLevel, LoggerOptions, createLogger, defineConfig } from 'vite'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import { PolyfillOptions, nodePolyfills } from 'vite-plugin-node-polyfills'
 import sassDts from 'vite-plugin-sass-dts'
 
 // Load environment variables from .env file
@@ -30,7 +30,7 @@ const polyfillOptions = {
   globals: { Buffer: true },
   overrides: { fs: 'memfs' },
   protocolImports: true
-}
+} as PolyfillOptions
 
 export default defineConfig({
   resolve: {

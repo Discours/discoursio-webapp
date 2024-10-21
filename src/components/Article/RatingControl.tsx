@@ -59,7 +59,11 @@ export const RatingControl = (props: Props) => {
   }
 
   const debouncedLoadReactions = debounce(2000, () => {
-    loadReactionsBy({ by: { shout: props.shout?.slug }, offset: 0, limit: RATINGS_PER_PAGE })
+    loadReactionsBy({
+      by: { shout: props.shout?.slug, kinds: [ReactionKind.Like, ReactionKind.Dislike] },
+      offset: 0,
+      limit: RATINGS_PER_PAGE
+    })
   })
 
   const handleRatingChange = async (isUpvote: boolean) => {

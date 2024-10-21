@@ -5,12 +5,12 @@ import { clsx } from 'clsx'
 import { For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 import { isServer } from 'solid-js/web'
 import usePopper from 'solid-popper'
-
 import { useFeed } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { DEFAULT_HEADER_OFFSET, useUI } from '~/context/ui'
+import { ReactionKind } from '~/graphql/schema/core.gen'
 import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
 import { processPrepositions } from '~/intl/prepositions'
 import { isCyrillic } from '~/intl/translate'
@@ -162,12 +162,12 @@ export const FullArticle = (props: Props) => {
       (p: Record<string, number>) => {
         console.debug('content paginated')
         loadReactionsBy({
-          by: { shout: props.article.slug, comment: true },
+          by: { shout: props.article.slug, kinds: [ReactionKind.Comment] },
           limit: COMMENTS_PER_PAGE,
           offset: COMMENTS_PER_PAGE * p.comments || 0
         })
         loadReactionsBy({
-          by: { shout: props.article.slug, rating: true },
+          by: { shout: props.article.slug, kinds: [ReactionKind.Like, ReactionKind.Dislike] },
           limit: VOTES_PER_PAGE,
           offset: VOTES_PER_PAGE * p.rating || 0
         })

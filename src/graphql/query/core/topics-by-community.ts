@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query TopicsByCommunityQuery($community: String!) {
-    get_topics_by_community(community: $community) {
+  query TopicsByCommunityQuery($slug: String, $community_id: Int) {
+    get_topics_by_community(slug: $slug, community_id: $community_id) {
       title
       body
       slug

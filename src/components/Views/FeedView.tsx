@@ -15,6 +15,7 @@ import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
 import { loadUnratedShouts } from '~/graphql/api/private'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
+import { ReactionKind } from '~/graphql/schema/core.gen'
 import { FeedSearchParams } from '~/routes/feed/[...order]'
 import { byCreated } from '~/utils/sort'
 import { CommentDate } from '../Article/CommentDate'
@@ -31,19 +32,19 @@ import stylesBeside from '../Feed/Beside.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 
 export const FEED_PAGE_SIZE = 20
-export type PeriodType = 'week' | 'month' | 'year'
 
 export type FeedProps = {
   shouts: Shout[]
   mode?: 'followed' | 'discussed' | 'coauthored' | 'unrated' | 'all'
-  order?: '' | 'likes' | 'hot'
+  order?: 'recent' | 'likes' | 'hot'
 }
 
+export type PeriodType = 'week' | 'month' | 'year'
 const PERIODS = {
   day: 24 * 60 * 60,
   month: 30 * 24 * 60 * 60,
   year: 365 * 24 * 60 * 60
-}
+} as Record<PeriodType, number>
 
 export const FeedView = (props: FeedProps) => {
   const { t } = useLocalize()
@@ -65,8 +66,8 @@ export const FeedView = (props: FeedProps) => {
   const { topAuthors } = useAuthors()
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
   const [searchParams, changeSearchParams] = useSearchParams<FeedSearchParams>()
-  const loadTopComments = async () => {
-    const comments = await loadReactionsBy({ by: { comment: true }, limit: 50 })
+  const loadRecentComments = async () => {
+    const comments = await loadReactionsBy({ by: { kinds: [ReactionKind.Comment] }, limit: 50 })
     setTopComments(comments.sort(byCreated).reverse())
   }
 
@@ -78,7 +79,7 @@ export const FeedView = (props: FeedProps) => {
         if (sss && Array.isArray(sss)) {
           setIsLoading(true)
           Promise.all([
-            loadTopComments(),
+            loadRecentComments(),
             loadReactionsBy({ by: { shouts: sss.map((s: Shout) => s.slug) } })
           ]).finally(() => {
             console.debug('[views.feed] finally loaded reactions, data loading finished')
@@ -97,8 +98,8 @@ export const FeedView = (props: FeedProps) => {
     setShareData(shared)
   }
 
-  const asOption = (o: string) => {
-    const value = Math.floor(Date.now() / 1000) - PERIODS[o as keyof typeof PERIODS]
+  const asOption = (o: PeriodType) => {
+    const value = Math.floor(Date.now() / 1000) - PERIODS[o]
     return { value, title: t(o) }
   }
   const asOptions = (opts: string[]) => opts.map(asOption)
@@ -119,14 +120,14 @@ export const FeedView = (props: FeedProps) => {
           <Show when={(session() || loc?.pathname === 'feed') && props.shouts}>
             <div class={styles.filtersContainer}>
               <ul class={clsx('view-switcher', styles.feedFilter)}>
-                <li class={clsx({ 'view-switcher__item--selected': !props.order })}>
-                  <A href={loc.pathname}>{t('Recent')}</A>
-                </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': props.order === 'likes'
+                    'view-switcher__item--selected': !props.order || props.order === 'recent'
                   })}
                 >
+                  <A href={'/feed/recent'}>{t('Recent')}</A>
+                </li>
+                <li class={clsx({ 'view-switcher__item--selected': props.order === 'likes' })}>
                   <A class="link" href={'/feed/likes'}>
                     {t('Liked')}
                   </A>

@@ -58,7 +58,50 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [commented, setCommented] = createSignal<Reaction[]>(props.comments || [])
   const [followersLoaded, setFollowersLoaded] = createSignal(false)
   const [followingsLoaded, setFollowingsLoaded] = createSignal(false)
-  const [_initialRowsCount, setInitialRowsCount] = createSignal(0)
+  const [sortedFeed, setSortedFeed] = createSignal<Shout[]>(props.shouts || []) // Full list of shouts
+  const [shoutBatches, setShoutBatches] = createSignal<Shout[][]>([]) // Array for batches
+
+  // Utility function to append new shouts into batches, keeping the last incomplete batch untouched
+  const appendShoutsToBatches = (newShouts: Shout[]): Shout[][] => {
+    const currentBatches = shoutBatches() // Get the current batches
+    const newBatch: Shout[][] = [] // Explicitly type newBatch as Shout[][]
+
+    // If the last batch is full, we can start adding new shouts directly
+    if (currentBatches.length === 0 || currentBatches[currentBatches.length - 1].length === 3) {
+      // No incomplete batch, so just add new batches
+      for (let i = 0; i < newShouts.length; i += 3) {
+        newBatch.push(newShouts.slice(i, i + 3))
+      }
+    } else {
+      // If the last batch is incomplete, leave it as is and start a new batch
+      for (let i = 0; i < newShouts.length; i += 3) {
+        newBatch.push(newShouts.slice(i, i + 3))
+      }
+    }
+
+    return [...currentBatches, ...newBatch] // Return the combined old and new batches
+  }
+
+  // When sortedFeed changes, append the new items to shoutBatches without modifying incomplete batches
+  createEffect(() => {
+    // Get the current number of shouts that have already been batched
+    const currentShoutCount = shoutBatches().reduce((acc, batch) => acc + batch.length, 0)
+
+    // Calculate how many new shouts have been added since last time
+    const newShouts = sortedFeed().slice(currentShoutCount)
+
+    // Only append if there are new shouts
+    if (newShouts.length > 0) {
+
+      // Append only if new batches differ from old ones
+      const batches = appendShoutsToBatches(newShouts)
+
+      // Check if the new batches are different from the existing ones to avoid redundant updates
+      if (JSON.stringify(batches) !== JSON.stringify(shoutBatches())) {
+        setShoutBatches(batches)
+      }
+    }
+  })
 
   // derivatives
   const me = createMemo<Author>(() => session()?.user?.app_data?.profile as Author)
@@ -143,19 +186,22 @@ export const AuthorView = (props: AuthorViewProps) => {
     </div>
   )
 
-  const { feedByAuthor, addFeed } = useFeed()
-  const [sortedFeed, setSortedFeed] = createSignal<Shout[]>(props.shouts || [])
+  const { feedByAuthor } = useFeed()
   const [loadMoreHidden, setLoadMoreHidden] = createSignal(false)
+
+  // Load more functionality, fetch new shouts, and update sortedFeed
   const loadMore = async () => {
     saveScrollPosition()
     const authorShoutsFetcher = loadShouts({
       filters: { author: props.authorSlug },
       limit: SHOUTS_PER_PAGE,
-      offset: feedByAuthor()?.[props.authorSlug]?.length || 0
+      offset: sortedFeed().length || 0 // Offset is based on the current length of sortedFeed
     })
     const result = await authorShoutsFetcher()
+
     if (result) {
-      addFeed(result)
+      // Append the newly loaded shouts to the existing sortedFeed
+      setSortedFeed((prev) => [...prev, ...result]) // Ensure sortedFeed grows with new items
     }
     restoreScrollPosition()
     return result as LoadMoreItems
@@ -169,7 +215,6 @@ export const AuthorView = (props: AuthorViewProps) => {
         const feed = byAuthor[props.authorSlug] as Shout[]
         if (!feed) return
         setSortedFeed(feed)
-        setInitialRowsCount(Math.ceil(props.shouts.length / 3))
       },
       {}
     )
@@ -331,23 +376,28 @@ export const AuthorView = (props: AuthorViewProps) => {
           </Show>
 
           <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE} hidden={loadMoreHidden()}>
-            <For each={sortedFeed().filter((_, i) => i % 3 === 0)}>
-              {(_shout, index) => {
-                const articles = sortedFeed().slice(index() * 3, index() * 3 + 3)
+            <For each={shoutBatches()}>
+              {(batch) => {
+                const rowsInBatch: Shout[][] = [] // Explicitly type rowsInBatch
+                for (let i = 0; i < batch.length; i += 3) {
+                  rowsInBatch.push(batch.slice(i, i + 3)) // Slicing batch into arrays of up to 3 items
+                }
                 return (
-                  <>
-                    <Switch>
-                      <Match when={articles.length === 1}>
-                        <Row1 article={articles[0]} noauthor={true} nodate={true} />
-                      </Match>
-                      <Match when={articles.length === 2}>
-                        <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
-                      </Match>
-                      <Match when={articles.length === 3}>
-                        <Row3 articles={articles} noauthor={true} nodate={true} />
-                      </Match>
-                    </Switch>
-                  </>
+                  <For each={rowsInBatch}>
+                    {(articles) => (
+                      <Switch>
+                        <Match when={articles.length === 1}>
+                          <Row1 article={articles[0]} noauthor={true} nodate={true} />
+                        </Match>
+                        <Match when={articles.length === 2}>
+                          <Row2 articles={articles} noauthor={true} nodate={true} isEqual={true} />
+                        </Match>
+                        <Match when={articles.length === 3}>
+                          <Row3 articles={articles} noauthor={true} nodate={true} />
+                        </Match>
+                      </Switch>
+                    )}
+                  </For>
                 )
               }}
             </For>

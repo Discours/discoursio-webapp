@@ -61,6 +61,7 @@ export const AuthorView = (props: AuthorViewProps) => {
   const [sortedFeed, setSortedFeed] = createSignal<Shout[]>(props.shouts || []) // Full list of shouts
   const [shoutBatches, setShoutBatches] = createSignal<Shout[][]>([]) // Array for batches
 
+  // Utility function to append new shouts into batches, keeping the last incomplete batch untouched
   const appendShoutsToBatches = (newShouts: Shout[]): Shout[][] => {
     const currentBatches = shoutBatches() // Get the current batches
     const newBatch: Shout[][] = [] // Explicitly type newBatch as Shout[][]
@@ -91,7 +92,6 @@ export const AuthorView = (props: AuthorViewProps) => {
 
     // Only append if there are new shouts
     if (newShouts.length > 0) {
-      console.log('Appending new shouts to shoutBatches...')
 
       // Append only if new batches differ from old ones
       const batches = appendShoutsToBatches(newShouts)
@@ -99,7 +99,6 @@ export const AuthorView = (props: AuthorViewProps) => {
       // Check if the new batches are different from the existing ones to avoid redundant updates
       if (JSON.stringify(batches) !== JSON.stringify(shoutBatches())) {
         setShoutBatches(batches)
-        console.log('Updated shoutBatches:', shoutBatches())
       }
     }
   })
@@ -192,7 +191,6 @@ export const AuthorView = (props: AuthorViewProps) => {
 
   // Load more functionality, fetch new shouts, and update sortedFeed
   const loadMore = async () => {
-    console.log('Loading more shouts...')
     saveScrollPosition()
     const authorShoutsFetcher = loadShouts({
       filters: { author: props.authorSlug },
@@ -200,12 +198,10 @@ export const AuthorView = (props: AuthorViewProps) => {
       offset: sortedFeed().length || 0 // Offset is based on the current length of sortedFeed
     })
     const result = await authorShoutsFetcher()
-    console.log('Loaded shouts:', result)
 
     if (result) {
       // Append the newly loaded shouts to the existing sortedFeed
       setSortedFeed((prev) => [...prev, ...result]) // Ensure sortedFeed grows with new items
-      console.log('Updated sortedFeed:', sortedFeed()) // Debugging: Check sortedFeed
     }
     restoreScrollPosition()
     return result as LoadMoreItems
@@ -382,7 +378,7 @@ export const AuthorView = (props: AuthorViewProps) => {
           <LoadMoreWrapper loadFunction={loadMore} pageSize={SHOUTS_PER_PAGE} hidden={loadMoreHidden()}>
             <For each={shoutBatches()}>
               {(batch) => {
-                const rowsInBatch: Shout[][] = []
+                const rowsInBatch: Shout[][] = [] // Explicitly type rowsInBatch
                 for (let i = 0; i < batch.length; i += 3) {
                   rowsInBatch.push(batch.slice(i, i + 3)) // Slicing batch into arrays of up to 3 items
                 }

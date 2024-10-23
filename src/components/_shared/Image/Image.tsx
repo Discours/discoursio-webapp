@@ -13,12 +13,18 @@ type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {
 export const Image = (props: Props) => {
   const [local, others] = splitProps(props, ['src', 'alt'])
 
-  const imageUrl = getFileUrl(local.src || '', { width: others.width })
+  const imageUrl = local.src?.startsWith('http')
+    ? getFileUrl(local.src, { width: others.width })
+    : local.src
 
-  const imageSrcSet = [1, 5, 12, 30, 70, 100]
+  const imageSrcSet = [1, 33, 66, 100]
     .map(
       (pixelDensity) =>
-        `${getFileUrl(local.src || '', { width: others.width * pixelDensity })} ${pixelDensity}x`
+        `${
+          local.src?.startsWith('http')
+            ? getFileUrl(local.src || '', { width: others.width * pixelDensity })
+            : local.src
+        } ${pixelDensity}x`
     )
     .join(', ')
   return (

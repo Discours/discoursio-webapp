@@ -10,7 +10,7 @@ import { useLocalize } from '~/context/localize'
 import { useTopics } from '~/context/topics'
 import { loadShouts, loadTopics } from '~/graphql/api/public'
 import { Author, LoadShoutsOptions, Shout, Topic } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import { descFromBody } from '~/utils/meta'
 
 const fetchTopicShouts = async (slug: string, offset?: number) => {
@@ -78,7 +78,7 @@ export default function TopicPage(props: RouteSectionProps<TopicPageProps>) {
               ? descFromBody(topic()?.body || '')
               : t('The most interesting publications on the topic', { topicName: title() })
           )
-          setCover(() => (topic()?.pic ? getImageUrl(topic()?.pic || '', { width: 1200 }) : '/logo.png'))
+          setCover(() => (topic()?.pic ? getFileUrl(topic()?.pic || '', { width: 1200 }) : '/logo.png'))
 
           // views google counter increment
           if (!viewed()) {

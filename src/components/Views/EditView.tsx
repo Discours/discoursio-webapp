@@ -16,7 +16,7 @@ import { useSession } from '~/context/session'
 import getMyShoutQuery from '~/graphql/query/core/article-my'
 import type { Shout, Topic } from '~/graphql/schema/core.gen'
 import { slugify } from '~/intl/translit'
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import { isDesktop } from '~/lib/mediaQuery'
 import { LayoutType } from '~/types/common'
 import { MediaItem } from '~/types/mediaitem'
@@ -375,7 +375,7 @@ export const EditView = (props: Props) => {
                   <div
                     class={styles.cover}
                     style={{
-                      'background-image': `url(${getImageUrl(form.coverImageUrl || '', {
+                      'background-image': `url(${getFileUrl(form.coverImageUrl || '', {
                         width: 1600
                       })})`
                     }}

@@ -14,7 +14,7 @@ import { ReactionKind } from '~/graphql/schema/core.gen'
 import type { Author, Maybe, Shout, Topic } from '~/graphql/schema/core.gen'
 import { processPrepositions } from '~/intl/prepositions'
 import { isCyrillic } from '~/intl/translate'
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import { MediaItem } from '~/types/mediaitem'
 import { capitalize } from '~/utils/capitalize'
 import { AuthorBadge } from '../Author/AuthorBadge'
@@ -280,7 +280,7 @@ export const FullArticle = (props: Props) => {
   const handleArticleBodyClick = (event: any) => {
     if (event.target.tagName === 'IMG' && !event.target.dataset.disableLightbox) {
       const src = event.target.src
-      setSelectedImage(getImageUrl(src))
+      setSelectedImage(getFileUrl(src))
     }
   }
 

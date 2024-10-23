@@ -7,7 +7,7 @@ import { useLocalize } from '~/context/localize'
 import { Shout } from '~/graphql/schema/core.gen'
 import enKeywords from '~/intl/locales/en/keywords.json'
 import ruKeywords from '~/intl/locales/ru/keywords.json'
-import { getImageUrl, getOpenGraphImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import { descFromBody } from '~/utils/meta'
 import { FooterView } from '../Discours/Footer'
 import { Header } from '../HeaderNav'
@@ -34,14 +34,12 @@ export const PageLayout = (props: PageLayoutProps) => {
   const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed // FIXME: выглядит как костылек
   const loc = useLocation()
   const { t, lang } = useLocalize()
-  const imageUrl = props.cover ? getImageUrl(props.cover) : 'production/image/logo_image.png'
+  const imageUrl = props.cover ? getFileUrl(props.cover) : 'production/image/logo_image.png'
   const ogImage = createMemo(() =>
     // NOTE: preview generation logic works only for one article view
     props.article
-      ? getOpenGraphImageUrl(imageUrl, {
-          title: props.title,
-          topic: props.article?.topics?.[0]?.title || '',
-          author: props.article?.authors?.[0]?.name || '',
+      ? getFileUrl(imageUrl, {
+          shout: props.article.id,
           width: 1200
         })
       : imageUrl

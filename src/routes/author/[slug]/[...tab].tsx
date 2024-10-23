@@ -61,7 +61,7 @@ import {
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 
 const fetchAuthorShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { author: slug }, limit: SHOUTS_PER_PAGE, offset }
@@ -156,7 +156,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
           if (!a) return
           setTitle(() => `${t('Discours')}${a.name ? ` :: ${a.name}` : ''}`)
           setDesc(() => a.about || a.bio || '')
-          setCover(() => (a.pic ? getImageUrl(a.pic || '', { width: 1200 }) : 'log.png'))
+          setCover(() => (a.pic ? getFileUrl(a.pic || '', { width: 1200 }) : 'log.png'))
 
           // views google counter increment
           if (!viewed()) {

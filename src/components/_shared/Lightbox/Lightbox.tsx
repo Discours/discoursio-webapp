@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js'
 
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import { useEscKeyDownHandler } from '~/lib/useEscKeyDownHandler'
 import { Icon } from '../Icon'
 
@@ -164,7 +164,7 @@ export const Lightbox = (props: Props) => {
       </div>
       <img
         class={styles.image}
-        src={getImageUrl(props.image, { noSizeUrlPart: true })}
+        src={getFileUrl(props.image, { noSizeUrlPart: true })}
         alt={props.imageAlt || ''}
         onClick={(event) => event.stopPropagation()}
         onWheel={handleMouseWheelZoom}

@@ -19,7 +19,7 @@ import { useProfile } from '~/context/profile'
 import { useSession } from '~/context/session'
 import { useSnackbar, useUI } from '~/context/ui'
 import { InputMaybe, ProfileInput } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import { handleImageUpload } from '~/lib/handleImageUpload'
 import { profileSocialLinks } from '~/lib/profileSocialLinks'
 import { clone } from '~/utils/clone'
@@ -232,7 +232,7 @@ export const ProfileSettings = () => {
                             <div
                               class={styles.userpicImage}
                               style={{
-                                'background-image': `url(${getImageUrl(form.pic || '', {
+                                'background-image': `url(${getFileUrl(form.pic || '', {
                                   width: 180,
                                   height: 180
                                 })})`

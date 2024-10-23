@@ -3,7 +3,7 @@ import type { JSX } from 'solid-js'
 import { Link } from '@solidjs/meta'
 import { splitProps } from 'solid-js'
 
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 
 type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {
   width: number
@@ -13,12 +13,12 @@ type Props = JSX.ImgHTMLAttributes<HTMLImageElement> & {
 export const Image = (props: Props) => {
   const [local, others] = splitProps(props, ['src', 'alt'])
 
-  const imageUrl = getImageUrl(local.src || '', { width: others.width })
+  const imageUrl = getFileUrl(local.src || '', { width: others.width })
 
   const imageSrcSet = [1, 2, 3]
     .map(
       (pixelDensity) =>
-        `${getImageUrl(local.src || '', { width: others.width * pixelDensity })} ${pixelDensity}x`
+        `${getFileUrl(local.src || '', { width: others.width * pixelDensity })} ${pixelDensity}x`
     )
     .join(', ')
   return (

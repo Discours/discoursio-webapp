@@ -1,7 +1,7 @@
 import { clsx } from 'clsx'
 import { Show, createMemo } from 'solid-js'
 
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import './DialogCard.module.scss'
 
 import styles from './DialogAvatar.module.scss'
@@ -59,7 +59,7 @@ const DialogAvatar = (props: Props) => {
             'background-image': `url(
             ${
               props.url?.includes('discours.io')
-                ? getImageUrl(props.url || '', { width: 40, height: 40 })
+                ? getFileUrl(props.url || '', { width: 40, height: 40 })
                 : props.url
             }
             )`

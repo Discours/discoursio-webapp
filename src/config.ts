@@ -1,5 +1,5 @@
 export const cdnUrl = 'https://cdn.discours.io'
-export const thumborUrl = import.meta.env.PUBLIC_THUMBOR_URL || 'https://images.dscrs.site'
+export const thumborUrl = import.meta.env.PUBLIC_THUMBOR_URL || 'https://files.dscrs.site'
 export const coreApiUrl = import.meta.env.PUBLIC_CORE_API || 'https://core.discours.io'
 export const chatApiUrl = import.meta.env.PUBLIC_CHAT_API || 'https://inbox.discours.io'
 export const authApiUrl = import.meta.env.PUBLIC_AUTH_API || 'https://auth.discours.io/graphql'

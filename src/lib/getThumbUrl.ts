@@ -9,7 +9,8 @@ export const getFileUrl = (
   let filepath = parts
     .join('.')
     .replace('assets.discours.io', 'files.dscrs.site')
-    .replace('discours.io', 'dscrs.site')
+    .replace('images.discours.io', 'files.dscrs.site')
+    .replace('cdn.discours.io', 'files.dscrs.site')
   if (options.width) {
     filepath = `${filepath}_${options.width}`
   }

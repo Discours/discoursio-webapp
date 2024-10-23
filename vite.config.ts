@@ -47,7 +47,7 @@ export default defineConfig({
       scss: {
         api: 'modern-compiler',
         quietDeps: true,
-        silenceDeprecations: ['mixed-decls', 'legacy-js-api', 'global-builtin'],
+        silenceDeprecations: ['mixed-decls', 'legacy-js-api'], // 'global-builtin'],
         additionalData: (content: string) => `@use '~/styles/global' as *;\n${content}`,
         includePaths: ['./public', './src/styles', './node_modules']
       }

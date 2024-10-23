@@ -1,8 +1,8 @@
 import { gql } from '@urql/core'
 
 export default gql`
-  query LoadShoutQuery($slug: String!) {
-    get_shout(slug: $slug) {
+  query LoadShoutQuery($slug: String, $shout_id: Int) {
+    get_shout(slug: $slug, shout_id: $shout_id) {
       id
       title
       lead

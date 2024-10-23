@@ -4,11 +4,7 @@ export const getFileUrl = (
   src: string,
   options: { width?: number; shout?: string | number; height?: number; noSizeUrlPart?: boolean } = {}
 ): string => {
-  const parts = src
-    .replace('assets.discours.io', 'files.dscrs.site')
-    .replace('images.discours.io', 'files.dscrs.site')
-    .replace('cdn.discours.io', 'files.dscrs.site')
-    .split('.')
+  const parts = src.split('.')
   let extension = parts.pop()
   let filepath = parts.join('.')
   if (options.width) {
@@ -21,4 +17,7 @@ export const getFileUrl = (
   const result = `${thumborUrl}/${basename}.${extension}`
   // console.debug(`${src} -> ${result}`)
   return result
+    .replace('assets.discours.io', 'files.dscrs.site')
+    .replace('images.discours.io', 'files.dscrs.site')
+    .replace('cdn.discours.io', 'files.dscrs.site')
 }

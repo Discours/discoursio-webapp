@@ -3,13 +3,13 @@ import { clsx } from 'clsx'
 import { Accessor, Show, createEffect, createSignal, on } from 'solid-js'
 import { createEditorTransaction } from 'solid-tiptap'
 import { Icon } from '~/components/_shared/Icon'
+import { Popover } from '~/components/_shared/Popover/Popover'
+import { useEditorContext } from '~/context/editor'
 import { useLocalize } from '~/context/localize'
 import { MiniEditor } from '../MiniEditor'
 import { MicroBubbleMenu } from './MicroBubbleMenu'
 import { ToolbarControl } from './ToolbarControl'
 
-import { Popover } from '~/components/_shared/Popover/Popover'
-import { useEditorContext } from '~/context/editor'
 import styles from './FullBubbleMenu.module.scss'
 
 type FullBubbleMenuProps = {

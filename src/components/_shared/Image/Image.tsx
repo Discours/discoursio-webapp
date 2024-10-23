@@ -15,7 +15,7 @@ export const Image = (props: Props) => {
 
   const imageUrl = getFileUrl(local.src || '', { width: others.width })
 
-  const imageSrcSet = [1, 2, 3]
+  const imageSrcSet = [1, 5, 12, 30, 70, 100]
     .map(
       (pixelDensity) =>
         `${getFileUrl(local.src || '', { width: others.width * pixelDensity })} ${pixelDensity}x`

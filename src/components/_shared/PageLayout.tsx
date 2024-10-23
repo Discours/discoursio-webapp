@@ -34,7 +34,9 @@ export const PageLayout = (props: PageLayoutProps) => {
   const isHeaderFixed = props.isHeaderFixed === undefined ? true : props.isHeaderFixed // FIXME: выглядит как костылек
   const loc = useLocation()
   const { t, lang } = useLocalize()
-  const imageUrl = props.cover ? getFileUrl(props.cover) : 'production/image/logo_image.png'
+  const imageUrl = getFileUrl(
+    props.cover ? props.cover : 'https://images.discours.io/production/image/logo_image.png'
+  )
   const ogImage = createMemo(() =>
     // NOTE: preview generation logic works only for one article view
     props.article

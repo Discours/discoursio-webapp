@@ -23,6 +23,24 @@
 2. Установите зависимости: `bun i` (или npm/pnpm/yarn)
 3. Создайте `.env` файл (переменные с `PUBLIC_` используются в `/src/utils/config.ts`)
 
+### Installing cert server on local
+
+1. Install mkcert:
+```
+sudo apt install libnss3-tools
+curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+chmod +x mkcert-v*-linux-amd64
+sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+```
+2. Create a local CA (Certificate Authority):
+```
+mkcert -install
+```
+3. After installing mkcert, you should be able to run your development server:
+```
+bun dev
+```
+
 ### Основные команды
 
 ```bash

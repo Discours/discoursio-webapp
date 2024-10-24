@@ -8,6 +8,7 @@ import { ShowOnlyOnClient } from '~/components/_shared/ShowOnlyOnClient'
 import { FollowsFilter, useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
+import { useUI } from '~/context/ui'
 import type { Author, Community } from '~/graphql/schema/core.gen'
 import { FollowingEntity, Topic } from '~/graphql/schema/core.gen'
 import { isCyrillic } from '~/intl/translate'
@@ -35,6 +36,7 @@ export const AuthorCard = (props: Props) => {
   const [isFollowed, setIsFollowed] = createSignal<boolean>()
   const isProfileOwner = createMemo(() => author()?.slug === props.author.slug)
   const { follow, unfollow, follows, following } = useFollowing() // viewer's followings
+  const { hideModal } = useUI()
 
   createEffect(() => {
     if (!(follows && props.author)) return
@@ -99,7 +101,9 @@ export const AuthorCard = (props: Props) => {
       <div class={styles.listWrapper}>
         <div class="row">
           <div class="col-24">
-            <For each={props.followers}>{(follower: Author) => <AuthorBadge author={follower} />}</For>
+            <For each={props.followers}>
+              {(follower: Author) => <AuthorBadge author={follower} onClick={() => hideModal()} />}
+            </For>
           </div>
         </div>
       </div>
@@ -150,7 +154,11 @@ export const AuthorCard = (props: Props) => {
             <For each={authorSubs()}>
               {(subscription) =>
                 'name' in subscription ? (
-                  <AuthorBadge author={subscription as Author} subscriptionsMode={true} />
+                  <AuthorBadge
+                    author={subscription as Author}
+                    subscriptionsMode={true}
+                    onClick={() => hideModal()}
+                  />
                 ) : (
                   <TopicBadge topic={subscription as Topic} subscriptionsMode={true} />
                 )

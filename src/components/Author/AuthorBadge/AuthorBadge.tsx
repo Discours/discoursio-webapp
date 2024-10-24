@@ -26,6 +26,7 @@ type Props = {
   onInvite?: (id: number) => void
   selected?: boolean
   subscriptionsMode?: boolean
+  onClick?: () => void
 }
 export const AuthorBadge = (props: Props) => {
   const { session, requireAuthentication } = useSession()
@@ -77,8 +78,13 @@ export const AuthorBadge = (props: Props) => {
     }, 'follow')
   }
 
+  const handleClick = () => {
+    console.debug('[AuthorBadge.handleClick]', props.author.slug)
+    props.onClick?.()
+  }
+
   return (
-    <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })}>
+    <div class={clsx(styles.AuthorBadge, { [styles.nameOnly]: props.nameOnly })} onClick={handleClick}>
       <div class={styles.basicInfo}>
         <Userpic
           hasLink={true}

@@ -24,7 +24,7 @@ export default () => {
             </p>
           </div>
           <div class={clsx(styles.discoursBannerImage, 'col-lg-12 offset-lg-2')}>
-            <Image src="production/image/discours-banner.jpg" alt={t('Discours')} width={600} />
+            <Image src="discours-banner.jpg" alt={t('Discours')} width={600} />
           </div>
         </div>
       </div>

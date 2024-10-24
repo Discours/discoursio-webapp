@@ -6,7 +6,7 @@ import { Manipulation, Navigation, Pagination } from 'swiper/modules'
 import { useLocalize } from '~/context/localize'
 import { useSnackbar } from '~/context/ui'
 import { composeMediaItems } from '~/lib/composeMediaItems'
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import { handleImageUpload } from '~/lib/handleImageUpload'
 import { validateUploads } from '~/lib/validateUploads'
 import { DropArea } from '../DropArea'
@@ -237,7 +237,7 @@ export const EditorSwiper = (props: Props) => {
                       <div
                         class={clsx(styles.imageThumb)}
                         style={{
-                          'background-image': `url(${getImageUrl(slide.url, { width: 110, height: 75 })})`
+                          'background-image': `url(${getFileUrl(slide.url, { width: 110, height: 75 })})`
                         }}
                       >
                         <div class={styles.thumbAction}>

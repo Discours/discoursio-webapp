@@ -1,6 +1,6 @@
 import { A, createAsync, useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import { clsx } from 'clsx'
-import { For, Show, createEffect, createMemo, createSignal, on } from 'solid-js'
+import { For, Show, createEffect, createSignal, on } from 'solid-js'
 import { DropDown } from '~/components/_shared/DropDown'
 import { Option } from '~/components/_shared/DropDown/DropDown'
 import { Icon } from '~/components/_shared/Icon'
@@ -15,7 +15,7 @@ import { useTopics } from '~/context/topics'
 import { useUI } from '~/context/ui'
 import { loadUnratedShouts } from '~/graphql/api/private'
 import type { Author, Reaction, Shout } from '~/graphql/schema/core.gen'
-import { FeedSearchParams } from '~/routes/feed/[...order]'
+import { ReactionKind } from '~/graphql/schema/core.gen'
 import { byCreated } from '~/utils/sort'
 import { CommentDate } from '../Article/CommentDate'
 import { getShareUrl } from '../Article/SharePopup'
@@ -31,19 +31,21 @@ import stylesBeside from '../Feed/Beside.module.scss'
 import stylesTopic from '../Feed/CardTopic.module.scss'
 
 export const FEED_PAGE_SIZE = 20
-export type PeriodType = 'week' | 'month' | 'year'
-
+export type FeedMode = 'followed' | 'discussed' | 'coauthored' | 'unrated' | 'featured' | 'all'
+export type ShoutsOrder = 'recent' | 'likes' | 'hot'
+export type PeriodType = 'day' | 'week' | 'month' | 'year'
 export type FeedProps = {
   shouts: Shout[]
-  mode?: 'followed' | 'discussed' | 'coauthored' | 'unrated' | 'all'
-  order?: '' | 'likes' | 'hot'
+  mode?: FeedMode
+  order?: ShoutsOrder
 }
 
 const PERIODS = {
   day: 24 * 60 * 60,
+  week: 7 * 24 * 60 * 60,
   month: 30 * 24 * 60 * 60,
   year: 365 * 24 * 60 * 60
-}
+} as Record<PeriodType, number>
 
 export const FeedView = (props: FeedProps) => {
   const { t } = useLocalize()
@@ -64,9 +66,9 @@ export const FeedView = (props: FeedProps) => {
   const { topTopics } = useTopics()
   const { topAuthors } = useAuthors()
   const [topComments, setTopComments] = createSignal<Reaction[]>([])
-  const [searchParams, changeSearchParams] = useSearchParams<FeedSearchParams>()
-  const loadTopComments = async () => {
-    const comments = await loadReactionsBy({ by: { comment: true }, limit: 50 })
+  const [searchParams, changeSearchParams] = useSearchParams<{ period: PeriodType }>()
+  const loadRecentComments = async () => {
+    const comments = await loadReactionsBy({ by: { kinds: [ReactionKind.Comment] }, limit: 50 })
     setTopComments(comments.sort(byCreated).reverse())
   }
 
@@ -78,7 +80,7 @@ export const FeedView = (props: FeedProps) => {
         if (sss && Array.isArray(sss)) {
           setIsLoading(true)
           Promise.all([
-            loadTopComments(),
+            loadRecentComments(),
             loadReactionsBy({ by: { shouts: sss.map((s: Shout) => s.slug) } })
           ]).finally(() => {
             console.debug('[views.feed] finally loaded reactions, data loading finished')
@@ -98,11 +100,16 @@ export const FeedView = (props: FeedProps) => {
   }
 
   const asOption = (o: string) => {
-    const value = Math.floor(Date.now() / 1000) - PERIODS[o as keyof typeof PERIODS]
+    const value = ['day', 'week', 'month', 'year'].includes(o)
+      ? Math.floor(Date.now() / 1000) - PERIODS[o as PeriodType]
+      : o
     return { value, title: t(o) }
   }
-  const asOptions = (opts: string[]) => opts.map(asOption)
-  const currentPeriod = createMemo(() => asOption(searchParams?.period || ''))
+  const asOptions = (opts: PeriodType[] | FeedMode[]) => opts.map(asOption)
+  const [currentPeriod, setCurrentPeriod] = createSignal(asOption(searchParams?.period || 'month'))
+  createEffect(() => {
+    setCurrentPeriod(asOption(searchParams?.period || 'month'))
+  })
 
   return (
     <div class={clsx('wide-container', styles.feed)}>
@@ -119,14 +126,14 @@ export const FeedView = (props: FeedProps) => {
           <Show when={(session() || loc?.pathname === 'feed') && props.shouts}>
             <div class={styles.filtersContainer}>
               <ul class={clsx('view-switcher', styles.feedFilter)}>
-                <li class={clsx({ 'view-switcher__item--selected': !props.order })}>
-                  <A href={loc.pathname}>{t('Recent')}</A>
-                </li>
                 <li
                   class={clsx({
-                    'view-switcher__item--selected': props.order === 'likes'
+                    'view-switcher__item--selected': !props.order || props.order === 'recent'
                   })}
                 >
+                  <A href={'/feed/recent'}>{t('Recent')}</A>
+                </li>
+                <li class={clsx({ 'view-switcher__item--selected': props.order === 'likes' })}>
                   <A class="link" href={'/feed/likes'}>
                     {t('Liked')}
                   </A>
@@ -154,7 +161,7 @@ export const FeedView = (props: FeedProps) => {
                 <DropDown
                   popupProps={{ horizontalAnchor: 'right' }}
                   options={asOptions(['all', 'featured', 'followed', 'unrated', 'discussed', 'coauthored'])}
-                  currentOption={asOption(props.mode || '')}
+                  currentOption={currentPeriod()}
                   triggerCssClass={styles.periodSwitcher}
                   onChange={(mode: Option) => navigate(`/feed/${mode.value}`)}
                 />

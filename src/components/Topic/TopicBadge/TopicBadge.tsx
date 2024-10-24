@@ -6,7 +6,7 @@ import { useFollowing } from '~/context/following'
 import { useLocalize } from '~/context/localize'
 import { useSession } from '~/context/session'
 import { FollowingEntity, Topic } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 import { mediaMatches } from '~/lib/mediaQuery'
 import { capitalize } from '~/utils/capitalize'
 import styles from './TopicBadge.module.scss'
@@ -62,7 +62,7 @@ export const TopicBadge = (props: Props) => {
               })}
               style={
                 (props.topic?.pic || '') && {
-                  'background-image': `url('${getImageUrl(props.topic?.pic || '', { width: 40, height: 40 })}')`
+                  'background-image': `url('${getFileUrl(props.topic?.pic || '', { width: 40, height: 40 })}')`
                 }
               }
             />

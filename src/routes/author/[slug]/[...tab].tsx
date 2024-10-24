@@ -51,6 +51,7 @@ import { SHOUTS_PER_PAGE } from '~/context/feed'
 import { useLocalize } from '~/context/localize'
 import { ReactionsProvider } from '~/context/reactions'
 import { loadAuthors, loadReactions, loadShouts, loadTopics } from '~/graphql/api/public'
+import { ReactionKind } from '~/graphql/schema/core.gen'
 import {
   Author,
   LoadShoutsOptions,
@@ -60,7 +61,7 @@ import {
   Shout,
   Topic
 } from '~/graphql/schema/core.gen'
-import { getImageUrl } from '~/lib/getThumbUrl'
+import { getFileUrl } from '~/lib/getThumbUrl'
 
 const fetchAuthorShouts = async (slug: string, offset?: number) => {
   const opts: LoadShoutsOptions = { filters: { author: slug }, limit: SHOUTS_PER_PAGE, offset }
@@ -70,7 +71,7 @@ const fetchAuthorShouts = async (slug: string, offset?: number) => {
 
 const fetchAuthorComments = async (slug: string, offset?: number) => {
   const opts: QueryLoad_Reactions_ByArgs = {
-    by: { comment: true, author: slug },
+    by: { kinds: [ReactionKind.Comment], author: slug },
     limit: COMMENTS_PER_PAGE,
     offset
   }
@@ -155,7 +156,7 @@ export default function AuthorPage(props: RouteSectionProps<AuthorPageProps>) {
           if (!a) return
           setTitle(() => `${t('Discours')}${a.name ? ` :: ${a.name}` : ''}`)
           setDesc(() => a.about || a.bio || '')
-          setCover(() => (a.pic ? getImageUrl(a.pic || '', { width: 1200 }) : 'log.png'))
+          setCover(() => (a.pic ? getFileUrl(a.pic || '', { width: 1200 }) : 'log.png'))
 
           // views google counter increment
           if (!viewed()) {

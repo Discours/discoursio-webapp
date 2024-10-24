@@ -4,7 +4,6 @@ import { debounce } from 'throttle-debounce'
 import { useReactions } from '~/context/reactions'
 import { useSession } from '~/context/session'
 import { Reaction, ReactionKind, Shout } from '~/graphql/schema/core.gen'
-import { byCreated } from '~/utils/sort'
 import { Icon } from '../_shared/Icon'
 import { Loading } from '../_shared/Loading'
 import { Popup } from '../_shared/Popup'
@@ -38,9 +37,7 @@ export const RatingControl = (props: Props) => {
       ([rrr, profile]) => {
         if (rrr) {
           const shoutRatings = rrr.filter(props.comment ? commentRatingFilter : shoutRatingFilter)
-          const urrr = Array.from(new Set(shoutRatings))
-          urrr.sort(byCreated)
-          profile && setRatings((_rrr) => urrr)
+          profile && setRatings((_rrr) => shoutRatings)
 
           const my = shoutRatings.find((r) => r.created_by.slug === profile?.slug)
           setMyRate(my ? my.kind : null)
@@ -62,7 +59,11 @@ export const RatingControl = (props: Props) => {
   }
 
   const debouncedLoadReactions = debounce(2000, () => {
-    loadReactionsBy({ by: { shout: props.shout?.slug }, offset: 0, limit: RATINGS_PER_PAGE })
+    loadReactionsBy({
+      by: { shout: props.shout?.slug, kinds: [ReactionKind.Like, ReactionKind.Dislike] },
+      offset: 0,
+      limit: RATINGS_PER_PAGE
+    })
   })
 
   const handleRatingChange = async (isUpvote: boolean) => {
